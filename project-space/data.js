@@ -1,5 +1,17 @@
-// Project Space data — zen-tea demo
+// Project Space data — zen-tea demo（/project/ 无 slug 时的默认数据）
 window.ZEN_DATA = {
+  slug: "zen-tea",
+  complete: true,
+  cat: "hospitality",
+  type: "P1-interior",
+  // 真 3D 模型 · Blender 导出的 GLB（禅意茶室 · 新中式）
+  model_glb: "/assets/mvps/20-zen-tea-room/variants/v1-new-chinese/model.glb",
+  hero_img: "/assets/zen-tea/render-01-hero.png",
+  thumb_img: "/assets/zen-tea/render-01-hero.png",
+  // 可编辑字段默认值 · chat-edit 首次交互的 baseline
+  editable: { area_m2: 40, insulation_mm: 60, glazing_uvalue: 2.0, lighting_cct: 3000, lighting_density_w_m2: 11, wwr: 0.25, region: "HK" },
+  // derived · 初始值 · chat 改后 recompute 覆盖
+  derived: { eui_kwh_m2_yr: 84, cost_total: 540392, cost_per_m2: 13510, co2_t_per_yr: 1.98, compliance_fails: 0, compliance_verdict: "COMPLIANT" },
   project: { name: "Zen Tea Room", zh: "禅意茶室 · 新中式", area: 40, location: "Hong Kong", budgetHKD: 360000, style: "Neo-Chinese" },
   renders: [
     { id: "01", file: "/assets/zen-tea/render-01-hero.png", title: "Hero corner · 品茶区", tag: "01 / Hero" },

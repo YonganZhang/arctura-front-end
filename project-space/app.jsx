@@ -219,69 +219,97 @@ function Sidebar({ active, setActive }) {
 // ───────── Overview ─────────
 function Overview({ setActive }) {
   useProject();
-  const mainRender = (D.renders || [])[0];
+  const renders = D.renders || [];
   const [thumb, setThumb] = useState(0);
-  const current = (D.renders || [])[thumb];
+  const safeIdx = Math.min(thumb, Math.max(0, renders.length - 1));
+  const current = renders[safeIdx];
+  // 动态字段
+  const proj = D.project || {};
+  const der = D.derived || {};
+  const zones = D.zones || [];
+  const compliance = D.compliance || {};
+  const region = D.editable?.region || "HK";
+  const C = compliance[region] || {};
+  const fmtInt = (n) => n != null ? Number(n).toLocaleString() : "—";
+  const titleEn = proj.name || D.slug || "Untitled";
+  const subParts = [
+    proj.zh,
+    proj.style ? (typeof proj.style === "string" ? proj.style.split(",")[0].trim() : "") : "",
+    proj.area ? `${proj.area} m²` : "",
+    proj.location || "",
+  ].filter(Boolean);
+  const eui = der.eui_kwh_m2_yr ?? D.energy?.eui ?? "—";
+  const euiLimit = D.energy?.limit || 150;
+  const costTotal = der.cost_total || (D.pricing || {})[region]?.totalNumber;
+  const costPerM2 = der.cost_per_m2 || (D.pricing || {})[region]?.perM2;
+  const verdict = der.compliance_verdict || C.verdict || "—";
+  const verdictClass = verdict === "COMPLIANT" ? "ok" : /CONDITIONAL|REVIEW|ADVISORY/i.test(verdict) ? "warn" : verdict === "—" ? "ok" : "warn";
   return (
     <section>
       <div className="view-head">
         <div>
-          <h1 className="view-title">Zen Tea Room</h1>
-          <div className="view-sub">禅意茶室 · New-Chinese · 40 m² · Hong Kong · Delivered in 56 min</div>
+          <h1 className="view-title">{titleEn}</h1>
+          <div className="view-sub">{subParts.join(" · ")}</div>
         </div>
       </div>
 
       <div className="ov-grid-3">
         <div className="card">
-          <div className="card-head"><span className="card-lbl">Total Cost</span><span className="card-tag ok">HK</span></div>
-          <div className="card-value">HK$540<small>k</small></div>
-          <div className="card-sub">13,510 HK$ / m² · within budget</div>
-          <div className="card-footer"><span>BOQ · 7 categories</span><span>v1</span></div>
+          <div className="card-head"><span className="card-lbl">Total Cost</span><span className="card-tag ok">{region}</span></div>
+          <div className="card-value">{(D.pricing||{})[region]?.currency || "HK$"}{costTotal != null ? (costTotal >= 1000 ? `${Math.round(costTotal/1000)}` : `${costTotal}`) : "—"}<small>{costTotal >= 1000 ? "k" : ""}</small></div>
+          <div className="card-sub">{costPerM2 ? `${fmtInt(costPerM2)} / m²` : "—"}</div>
+          <div className="card-footer"><span>BOQ · {((D.pricing||{})[region]?.rows || []).length} items</span><span onClick={()=>setActive("boq")} style={{cursor:"pointer",color:"var(--accent)"}}>View →</span></div>
         </div>
         <div className="card">
-          <div className="card-head"><span className="card-lbl">Energy (EUI)</span><span className="card-tag ok">Pass</span></div>
-          <div className="card-value">84<small>kWh/m²·yr</small></div>
-          <div className="card-sub">44% below HK BEEO limit · 3,358 kWh/yr</div>
-          <div className="card-footer"><span>HVAC 62% · Light 24%</span><span>EnergyPlus</span></div>
+          <div className="card-head"><span className="card-lbl">Energy (EUI)</span><span className={"card-tag " + (Number(eui) <= euiLimit ? "ok" : "warn")}>{Number(eui) <= euiLimit ? "Pass" : "Review"}</span></div>
+          <div className="card-value">{eui}<small>kWh/m²·yr</small></div>
+          <div className="card-sub">{eui !== "—" && Number(eui) < euiLimit ? `${Math.round((1 - eui/euiLimit)*100)}% below limit ${euiLimit}` : `Limit ${euiLimit} kWh/m²·yr`}</div>
+          <div className="card-footer"><span>{D.energy?.engine || "EnergyPlus"}</span><span onClick={()=>setActive("energy")} style={{cursor:"pointer",color:"var(--accent)"}}>View →</span></div>
         </div>
         <div className="card">
-          <div className="card-head"><span className="card-lbl">Compliance</span><span className="card-tag ok">HK · BEEO</span></div>
-          <div className="card-value">7<small>/ 8</small></div>
-          <div className="card-sub">OTTV pending facade finalization</div>
-          <div className="card-footer"><span>Tap to switch region</span><span onClick={()=>setActive("compliance")} style={{cursor:"pointer",color:"var(--accent)"}}>View →</span></div>
+          <div className="card-head"><span className="card-lbl">Compliance</span><span className={"card-tag " + verdictClass}>{region}</span></div>
+          <div className="card-value">{C.score || verdict}</div>
+          <div className="card-sub">{verdict.length > 50 ? verdict.slice(0, 50) + "…" : verdict}</div>
+          <div className="card-footer"><span>{C.label || C.code || region}</span><span onClick={()=>setActive("compliance")} style={{cursor:"pointer",color:"var(--accent)"}}>View →</span></div>
         </div>
       </div>
 
-      <div className="render-feature">
-        <div className="render-main" onClick={()=>setActive("renders")}>
-          <Img src={current.file} alt={current.title} />
-          <div className="render-overlay">
-            <div className="render-tag">{current.tag} · click to expand gallery</div>
-            <div className="render-title">{current.title}</div>
+      {current ? (
+        <div className="render-feature">
+          <div className="render-main" onClick={()=>setActive("renders")}>
+            <Img src={current.file} alt={current.title} />
+            <div className="render-overlay">
+              <div className="render-tag">{current.tag} · click to expand gallery</div>
+              <div className="render-title">{current.title}</div>
+            </div>
+          </div>
+          <div className="render-thumbs">
+            {renders.map((r, i) => (
+              <div key={r.id || i} className={"render-thumb " + (safeIdx===i ? "active":"")} onClick={()=>setThumb(i)}>
+                <Img src={r.file} alt={r.title} />
+                <div className="render-thumb-lbl">{r.tag}</div>
+              </div>
+            ))}
           </div>
         </div>
-        <div className="render-thumbs">
-          {D.renders.map((r, i) => (
-            <div key={r.id} className={"render-thumb " + (thumb===i ? "active":"")} onClick={()=>setThumb(i)}>
-              <Img src={r.file} alt={r.title} />
-              <div className="render-thumb-lbl">{r.tag}</div>
-            </div>
-          ))}
+      ) : (
+        <div style={{padding:40, background:"var(--bg-1)", border:"1px dashed var(--line)", borderRadius:6, textAlign:"center", color:"var(--text-3)"}}>
+          此 MVP 暂无渲染图 · Chat 仍可改数据
         </div>
-      </div>
+      )}
 
       <div className="ov-grid">
         <div className="card" style={{cursor:"pointer"}} onClick={()=>setActive("floorplan")}>
-          <div className="card-head"><span className="card-lbl">Floorplan</span><span className="card-tag ok">6 zones</span></div>
-          <div style={{fontFamily:"var(--f-display)",fontSize:22,fontWeight:400,letterSpacing:"-0.01em"}}>Interactive · drag furniture</div>
-          <div className="card-sub">Hover any zone for details. Drag chairs to reposition the tea ceremony.</div>
-          <div className="card-footer"><span>Entry · Tea · Ink · Display · Boil · Zen Garden</span><span>Open →</span></div>
+          <div className="card-head"><span className="card-lbl">Floorplan</span><span className="card-tag ok">{zones.length} zone{zones.length !== 1 ? "s" : ""}</span></div>
+          <div style={{fontFamily:"var(--f-display)",fontSize:22,fontWeight:400,letterSpacing:"-0.01em"}}>{zones.length ? "Interactive · drag furniture" : "No zone data"}</div>
+          <div className="card-sub">{zones.length ? "Hover any zone for details." : "This MVP has no interactive floorplan layout."}</div>
+          <div className="card-footer"><span>{zones.slice(0,3).map(z=>z.name).filter(Boolean).join(" · ") || "—"}</span><span>Open →</span></div>
         </div>
         <div className="card" style={{cursor:"pointer"}} onClick={()=>setActive("3d")}>
-          <div className="card-head"><span className="card-lbl">3D Viewer</span><span className="card-tag ok">115 objects</span></div>
-          <div style={{fontFamily:"var(--f-display)",fontSize:22,fontWeight:400,letterSpacing:"-0.01em"}}>Rotate · zoom · pan</div>
-          <div className="card-sub">Real BIM-grade geometry. Exports to GLB / OBJ / FBX / IFC.</div>
-          <div className="card-footer"><span>IFC · BIM ready</span><span>Open →</span></div>
+          <div className="card-head"><span className="card-lbl">3D Viewer</span><span className={"card-tag " + (D.model_glb ? "ok" : "warn")}>{D.model_glb ? "GLB ready" : "images only"}</span></div>
+          <div style={{fontFamily:"var(--f-display)",fontSize:22,fontWeight:400,letterSpacing:"-0.01em"}}>{D.model_glb ? "Rotate · zoom · pan" : "Multi-angle renders"}</div>
+          <div className="card-sub">{D.model_glb ? "Real Blender-exported BIM geometry. Drag to orbit." : "Pre-rendered views only for this MVP."}</div>
+          <div className="card-footer"><span>{D.model_glb ? "GLB · " + Math.round((D.model_glb || "").length/10) + " loaded" : renders.length + " views"}</span><span>Open →</span></div>
         </div>
       </div>
     </section>
@@ -319,19 +347,59 @@ function Floorplan() {
     window.addEventListener("mouseup", up);
   };
 
+  const zones = D.zones || [];
+  const floorplanImg = D.floorplan;
+  const area = D.project?.area || D.editable?.area_m2 || 40;
+  // 如果 zone 数据变了（比如切了 variant），确保 hovered 仍有效
+  const safeHover = (hovered && zones.find(z => z.id === hovered.id)) || zones[0] || {};
+
+  // 无 zones 且无平面图 · 空态
+  if (zones.length === 0 && !floorplanImg) {
+    return (
+      <section>
+        <div className="view-head">
+          <div>
+            <h1 className="view-title">Floorplan</h1>
+            <div className="view-sub">此 MVP 暂无交互平面图数据</div>
+          </div>
+        </div>
+        <div style={{padding:60, background:"var(--bg-1)", border:"1px dashed var(--line)", borderRadius:6, textAlign:"center", color:"var(--text-3)"}}>
+          Pipeline 未产出 zone 分区数据 · 3D Viewer 或 Renders tab 可看空间布局
+        </div>
+      </section>
+    );
+  }
+
+  // 有平面图 WebP 但无 zone 交互 · 显示静态图
+  if (zones.length === 0 && floorplanImg) {
+    return (
+      <section>
+        <div className="view-head">
+          <div>
+            <h1 className="view-title">Floorplan</h1>
+            <div className="view-sub">平面图 · {area} m² · 静态渲染（无交互分区）</div>
+          </div>
+        </div>
+        <div style={{background:"var(--bg-1)", border:"1px solid var(--line)", borderRadius:6, padding:20, display:"flex", justifyContent:"center"}}>
+          <Img src={floorplanImg} alt="floorplan" style={{maxWidth:"100%", maxHeight:"600px"}} />
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section>
       <div className="view-head">
         <div>
           <h1 className="view-title">Floorplan</h1>
-          <div className="view-sub">平面图 · 6 zones · 40 m² · hover + drag</div>
+          <div className="view-sub">平面图 · {zones.length} zone{zones.length !== 1 ? "s" : ""} · {area} m² · hover + drag</div>
         </div>
       </div>
       <div className="fp-wrap" ref={wrapRef}>
         <div className="fp-canvas">
-          {D.zones.map(z => (
+          {zones.map(z => (
             <div key={z.id}
-                 className={"fp-zone " + (hovered.id===z.id ? "hover":"")}
+                 className={"fp-zone " + (safeHover.id===z.id ? "hover":"")}
                  style={{ left:z.x+"%", top:z.y+"%", width:z.w+"%", height:z.h+"%" }}
                  onMouseEnter={()=>setHovered(z)}>
               <div className="fp-zone-name">{z.name}</div>
@@ -347,11 +415,11 @@ function Floorplan() {
           ))}
         </div>
         <div className="fp-info-panel">
-          <div className="fp-info-name">{hovered.name}</div>
-          <div className="fp-info-zh">{hovered.zh}</div>
-          <div className="fp-info-row"><span>Area</span><b>{hovered.area} m²</b></div>
-          <div className="fp-info-row"><span>Share</span><b>{Math.round(hovered.area/40*100)}%</b></div>
-          <div style={{marginTop:10,fontSize:11,fontFamily:"var(--f-sans)",color:"var(--text-2)",lineHeight:1.5}}>{hovered.notes}</div>
+          <div className="fp-info-name">{safeHover.name}</div>
+          <div className="fp-info-zh">{safeHover.zh}</div>
+          <div className="fp-info-row"><span>Area</span><b>{safeHover.area} m²</b></div>
+          <div className="fp-info-row"><span>Share</span><b>{safeHover.area ? Math.round(safeHover.area/area*100) : 0}%</b></div>
+          <div style={{marginTop:10,fontSize:11,fontFamily:"var(--f-sans)",color:"var(--text-2)",lineHeight:1.5}}>{safeHover.notes}</div>
         </div>
         <div className="fp-hint">Drag chairs · table to try layouts</div>
       </div>
@@ -566,12 +634,22 @@ function BOQ() {
 function Energy() {
   useProject();
   const E = D.energy || { eui: 0, limit: 150, annual: 0, engine: "EnergyPlus" };
+  // End-use breakdown · 按 editable 里的 lighting_density_w_m2 推算 lighting 占比
+  // 其他走经验默认（hvac 占最大 · equipment 中等）
+  const lpd = D.editable?.lighting_density_w_m2 || 8;
+  const lightPct = Math.max(10, Math.min(40, Math.round(lpd / E.eui * 500)));  // 粗估
+  const hvacPct = Math.max(40, 72 - lightPct);
+  const otherPct = Math.max(8, 100 - hvacPct - lightPct - 12);
   const bars = [
-    { label:"HVAC", val:52, unit:"%", pct:52 },
-    { label:"Lighting", val:20, unit:"%", pct:20 },
-    { label:"Equipment", val:12, unit:"%", pct:12 },
-    { label:"Other", val:16, unit:"%", pct:16 }
+    { label:"HVAC", val: hvacPct, unit:"%", pct: hvacPct },
+    { label:"Lighting", val: lightPct, unit:"%", pct: lightPct },
+    { label:"Equipment", val: 12, unit:"%", pct: 12 },
+    { label:"Other", val: otherPct, unit:"%", pct: otherPct }
   ];
+  const area = D.project?.area || D.editable?.area_m2 || 40;
+  const annual = E.annual || Math.round((E.eui || 0) * area);
+  const co2 = D.derived?.co2_t_per_yr || Math.round((E.eui || 0) * area * 0.59 / 1000 * 100) / 100;
+  const underPct = E.limit && E.eui ? Math.round((1 - E.eui / E.limit) * 100) : 0;
   return (
     <section>
       <div className="view-head">
@@ -586,13 +664,13 @@ function Energy() {
           <div className="eui-big">
             <span className="val">{E.eui}</span>
             <span className="unit">kWh / m² · yr</span>
-            <span className="delta">44% under limit</span>
+            <span className="delta">{underPct > 0 ? `${underPct}% under limit` : underPct < 0 ? `${-underPct}% over limit` : "at limit"}</span>
           </div>
           <div className="eui-baseline">
-            <div><span>HK BEEO limit</span><b>150</b></div>
-            <div><span>HK average</span><b>122</b></div>
-            <div><span>Annual total</span><b>3,358 kWh</b></div>
-            <div><span>CO₂e</span><b>1.98 t / yr</b></div>
+            <div><span>Code limit</span><b>{E.limit || 150}</b></div>
+            <div><span>Region avg</span><b>122</b></div>
+            <div><span>Annual total</span><b>{annual.toLocaleString()} kWh</b></div>
+            <div><span>CO₂e</span><b>{co2} t / yr</b></div>
           </div>
         </div>
         <div className="eui-right">
