@@ -16,14 +16,15 @@ const SKIP_CHAT = process.env.PLAYWRIGHT_SKIP_CHAT === "1";
 test.describe.configure({ mode: "serial", timeout: 60_000 });
 
 async function callChatEdit(page, payload) {
-  return page.evaluate(async ([url, body]) => {
-    const r = await fetch(url, {
+  // 已 navigate 到 PROD · 这里是相对路径
+  return page.evaluate(async (body) => {
+    const r = await fetch("/api/chat-edit", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
     });
     return { status: r.status, data: await r.json().catch(() => ({})) };
-  }, [PROD + "/api/chat-edit", payload]);
+  }, payload);
 }
 
 function baseState(slug = "22-boutique-book-cafe", overrides = {}) {
@@ -52,8 +53,8 @@ function baseState(slug = "22-boutique-book-cafe", overrides = {}) {
 
 test.beforeEach(async ({ page }, testInfo) => {
   if (SKIP_CHAT) testInfo.skip();
-  // 不需真 navigate · 直接在 about:blank 里 fetch
-  await page.goto("about:blank");
+  // navigate 到 prod 首页 · 让 fetch 在同源 context 里跑（否则 CORS + about:blank 炸）
+  await page.goto(PROD + "/");
 });
 
 // ============ 组 1：能成功应用的指令 ============

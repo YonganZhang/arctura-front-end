@@ -6,9 +6,11 @@
   "scripts": {
     "serve": "python3 -m http.server 8880",
     "validate": "python3 _build/validate.py --quiet",
-    "test": "npx playwright test --reporter=line",
+    "test": "npx playwright test _tests/smoke.spec.mjs --reporter=line",
+    "test:chat": "npx playwright test _tests/chat.spec.mjs --reporter=line",
+    "test:all": "npx playwright test --reporter=line",
     "test:ui": "npx playwright test --ui",
-    "pre-deploy": "npm run validate && npm test"
+    "pre-deploy": "npm run validate && npm test && npm run test:chat"
   },
   "devDependencies": {
     "@playwright/test": "^1.48.0"
