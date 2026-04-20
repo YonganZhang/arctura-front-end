@@ -3,6 +3,7 @@
   "cat": "hospitality",
   "type": "P1-interior",
   "complete": true,
+  "model_glb": "/assets/mvps/22-boutique-book-cafe/model.glb",
   "project": {
     "name": "Boutique Book Cafe",
     "zh": "精品书吧 Book Cafe",

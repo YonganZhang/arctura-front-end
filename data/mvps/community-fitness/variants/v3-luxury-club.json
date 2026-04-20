@@ -2,6 +2,7 @@
   "id": "v3-luxury-club",
   "parent_slug": "community-fitness",
   "name": "v3-luxury-club",
+  "model_glb": "/assets/mvps/community-fitness/variants/v3-luxury-club/model.glb",
   "project": {
     "name": "社區健身中心 · V3 高端會所",
     "zh": "社區健身中心 · V3 高端會所",

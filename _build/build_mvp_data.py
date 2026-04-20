@@ -365,11 +365,16 @@ def build_mvp_record(mvp_dir: Path, mvp_type: str, agg: dict) -> dict:
                 palette.append({"name": "", "hex": p})
     # else palette = []
 
+    # 3D 模型 · 有则挂路径，浏览器 model-viewer 可加载
+    glb_disk = FE_ROOT / "assets" / "mvps" / slug / "model.glb"
+    model_glb = f"/assets/mvps/{slug}/model.glb" if glb_disk.exists() else None
+
     full_data = {
         "slug": slug,
         "cat": index_entry["cat"],
         "type": mvp_type,
         "complete": complete,
+        "model_glb": model_glb,
         "project": {
             "name": index_entry["name"],
             "zh": index_entry["name_zh"],

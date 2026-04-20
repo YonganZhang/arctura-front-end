@@ -3,6 +3,7 @@
   "cat": "hospitality",
   "type": "P1-interior",
   "complete": false,
+  "model_glb": null,
   "project": {
     "name": "禅意日料餐厅",
     "zh": "",

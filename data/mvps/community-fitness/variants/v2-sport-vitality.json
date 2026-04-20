@@ -2,6 +2,7 @@
   "id": "v2-sport-vitality",
   "parent_slug": "community-fitness",
   "name": "v2-sport-vitality",
+  "model_glb": "/assets/mvps/community-fitness/variants/v2-sport-vitality/model.glb",
   "project": {
     "name": "社區健身中心 · V2 運動活力",
     "zh": "社區健身中心 · V2 運動活力",

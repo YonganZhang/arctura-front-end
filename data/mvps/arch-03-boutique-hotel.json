@@ -3,6 +3,7 @@
   "cat": "hospitality",
   "type": "P2-architecture",
   "complete": false,
+  "model_glb": "/assets/mvps/arch-03-boutique-hotel/model.glb",
   "project": {
     "name": "精品酒店 Stay Boutique · v1",
     "zh": "",

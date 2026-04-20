@@ -3,6 +3,7 @@
   "cat": "workplace",
   "type": "P2-architecture",
   "complete": false,
+  "model_glb": "/assets/mvps/arch-02-office-building/model.glb",
   "project": {
     "name": "arch-02-office-building",
     "zh": "",

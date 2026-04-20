@@ -122,6 +122,13 @@ def optimize_variant_images(variant_dir: Path, out_dir: Path) -> dict:
     return stats
 
 
+def variant_model_glb(mvp_slug: str, vid: str) -> str | None:
+    """variant 的 GLB 路径（若已 build_models.py 拷贝过）"""
+    from build_mvp_data import FE_ROOT
+    p = FE_ROOT / "assets" / "mvps" / mvp_slug / "variants" / vid / "model.glb"
+    return f"/assets/mvps/{mvp_slug}/variants/{vid}/model.glb" if p.exists() else None
+
+
 def build_variant_json(mvp_slug: str, mvp_cat: str, variant_dir: Path, img_stats: dict) -> dict:
     """每个 variant 的 override data · 只写 variant-specific 字段，前端跟 base merge"""
     vid = variant_dir.name
@@ -186,6 +193,7 @@ def build_variant_json(mvp_slug: str, mvp_cat: str, variant_dir: Path, img_stats
         "id": vid,
         "parent_slug": mvp_slug,
         "name": style_en or vid,
+        "model_glb": variant_model_glb(mvp_slug, vid),
         "project": {
             "name": project_en or project_zh or vid,
             "zh": project_zh,

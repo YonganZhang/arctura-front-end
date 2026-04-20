@@ -3,6 +3,7 @@
   "cat": "workplace",
   "type": "P1-interior",
   "complete": true,
+  "model_glb": "/assets/mvps/12-recording-studio/model.glb",
   "project": {
     "name": "录音播客棚 Sound Box · v1",
     "zh": "",

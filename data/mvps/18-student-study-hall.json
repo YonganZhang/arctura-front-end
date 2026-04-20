@@ -3,6 +3,7 @@
   "cat": "workplace",
   "type": "P1-interior",
   "complete": false,
+  "model_glb": null,
   "project": {
     "name": "大学生自习室",
     "zh": "",

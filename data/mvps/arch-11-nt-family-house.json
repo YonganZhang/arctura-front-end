@@ -3,6 +3,7 @@
   "cat": "residential",
   "type": "P2-architecture",
   "complete": false,
+  "model_glb": "/assets/mvps/arch-11-nt-family-house/model.glb",
   "project": {
     "name": "新界獨棟家庭住宅 Trio Haus · v1",
     "zh": "",

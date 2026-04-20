@@ -2,6 +2,7 @@
   "id": "v1-cyberpunk",
   "parent_slug": "21-esports-streaming",
   "name": "v1-cyberpunk",
+  "model_glb": "/assets/mvps/21-esports-streaming/variants/v1-cyberpunk/model.glb",
   "project": {
     "name": "电竞直播间 · V1 赛博朋克",
     "zh": "电竞直播间 · V1 赛博朋克",

@@ -3,6 +3,7 @@
   "cat": "hospitality",
   "type": "P1-interior",
   "complete": true,
+  "model_glb": "/assets/mvps/03-coffee-shop/model.glb",
   "project": {
     "name": "独立精品咖啡店 Coffee Lab · v1",
     "zh": "",

@@ -3,6 +3,7 @@
   "cat": "civic",
   "type": "P2-architecture",
   "complete": false,
+  "model_glb": "/assets/mvps/arch-06-small-library/model.glb",
   "project": {
     "name": "社区小型图书馆 Bookhaven Library",
     "zh": "",

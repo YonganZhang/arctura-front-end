@@ -359,12 +359,49 @@ function Floorplan() {
   );
 }
 
-// ───────── 3D Viewer · 真渲染图 8 视角选择器 ─────────
-//  从 state.renders 拉所有视角的 WebP。优先显示鸟瞰 / 轴测角（真 3D 感）
-//  渲染图 < 1 时显示 CSS 3D 兜底（旧 demo 保留给数据缺失的 MVP）
+// ───────── 3D Viewer · 真 3D 模型（GLB · model-viewer）· 无模型时退化到多视角图 ─────────
 function Viewer3D() {
   useProject();
+  const modelGlb = D.model_glb;
   const renders = D.renders || [];
+
+  // 优先：有真 3D 模型 · 用 <model-viewer> 加载（drag/zoom/AR 内置）
+  if (modelGlb) {
+    const area = D.project?.area || 0;
+    const variantId = D.active_variant_id;
+    return (
+      <section>
+        <div className="view-head">
+          <div>
+            <h1 className="view-title">3D Viewer</h1>
+            <div className="view-sub">
+              真 3D 模型 · GLB · 拖拽旋转 · 滚轮缩放
+              {variantId && <> · <b>variant: {variantId}</b></>}
+              {area ? <> · {area} m²</> : null}
+            </div>
+          </div>
+        </div>
+        <div style={{background:"linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 100%)", border:"1px solid var(--line)", borderRadius:6, overflow:"hidden"}}>
+          <model-viewer
+            src={modelGlb}
+            alt="3D model"
+            camera-controls
+            auto-rotate
+            auto-rotate-delay="3000"
+            shadow-intensity="1"
+            exposure="1.0"
+            environment-image="neutral"
+            style={{width:"100%", height:"560px", background:"transparent", "--progress-bar-color": "var(--text-1)"}}
+          />
+        </div>
+        <div style={{marginTop:12, padding:"10px 14px", background:"var(--bg-1)", border:"1px solid var(--line)", borderRadius:4, fontSize:12, color:"var(--text-3)", fontFamily:"var(--f-mono)"}}>
+          ← drag · scroll · ⌘-click = pan · GLB {modelGlb.split("/").pop()}
+        </div>
+      </section>
+    );
+  }
+
+  // 退化：无 3D 模型但有渲染图 → 多视角图片选择器
   // 找 "3D" 感最强的视角（鸟瞰 / axon / birds-eye）
   const isoIndex = renders.findIndex(r => /bird|eye|iso|axon|top/i.test((r.tag || "") + " " + (r.title || "")));
   const [idx, setIdx] = useState(Math.max(0, isoIndex));

@@ -3,6 +3,7 @@
   "cat": "residential",
   "type": "P2-architecture",
   "complete": false,
+  "model_glb": "/assets/mvps/arch-05-modern-chinese-house/model.glb",
   "project": {
     "name": "现代中式乡村住宅 v1 (客户委托案)",
     "zh": "",

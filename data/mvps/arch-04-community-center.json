@@ -3,6 +3,7 @@
   "cat": "civic",
   "type": "P2-architecture",
   "complete": false,
+  "model_glb": "/assets/mvps/arch-04-community-center/model.glb",
   "project": {
     "name": {
       "slug": "arch-04-community-center",

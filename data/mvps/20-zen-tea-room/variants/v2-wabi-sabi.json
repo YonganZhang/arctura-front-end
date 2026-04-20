@@ -2,6 +2,7 @@
   "id": "v2-wabi-sabi",
   "parent_slug": "20-zen-tea-room",
   "name": "Japanese Wabi-Sabi",
+  "model_glb": "/assets/mvps/20-zen-tea-room/variants/v2-wabi-sabi/model.glb",
   "project": {
     "name": "Zen Tea Room · Japanese Wabi-Sabi",
     "zh": "禅意茶室 · 日式侘寂",

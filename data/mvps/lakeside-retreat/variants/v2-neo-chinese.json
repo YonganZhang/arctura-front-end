@@ -2,6 +2,7 @@
   "id": "v2-neo-chinese",
   "parent_slug": "lakeside-retreat",
   "name": "v2-neo-chinese",
+  "model_glb": "/assets/mvps/lakeside-retreat/variants/v2-neo-chinese/model.glb",
   "project": {
     "name": "湖畔度假民宿 · V2 新中式庭院",
     "zh": "湖畔度假民宿 · V2 新中式庭院",

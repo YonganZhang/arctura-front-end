@@ -3,6 +3,7 @@
   "cat": "residential",
   "type": "P2-architecture",
   "complete": false,
+  "model_glb": "/assets/mvps/arch-12-dongbei-village-house/model.glb",
   "project": {
     "name": "东北混搭乡村小楼 · 长春 · v1",
     "zh": "",

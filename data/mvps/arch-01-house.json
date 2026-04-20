@@ -3,6 +3,7 @@
   "cat": "residential",
   "type": "P2-architecture",
   "complete": false,
+  "model_glb": "/assets/mvps/arch-01-house/model.glb",
   "project": {
     "name": "Maison Compact · 独栋住宅 · v1",
     "zh": "",

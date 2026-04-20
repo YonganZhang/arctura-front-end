@@ -3,6 +3,7 @@
   "cat": "workplace",
   "type": "P2-architecture",
   "complete": false,
+  "model_glb": "/assets/mvps/arch-07-loft-coworking/model.glb",
   "project": {
     "name": "Ironworks Commons — 旧厂房改造 Coworking (adaptive reuse loft coworking)",
     "zh": "",

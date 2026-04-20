@@ -3,6 +3,7 @@
   "cat": "residential",
   "type": "P1-interior",
   "complete": true,
+  "model_glb": "/assets/mvps/09-art-gallery/model.glb",
   "project": {
     "name": "当代艺术画廊 White Cube SH · v1",
     "zh": "",

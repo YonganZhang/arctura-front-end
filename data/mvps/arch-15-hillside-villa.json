@@ -3,6 +3,7 @@
   "cat": "residential",
   "type": "P2-architecture",
   "complete": false,
+  "model_glb": null,
   "project": {
     "name": "南区山地别墅",
     "zh": "",

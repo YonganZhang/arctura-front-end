@@ -3,6 +3,7 @@
   "cat": "wellness",
   "type": "P2-architecture",
   "complete": false,
+  "model_glb": "/assets/mvps/arch-08-small-clinic/model.glb",
   "project": {
     "name": "Meadow 社区小型诊所 (community small clinic) v1",
     "zh": "",

@@ -2,6 +2,7 @@
   "id": "v1-industrial-raw",
   "parent_slug": "community-fitness",
   "name": "v1-industrial-raw",
+  "model_glb": "/assets/mvps/community-fitness/variants/v1-industrial-raw/model.glb",
   "project": {
     "name": "社區健身中心 · V1 工業 Raw",
     "zh": "社區健身中心 · V1 工業 Raw",

@@ -3,6 +3,7 @@
   "cat": "hospitality",
   "type": "P1-interior",
   "complete": false,
+  "model_glb": null,
   "project": {
     "name": "Zen Tea Room · Neo-Chinese",
     "zh": "",

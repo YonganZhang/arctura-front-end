@@ -2,6 +2,7 @@
   "id": "v3-mediterranean",
   "parent_slug": "lakeside-retreat",
   "name": "v3-mediterranean",
+  "model_glb": "/assets/mvps/lakeside-retreat/variants/v3-mediterranean/model.glb",
   "project": {
     "name": "湖畔度假民宿 · V3 地中海",
     "zh": "湖畔度假民宿 · V3 地中海",

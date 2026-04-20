@@ -3,6 +3,7 @@
   "cat": "hospitality",
   "type": "P1-interior",
   "complete": true,
+  "model_glb": "/assets/mvps/11-bistro-restaurant/model.glb",
   "project": {
     "name": "法式 Bistro 餐厅 Petit Coin · v1",
     "zh": "",

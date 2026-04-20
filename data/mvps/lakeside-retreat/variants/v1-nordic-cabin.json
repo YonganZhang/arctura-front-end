@@ -2,6 +2,7 @@
   "id": "v1-nordic-cabin",
   "parent_slug": "lakeside-retreat",
   "name": "v1-nordic-cabin",
+  "model_glb": "/assets/mvps/lakeside-retreat/variants/v1-nordic-cabin/model.glb",
   "project": {
     "name": "湖畔度假民宿 · V1 北欧木屋",
     "zh": "湖畔度假民宿 · V1 北欧木屋",

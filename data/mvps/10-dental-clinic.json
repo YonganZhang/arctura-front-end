@@ -3,6 +3,7 @@
   "cat": "wellness",
   "type": "P1-interior",
   "complete": true,
+  "model_glb": "/assets/mvps/10-dental-clinic/model.glb",
   "project": {
     "name": "Smile Lab · 牙科诊所 · v1",
     "zh": "",

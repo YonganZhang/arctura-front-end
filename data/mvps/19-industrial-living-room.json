@@ -3,6 +3,7 @@
   "cat": "residential",
   "type": "P1-interior",
   "complete": false,
+  "model_glb": null,
   "project": {
     "name": "工业风住宅客厅 Industrial Loft Living · v1",
     "zh": "",

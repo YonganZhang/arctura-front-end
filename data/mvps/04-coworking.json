@@ -3,6 +3,7 @@
   "cat": "workplace",
   "type": "P1-interior",
   "complete": true,
+  "model_glb": "/assets/mvps/04-coworking/model.glb",
   "project": {
     "name": "联合办公空间 Common Ground · v1",
     "zh": "",

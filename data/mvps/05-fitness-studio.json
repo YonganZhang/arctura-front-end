@@ -3,6 +3,7 @@
   "cat": "wellness",
   "type": "P1-interior",
   "complete": true,
+  "model_glb": "/assets/mvps/05-fitness-studio/model.glb",
   "project": {
     "name": "精品健身工作室 Lift Studio · v1",
     "zh": "",

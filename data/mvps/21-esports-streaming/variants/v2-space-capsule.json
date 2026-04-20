@@ -2,6 +2,7 @@
   "id": "v2-space-capsule",
   "parent_slug": "21-esports-streaming",
   "name": "v2-space-capsule",
+  "model_glb": "/assets/mvps/21-esports-streaming/variants/v2-space-capsule/model.glb",
   "project": {
     "name": "电竞直播间 · V2 太空舱",
     "zh": "电竞直播间 · V2 太空舱",

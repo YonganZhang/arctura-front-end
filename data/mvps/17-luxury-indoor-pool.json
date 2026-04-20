@@ -3,6 +3,7 @@
   "cat": "wellness",
   "type": "P1-interior",
   "complete": true,
+  "model_glb": "/assets/mvps/17-luxury-indoor-pool/model.glb",
   "project": {
     "name": "五星酒店室内泳池",
     "zh": "",

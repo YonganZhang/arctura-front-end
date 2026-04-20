@@ -3,6 +3,7 @@
   "cat": "workplace",
   "type": "P1-interior",
   "complete": true,
+  "model_glb": "/assets/mvps/13-ai-startup-office/model.glb",
   "project": {
     "name": "Stack Lab · AI Startup 办公室 · v1",
     "zh": "",

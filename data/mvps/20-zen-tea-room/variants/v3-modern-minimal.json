@@ -2,6 +2,7 @@
   "id": "v3-modern-minimal",
   "parent_slug": "20-zen-tea-room",
   "name": "Modern Minimal",
+  "model_glb": "/assets/mvps/20-zen-tea-room/variants/v3-modern-minimal/model.glb",
   "project": {
     "name": "Zen Tea Room · Modern Minimal",
     "zh": "禅意茶室 · 现代极简",

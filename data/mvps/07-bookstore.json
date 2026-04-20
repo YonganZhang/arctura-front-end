@@ -3,6 +3,7 @@
   "cat": "residential",
   "type": "P1-interior",
   "complete": true,
+  "model_glb": "/assets/mvps/07-bookstore/model.glb",
   "project": {
     "name": "独立书店阅读空间 Page & Co · v1",
     "zh": "",

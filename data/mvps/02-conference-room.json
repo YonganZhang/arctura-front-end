@@ -3,6 +3,7 @@
   "cat": "workplace",
   "type": "P1-interior",
   "complete": true,
+  "model_glb": "/assets/mvps/02-conference-room/model.glb",
   "project": {
     "name": "小型会议室改造 v1",
     "zh": "",

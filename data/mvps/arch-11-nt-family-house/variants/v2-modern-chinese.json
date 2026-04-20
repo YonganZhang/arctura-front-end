@@ -2,6 +2,7 @@
   "id": "v2-modern-chinese",
   "parent_slug": "arch-11-nt-family-house",
   "name": "v2-modern-chinese",
+  "model_glb": null,
   "project": {
     "name": "v2-modern-chinese",
     "zh": "",

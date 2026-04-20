@@ -3,6 +3,7 @@
   "cat": "wellness",
   "type": "P1-interior",
   "complete": true,
+  "model_glb": "/assets/mvps/06-kids-daycare/model.glb",
   "project": {
     "name": "儿童托育中心 Little Sprout · v1",
     "zh": "",

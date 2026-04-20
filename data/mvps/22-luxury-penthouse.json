@@ -3,6 +3,7 @@
   "cat": "residential",
   "type": "P1-interior",
   "complete": false,
+  "model_glb": null,
   "project": {
     "name": "半山豪华顶层公寓",
     "zh": "",

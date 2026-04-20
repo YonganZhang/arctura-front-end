@@ -2,6 +2,7 @@
   "id": "v1-japandi-minimal",
   "parent_slug": "arch-11-nt-family-house",
   "name": "v1-japandi-minimal",
+  "model_glb": null,
   "project": {
     "name": "v1-japandi-minimal",
     "zh": "",

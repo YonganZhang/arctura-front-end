@@ -3,6 +3,7 @@
   "cat": "wellness",
   "type": "P2-architecture",
   "complete": false,
+  "model_glb": null,
   "project": {
     "name": "社區健身中心 Community Fitness Center",
     "zh": "",

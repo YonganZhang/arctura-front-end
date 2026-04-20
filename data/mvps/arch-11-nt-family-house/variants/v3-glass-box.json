@@ -2,6 +2,7 @@
   "id": "v3-glass-box",
   "parent_slug": "arch-11-nt-family-house",
   "name": "v3-glass-box",
+  "model_glb": null,
   "project": {
     "name": "v3-glass-box",
     "zh": "",

@@ -2,6 +2,7 @@
   "id": "v3-dark-industrial",
   "parent_slug": "21-esports-streaming",
   "name": "v3-dark-industrial",
+  "model_glb": "/assets/mvps/21-esports-streaming/variants/v3-dark-industrial/model.glb",
   "project": {
     "name": "电竞直播间 · V3 暗黑工业",
     "zh": "电竞直播间 · V3 暗黑工业",

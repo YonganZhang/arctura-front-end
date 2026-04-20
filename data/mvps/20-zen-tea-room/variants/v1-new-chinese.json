@@ -2,6 +2,7 @@
   "id": "v1-new-chinese",
   "parent_slug": "20-zen-tea-room",
   "name": "Neo-Chinese",
+  "model_glb": "/assets/mvps/20-zen-tea-room/variants/v1-new-chinese/model.glb",
   "project": {
     "name": "Zen Tea Room · Neo-Chinese",
     "zh": "禅意茶室 · 新中式",
