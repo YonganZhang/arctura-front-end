@@ -78,6 +78,7 @@ export function recomputeEUI(editable) {
 }
 
 // 成本模型 · area × base_per_m2 × region × (premium factors)
+// BOQ 展示的 6 个分档：direct subtotal · MEP(25%) · prelim(12%) · contingency(10%) · grand total
 export function recomputeCost(editable, cat = "other") {
   const e = sanitize(editable);
   const base_per_m2 = BASE_COST_PER_M2[cat] || BASE_COST_PER_M2.other;
@@ -87,10 +88,24 @@ export function recomputeCost(editable, cat = "other") {
   const light_fac = 1 + (e.lighting_density_w_m2 - 8) * 0.004;    // 灯密度每 +1W → +0.4%
   const per_m2 = Math.max(500, base_per_m2 * region_fac * insul_fac * glazing_fac * light_fac);
   const total = per_m2 * e.area_m2;
+  // BOQ 细项拆解：直接工程量 / MEP 25% / 前期 12% / 应急 10%（合计 1.47 系数）
+  // 所以 direct_subtotal = total / 1.47
+  const direct = total / 1.47;
+  const mep = direct * 0.25;
+  const prelim = direct * 0.12;
+  const cont = direct * 0.10;
+  const fmt = (n) => Math.round(n).toLocaleString();
+  const currency = { HK: "HK$", CN: "¥", US: "US$", JP: "¥" }[e.region] || "HK$";
   return {
-    currency: "HK$",
+    currency,
     per_m2: Math.round(per_m2),
     total: Math.round(total),
+    // 供 BOQ 表展示（字符串形式，带千分位）
+    subtotal: fmt(direct),
+    mep: fmt(mep),
+    prelim: fmt(prelim),
+    cont: fmt(cont),
+    total_fmt: fmt(total),
     breakdown: {
       base: Math.round(base_per_m2 * region_fac * e.area_m2),
       insul_premium: Math.round((insul_fac - 1) * base_per_m2 * region_fac * e.area_m2),
@@ -145,13 +160,18 @@ export function recomputeCompliance(editable) {
       note: "" },
   ];
   const fails = items.filter(i => i.status === "fail").length;
+  const passes = items.filter(i => i.status === "pass").length;
   const verdict = fails === 0 ? "COMPLIANT" : `CONDITIONAL — ${fails} item${fails > 1 ? "s" : ""} need remediation`;
+  const label = { HK: "HK · BEEO 2021", CN: "CN · GB 55015-2021", US: "US · ASHRAE 90.1-2019", JP: "JP · 省エネ法 2025" }[e.region] || code.name;
   return {
     region: e.region,
     code_name: code.name,
+    label,
     items,
+    checks: items,   // alias · 兼容组件读 C.checks
     verdict,
     fails,
+    score: `${passes}/${items.length} passed`,
   };
 }
 
@@ -172,15 +192,24 @@ export function recomputeAll(state) {
     label: { HK: "Hong Kong", CN: "Mainland China", US: "United States", JP: "Japan" }[e.region] || e.region,
     currency: cost.currency,
     perM2: cost.per_m2,
-    total: cost.total,
+    total: cost.total_fmt,            // 带千分位 "540,392"
+    totalNumber: cost.total,           // 原始数字
+    subtotal: cost.subtotal,
+    mep: cost.mep,
+    prelim: cost.prelim,
+    cont: cost.cont,
     breakdown: cost.breakdown,
+    rows: (pricing[e.region] || {}).rows || [],  // 保留 base rows（chat 不改 rows）
   };
 
   const compliance = { ...(state.compliance || {}) };
   compliance[e.region] = {
     ...(compliance[e.region] || {}),
     code: comp.code_name,
+    label: comp.label,
+    score: comp.score,
     checks: comp.items,
+    items: comp.items,                // alias 兼容两种字段名
     verdict: comp.verdict,
   };
 

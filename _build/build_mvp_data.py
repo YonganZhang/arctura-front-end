@@ -360,7 +360,19 @@ def build_mvp_record(mvp_dir: Path, mvp_type: str, agg: dict) -> dict:
         "zones": zones,
         "furniture": [],  # 暂不抽（需要 scene 几何算坐标）
         "pricing": {
-            "HK": {"label": "Hong Kong", "currency": "HK$", "perM2": index_entry["cost_per_m2"] or 0, "rows": boq_rows, "total": grand_total},
+            "HK": {
+                "label": "Hong Kong",
+                "currency": currency or "HK$",
+                "perM2": index_entry["cost_per_m2"] or 0,
+                "rows": boq_rows,
+                "total": f"{round(grand_total):,}" if grand_total else "0",
+                "totalNumber": round(grand_total) if grand_total else 0,
+                # BOQ 分档（合计系数 1.47 = 1 + 0.25 MEP + 0.12 prelim + 0.10 cont）
+                "subtotal": f"{round(grand_total / 1.47):,}" if grand_total else "0",
+                "mep": f"{round(grand_total / 1.47 * 0.25):,}" if grand_total else "0",
+                "prelim": f"{round(grand_total / 1.47 * 0.12):,}" if grand_total else "0",
+                "cont": f"{round(grand_total / 1.47 * 0.10):,}" if grand_total else "0",
+            },
         },
         "energy": {
             "eui": eui,
@@ -369,7 +381,17 @@ def build_mvp_record(mvp_dir: Path, mvp_type: str, agg: dict) -> dict:
             "engine": metrics.get("energy", {}).get("engine", "EnergyPlus"),
         },
         "compliance": {
-            "HK": {"code": agg.get("code", "HK_BEEO_BEC_2021"), "checks": compliance_checks, "verdict": index_entry["compliance"]},
+            "HK": {
+                "code": agg.get("code", "HK_BEEO_BEC_2021"),
+                "label": "HK · BEEO 2021",
+                "checks": compliance_checks,
+                "items": compliance_checks,   # alias
+                "verdict": index_entry["compliance"],
+                "score": (
+                    f"{sum(1 for c in compliance_checks if c.get('status') == 'pass')}/{len(compliance_checks)} passed"
+                    if compliance_checks else ""
+                ),
+            },
         },
         "variants": {"list": scan_variants(mvp_dir, slug)},
         "timeline": [],

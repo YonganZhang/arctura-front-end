@@ -61,8 +61,17 @@ function getSlugFromUrl() {
   return null; // 用默认 zen-tea
 }
 
+// 缓存默认 data.js 的初始 ZEN_DATA · 不被后续 state 同步覆盖
+const DEFAULT_ZEN_DATA = window.ZEN_DATA;
+
 async function loadMvpData(slug) {
-  if (!slug) return window.ZEN_DATA; // 用 data.js 默认 zen-tea
+  if (!slug) {
+    // 用 data.js 默认 zen-tea · 走 DEFAULT_ZEN_DATA 避免被 state effect 覆盖
+    if (!DEFAULT_ZEN_DATA) {
+      throw new Error("默认 zen-tea 数据未加载（data.js 可能加载失败）");
+    }
+    return DEFAULT_ZEN_DATA;
+  }
   const r = await fetch(`/data/mvps/${slug}.json`);
   if (!r.ok) throw new Error(`MVP "${slug}" 不存在 (HTTP ${r.status})`);
   return await r.json();
@@ -426,14 +435,21 @@ function Viewer3D() {
 // ───────── BOQ ─────────
 function BOQ() {
   useProject();
-  const [region, setRegion] = useState("HK");
-  const P = (D.pricing || {})[region] || { currency: "HK$", perM2: 0, total: 0, rows: [] };
+  const pricing = D.pricing || {};
+  // 动态拿可用的地区键（排除空数据）· 按固定顺序
+  const ORDER = ["HK", "CN", "US", "JP", "INTL"];
+  const availableRegions = ORDER.filter(r => pricing[r] && (pricing[r].total || pricing[r].perM2 || (pricing[r].rows || []).length));
+  const fallbackRegions = availableRegions.length ? availableRegions : ["HK"];
+  const [region, setRegion] = useState(fallbackRegions[0]);
+  const effectiveRegion = availableRegions.includes(region) ? region : fallbackRegions[0];
+  const P = pricing[effectiveRegion] || { currency: "HK$", perM2: 0, total: "0", subtotal: "0", mep: "0", prelim: "0", cont: "0", rows: [] };
+  const regionLabel = { HK: "HK · HK$", CN: "CN · ¥", US: "US · US$", JP: "JP · ¥", INTL: "Intl · US$" };
   return (
     <section>
       <div className="view-head">
         <div>
           <h1 className="view-title">Bill of Quantities</h1>
-          <div className="view-sub">报价清单 · switch region to regenerate prices instantly</div>
+          <div className="view-sub">报价清单 · switch region to view prices</div>
         </div>
       </div>
       <div className="boq-head">
@@ -444,14 +460,14 @@ function BOQ() {
           </div>
           <div>
             <div className="lbl">Per m²</div>
-            <div className="val" style={{fontSize:24}}>{P.currency}{P.perM2.toLocaleString()}<small>/ m²</small></div>
+            <div className="val" style={{fontSize:24}}>{P.currency}{(P.perM2 || 0).toLocaleString()}<small>/ m²</small></div>
           </div>
         </div>
         <div className="boq-region-switch">
-          {["HK","CN","INTL"].map(r => (
+          {fallbackRegions.map(r => (
             <button key={r}
-                    className={"boq-region-btn " + (region===r ? "on":"")}
-                    onClick={()=>setRegion(r)}>{r === "INTL" ? "Intl · US$" : r === "HK" ? "HK · HK$" : "CN · ¥"}</button>
+                    className={"boq-region-btn " + (effectiveRegion===r ? "on":"")}
+                    onClick={()=>setRegion(r)}>{regionLabel[r] || r}</button>
           ))}
         </div>
       </div>
@@ -676,7 +692,7 @@ function Variants() {
   const activeVid = D.active_variant_id;
 
   const handleSelect = async (vid) => {
-    if (!current?.slug || loading === vid) return;
+    if (!current?.slug || loading) return;   // 任何变体 loading 中都阻止新点击（防 race）
     setLoading(vid);
     setErr(null);
     try {
@@ -1234,9 +1250,12 @@ function Root() {
   const [projectState, dispatch] = useReducer(projectReducer, { current: null, original: null, history: [] });
 
   // 每次 state 变化 → 同步到 stateHolder / window.ZEN_DATA · 让 D Proxy 读到新值
+  // 初始 null 不覆盖 · 保留 data.js 的默认 ZEN_DATA（给 DEFAULT_ZEN_DATA fallback 用）
   useEffect(() => {
-    stateHolder.current = projectState.current;
-    window.ZEN_DATA = projectState.current;
+    if (projectState.current) {
+      stateHolder.current = projectState.current;
+      window.ZEN_DATA = projectState.current;
+    }
   }, [projectState.current]);
 
   useEffect(() => {

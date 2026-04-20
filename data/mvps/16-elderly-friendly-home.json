@@ -269,7 +269,12 @@
           "amt": "m2"
         }
       ],
-      "total": 0
+      "total": "0",
+      "totalNumber": 0,
+      "subtotal": "0",
+      "mep": "0",
+      "prelim": "0",
+      "cont": "0"
     }
   },
   "energy": {
@@ -281,6 +286,7 @@
   "compliance": {
     "HK": {
       "code": "HK_BEEO_BEC_2021",
+      "label": "HK · BEEO 2021",
       "checks": [
         {
           "name": "Energy Energy Use Intensity (EUI)",
@@ -355,7 +361,82 @@
           "note": ""
         }
       ],
-      "verdict": "—"
+      "items": [
+        {
+          "name": "Energy Energy Use Intensity (EUI)",
+          "value": "87.3",
+          "limit": "150",
+          "unit": "kWh/m2*yr",
+          "status": "pass",
+          "note": "58% of limit"
+        },
+        {
+          "name": "Envelope Exterior Wall U-value",
+          "value": "1.8",
+          "limit": "1.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Roof U-value",
+          "value": "0.8",
+          "limit": "0.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Window U-value",
+          "value": "5.8",
+          "limit": "5.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Window SHGC",
+          "value": "0.8",
+          "limit": "0.6",
+          "unit": "—",
+          "status": "fail",
+          "note": ""
+        },
+        {
+          "name": "Envelope OTTV (Overall Thermal Transfer Value)",
+          "value": "needs facade analysis",
+          "limit": "25.0",
+          "unit": "W/m2",
+          "status": "pass",
+          "note": "OTTV requires detailed facade WWR + orientation data — not yet calculated."
+        },
+        {
+          "name": "Lighting Lighting Power Density",
+          "value": "6.0",
+          "limit": "10.0",
+          "unit": "W/m2",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "HVAC HVAC COP (split_ac)",
+          "value": "not specified",
+          "limit": "3.0",
+          "unit": "—",
+          "status": "fail",
+          "note": "COP not set in model — use 'model set-hvac' with COP"
+        },
+        {
+          "name": "Ventilation Fresh Air (ACH)",
+          "value": "0.5",
+          "limit": "0.5",
+          "unit": "ACH",
+          "status": "pass",
+          "note": ""
+        }
+      ],
+      "verdict": "—",
+      "score": "7/9 passed"
     }
   },
   "variants": {

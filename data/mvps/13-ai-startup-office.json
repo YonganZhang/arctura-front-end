@@ -305,7 +305,12 @@
           "amt": "m2"
         }
       ],
-      "total": 1140220.31
+      "total": "1,140,220",
+      "totalNumber": 1140220,
+      "subtotal": "775,660",
+      "mep": "193,915",
+      "prelim": "93,079",
+      "cont": "77,566"
     }
   },
   "energy": {
@@ -317,6 +322,7 @@
   "compliance": {
     "HK": {
       "code": "HK_BEEO_BEC_2021",
+      "label": "HK · BEEO 2021",
       "checks": [
         {
           "name": "Energy Energy Use Intensity (EUI)",
@@ -383,7 +389,74 @@
           "note": ""
         }
       ],
-      "verdict": "COMPLIANT"
+      "items": [
+        {
+          "name": "Energy Energy Use Intensity (EUI)",
+          "value": "88.1",
+          "limit": "150",
+          "unit": "kWh/m2*yr",
+          "status": "pass",
+          "note": "59% of limit"
+        },
+        {
+          "name": "Envelope Exterior Wall U-value",
+          "value": "0.555",
+          "limit": "1.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Roof U-value",
+          "value": "0.498",
+          "limit": "0.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Window U-value",
+          "value": "2.0",
+          "limit": "5.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Window SHGC",
+          "value": "0.6",
+          "limit": "0.6",
+          "unit": "—",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope OTTV (Overall Thermal Transfer Value)",
+          "value": "needs facade analysis",
+          "limit": "25.0",
+          "unit": "W/m2",
+          "status": "pass",
+          "note": "OTTV requires detailed facade WWR + orientation data — not yet calculated."
+        },
+        {
+          "name": "Lighting Lighting Power Density",
+          "value": "8.0",
+          "limit": "10.0",
+          "unit": "W/m2",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Ventilation Fresh Air (ACH)",
+          "value": "0.7",
+          "limit": "0.5",
+          "unit": "ACH",
+          "status": "pass",
+          "note": ""
+        }
+      ],
+      "verdict": "COMPLIANT",
+      "score": "8/8 passed"
     }
   },
   "variants": {

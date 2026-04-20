@@ -257,7 +257,12 @@
           "amt": "flight"
         }
       ],
-      "total": 1516548.35
+      "total": "1,516,548",
+      "totalNumber": 1516548,
+      "subtotal": "1,031,666",
+      "mep": "257,916",
+      "prelim": "123,800",
+      "cont": "103,167"
     }
   },
   "energy": {
@@ -269,6 +274,7 @@
   "compliance": {
     "HK": {
       "code": "HK_BEEO_BEC_2021",
+      "label": "HK · BEEO 2021",
       "checks": [
         {
           "name": "Energy Energy Use Intensity (EUI)",
@@ -343,7 +349,82 @@
           "note": ""
         }
       ],
-      "verdict": "CONDITIONAL — minor remediation needed"
+      "items": [
+        {
+          "name": "Energy Energy Use Intensity (EUI)",
+          "value": "113.3",
+          "limit": "150",
+          "unit": "kWh/m2*yr",
+          "status": "pass",
+          "note": "76% of limit"
+        },
+        {
+          "name": "Envelope Exterior Wall U-value",
+          "value": "0.555",
+          "limit": "1.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Roof U-value",
+          "value": "0.498",
+          "limit": "0.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Window U-value",
+          "value": "1.6",
+          "limit": "5.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Window SHGC",
+          "value": "0.4",
+          "limit": "0.6",
+          "unit": "—",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope OTTV (Overall Thermal Transfer Value)",
+          "value": "needs facade analysis",
+          "limit": "25.0",
+          "unit": "W/m2",
+          "status": "pass",
+          "note": "OTTV requires detailed facade WWR + orientation data — not yet calculated."
+        },
+        {
+          "name": "Lighting Lighting Power Density",
+          "value": "6.0",
+          "limit": "10.0",
+          "unit": "W/m2",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "HVAC HVAC COP (vrf)",
+          "value": "not specified",
+          "limit": "3.5",
+          "unit": "—",
+          "status": "fail",
+          "note": "COP not set in model — use 'model set-hvac' with COP"
+        },
+        {
+          "name": "Ventilation Fresh Air (ACH)",
+          "value": "0.5",
+          "limit": "0.5",
+          "unit": "ACH",
+          "status": "pass",
+          "note": ""
+        }
+      ],
+      "verdict": "CONDITIONAL — minor remediation needed",
+      "score": "8/9 passed"
     }
   },
   "variants": {

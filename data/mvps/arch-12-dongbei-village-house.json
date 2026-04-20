@@ -125,7 +125,12 @@
       "currency": "HK$",
       "perM2": 0,
       "rows": [],
-      "total": 0
+      "total": "0",
+      "totalNumber": 0,
+      "subtotal": "0",
+      "mep": "0",
+      "prelim": "0",
+      "cont": "0"
     }
   },
   "energy": {
@@ -137,8 +142,11 @@
   "compliance": {
     "HK": {
       "code": "HK_BEEO_BEC_2021",
+      "label": "HK · BEEO 2021",
       "checks": [],
-      "verdict": "—"
+      "items": [],
+      "verdict": "—",
+      "score": ""
     }
   },
   "variants": {

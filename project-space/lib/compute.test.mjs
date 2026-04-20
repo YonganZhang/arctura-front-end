@@ -83,8 +83,18 @@ test("recomputeAll: 完整 state merge", () => {
   assert.ok(result.derived.cost_total > 0);
   assert.equal(result.derived.compliance_fails, 0);
   assert.equal(result.derived.compliance_verdict, "COMPLIANT");
-  assert.ok(result.pricing.HK.total > 0);
+  // pricing 展示字段齐全
+  assert.ok(typeof result.pricing.HK.total === "string" && result.pricing.HK.total.includes(","), "total formatted");
+  assert.ok(result.pricing.HK.subtotal, "subtotal present");
+  assert.ok(result.pricing.HK.mep, "mep present");
+  assert.ok(result.pricing.HK.prelim, "prelim present");
+  assert.ok(result.pricing.HK.cont, "cont present");
   assert.ok(result.pricing.CN, "CN region preserved");
+  // compliance 展示字段齐全
+  assert.ok(result.compliance.HK.label, "label present");
+  assert.ok(result.compliance.HK.score, "score present");
+  assert.ok(result.compliance.HK.items, "items present");
+  assert.ok(result.compliance.HK.checks, "checks alias present");
   assert.equal(result.energy.engine, "EnergyPlus"); // 没破坏别的字段
 });
 

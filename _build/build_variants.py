@@ -202,8 +202,18 @@ def build_variant_json(mvp_slug: str, mvp_cat: str, variant_dir: Path, img_stats
         "thumb_img": f"/assets/mvps/{mvp_slug}/variants/{vid}/thumb.webp" if img_stats["thumb"] else None,
         "zones": zones,
         "pricing": {
-            "HK": {"label": "Hong Kong", "currency": currency, "perM2": round(per_m2) if per_m2 else 0,
-                   "rows": boq_rows, "total": round(grand_total) if grand_total else 0},
+            "HK": {
+                "label": "Hong Kong",
+                "currency": currency,
+                "perM2": round(per_m2) if per_m2 else 0,
+                "rows": boq_rows,
+                "total": f"{round(grand_total):,}" if grand_total else "0",
+                "totalNumber": round(grand_total) if grand_total else 0,
+                "subtotal": f"{round(grand_total / 1.47):,}" if grand_total else "0",
+                "mep": f"{round(grand_total / 1.47 * 0.25):,}" if grand_total else "0",
+                "prelim": f"{round(grand_total / 1.47 * 0.12):,}" if grand_total else "0",
+                "cont": f"{round(grand_total / 1.47 * 0.10):,}" if grand_total else "0",
+            },
         },
         "energy": {
             "eui": round(float(eui), 1) if eui else 0,
@@ -212,8 +222,17 @@ def build_variant_json(mvp_slug: str, mvp_cat: str, variant_dir: Path, img_stats
             "engine": (metrics.get("energy", {}) or {}).get("engine", "EnergyPlus"),
         },
         "compliance": {
-            "HK": {"code": "HK_BEEO_BEC_2021", "checks": checks,
-                   "verdict": (metrics.get("compliance", {}) or {}).get("status") or "—"},
+            "HK": {
+                "code": "HK_BEEO_BEC_2021",
+                "label": "HK · BEEO 2021",
+                "checks": checks,
+                "items": checks,   # alias
+                "verdict": (metrics.get("compliance", {}) or {}).get("status") or (metrics.get("compliance_status") or "—"),
+                "score": (
+                    f"{sum(1 for c in checks if c.get('status') == 'pass')}/{len(checks)} passed"
+                    if checks else ""
+                ),
+            },
         },
         "editable": default_editable(mvp_cat, area),
         "derived": {
