@@ -173,27 +173,59 @@ export default async function handler(req) {
   if (usesCompletionTokens(model)) payload.max_completion_tokens = maxTok;
   else payload.max_tokens = maxTok;
 
-  let llmResp;
-  try {
+  // LLM 调用 · 最多 2 次尝试（第一次 18s · 慢了就重试 8s）· 覆盖 25s Edge 上限
+  async function callLLM(timeoutMs) {
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 25000);
-    const upstream = await fetch(GATEWAY, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-      signal: controller.signal,
-    });
-    clearTimeout(timer);
-    if (!upstream.ok) {
-      const errText = await upstream.text().catch(() => "");
-      return jsonResponse({ error: `Upstream ${upstream.status}`, detail: errText.slice(0, 500) }, 502);
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      const upstream = await fetch(GATEWAY, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+        signal: controller.signal,
+      });
+      clearTimeout(timer);
+      if (!upstream.ok) {
+        const errText = await upstream.text().catch(() => "");
+        const err = new Error(`upstream_${upstream.status}`);
+        err.detail = errText.slice(0, 300);
+        err.status = upstream.status;
+        throw err;
+      }
+      return await upstream.json();
+    } catch (e) {
+      clearTimeout(timer);
+      throw e;
     }
-    llmResp = await upstream.json();
-  } catch (err) {
-    return jsonResponse({ error: "LLM request failed", detail: String(err.message || err) }, 504);
+  }
+
+  let llmResp;
+  let attempt = 0;
+  const maxAttempts = 2;
+  let lastErr;
+  while (attempt < maxAttempts) {
+    attempt++;
+    const budget = attempt === 1 ? 18000 : 8000;
+    try {
+      llmResp = await callLLM(budget);
+      break;
+    } catch (err) {
+      lastErr = err;
+      const isTimeout = err.name === "AbortError" || err.message?.includes("abort");
+      const isRetryable = isTimeout || err.status === 502 || err.status === 503 || err.status === 504 || err.status === 429;
+      if (attempt >= maxAttempts || !isRetryable) {
+        // 最终失败 · 返回友好错误
+        const status = err.status && err.status >= 400 ? err.status : 504;
+        const msg = isTimeout ? "LLM 响应超时（>20s） · 试试短一点的句子，或换个模型（点上方 Model 下拉）"
+                  : err.status ? `Upstream error ${err.status}` : "LLM call failed";
+        return jsonResponse({
+          error: msg,
+          detail: (err.detail || String(err.message || err)).slice(0, 300),
+          retryable: isRetryable,
+        }, status);
+      }
+      // 重试前不等 · 直接再 fetch（新 timeout budget）
+    }
   }
 
   const choice = llmResp.choices?.[0];

@@ -433,27 +433,35 @@ function Floorplan() {
 
 // ───────── 3D Viewer · 真 3D 模型（GLB · model-viewer）· 无模型时退化到多视角图 ─────────
 
+// Viewer3D toggle state · 模块级 · 切 tab 后也保留
+const envelopeHideMemory = { current: false };
+
 // Node 名分类正则（build_models.py 拷的 Blender GLB · 节点名有语义）
 const FLOOR_RX = /^(Floor|FloorMat|Ground|Site_Ground|Slab_F\d|Slab_Existing|Slab_New|Deck)/i;
-// 墙 · 包含 Wall_Roof_N_parapet（屋顶女儿墙也算围护）
-const ENVELOPE_RX = /(^Wall|Partition|Ceiling|Roof|Beam.*Roof|Slab_Roof|Eave)/i;
+// 只外墙四面 · 室内分隔墙（partition）保留
+// 规则：cardinal direction (N/S/E/W/Back/Front/Left/Right) · _outer 后缀 · _Pier 外墩 · Wall_Existing_X_Y 双方位
+const EXTERIOR_WALL_RX = /^Wall[_]?(?:N|S|E|W|North|South|East|West|Back|Front|Left|Right)(?![a-zA-Z])|_outer(?:_|$)|_Pier|_(?:Existing|New)_[NSEW]_[NSEW]$/i;
+// 天花 / 屋顶 · 同 toggle 一起隐藏
+const CEIL_RX = /Ceiling|Roof|Beam.*Roof|Slab_Roof|Eave|parapet/i;
 
 function applyEnvelopeVisibility(mv, hideEnvelope) {
   if (!mv) return false;
-  // model-viewer 内部 Three.js Scene 挂在 Symbol(scene) 上
   const sym = Object.getOwnPropertySymbols(mv).find(s => s.toString() === "Symbol(scene)");
   if (!sym) return false;
   const scene = mv[sym];
   if (!scene || typeof scene.traverse !== "function") return false;
   scene.traverse(obj => {
     const name = obj.name || "";
+    // 地板白名单：永远可见（用户明确要求）
     if (FLOOR_RX.test(name)) {
       obj.visible = true;
       return;
     }
-    if (ENVELOPE_RX.test(name)) {
+    // 只隐藏 外墙 + 天花/屋顶 · 室内 partition / glass wall / interior wall 保留
+    if (EXTERIOR_WALL_RX.test(name) || CEIL_RX.test(name)) {
       obj.visible = !hideEnvelope;
     }
+    // 其他（家具 / 室内墙 / 楼梯等）保持默认 visible
   });
   return true;
 }
@@ -463,7 +471,13 @@ function Viewer3D() {
   const modelGlb = D.model_glb;
   const renders = D.renders || [];
   const mvRef = useRef(null);
-  const [hideEnvelope, setHideEnvelope] = useState(false);
+  // 通过 module-level ref 持久化 · 切 tab 回来状态保留
+  const [hideEnvelope, _setHideEnvelope] = useState(envelopeHideMemory.current);
+  const setHideEnvelope = (v) => {
+    const next = typeof v === "function" ? v(envelopeHideMemory.current) : v;
+    envelopeHideMemory.current = next;
+    _setHideEnvelope(next);
+  };
   const [modelLoaded, setModelLoaded] = useState(false);
 
   // model 加载完成 OR toggle 变化 → apply
@@ -1243,21 +1257,60 @@ function Chat({ onNavigate }) {
       if (!r.ok) {
         const err = await r.json().catch(() => ({}));
         console.warn("chat-edit failed:", r.status, err);
+        // 友好化错误文案
+        let friendly;
+        if (r.status === 504 || /timeout|abort/i.test(err.error || "")) {
+          friendly = `LLM 响应超时了 · 试试短一点的句子（如 "warmer" 而不是 "把整份围变得温暖一点"），或换个模型（上方 Model 下拉）再试`;
+        } else if (r.status === 502 || r.status === 503) {
+          friendly = `后端网关临时不通 (${r.status}) · 稍等几秒再试`;
+        } else if (r.status === 500) {
+          friendly = err.error?.includes("ZHIZENGZENG") ? `ZHIZENGZENG_API_KEY 未设 · 后端配置问题` : `后端内部错误 · ${err.detail?.slice(0, 80) || "unknown"}`;
+        } else {
+          friendly = `后端 error ${r.status}: ${err.error || "unknown"}${err.detail ? " · " + err.detail.slice(0, 80) : ""}`;
+        }
         setMsgs(m => [...m, {
           role: "bot",
-          text: `(Backend error ${r.status}: ${err.error || "unknown"}${err.detail ? " · " + err.detail.slice(0, 120) : ""})`,
+          text: friendly,
           error: true,
+          retryable: err.retryable !== false && (r.status === 504 || r.status >= 500),
+          retryInput: text,
         }]);
       } else {
         const data = await r.json();
         if (data.newState && data.applied && data.applied.length > 0) {
           dispatch({ type: "APPLY_EDIT", newState: data.newState });
+          // 提示用户去看变化的 tab · 根据改了什么字段判断
+          const affected = new Set();
+          for (const a of data.applied) {
+            const f = a.call?.args?.field || a.call?.name;
+            if (f === "area_m2" || a.call?.name === "scale_editable") { affected.add("boq"); affected.add("energy"); }
+            if (f === "insulation_mm" || f === "glazing_uvalue") { affected.add("compliance"); affected.add("energy"); }
+            if (f === "lighting_cct" || f === "lighting_density_w_m2" || f === "wwr") { affected.add("energy"); }
+            if (f === "region" || a.call?.name === "switch_region") { affected.add("compliance"); affected.add("boq"); }
+            if (a.call?.name === "switch_variant") { affected.add("overview"); affected.add("3d"); }
+          }
+          const hints = Array.from(affected);
+          if (hints.length) {
+            setTimeout(() => showToast(`✓ 数据已更新 · 看 ${hints.slice(0, 2).map(t => ({boq:"BOQ", energy:"Energy", compliance:"Compliance", overview:"Overview", "3d":"3D"})[t]).join(" / ")} tab 的变化`), 100);
+          }
         }
         setMsgs(m => [...m, {
           role: "bot",
           text: data.text || "(processed)",
           applied: data.applied || [],
           rejected: data.rejected || [],
+          affectedTabs: Array.from(
+            new Set((data.applied || []).flatMap(a => {
+              const f = a.call?.args?.field;
+              const n = a.call?.name;
+              if (n === "switch_variant") return ["overview", "3d"];
+              if (n === "switch_region" || f === "region") return ["compliance", "boq"];
+              if (f === "area_m2" || n === "scale_editable") return ["boq", "energy"];
+              if (f === "insulation_mm" || f === "glazing_uvalue") return ["compliance", "energy"];
+              if (f === "lighting_cct" || f === "lighting_density_w_m2" || f === "wwr") return ["energy"];
+              return [];
+            }))
+          ),
           model: data.model,
         }]);
       }
@@ -1363,13 +1416,39 @@ function Chat({ onNavigate }) {
                 <div className="msg-diff" style={{background:"rgba(216,87,42,0.1)", color:"#b54e2c"}}>
                   <i>✗</i>{m.rejected.map(r => {
                     const reason = r.reason || "";
-                    // 友好化常见技术错误
                     if (reason.startsWith("Unknown editable field")) return "AI 引用了一个不存在的字段（已忽略这一步）";
                     if (reason.includes("out of range")) return `超出合法范围：${reason.replace(/.*out of range\s*/, "")}`;
                     if (reason.includes("variant_id") && reason.includes("not found")) return "AI 选了一个不存在的 variant（已忽略）";
                     if (reason.includes("no variants available")) return "这个 MVP 只有一套方案，无法切换";
                     return reason;
                   }).join(" · ")}
+                </div>
+              )}
+              {m.affectedTabs && m.affectedTabs.length > 0 && (
+                <div style={{marginTop:6, fontSize:11, color:"var(--text-3)"}}>
+                  变化反映在：
+                  {m.affectedTabs.map((t, i) => (
+                    <span key={t}>
+                      {i > 0 && " · "}
+                      <a onClick={()=>onNavigate(t)}
+                         style={{color:"var(--accent)", cursor:"pointer", textDecoration:"underline"}}>
+                        {({boq:"BOQ", energy:"Energy", compliance:"Compliance", overview:"Overview", "3d":"3D Viewer"})[t] || t}
+                      </a>
+                    </span>
+                  ))}
+                </div>
+              )}
+              {m.retryable && m.retryInput && (
+                <div style={{marginTop:6}}>
+                  <button
+                    onClick={() => send(m.retryInput)}
+                    disabled={thinking}
+                    style={{
+                      padding:"4px 12px", fontSize:11, border:"1px solid var(--line)",
+                      borderRadius:3, background:"var(--bg-1)", color:"var(--text-1)",
+                      cursor: thinking ? "wait" : "pointer", fontFamily:"var(--f-mono)",
+                    }}
+                  >↻ 重试</button>
                 </div>
               )}
               {m.model && (
