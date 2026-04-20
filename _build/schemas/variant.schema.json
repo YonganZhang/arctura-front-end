@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Arctura Variant JSON (data/mvps/<slug>/variants/<vid>.json)",
+  "type": "object",
+  "required": ["id", "parent_slug", "project", "editable", "derived", "pricing", "compliance", "energy", "renders"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^v[0-9]+" },
+    "parent_slug": { "type": "string" },
+    "name": { "type": "string" },
+    "model_glb": { "type": ["string", "null"] },
+    "hero_img": { "type": ["string", "null"] },
+    "thumb_img": { "type": ["string", "null"] },
+    "floorplan": { "type": ["string", "null"] },
+    "moodboard": { "type": ["string", "null"] },
+    "project": {
+      "type": "object",
+      "required": ["name"],
+      "properties": {
+        "name": { "type": "string" },
+        "zh": { "type": "string" },
+        "area": { "type": ["number", "integer"] },
+        "location": { "type": "string" },
+        "budgetHKD": { "type": ["number", "integer"] },
+        "style": { "type": ["string", "null"] },
+        "palette": { "type": "array" }
+      }
+    },
+    "editable": {
+      "type": "object",
+      "required": ["area_m2", "region"]
+    },
+    "derived": {
+      "type": "object",
+      "required": ["eui_kwh_m2_yr"]
+    },
+    "pricing": { "type": "object" },
+    "compliance": { "type": "object" },
+    "energy": { "type": "object" },
+    "renders": { "type": "array" },
+    "zones": { "type": "array" }
+  }
+}

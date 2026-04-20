@@ -94,6 +94,14 @@ def safe_read_json(p: Path) -> dict:
         return {}
 
 
+def _first_str(*candidates):
+    """返回第一个非空 str · 跳过 None/dict/list/空串"""
+    for c in candidates:
+        if isinstance(c, str) and c.strip():
+            return c
+    return None
+
+
 def safe_read_text(p: Path) -> str:
     try:
         return p.read_text(encoding="utf-8")
@@ -311,8 +319,16 @@ def build_mvp_record(mvp_dir: Path, mvp_type: str, agg: dict) -> dict:
     # Gallery 卡片数据
     index_entry = {
         "slug": slug,
-        "name": metrics.get("project_name_en") or brief.get("project") or slug,
-        "name_zh": metrics.get("project_name_zh") or brief.get("project_zh") or "",
+        "name": _first_str(
+            metrics.get("project_name_en"),
+            brief.get("project_en") if isinstance(brief.get("project_en"), str) else None,
+            brief.get("project") if isinstance(brief.get("project"), str) else None,
+            slug,
+        ),
+        "name_zh": _first_str(
+            metrics.get("project_name_zh"),
+            brief.get("project_zh") if isinstance(brief.get("project_zh"), str) else None,
+        ) or "",
         "type": mvp_type,
         "cat": categorize_mvp({
             "name_en": metrics.get("project_name_en"),
@@ -494,6 +510,19 @@ def main():
     )
 
     print(f"\n📈 总计: {len(index)} MVP · 完整 {complete_count} · 写入 data/mvps-index.json + data/mvps/*.json")
+
+    # 自动 schema 校验 · 任何字段缺失 exit 1
+    print()
+    import subprocess
+    r = subprocess.run(
+        [sys.executable, str(Path(__file__).resolve().parent / "validate.py"), "--quiet"],
+        capture_output=True, text=True,
+    )
+    print(r.stdout.strip())
+    if r.returncode != 0:
+        print(r.stderr.strip())
+        print("\n❌ Schema 校验失败 · build 输出的 JSON 不符合 schema · 请检查 build_mvp_data.py 逻辑")
+        sys.exit(1)
 
 
 if __name__ == "__main__":

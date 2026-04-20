@@ -320,6 +320,19 @@ def main():
 
     print(f"\n✅ 完成 {total_mvps} 个 MVP · {total_variants} 个 variant")
 
+    # 自动 schema 校验
+    print()
+    import subprocess
+    r = subprocess.run(
+        [sys.executable, str(Path(__file__).resolve().parent / "validate.py"), "--quiet"],
+        capture_output=True, text=True,
+    )
+    print(r.stdout.strip())
+    if r.returncode != 0:
+        print(r.stderr.strip())
+        print("\n❌ Schema 校验失败")
+        sys.exit(1)
+
 
 if __name__ == "__main__":
     main()

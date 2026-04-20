@@ -106,11 +106,11 @@ window.ZEN_DATA = {
       {check:"EUI", zh:"能耗强度", val:"84", unit:"kWh/m²·yr", limit:"75", status:"fail"}
     ]}
   },
-  variants: [
-    { id:"A", name:"Scholar's Retreat", zh:"文人书斋", img:"/assets/zen-tea/render-01-hero.png", tagline:"Deep rosewood + ink paintings. The quiet classical.", cost:"540k", eui:"84", chosen:true },
-    { id:"B", name:"Temple Minimal", zh:"禅寺极简", img:"/assets/zen-tea/render-03-main.png", tagline:"Bleached oak + raw concrete. Austere and still.", cost:"485k", eui:"78" },
-    { id:"C", name:"Tea Merchant", zh:"茶商宅邸", img:"/assets/zen-tea/render-04-feature.png", tagline:"Warm walnut + brass. Hospitality-forward.", cost:"612k", eui:"92" }
-  ],
+  variants: { list: [
+    { id:"A", name:"Scholar's Retreat", zh:"文人书斋", thumb:"/assets/zen-tea/render-01-hero.png", img:"/assets/zen-tea/render-01-hero.png", tagline:"Deep rosewood + ink paintings. The quiet classical.", cost:"540k", eui:"84", chosen:true },
+    { id:"B", name:"Temple Minimal", zh:"禅寺极简", thumb:"/assets/zen-tea/render-03-main.png", img:"/assets/zen-tea/render-03-main.png", tagline:"Bleached oak + raw concrete. Austere and still.", cost:"485k", eui:"78" },
+    { id:"C", name:"Tea Merchant", zh:"茶商宅邸", thumb:"/assets/zen-tea/render-04-feature.png", img:"/assets/zen-tea/render-04-feature.png", tagline:"Warm walnut + brass. Hospitality-forward.", cost:"612k", eui:"92" }
+  ] },
   timeline: [
     { time:"14:22 · today", title:"Beijing compliance switch requested", desc:"Client asked to check against GB 50189. Three envelope values fall short.", diff:"+60mm rockwool suggested · passes 6/7 after change" },
     { time:"13:08 · today", title:"Budget variant generated", desc:"Client requested a 20% budget reduction. Economy scheme generated.", diff:"−HK$108k · swapped rosewood → walnut veneer" },

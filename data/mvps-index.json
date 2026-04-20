@@ -226,7 +226,7 @@
   },
   {
     "slug": "17-luxury-indoor-pool",
-    "name": "五星酒店室内泳池",
+    "name": "5-Star Hotel Indoor Swimming Pool",
     "name_zh": "",
     "type": "P1-interior",
     "cat": "wellness",
@@ -256,7 +256,7 @@
   },
   {
     "slug": "16-elderly-friendly-home",
-    "name": "长者友好居家改装",
+    "name": "Elderly-Friendly Home Renovation",
     "name_zh": "",
     "type": "P1-interior",
     "cat": "residential",
@@ -271,7 +271,7 @@
   },
   {
     "slug": "18-student-study-hall",
-    "name": "大学生自习室",
+    "name": "University Student Study Hall",
     "name_zh": "",
     "type": "P1-interior",
     "cat": "workplace",
@@ -421,27 +421,7 @@
   },
   {
     "slug": "arch-04-community-center",
-    "name": {
-      "slug": "arch-04-community-center",
-      "name_zh": "社区中心 The Hub",
-      "name_en": "The Hub — Community Center",
-      "type": "civic",
-      "address": "示范地块 · 城市新区社区公园南侧",
-      "footprint_m2": 500,
-      "site_m2": 1400,
-      "footprint_dim_m": "25 x 20",
-      "site_dim_m": "40 x 35",
-      "floors": 1,
-      "floor_heights_m": {
-        "F1": 4.5
-      },
-      "total_area_m2": 500,
-      "span_m": 25,
-      "budget_cny": 8000000,
-      "timeline_months": 8,
-      "client": "街道办事处 · 社区服务基金会",
-      "users_per_day": 400
-    },
+    "name": "arch-04-community-center",
     "name_zh": "",
     "type": "P2-architecture",
     "cat": "civic",

@@ -1,0 +1,138 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Arctura MVP JSON (data/mvps/<slug>.json)",
+  "type": "object",
+  "required": [
+    "slug", "cat", "type", "complete",
+    "project", "editable", "derived",
+    "pricing", "compliance", "energy",
+    "renders", "zones", "variants"
+  ],
+  "properties": {
+    "slug": { "type": "string", "minLength": 1 },
+    "cat": { "type": "string", "enum": ["hospitality", "workplace", "residential", "civic", "wellness", "other"] },
+    "type": { "type": "string", "enum": ["P1-interior", "P2-architecture"] },
+    "complete": { "type": "boolean" },
+    "model_glb": { "type": ["string", "null"] },
+    "hero_img": { "type": ["string", "null"] },
+    "thumb_img": { "type": ["string", "null"] },
+    "floorplan": { "type": ["string", "null"] },
+    "moodboard": { "type": ["string", "null"] },
+    "project": {
+      "type": "object",
+      "required": ["name", "area"],
+      "properties": {
+        "name": { "type": "string" },
+        "zh": { "type": "string" },
+        "area": { "type": ["number", "integer"] },
+        "location": { "type": "string" },
+        "budgetHKD": { "type": ["number", "integer"] },
+        "style": { "type": ["string", "null"] },
+        "palette": { "type": "array" }
+      }
+    },
+    "editable": {
+      "type": "object",
+      "required": ["area_m2", "insulation_mm", "glazing_uvalue", "lighting_cct", "lighting_density_w_m2", "wwr", "region"],
+      "properties": {
+        "area_m2": { "type": "number" },
+        "insulation_mm": { "type": "number" },
+        "glazing_uvalue": { "type": "number" },
+        "lighting_cct": { "type": "number" },
+        "lighting_density_w_m2": { "type": "number" },
+        "wwr": { "type": "number" },
+        "region": { "type": "string", "enum": ["HK", "CN", "US", "JP"] }
+      }
+    },
+    "derived": {
+      "type": "object",
+      "required": ["eui_kwh_m2_yr", "cost_total", "cost_per_m2", "co2_t_per_yr"],
+      "properties": {
+        "eui_kwh_m2_yr": { "type": "number" },
+        "cost_total": { "type": ["number", "integer"] },
+        "cost_per_m2": { "type": ["number", "integer"] },
+        "co2_t_per_yr": { "type": "number" }
+      }
+    },
+    "pricing": {
+      "type": "object",
+      "required": ["HK"],
+      "properties": {
+        "HK": { "$ref": "#/definitions/pricingRegion" }
+      },
+      "additionalProperties": { "$ref": "#/definitions/pricingRegion" }
+    },
+    "compliance": {
+      "type": "object",
+      "required": ["HK"],
+      "properties": {
+        "HK": { "$ref": "#/definitions/complianceRegion" }
+      },
+      "additionalProperties": { "$ref": "#/definitions/complianceRegion" }
+    },
+    "energy": {
+      "type": "object",
+      "required": ["eui", "limit"],
+      "properties": {
+        "eui": { "type": ["number", "integer"] },
+        "limit": { "type": ["number", "integer"] },
+        "annual": { "type": ["number", "integer"] },
+        "engine": { "type": "string" }
+      }
+    },
+    "renders": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["file"],
+        "properties": {
+          "id": { "type": "string" },
+          "file": { "type": "string" },
+          "title": { "type": "string" },
+          "tag": { "type": "string" }
+        }
+      }
+    },
+    "zones": { "type": "array" },
+    "furniture": { "type": "array" },
+    "variants": {
+      "type": "object",
+      "required": ["list"],
+      "properties": { "list": { "type": "array" } }
+    },
+    "timeline": { "type": "array" },
+    "decks": { "type": "array" },
+    "downloads": { "type": "array" }
+  },
+  "definitions": {
+    "pricingRegion": {
+      "type": "object",
+      "required": ["currency", "perM2", "total"],
+      "properties": {
+        "label": { "type": "string" },
+        "currency": { "type": "string" },
+        "perM2": { "type": ["number", "integer"] },
+        "total": { "type": ["string", "number", "integer"] },
+        "totalNumber": { "type": ["number", "integer"] },
+        "subtotal": { "type": ["string", "number", "integer"] },
+        "mep": { "type": ["string", "number", "integer"] },
+        "prelim": { "type": ["string", "number", "integer"] },
+        "cont": { "type": ["string", "number", "integer"] },
+        "rows": { "type": "array" },
+        "breakdown": { "type": "object" }
+      }
+    },
+    "complianceRegion": {
+      "type": "object",
+      "required": ["verdict"],
+      "properties": {
+        "code": { "type": "string" },
+        "label": { "type": "string" },
+        "verdict": { "type": "string" },
+        "score": { "type": "string" },
+        "checks": { "type": "array" },
+        "items": { "type": "array" }
+      }
+    }
+  }
+}
