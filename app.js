@@ -80,11 +80,28 @@ async function loadMvpIndex() {
 
 document.addEventListener("DOMContentLoaded", () => {
   loadMvpIndex();
+
+  function setFilter(filter) {
+    document.querySelectorAll(".gal-filter").forEach(b => {
+      b.classList.toggle("active", b.dataset.filter === filter);
+    });
+    document.querySelectorAll(".industry-card").forEach(c => {
+      c.classList.toggle("active", c.dataset.filter === filter);
+    });
+    renderMvps(filter);
+  }
+
   document.querySelectorAll(".gal-filter").forEach(btn => {
-    btn.addEventListener("click", () => {
-      document.querySelectorAll(".gal-filter").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      renderMvps(btn.dataset.filter);
+    btn.addEventListener("click", () => setFilter(btn.dataset.filter));
+  });
+
+  document.querySelectorAll(".industry-card").forEach(card => {
+    card.addEventListener("click", (e) => {
+      e.preventDefault();
+      setFilter(card.dataset.filter);
+      // 滚动到 MVP grid
+      const grid = document.getElementById("mvp-grid");
+      if (grid) grid.scrollIntoView({ behavior: "smooth", block: "start" });
     });
   });
 });

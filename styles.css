@@ -428,6 +428,131 @@ section.compact { padding: 80px 0; }
   transition: all 0.15s;
   background: var(--paper);
 }
+
+/* ========== METRICS 信任条 · cleanspaceus 风 ========== */
+.metrics-strip {
+  padding: 84px 0 92px;
+  background: var(--bg);
+}
+.metrics-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 32px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 56px 0;
+}
+.metric {
+  display: flex; flex-direction: column; gap: 12px;
+  padding: 0 8px;
+}
+.metric + .metric {
+  border-left: 1px solid var(--line);
+  padding-left: 32px;
+}
+.metric-val {
+  font-family: var(--f-display);
+  font-size: 72px;
+  font-weight: 300;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  font-feature-settings: "lnum" 1, "tnum" 1;
+}
+.metric-unit {
+  font-size: 24px;
+  color: var(--ink-soft);
+  margin-left: 6px;
+  font-weight: 400;
+}
+.metric-lbl {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink);
+  line-height: 1.5;
+}
+.metric-lbl span {
+  display: block;
+  margin-top: 6px;
+  color: var(--ink-mute);
+  text-transform: none;
+  letter-spacing: 0.02em;
+  font-size: 10px;
+}
+
+/* ========== 行业大卡 · 目录首屏 ========== */
+.industry-cards {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  margin-bottom: 32px;
+}
+.industry-card {
+  position: relative;
+  aspect-ratio: 4/5;
+  border-radius: 4px; overflow: hidden;
+  cursor: pointer;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  transition: all 0.2s;
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+.industry-card:hover {
+  border-color: var(--ink);
+  transform: translateY(-2px);
+}
+.industry-card.active {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+.industry-card-bg {
+  position: absolute; inset: 0;
+  background-size: cover; background-position: center;
+  filter: saturate(0.92) contrast(1.02);
+  transition: filter 0.25s, transform 0.4s;
+}
+.industry-card:hover .industry-card-bg { transform: scale(1.04); filter: saturate(1) contrast(1.06); }
+.industry-card-scrim {
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, transparent 40%, rgba(20,19,17,0.7) 100%);
+}
+.industry-card-content {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 16px 14px;
+  color: white;
+}
+.industry-card-name {
+  font-family: var(--f-display);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  margin-bottom: 4px;
+}
+.industry-card-count {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+/* 响应式 */
+@media (max-width: 900px) {
+  .metrics-row { grid-template-columns: repeat(2, 1fr); }
+  .metric + .metric:nth-child(3) { border-left: none; padding-left: 8px; }
+  .metric-val { font-size: 56px; }
+  .industry-cards { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 560px) {
+  .metrics-row { grid-template-columns: 1fr; }
+  .metric + .metric { border-left: none; padding-left: 8px; }
+  .industry-cards { grid-template-columns: 1fr; }
+}
 .gal-filter:hover { border-color: var(--ink); }
 .gal-filter.active {
   background: var(--ink); color: var(--paper); border-color: var(--ink);
