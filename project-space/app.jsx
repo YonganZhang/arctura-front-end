@@ -346,76 +346,78 @@ function Floorplan() {
   );
 }
 
-// ───────── 3D Viewer (CSS 3D) ─────────
+// ───────── 3D Viewer · 真渲染图 8 视角选择器 ─────────
+//  从 state.renders 拉所有视角的 WebP。优先显示鸟瞰 / 轴测角（真 3D 感）
+//  渲染图 < 1 时显示 CSS 3D 兜底（旧 demo 保留给数据缺失的 MVP）
 function Viewer3D() {
-  const [rot, setRot] = useState({ x:55, z:-20 });
-  const [zoom, setZoom] = useState(1);
-  const stageRef = useRef(null);
-  const dragRef = useRef(null);
+  useProject();
+  const renders = D.renders || [];
+  // 找 "3D" 感最强的视角（鸟瞰 / axon / birds-eye）
+  const isoIndex = renders.findIndex(r => /bird|eye|iso|axon|top/i.test((r.tag || "") + " " + (r.title || "")));
+  const [idx, setIdx] = useState(Math.max(0, isoIndex));
+  const safeIdx = Math.min(idx, Math.max(0, renders.length - 1));
+  const current = renders[safeIdx];
+  const area = D.project?.area || 0;
+  const variantId = D.active_variant_id;
 
-  const onDown = (e) => {
-    dragRef.current = { sx:e.clientX, sy:e.clientY, rx:rot.x, rz:rot.z };
-    const move = (ev) => {
-      const dx = ev.clientX - dragRef.current.sx;
-      const dy = ev.clientY - dragRef.current.sy;
-      setRot({
-        x: Math.max(20, Math.min(85, dragRef.current.rx - dy*0.4)),
-        z: dragRef.current.rz - dx*0.4
-      });
-    };
-    const up = () => {
-      window.removeEventListener("mousemove", move);
-      window.removeEventListener("mouseup", up);
-    };
-    window.addEventListener("mousemove", move);
-    window.addEventListener("mouseup", up);
-  };
-
-  const onWheel = (e) => {
-    e.preventDefault();
-    setZoom(z => Math.max(0.5, Math.min(2.2, z - e.deltaY*0.001)));
-  };
+  // 无 render 兜底：显示空态（不再用假的 CSS 几何体）
+  if (!current) {
+    return (
+      <section>
+        <div className="view-head">
+          <div>
+            <h1 className="view-title">3D Viewer</h1>
+            <div className="view-sub">此 MVP 暂无 3D 渲染产出</div>
+          </div>
+        </div>
+        <div style={{padding:60, textAlign:"center", color:"var(--text-3)", background:"var(--bg-1)", border:"1px dashed var(--line)", borderRadius:6}}>
+          Pipeline 未跑完 · 此 MVP 的 8 视角渲染图尚未产出。<br/>
+          Chat 里仍然可以：改面积 / 切合规 / 改保温 · 数据会真刷新。
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section>
       <div className="view-head">
         <div>
           <h1 className="view-title">3D Viewer</h1>
-          <div className="view-sub">3D 模型 · 115 objects · BIM-grade · drag to rotate · scroll to zoom</div>
-        </div>
-      </div>
-      <div className="d3-wrap" ref={stageRef} onMouseDown={onDown} onWheel={onWheel} style={{cursor:"grab"}}>
-        <div className="d3-stage">
-          <div className="d3-room" style={{ transform: `rotateX(${rot.x}deg) rotateZ(${rot.z}deg) scale(${zoom})` }}>
-            <div className="d3-floor" />
-            <div className="d3-wall n" />
-            <div className="d3-wall s" />
-            <div className="d3-wall w" />
-            <div className="d3-wall e" />
-            <div className="d3-obj table"><div className="top" /></div>
-            <div className="d3-obj chair c1"><div className="top" /></div>
-            <div className="d3-obj chair c2"><div className="top" /></div>
-            <div className="d3-obj chair c3"><div className="top" /></div>
-            <div className="d3-obj chair c4"><div className="top" /></div>
-            <div className="d3-obj cabinet"><div className="top" /></div>
-            <div className="d3-obj zen"><div className="top" /></div>
-            <div className="d3-obj screen"><div className="top" /></div>
-            <div className="d3-obj counter"><div className="top" /></div>
+          <div className="view-sub">
+            真实渲染图 · {renders.length} 视角
+            {variantId && <> · <b>variant: {variantId}</b></>}
+            {area ? <> · {area} m²</> : null}
           </div>
         </div>
-        <div className="d3-controls">
-          <button className="d3-btn" onClick={()=>setRot({x:55, z:-20})} title="Reset">⟲</button>
-          <button className="d3-btn" onClick={()=>setZoom(z=>Math.min(2.2, z+0.2))} title="Zoom in">+</button>
-          <button className="d3-btn" onClick={()=>setZoom(z=>Math.max(0.5, z-0.2))} title="Zoom out">−</button>
-          <button className="d3-btn" onClick={()=>setRot({x:90, z:0})} title="Top">T</button>
-          <button className="d3-btn" onClick={()=>setRot({x:75, z:-45})} title="Iso">I</button>
+      </div>
+      <div style={{position:"relative", background:"var(--bg-1)", border:"1px solid var(--line)", borderRadius:6, overflow:"hidden"}}>
+        <div style={{aspectRatio: "16/10", background:"var(--bg-2)", display:"flex", alignItems:"center", justifyContent:"center"}}>
+          <Img src={current.file} alt={current.title}
+               style={{width:"100%", height:"100%", objectFit:"cover"}} />
         </div>
-        <div className="d3-hint">◀ drag to orbit · scroll to zoom ▶</div>
-        <div className="d3-legend">
-          <div>Room <b>40 m²</b></div>
-          <div>Height <b>2.8 m</b></div>
-          <div>Rot <b>{Math.round(rot.x)}° / {Math.round(rot.z)}°</b></div>
+        <div style={{position:"absolute", top:14, left:14, padding:"4px 10px", background:"rgba(0,0,0,0.6)", color:"white", fontSize:10, fontFamily:"var(--f-mono)", letterSpacing:"0.08em", borderRadius:3}}>
+          {current.tag || "view"}
         </div>
+        <div style={{position:"absolute", bottom:14, left:14, padding:"6px 12px", background:"rgba(0,0,0,0.6)", color:"white", fontSize:13, fontFamily:"var(--f-display)", borderRadius:3}}>
+          {current.title}
+        </div>
+      </div>
+      <div style={{marginTop:16, display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(120px, 1fr))", gap:10}}>
+        {renders.map((r,i)=>(
+          <div key={i} onClick={()=>setIdx(i)}
+               style={{
+                 cursor:"pointer",
+                 border: "2px solid " + (safeIdx===i ? "var(--text-1)" : "var(--line)"),
+                 borderRadius:4, overflow:"hidden", background:"var(--bg-2)",
+                 aspectRatio:"16/10", position:"relative",
+                 transition:"border-color 0.15s",
+               }}>
+            <Img src={r.file} alt={r.title} style={{width:"100%", height:"100%", objectFit:"cover"}} />
+            <div style={{position:"absolute", bottom:0, left:0, right:0, padding:"4px 8px", fontSize:9, fontFamily:"var(--f-mono)", background:"rgba(0,0,0,0.6)", color:"white", letterSpacing:"0.05em"}}>
+              {r.tag || r.id}
+            </div>
+          </div>
+        ))}
       </div>
     </section>
   );
@@ -666,64 +668,100 @@ function WhatIf() {
 
 // ───────── A / B / C variants ─────────
 function Variants() {
-  useProject();
-  const [chosen, setChosen] = useState("A");
+  const { current, dispatch } = useProject();
+  const [loading, setLoading] = useState(null);   // variant id being loaded
+  const [err, setErr] = useState(null);
   // 兼容两种 schema：legacy data.js 是 array · 新版是 {list: [...]}
   const variantArray = Array.isArray(D.variants) ? D.variants : (D.variants?.list || []);
+  const activeVid = D.active_variant_id;
+
+  const handleSelect = async (vid) => {
+    if (!current?.slug || loading === vid) return;
+    setLoading(vid);
+    setErr(null);
+    try {
+      const r = await fetch(`/data/mvps/${current.slug}/variants/${vid}.json`);
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      const v = await r.json();
+      // Overlay 变体数据到当前 state（与 backend apply-tools switch_variant 对齐）
+      const merged = {
+        ...current,
+        active_variant_id: vid,
+        project: { ...(current.project || {}), ...(v.project || {}) },
+        renders: v.renders || current.renders,
+        hero_img: v.hero_img || current.hero_img,
+        thumb_img: v.thumb_img || current.thumb_img,
+        floorplan: v.floorplan || current.floorplan,
+        moodboard: v.moodboard || current.moodboard,
+        zones: v.zones || current.zones,
+        pricing: { ...(current.pricing || {}), ...(v.pricing || {}) },
+        energy: { ...(current.energy || {}), ...(v.energy || {}) },
+        compliance: { ...(current.compliance || {}), ...(v.compliance || {}) },
+        editable: { ...(current.editable || {}), ...(v.editable || {}) },
+        derived: v.derived || current.derived,
+        timeline: [
+          ...(current.timeline || []),
+          { time: new Date().toISOString(), title: `Switched to ${v.name || vid}`, diff: `variant → ${vid}`, source: "click" },
+        ],
+      };
+      dispatch({ type: "APPLY_EDIT", newState: merged });
+    } catch (e) {
+      setErr(`加载 variant 失败: ${e.message}`);
+    } finally {
+      setLoading(null);
+    }
+  };
+
+  // 无 variants → 显示 single-scheme 提示
+  if (variantArray.length === 0) {
+    return (
+      <section>
+        <div className="view-head">
+          <div>
+            <h1 className="view-title">Variants</h1>
+            <div className="view-sub">此 MVP 为单方案设计</div>
+          </div>
+        </div>
+        <div style={{padding:40, background:"var(--bg-1)", border:"1px dashed var(--line)", borderRadius:6, textAlign:"center", color:"var(--text-3)"}}>
+          这个 MVP 目前只有一套方案，没有多方案对比数据。<br/>
+          Chat 里仍然可以改数值（面积 / 保温 / 合规地区）· 数据会实时刷新。
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section>
       <div className="view-head">
         <div>
-          <h1 className="view-title">A / B / C Variants</h1>
-          <div className="view-sub">方案对比 · three complete design directions · side by side</div>
+          <h1 className="view-title">Variants · {variantArray.length} 方案</h1>
+          <div className="view-sub">点击卡片切换方案 · 整个项目数据（图 / BOQ / 合规）会真更新</div>
         </div>
       </div>
+      {err && <div style={{padding:12, background:"rgba(216,87,42,0.1)", color:"#b54e2c", marginBottom:14, borderRadius:4, fontSize:13}}>{err}</div>}
       <div className="abc-grid">
-        {variantArray.map(v => (
-          <div key={v.id} className={"abc-variant " + (chosen===v.id ? "chosen":"")} onClick={()=>setChosen(v.id)}>
-            <div className="abc-img">
-              <div className="abc-label">Option {v.id}</div>
-              <Img src={v.img} alt={v.name} />
-            </div>
-            <div className="abc-body">
-              <div className="abc-name">{v.name}<span className="zh">{v.zh}</span></div>
-              <div className="abc-tagline">{v.tagline}</div>
-              <div className="abc-specs">
-                <div className="abc-spec"><div className="lbl">Cost</div><div className="val">HK${v.cost}</div></div>
-                <div className="abc-spec"><div className="lbl">EUI</div><div className="val">{v.eui}<small>kWh</small></div></div>
+        {variantArray.map(v => {
+          const isActive = v.id === activeVid;
+          const isLoading = loading === v.id;
+          return (
+            <div key={v.id}
+                 className={"abc-variant " + (isActive ? "chosen" : "")}
+                 onClick={() => handleSelect(v.id)}
+                 style={{cursor: isLoading ? "wait" : "pointer", opacity: isLoading ? 0.5 : 1}}>
+              <div className="abc-img">
+                <div className="abc-label">{v.id}</div>
+                <Img src={v.thumb || v.hero || v.img} alt={v.name} />
               </div>
-              <div className="abc-choose">{chosen===v.id ? "✓ Selected" : "Choose this direction"}</div>
+              <div className="abc-body">
+                <div className="abc-name">{v.name}{v.name_zh && <span className="zh">{v.name_zh}</span>}</div>
+                <div className="abc-tagline">{v.desc || v.tagline || ""}</div>
+                <div className="abc-choose">
+                  {isLoading ? "Loading…" : isActive ? "✓ Selected" : "Click to switch"}
+                </div>
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
-
-      <div style={{background:"var(--bg-1)",border:"1px solid var(--line)",borderRadius:6,padding:"18px 22px"}}>
-        <div style={{fontFamily:"var(--f-mono)",fontSize:10,color:"var(--text-3)",textTransform:"uppercase",letterSpacing:"0.12em",marginBottom:12}}>Difference matrix</div>
-        <table style={{width:"100%",fontSize:13,borderCollapse:"collapse"}}>
-          <thead>
-            <tr style={{color:"var(--text-3)",fontFamily:"var(--f-mono)",fontSize:10,textTransform:"uppercase",letterSpacing:"0.08em"}}>
-              <th style={{textAlign:"left",padding:"8px 0"}}>Aspect</th>
-              <th style={{textAlign:"left"}}>A · Scholar</th>
-              <th style={{textAlign:"left"}}>B · Temple Minimal</th>
-              <th style={{textAlign:"left"}}>C · Tea Merchant</th>
-            </tr>
-          </thead>
-          <tbody style={{color:"var(--text-2)"}}>
-            {[
-              ["Primary wood","Deep rosewood","Bleached oak","Warm walnut"],
-              ["Wall treatment","Hemp plaster","Raw concrete","Veneer + brass"],
-              ["Floor","Dark tile","Tatami panels","Herringbone wood"],
-              ["Feel","Scholarly quiet","Austere, still","Warm hospitality"],
-              ["EUI","84","78","92"],
-              ["Cost","HK$540k","HK$485k","HK$612k"]
-            ].map((r,i)=>(
-              <tr key={i} style={{borderTop:"1px dashed var(--line)"}}>
-                {r.map((c,j)=>(<td key={j} style={{padding:"10px 8px 10px 0",color: (j===0?"var(--text-3)":"var(--text-2)"), fontFamily: j===0?"var(--f-mono)":"inherit", fontSize: j===0?11:13, textTransform: j===0?"uppercase":"none", letterSpacing: j===0?"0.06em":0}}>{c}</td>))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+          );
+        })}
       </div>
     </section>
   );
