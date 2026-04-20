@@ -1,6 +1,11 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": true,
   "trailingSlash": false,
+  "framework": null,
+  "outputDirectory": ".",
+  "buildCommand": "echo 'static site · no build'",
+  "installCommand": "echo 'no install needed'",
   "rewrites": [
     { "source": "/project/:slug([^/]+)", "destination": "/project" },
     { "source": "/project/:slug([^/]+)/", "destination": "/project" }

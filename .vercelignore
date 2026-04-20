@@ -2,3 +2,12 @@ uploads/*.png
 uploads/pasted-*.png
 debug/
 *.md.backup
+
+# 测试 / 开发依赖 · 不上传到 Vercel
+_tests/
+node_modules/
+playwright-report/
+test-results/
+playwright.config.mjs
+package-lock.json
+package.json
