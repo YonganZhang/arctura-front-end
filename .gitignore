@@ -3,6 +3,7 @@
 # 顶层源码 + 配置
 !api/
 !_build/
+!_tests/
 !assets/
 !data/
 !project/
@@ -17,6 +18,9 @@
 !vercel.json
 !.vercelignore
 !README.md
+!package.json
+!package-lock.json
+!playwright.config.mjs
 !.gitignore
 
 # uploads 里的图片噪音（保留 md 文档）
@@ -34,3 +38,7 @@ debug/
 Thumbs.db
 *.log
 node_modules/
+# Playwright 产物
+/test-results/
+/playwright-report/
+/playwright/.cache/

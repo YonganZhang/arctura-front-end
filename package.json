@@ -1,0 +1,16 @@
+{
+  "name": "arctura-front-end",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Arctura Labs · 42 MVP 展示 + Chat→real-data edit + real 3D",
+  "scripts": {
+    "serve": "python3 -m http.server 8880",
+    "validate": "python3 _build/validate.py --quiet",
+    "test": "npx playwright test --reporter=line",
+    "test:ui": "npx playwright test --ui",
+    "pre-deploy": "npm run validate && npm test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.48.0"
+  }
+}

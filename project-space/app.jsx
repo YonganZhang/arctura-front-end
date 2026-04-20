@@ -61,7 +61,10 @@ function getSlugFromUrl() {
   const q = new URLSearchParams(location.search).get("mvp");
   if (q) return q;
   const parts = location.pathname.split("/").filter(Boolean);
-  if (parts[0] === "project" && parts[1]) return parts[1];
+  // /project/index.html 时 parts[1]="index.html" · 不是真 slug
+  if (parts[0] === "project" && parts[1] && parts[1] !== "index.html") {
+    return parts[1];
+  }
   return null; // 用默认 zen-tea
 }
 
@@ -200,6 +203,7 @@ function Sidebar({ active, setActive }) {
         <div className="sb-label">Artifacts</div>
         {items.map(it => (
           <div key={it.id}
+               data-tab={it.id}
                className={"sb-item " + (active===it.id ? "active" : "")}
                onClick={() => setActive(it.id)}>
             <span>{it.label}</span>
@@ -285,7 +289,7 @@ function Overview({ setActive }) {
           </div>
           <div className="render-thumbs">
             {renders.map((r, i) => (
-              <div key={r.id || i} className={"render-thumb " + (safeIdx===i ? "active":"")} onClick={()=>setThumb(i)}>
+              <div key={i} className={"render-thumb " + (safeIdx===i ? "active":"")} onClick={()=>setThumb(i)}>
                 <Img src={r.file} alt={r.title} />
                 <div className="render-thumb-lbl">{r.tag}</div>
               </div>
