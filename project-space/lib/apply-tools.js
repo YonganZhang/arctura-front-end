@@ -29,7 +29,8 @@ function human(call) {
 
 // 应用单个 tool 到 state · 返回 next state（不 mutate 入参）
 // 不做 recompute，批量应用完再统一算一次
-function applyOne(state, call, variantLoader) {
+// variantLoader 可以是 sync 或 async（返回 Promise），本函数自己 await
+async function applyOne(state, call, variantLoader) {
   const { name, args } = call;
   const s = clone(state);
 
@@ -50,11 +51,11 @@ function applyOne(state, call, variantLoader) {
     return s;
   }
   if (name === "switch_variant") {
-    // variantLoader 是个可选回调：(slug, variantId) => variantJson | null
+    // variantLoader 是可选回调：(slug, variantId) => variantJson | null | Promise<variantJson | null>
     // 无回调时只标记 active_variant_id，前端自己加载
     s.active_variant_id = args.variant_id;
     if (variantLoader) {
-      const v = variantLoader(s.slug, args.variant_id);
+      const v = await variantLoader(s.slug, args.variant_id);
       if (v) {
         // 把 variant 的核心字段 overlay 到 state
         s.project = { ...(s.project || {}), ...(v.project || {}) };
@@ -87,7 +88,8 @@ function applyOne(state, call, variantLoader) {
 }
 
 // 批量 apply · 返回 { state, applied, rejected, timelineEntries }
-export function applyTools(baseState, calls, options = {}) {
+// async 因为 variantLoader 可能是网络请求
+export async function applyTools(baseState, calls, options = {}) {
   const { variantLoader = null, autoTimeline = true } = options;
   let state = clone(baseState);
   const applied = [];
@@ -100,7 +102,7 @@ export function applyTools(baseState, calls, options = {}) {
       continue;
     }
     try {
-      state = applyOne(state, call, variantLoader);
+      state = await applyOne(state, call, variantLoader);
       applied.push({ call, summary: human(call) });
     } catch (err) {
       rejected.push({ call, reason: `apply failed: ${err.message}` });

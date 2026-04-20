@@ -210,7 +210,7 @@ export default async function handler(req) {
   const variantLoader = await makeVariantLoader(origin);
 
   // 应用 tool calls
-  const { state: newState, applied, rejected } = applyTools(currentState, parsed.tool_calls, {
+  const { state: newState, applied, rejected } = await applyTools(currentState, parsed.tool_calls, {
     variantLoader,
     autoTimeline: true,
   });
