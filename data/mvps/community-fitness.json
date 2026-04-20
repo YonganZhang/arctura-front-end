@@ -3,7 +3,7 @@
   "cat": "wellness",
   "type": "P2-architecture",
   "complete": false,
-  "model_glb": null,
+  "model_glb": "/assets/mvps/community-fitness/variants/v1-industrial-raw/model.glb",
   "project": {
     "name": "社區健身中心 Community Fitness Center",
     "zh": "",

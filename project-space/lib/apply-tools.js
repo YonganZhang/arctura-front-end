@@ -52,24 +52,30 @@ async function applyOne(state, call, variantLoader) {
   }
   if (name === "switch_variant") {
     // variantLoader 是可选回调：(slug, variantId) => variantJson | null | Promise<variantJson | null>
-    // 无回调时只标记 active_variant_id，前端自己加载
-    s.active_variant_id = args.variant_id;
     if (variantLoader) {
       const v = await variantLoader(s.slug, args.variant_id);
-      if (v) {
-        // 把 variant 的核心字段 overlay 到 state
-        s.project = { ...(s.project || {}), ...(v.project || {}) };
-        s.renders = v.renders || s.renders;
-        s.hero_img = v.hero_img || s.hero_img;
-        s.thumb_img = v.thumb_img || s.thumb_img;
-        s.floorplan = v.floorplan || s.floorplan;
-        s.moodboard = v.moodboard || s.moodboard;
-        s.zones = v.zones || s.zones;
-        s.pricing = { ...(s.pricing || {}), ...(v.pricing || {}) };
-        s.energy = { ...(s.energy || {}), ...(v.energy || {}) };
-        s.compliance = { ...(s.compliance || {}), ...(v.compliance || {}) };
-        s.editable = { ...(s.editable || {}), ...(v.editable || {}) };
+      if (!v) {
+        // 加载失败 → 抛错 · 走 rejected 路径 · 不静默 no-op
+        throw new Error(`variant data not found on server for "${args.variant_id}"`);
       }
+      // 把 variant 的核心字段 overlay 到 state
+      s.active_variant_id = args.variant_id;
+      s.project = { ...(s.project || {}), ...(v.project || {}) };
+      s.renders = v.renders || s.renders;
+      s.hero_img = v.hero_img || s.hero_img;
+      s.thumb_img = v.thumb_img || s.thumb_img;
+      s.floorplan = v.floorplan || s.floorplan;
+      s.moodboard = v.moodboard || s.moodboard;
+      s.zones = v.zones || s.zones;
+      s.pricing = { ...(s.pricing || {}), ...(v.pricing || {}) };
+      s.energy = { ...(s.energy || {}), ...(v.energy || {}) };
+      s.compliance = { ...(s.compliance || {}), ...(v.compliance || {}) };
+      s.editable = { ...(s.editable || {}), ...(v.editable || {}) };
+      // 更新 model_glb · 如果 variant 有
+      if (v.model_glb) s.model_glb = v.model_glb;
+    } else {
+      // 无 loader · 只标记（前端后续自己加载）
+      s.active_variant_id = args.variant_id;
     }
     return s;
   }

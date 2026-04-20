@@ -3,7 +3,7 @@
   "cat": "civic",
   "type": "P1-interior",
   "complete": false,
-  "model_glb": null,
+  "model_glb": "/assets/mvps/21-esports-streaming/variants/v1-cyberpunk/model.glb",
   "project": {
     "name": "电竞直播间 · P10 甄选 3 方案",
     "zh": "",

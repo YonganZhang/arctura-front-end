@@ -381,9 +381,18 @@ def build_mvp_record(mvp_dir: Path, mvp_type: str, agg: dict) -> dict:
                 palette.append({"name": "", "hex": p})
     # else palette = []
 
-    # 3D 模型 · 有则挂路径，浏览器 model-viewer 可加载
+    # 3D 模型 · 有则挂路径 · 多变体 MVP 顶层无 GLB 时用第一个 variant 的
     glb_disk = FE_ROOT / "assets" / "mvps" / slug / "model.glb"
-    model_glb = f"/assets/mvps/{slug}/model.glb" if glb_disk.exists() else None
+    model_glb = None
+    if glb_disk.exists():
+        model_glb = f"/assets/mvps/{slug}/model.glb"
+    else:
+        variants_assets = FE_ROOT / "assets" / "mvps" / slug / "variants"
+        if variants_assets.is_dir():
+            for v in sorted(variants_assets.iterdir()):
+                if v.is_dir() and (v / "model.glb").exists():
+                    model_glb = f"/assets/mvps/{slug}/variants/{v.name}/model.glb"
+                    break
 
     full_data = {
         "slug": slug,

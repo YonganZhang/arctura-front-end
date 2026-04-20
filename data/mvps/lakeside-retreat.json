@@ -3,7 +3,7 @@
   "cat": "hospitality",
   "type": "P2-architecture",
   "complete": false,
-  "model_glb": null,
+  "model_glb": "/assets/mvps/lakeside-retreat/variants/v1-nordic-cabin/model.glb",
   "project": {
     "name": "湖畔度假民宿 Lakeside Retreat · arch-13",
     "zh": "",

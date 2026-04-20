@@ -23,8 +23,16 @@ const D = new Proxy({}, {
 //   RESET         current = original · 清 history
 function projectReducer(state, action) {
   switch (action.type) {
-    case "SET_ORIGINAL":
-      return { current: action.data, original: action.data, history: [] };
+    case "SET_ORIGINAL": {
+      // 在 data 上钉 _baseline_* · 后续 compute 引用
+      const data = {
+        ...action.data,
+        _baseline_editable: { ...(action.data.editable || {}) },
+        _baseline_eui: action.data.energy?.eui ?? action.data.derived?.eui_kwh_m2_yr,
+        _baseline_cost_per_m2: action.data.pricing?.HK?.perM2 ?? action.data.derived?.cost_per_m2,
+      };
+      return { current: data, original: data, history: [] };
+    }
     case "APPLY_EDIT": {
       if (!action.newState) return state;
       return {
@@ -57,6 +65,7 @@ function useProject() {
 }
 
 // URL slug 解析：?mvp=<slug> 或 /project/<slug>/ 或 /project/
+// /project 默认进 20-zen-tea-room（有 3 个真 variants · 能完整演示 chat / 3D / variant 切换）
 function getSlugFromUrl() {
   const q = new URLSearchParams(location.search).get("mvp");
   if (q) return q;
@@ -65,7 +74,7 @@ function getSlugFromUrl() {
   if (parts[0] === "project" && parts[1] && parts[1] !== "index.html") {
     return parts[1];
   }
-  return null; // 用默认 zen-tea
+  return "20-zen-tea-room"; // 默认 slug · 不用 data.js 老 demo
 }
 
 // 缓存默认 data.js 的初始 ZEN_DATA · 不被后续 state 同步覆盖
@@ -178,26 +187,43 @@ function Topbar() {
 
 // ───────── Sidebar ─────────
 function Sidebar({ active, setActive }) {
+  useProject();
+  const proj = D.project || {};
+  const renders = D.renders || [];
+  const zones = D.zones || [];
+  const variants = D.variants?.list || [];
+  const pricing = D.pricing || {};
+  const rows = (pricing[D.editable?.region || "HK"] || pricing.HK || {}).rows || [];
+  const eui = D.derived?.eui_kwh_m2_yr ?? D.energy?.eui ?? "—";
+  const complianceCount = ((D.compliance?.HK?.items || D.compliance?.HK?.checks) || []).length;
+  const variantActiveId = D.active_variant_id;
   const items = [
     { id:"overview", label:"Overview", count:"—" },
-    { id:"renders", label:"Renders", count:"4" },
-    { id:"floorplan", label:"Floorplan", count:"6" },
-    { id:"3d", label:"3D Viewer", count:"115" },
-    { id:"boq", label:"BOQ · Pricing", count:"3" },
-    { id:"energy", label:"Energy", count:"EUI 84" },
-    { id:"compliance", label:"Compliance", count:"4" },
+    { id:"renders", label:"Renders", count: renders.length || "—" },
+    { id:"floorplan", label:"Floorplan", count: zones.length || "—" },
+    { id:"3d", label:"3D Viewer", count: D.model_glb ? "GLB" : "—" },
+    { id:"boq", label:"BOQ · Pricing", count: rows.length || "—" },
+    { id:"energy", label:"Energy", count: eui !== "—" ? `EUI ${eui}` : "—" },
+    { id:"compliance", label:"Compliance", count: complianceCount || "—" },
     { id:"whatif", label:"What-If", count:"5" },
-    { id:"variants", label:"A / B / C", count:"3" },
-    { id:"decks", label:"Decks", count:"8" },
-    { id:"timeline", label:"Timeline", count:"4" },
-    { id:"files", label:"Files", count:"9" }
+    { id:"variants", label: variants.length ? `A / B / C` : "Variants", count: variants.length || "—" },
+    { id:"decks", label:"Decks", count:(D.decks || []).length || "—" },
+    { id:"timeline", label:"Timeline", count: (D.timeline || []).length || "—" },
+    { id:"files", label:"Files", count: (D.downloads || []).length || "—" },
   ];
+  const projName = proj.name || D.slug || "Project";
+  const projZh = proj.zh || "";
+  const projMeta = [
+    proj.area ? `${proj.area} m²` : null,
+    proj.location || null,
+    variantActiveId || "v1",
+  ].filter(Boolean).join(" · ");
   return (
     <aside className="sidebar">
       <div className="sb-project">
-        <div className="sb-proj-name">Zen Tea Room</div>
-        <div className="sb-proj-zh">禅意茶室 · 新中式</div>
-        <div className="sb-proj-meta">40 m² · Hong Kong · v1</div>
+        <div className="sb-proj-name">{projName}</div>
+        {projZh && <div className="sb-proj-zh">{projZh}</div>}
+        <div className="sb-proj-meta">{projMeta}</div>
       </div>
       <div className="sb-section">
         <div className="sb-label">Artifacts</div>
@@ -1157,24 +1183,7 @@ function Renders() {
 }
 
 // ───────── Chat ─────────
-const SYSTEM_PROMPT = `You are the project assistant inside Arctura Labs — a tool that turns a one-sentence brief into a complete, buildable interior space (3D model, floorplan, BOQ, energy report, compliance check, stakeholder decks).
-
-You are currently open on the "Zen Tea Room" project:
-- 禅意茶室 · New-Chinese style · 40 m² · Hong Kong
-- Current total cost: HK$540k (HK$13,510/m²)
-- Current EUI: 84 kWh/m²·yr (44% under HK BEEO limit of 150)
-- Compliance: HK · BEEO — 7/8 passed (OTTV pending facade finalization)
-- 6 zones: Tea Ceremony 16m², Ink Gallery 6m², Tea Display 4m², Boiling Station 4m², Zen Garden 4m², Foyer 3m²
-- Delivered in 56 min, 1 day ago
-- Has 3 design variants: A-Scholar (HK$540k, EUI 84), B-Temple Minimal (HK$485k, EUI 78), C-Tea Merchant (HK$612k, EUI 92)
-
-The user can ask you to change anything — budget, material, code region, feel, dimensions, energy target. Respond as if you are actually regenerating the affected artifacts.
-
-Response format (STRICT — always exactly this shape):
-1. One short paragraph (1–3 sentences, max 50 words) explaining what you changed and the visible impact.
-2. A single line starting with "DIFF:" giving 2–4 numeric deltas separated by " · ", e.g. "DIFF: −HK$108k · EUI 84→71 · insulation +40mm". Use − for decrease, + for increase. Omit the DIFF line only if the message is a clarifying question.
-
-Tone: confident, specific, numeric. Never generic. Mix in Chinese only if the user writes in Chinese. Do not use bullet points or markdown headers. Do not ask "anything else?" — keep it tight.`;
+// 注 · 旧 SYSTEM_PROMPT 已废弃（/api/chat-edit 在服务端自己构造带 tool schema 的 prompt）。
 
 function Chat({ onNavigate }) {
   const { current, dispatch } = useProject();
@@ -1368,7 +1377,7 @@ function Chat({ onNavigate }) {
               verticalAlign: "1px"
             }}>Live</span>
           </div>
-          <div className="chat-sub">Editing · Zen Tea Room · v1</div>
+          <div className="chat-sub">Editing · {current?.project?.name || current?.slug || "—"}{current?.active_variant_id ? " · " + current.active_variant_id : ""}</div>
         </div>
         <button className="tb-btn" onClick={()=>onNavigate("timeline")}>History</button>
       </div>

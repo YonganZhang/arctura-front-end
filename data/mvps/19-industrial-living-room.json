@@ -3,7 +3,7 @@
   "cat": "residential",
   "type": "P1-interior",
   "complete": false,
-  "model_glb": null,
+  "model_glb": "/assets/mvps/19-industrial-living-room/variants/v1-modern/model.glb",
   "project": {
     "name": "工业风住宅客厅 Industrial Loft Living · v1",
     "zh": "",

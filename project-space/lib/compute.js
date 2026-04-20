@@ -62,31 +62,37 @@ function sanitize(e = {}) {
 
 // ───────── 公式 ─────────
 
-// EUI 增量模型 · 相对 baseline 84 kWh/m²·yr
-//   更厚保温 / 更低 U-value / 更低 CCT(warmer) / 更高 WWR / 更高灯密度 → EUI 变化
-// 签名方向均符合物理：better envelope → lower EUI
-export function recomputeEUI(editable) {
+// EUI 增量模型 · 从 baselineEditable / baselineEUI 做 delta（尊重 pipeline 真实值）
+// 参数：editable 当前值 · baselineEditable 原始值（可选）· baselineEUI 原始 EUI（可选）
+export function recomputeEUI(editable, baselineEditable, baselineEUI) {
   const e = sanitize(editable);
-  const BASELINE = 84;
-  const d_insul = -(e.insulation_mm - 60) * 0.30;              // 每多 10mm 保温 → -3 EUI
-  const d_glazing = (e.glazing_uvalue - 2.0) * 2.0;             // 每 +1 W/m²K U 值 → +2 EUI
-  const d_wwr = (e.wwr - 0.25) * 100 * 0.35;                    // WWR 每 +1% → +0.35 EUI
-  const d_cct = (3000 - e.lighting_cct) * 0.015;                // 每暖 100K → +1.5 EUI
-  const d_light = (e.lighting_density_w_m2 - 8) * 1.5;          // 灯密度每 +1 W/m² → +1.5 EUI
-  const eui = BASELINE + d_insul + d_glazing + d_wwr + d_cct + d_light;
+  const b = sanitize(baselineEditable || BASELINE_EDITABLE);
+  const base = Number(baselineEUI) && Number.isFinite(Number(baselineEUI)) ? Number(baselineEUI) : 84;
+  const d_insul = -(e.insulation_mm - b.insulation_mm) * 0.30;         // 每多 10mm 保温 → -3 EUI
+  const d_glazing = (e.glazing_uvalue - b.glazing_uvalue) * 2.0;        // U 值越高 → +EUI
+  const d_wwr = (e.wwr - b.wwr) * 100 * 0.35;                            // WWR 高 → +EUI
+  const d_cct = (b.lighting_cct - e.lighting_cct) * 0.015;               // 每暖 100K → +1.5 EUI
+  const d_light = (e.lighting_density_w_m2 - b.lighting_density_w_m2) * 1.5;  // 灯密度 → +EUI
+  const eui = base + d_insul + d_glazing + d_wwr + d_cct + d_light;
   return Math.max(30, Math.round(eui * 10) / 10);
 }
 
-// 成本模型 · area × base_per_m2 × region × (premium factors)
+// 成本模型 · baseline cost_per_m2 × region factor × premium factors × (area / baseline_area)
 // BOQ 展示的 6 个分档：direct subtotal · MEP(25%) · prelim(12%) · contingency(10%) · grand total
-export function recomputeCost(editable, cat = "other") {
+export function recomputeCost(editable, cat = "other", baselineEditable, baselineCostPerM2) {
   const e = sanitize(editable);
-  const base_per_m2 = BASE_COST_PER_M2[cat] || BASE_COST_PER_M2.other;
-  const region_fac = REGION_COST_FACTOR[e.region] || 1.0;
-  const insul_fac = 1 + (e.insulation_mm - 60) / 300;             // +1% 每 3mm
-  const glazing_fac = 1 - (e.glazing_uvalue - 2.0) * 0.05;        // U 每降 1 → +5%
-  const light_fac = 1 + (e.lighting_density_w_m2 - 8) * 0.004;    // 灯密度每 +1W → +0.4%
-  const per_m2 = Math.max(500, base_per_m2 * region_fac * insul_fac * glazing_fac * light_fac);
+  const b = sanitize(baselineEditable || BASELINE_EDITABLE);
+  // 优先用 pipeline baseline（按 HK 算的原始 perM2）· 否则退化到业态默认
+  const base_per_m2_hk = Number(baselineCostPerM2) || BASE_COST_PER_M2[cat] || BASE_COST_PER_M2.other;
+  // 区域因子（HK 为基准 · 若 baseline region 不是 HK 要先换到 HK 基准再换目标）
+  const baseline_region = b.region || "HK";
+  const to_hk = 1 / (REGION_COST_FACTOR[baseline_region] || 1.0);
+  const region_fac = (REGION_COST_FACTOR[e.region] || 1.0) * to_hk;
+  // 增量因子（相对 baseline editable）
+  const insul_fac = 1 + (e.insulation_mm - b.insulation_mm) / 300;         // 每 +3mm → +1%
+  const glazing_fac = 1 - (e.glazing_uvalue - b.glazing_uvalue) * 0.05;    // U 值每降 1 → +5%
+  const light_fac = 1 + (e.lighting_density_w_m2 - b.lighting_density_w_m2) * 0.004;
+  const per_m2 = Math.max(500, base_per_m2_hk * region_fac * insul_fac * glazing_fac * light_fac);
   const total = per_m2 * e.area_m2;
   // BOQ 细项拆解：直接工程量 / MEP 25% / 前期 12% / 应急 10%（合计 1.47 系数）
   // 所以 direct_subtotal = total / 1.47
@@ -107,10 +113,10 @@ export function recomputeCost(editable, cat = "other") {
     cont: fmt(cont),
     total_fmt: fmt(total),
     breakdown: {
-      base: Math.round(base_per_m2 * region_fac * e.area_m2),
-      insul_premium: Math.round((insul_fac - 1) * base_per_m2 * region_fac * e.area_m2),
-      glazing_premium: Math.round((glazing_fac - 1) * base_per_m2 * region_fac * e.area_m2),
-      light_premium: Math.round((light_fac - 1) * base_per_m2 * region_fac * e.area_m2),
+      base: Math.round(base_per_m2_hk * region_fac * e.area_m2),
+      insul_premium: Math.round((insul_fac - 1) * base_per_m2_hk * region_fac * e.area_m2),
+      glazing_premium: Math.round((glazing_fac - 1) * base_per_m2_hk * region_fac * e.area_m2),
+      light_premium: Math.round((light_fac - 1) * base_per_m2_hk * region_fac * e.area_m2),
     },
   };
 }
@@ -133,10 +139,10 @@ function computeRoofU(insulation_mm) {
   return 1 / (R_air_in + R_insul + R_slab + R_air_out);
 }
 
-export function recomputeCompliance(editable) {
+export function recomputeCompliance(editable, baselineEditable, baselineEUI) {
   const e = sanitize(editable);
   const code = COMPLIANCE_CODES[e.region] || COMPLIANCE_CODES.HK;
-  const eui = recomputeEUI(e);
+  const eui = recomputeEUI(e, baselineEditable, baselineEUI);
   const wall_u = computeWallU(e.insulation_mm);
   const roof_u = computeRoofU(e.insulation_mm);
   const window_u = e.glazing_uvalue;
@@ -176,12 +182,16 @@ export function recomputeCompliance(editable) {
 }
 
 // 一体化：根据 state.editable 刷新 derived / energy / pricing / compliance
+// 优先用 state._baseline_* 作为 reference（尊重 pipeline 值）
 export function recomputeAll(state) {
   const cat = state.cat || "other";
   const e = sanitize(state.editable);
-  const eui = recomputeEUI(e);
-  const cost = recomputeCost(e, cat);
-  const comp = recomputeCompliance(e);
+  const baseline_editable = state._baseline_editable;
+  const baseline_eui = state._baseline_eui;
+  const baseline_cost_per_m2 = state._baseline_cost_per_m2;
+  const eui = recomputeEUI(e, baseline_editable, baseline_eui);
+  const cost = recomputeCost(e, cat, baseline_editable, baseline_cost_per_m2);
+  const comp = recomputeCompliance(e, baseline_editable, baseline_eui);
   const co2_t = Math.round(eui * e.area_m2 * 0.59 / 1000 * 100) / 100;
   const annual = Math.round(eui * e.area_m2);
 

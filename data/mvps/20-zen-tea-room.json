@@ -3,7 +3,7 @@
   "cat": "hospitality",
   "type": "P1-interior",
   "complete": false,
-  "model_glb": null,
+  "model_glb": "/assets/mvps/20-zen-tea-room/variants/v1-new-chinese/model.glb",
   "project": {
     "name": "Zen Tea Room · Neo-Chinese",
     "zh": "",
