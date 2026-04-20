@@ -1,0 +1,110 @@
+{
+  "slug": "lakeside-retreat",
+  "complete": false,
+  "project": {
+    "name": "湖畔度假民宿 Lakeside Retreat · arch-13",
+    "zh": "",
+    "area": 0,
+    "location": "Hong Kong",
+    "budgetHKD": 6000000,
+    "style": "awaiting-variant-axis",
+    "palette": []
+  },
+  "renders": [
+    {
+      "id": "interior",
+      "file": "/assets/mvps/lakeside-retreat/renders/interior.webp",
+      "title": "Interior",
+      "tag": "interior"
+    },
+    {
+      "id": "massing",
+      "file": "/assets/mvps/lakeside-retreat/renders/massing.webp",
+      "title": "Massing",
+      "tag": "massing"
+    },
+    {
+      "id": "elev-E",
+      "file": "/assets/mvps/lakeside-retreat/renders/elev-E.webp",
+      "title": "Elev E",
+      "tag": "elev-E"
+    },
+    {
+      "id": "elev-N",
+      "file": "/assets/mvps/lakeside-retreat/renders/elev-N.webp",
+      "title": "Elev N",
+      "tag": "elev-N"
+    },
+    {
+      "id": "elev-S",
+      "file": "/assets/mvps/lakeside-retreat/renders/elev-S.webp",
+      "title": "Elev S",
+      "tag": "elev-S"
+    },
+    {
+      "id": "elev-W",
+      "file": "/assets/mvps/lakeside-retreat/renders/elev-W.webp",
+      "title": "Elev W",
+      "tag": "elev-W"
+    },
+    {
+      "id": "floor-F1",
+      "file": "/assets/mvps/lakeside-retreat/renders/floor-F1.webp",
+      "title": "Floor F1",
+      "tag": "floor-F1"
+    },
+    {
+      "id": "floor-F2",
+      "file": "/assets/mvps/lakeside-retreat/renders/floor-F2.webp",
+      "title": "Floor F2",
+      "tag": "floor-F2"
+    },
+    {
+      "id": "site-plan",
+      "file": "/assets/mvps/lakeside-retreat/renders/site-plan.webp",
+      "title": "Site Plan",
+      "tag": "site-plan"
+    }
+  ],
+  "floorplan": null,
+  "moodboard": null,
+  "hero_img": "/assets/mvps/lakeside-retreat/hero.webp",
+  "thumb_img": "/assets/mvps/lakeside-retreat/thumb.webp",
+  "zones": [],
+  "furniture": [],
+  "pricing": {
+    "HK": {
+      "label": "Hong Kong",
+      "currency": "HK$",
+      "perM2": 0,
+      "rows": [],
+      "total": 0
+    }
+  },
+  "energy": {
+    "eui": 0,
+    "limit": 150,
+    "annual": 0,
+    "engine": "EnergyPlus"
+  },
+  "compliance": {
+    "HK": {
+      "code": "HK_BEEO_BEC_2021",
+      "checks": [],
+      "verdict": "—"
+    }
+  },
+  "variants": {
+    "list": []
+  },
+  "timeline": [],
+  "decks": [],
+  "downloads": [
+    {
+      "name": "lakeside-retreat-bundle.zip",
+      "ext": "zip",
+      "sub": "All artifacts",
+      "size": "TBD"
+    }
+  ]
+}

@@ -1,0 +1,315 @@
+{
+  "slug": "22-luxury-penthouse",
+  "complete": false,
+  "project": {
+    "name": "半山豪华顶层公寓",
+    "zh": "",
+    "area": 130,
+    "location": "Hong Kong",
+    "budgetHKD": 0,
+    "style": "modern-luxury, penthouse, champagne-gold, walnut, marble",
+    "palette": [
+      {
+        "name": "ivory_white",
+        "hex": "#F5F0E8"
+      },
+      {
+        "name": "champagne_gold",
+        "hex": "#D4AF37"
+      },
+      {
+        "name": "dark_walnut",
+        "hex": "#3E2723"
+      },
+      {
+        "name": "slate_blue",
+        "hex": "#4A5568"
+      },
+      {
+        "name": "warm_grey",
+        "hex": "#9E9E9E"
+      },
+      {
+        "name": "marble_white",
+        "hex": "#F0EDE5"
+      }
+    ]
+  },
+  "renders": [],
+  "floorplan": "/assets/mvps/22-luxury-penthouse/floorplan.webp",
+  "moodboard": "/assets/mvps/22-luxury-penthouse/moodboard.webp",
+  "hero_img": "/assets/mvps/22-luxury-penthouse/hero.webp",
+  "thumb_img": "/assets/mvps/22-luxury-penthouse/thumb.webp",
+  "zones": [
+    {
+      "id": "客厅",
+      "name": "客厅",
+      "zh": "",
+      "area": 35,
+      "notes": "",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "餐厅",
+      "name": "餐厅",
+      "zh": "",
+      "area": 20,
+      "notes": "",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "开放式厨房",
+      "name": "开放式厨房",
+      "zh": "",
+      "area": 15,
+      "notes": "",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "书房",
+      "name": "书房",
+      "zh": "",
+      "area": 15,
+      "notes": "",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "主卧",
+      "name": "主卧",
+      "zh": "",
+      "area": 25,
+      "notes": "",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "卫浴",
+      "name": "卫浴",
+      "zh": "",
+      "area": 10,
+      "notes": "",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "入口玄关",
+      "name": "入口玄关",
+      "zh": "",
+      "area": 10,
+      "notes": "",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    }
+  ],
+  "furniture": [],
+  "pricing": {
+    "HK": {
+      "label": "Hong Kong",
+      "currency": "HK$",
+      "perM2": 0,
+      "rows": [
+        {
+          "cat": "1",
+          "desc": "slab",
+          "sub": "F1 Floor Slab — RC slab (120mm) incl. formwork + rebar",
+          "qty": "130.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "2",
+          "desc": "wall",
+          "sub": "F1 Exterior Walls — Brick wall no insulation (U>1.2, legacy)",
+          "qty": "138,000.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "3",
+          "desc": "wall",
+          "sub": "F1 Interior Partitions — Gypsum board partition (double-sided)",
+          "qty": "50.4",
+          "amt": "m2"
+        },
+        {
+          "cat": "4",
+          "desc": "window",
+          "sub": "F1 Windows — Single glazing + aluminum frame (legacy)",
+          "qty": "41,400.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "5",
+          "desc": "door",
+          "sub": "F1 Doors — Solid wood door (900mm) + frame + hardware",
+          "qty": "6.0",
+          "amt": "ea"
+        },
+        {
+          "cat": "6",
+          "desc": "finish",
+          "sub": "F1_living Floor Finish — Carpet with underlay",
+          "qty": "35.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "7",
+          "desc": "finish",
+          "sub": "F1_dining Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "20.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "8",
+          "desc": "finish",
+          "sub": "F1_kitchen Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "15.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "9",
+          "desc": "finish",
+          "sub": "F1_study Floor Finish — Carpet with underlay",
+          "qty": "15.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "10",
+          "desc": "finish",
+          "sub": "F1_master_bed Floor Finish — Carpet with underlay",
+          "qty": "25.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "11",
+          "desc": "finish",
+          "sub": "F1_bathroom Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "10.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "12",
+          "desc": "finish",
+          "sub": "F1_entry Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "10.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "13",
+          "desc": "roof",
+          "sub": "Roof — RC roof slab + waterproofing + insulation (U≤0.80)",
+          "qty": "130,000,000.0",
+          "amt": "m2"
+        }
+      ],
+      "total": 0
+    }
+  },
+  "energy": {
+    "eui": 0,
+    "limit": 150,
+    "annual": 0,
+    "engine": "EnergyPlus"
+  },
+  "compliance": {
+    "HK": {
+      "code": "HK_BEEO_BEC_2021",
+      "checks": [
+        {
+          "name": "Energy Energy Use Intensity (EUI)",
+          "value": "2929163255.7",
+          "limit": "150",
+          "unit": "kWh/m2*yr",
+          "status": "fail",
+          "note": "1952775504% of limit"
+        },
+        {
+          "name": "Envelope Exterior Wall U-value",
+          "value": "1.8",
+          "limit": "1.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Roof U-value",
+          "value": "0.8",
+          "limit": "0.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Window U-value",
+          "value": "5.8",
+          "limit": "5.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Window SHGC",
+          "value": "0.8",
+          "limit": "0.6",
+          "unit": "—",
+          "status": "fail",
+          "note": ""
+        },
+        {
+          "name": "Envelope OTTV (Overall Thermal Transfer Value)",
+          "value": "needs facade analysis",
+          "limit": "25.0",
+          "unit": "W/m2",
+          "status": "pass",
+          "note": "OTTV requires detailed facade WWR + orientation data — not yet calculated."
+        },
+        {
+          "name": "Lighting Lighting Power Density",
+          "value": "6.0",
+          "limit": "10.0",
+          "unit": "W/m2",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Ventilation Fresh Air (ACH)",
+          "value": "0.5",
+          "limit": "0.5",
+          "unit": "ACH",
+          "status": "pass",
+          "note": ""
+        }
+      ],
+      "verdict": "—"
+    }
+  },
+  "variants": {
+    "list": []
+  },
+  "timeline": [],
+  "decks": [],
+  "downloads": [
+    {
+      "name": "22-luxury-penthouse-bundle.zip",
+      "ext": "zip",
+      "sub": "All artifacts",
+      "size": "TBD"
+    }
+  ]
+}

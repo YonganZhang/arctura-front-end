@@ -1,0 +1,133 @@
+{
+  "slug": "21-esports-streaming",
+  "complete": false,
+  "project": {
+    "name": "电竞直播间 · P10 甄选 3 方案",
+    "zh": "",
+    "area": 50,
+    "location": "Hong Kong",
+    "budgetHKD": 0,
+    "style": "esports, streaming, dual-streamer, LED-lighting, acoustic",
+    "palette": []
+  },
+  "renders": [],
+  "floorplan": null,
+  "moodboard": null,
+  "hero_img": "/assets/mvps/21-esports-streaming/hero.webp",
+  "thumb_img": "/assets/mvps/21-esports-streaming/thumb.webp",
+  "zones": [
+    {
+      "id": "主播台",
+      "name": "主播台",
+      "zh": "",
+      "area": 12,
+      "notes": "",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "摄影灯光区",
+      "name": "摄影灯光区",
+      "zh": "",
+      "area": 4,
+      "notes": "",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "设备间/机柜区",
+      "name": "设备间/机柜区",
+      "zh": "",
+      "area": 6,
+      "notes": "",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "休息区",
+      "name": "休息区",
+      "zh": "",
+      "area": 10,
+      "notes": "",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "背景墙",
+      "name": "背景墙",
+      "zh": "",
+      "area": 8,
+      "notes": "",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "储物区",
+      "name": "储物区",
+      "zh": "",
+      "area": 4,
+      "notes": "",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "入口/过渡区",
+      "name": "入口/过渡区",
+      "zh": "",
+      "area": 6,
+      "notes": "",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    }
+  ],
+  "furniture": [],
+  "pricing": {
+    "HK": {
+      "label": "Hong Kong",
+      "currency": "HK$",
+      "perM2": 0,
+      "rows": [],
+      "total": 0
+    }
+  },
+  "energy": {
+    "eui": 0,
+    "limit": 150,
+    "annual": 0,
+    "engine": "EnergyPlus"
+  },
+  "compliance": {
+    "HK": {
+      "code": "HK_BEEO_BEC_2021",
+      "checks": [],
+      "verdict": "—"
+    }
+  },
+  "variants": {
+    "list": []
+  },
+  "timeline": [],
+  "decks": [],
+  "downloads": [
+    {
+      "name": "21-esports-streaming-bundle.zip",
+      "ext": "zip",
+      "sub": "All artifacts",
+      "size": "TBD"
+    }
+  ]
+}

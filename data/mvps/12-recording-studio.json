@@ -1,0 +1,382 @@
+{
+  "slug": "12-recording-studio",
+  "complete": true,
+  "project": {
+    "name": "录音播客棚 Sound Box · v1",
+    "zh": "",
+    "area": 100,
+    "location": "Hong Kong",
+    "budgetHKD": 0,
+    "style": "acoustic-modern, dark-warm, sound-treated, broadcast-professional",
+    "palette": [
+      {
+        "name": "charcoal_wall",
+        "hex": "#1F1F22"
+      },
+      {
+        "name": "acoustic_wood",
+        "hex": "#8B6F4E"
+      },
+      {
+        "name": "brass_accent",
+        "hex": "#B89968"
+      },
+      {
+        "name": "soft_cream",
+        "hex": "#ECE6D8"
+      },
+      {
+        "name": "accent_purple",
+        "hex": "#5D3A6B"
+      },
+      {
+        "name": "moss_green",
+        "hex": "#5A7456"
+      }
+    ]
+  },
+  "renders": [
+    {
+      "id": "01",
+      "file": "/assets/mvps/12-recording-studio/renders/01_hero_corner.webp",
+      "title": "01 Hero Corner",
+      "tag": "01_hero_corner"
+    },
+    {
+      "id": "02",
+      "file": "/assets/mvps/12-recording-studio/renders/02_reception.webp",
+      "title": "02 Reception",
+      "tag": "02_reception"
+    },
+    {
+      "id": "03",
+      "file": "/assets/mvps/12-recording-studio/renders/03_main_zone.webp",
+      "title": "03 Main Zone",
+      "tag": "03_main_zone"
+    },
+    {
+      "id": "04",
+      "file": "/assets/mvps/12-recording-studio/renders/04_feature_zone.webp",
+      "title": "04 Feature Zone",
+      "tag": "04_feature_zone"
+    },
+    {
+      "id": "05",
+      "file": "/assets/mvps/12-recording-studio/renders/05_lounge_zone.webp",
+      "title": "05 Lounge Zone",
+      "tag": "05_lounge_zone"
+    },
+    {
+      "id": "06",
+      "file": "/assets/mvps/12-recording-studio/renders/06_back_corner.webp",
+      "title": "06 Back Corner",
+      "tag": "06_back_corner"
+    },
+    {
+      "id": "07",
+      "file": "/assets/mvps/12-recording-studio/renders/07_top_ortho.webp",
+      "title": "07 Top Ortho",
+      "tag": "07_top_ortho"
+    },
+    {
+      "id": "08",
+      "file": "/assets/mvps/12-recording-studio/renders/08_birds_eye_3d.webp",
+      "title": "08 Birds Eye 3D",
+      "tag": "08_birds_eye_3d"
+    }
+  ],
+  "floorplan": "/assets/mvps/12-recording-studio/floorplan.webp",
+  "moodboard": "/assets/mvps/12-recording-studio/moodboard.webp",
+  "hero_img": "/assets/mvps/12-recording-studio/hero.webp",
+  "thumb_img": "/assets/mvps/12-recording-studio/thumb.webp",
+  "zones": [
+    {
+      "id": "入口接待",
+      "name": "入口接待",
+      "zh": "",
+      "area": 8,
+      "notes": "接待台, 等候沙发",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "控制室",
+      "name": "控制室",
+      "zh": "",
+      "area": 22,
+      "notes": "4 工位, 大监听屏, 监听音箱",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "主录音棚",
+      "name": "主录音棚",
+      "zh": "",
+      "area": 18,
+      "notes": "隔音玻璃墙, 大麦克风, 谱架, 录音椅",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "播客对话室",
+      "name": "播客对话室",
+      "zh": "",
+      "area": 18,
+      "notes": "圆桌, 4 播客椅, 4 麦克风",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "设备机柜室",
+      "name": "设备机柜室",
+      "zh": "",
+      "area": 10,
+      "notes": "3 高瘦机柜, 跳线架",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "客户休息区",
+      "name": "客户休息区",
+      "zh": "",
+      "area": 10,
+      "notes": "沙发, 茶几",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "储物",
+      "name": "储物",
+      "zh": "",
+      "area": 6,
+      "notes": "储物柜",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "卫生间",
+      "name": "卫生间",
+      "zh": "",
+      "area": 8,
+      "notes": "洗手台, 隔断",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    }
+  ],
+  "furniture": [],
+  "pricing": {
+    "HK": {
+      "label": "Hong Kong",
+      "currency": "HK$",
+      "perM2": 10290,
+      "rows": [
+        {
+          "cat": "1",
+          "desc": "slab",
+          "sub": "F1 Floor Slab — RC slab (120mm) incl. formwork + rebar",
+          "qty": "100.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "2",
+          "desc": "wall",
+          "sub": "F1 Exterior Walls — Common brick wall (200mm) incl. render",
+          "qty": "140.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "3",
+          "desc": "wall",
+          "sub": "F1 Interior Partitions — Gypsum board partition (double-sided)",
+          "qty": "67.2",
+          "amt": "m2"
+        },
+        {
+          "cat": "4",
+          "desc": "window",
+          "sub": "F1 Windows — Thermal-break aluminum + Low-E double glazing",
+          "qty": "42.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "5",
+          "desc": "door",
+          "sub": "F1 Doors — Solid wood door (900mm) + frame + hardware",
+          "qty": "8.0",
+          "amt": "ea"
+        },
+        {
+          "cat": "6",
+          "desc": "finish",
+          "sub": "F1_zone Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "8.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "7",
+          "desc": "finish",
+          "sub": "F1_zone_2 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "22.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "8",
+          "desc": "finish",
+          "sub": "F1_zone_3 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "18.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "9",
+          "desc": "finish",
+          "sub": "F1_zone_4 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "18.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "10",
+          "desc": "finish",
+          "sub": "F1_utility Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "10.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "11",
+          "desc": "finish",
+          "sub": "F1_lounge Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "10.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "12",
+          "desc": "finish",
+          "sub": "F1_zone_5 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "6.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "13",
+          "desc": "finish",
+          "sub": "F1_bathroom Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "8.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "14",
+          "desc": "roof",
+          "sub": "Roof — RC roof slab + waterproofing + insulation",
+          "qty": "100.0",
+          "amt": "m2"
+        }
+      ],
+      "total": 1029015.77
+    }
+  },
+  "energy": {
+    "eui": 114.75,
+    "limit": 150,
+    "annual": 11475.01,
+    "engine": "EnergyPlus"
+  },
+  "compliance": {
+    "HK": {
+      "code": "HK_BEEO_BEC_2021",
+      "checks": [
+        {
+          "name": "Energy Energy Use Intensity (EUI)",
+          "value": "114.8",
+          "limit": "150",
+          "unit": "kWh/m2*yr",
+          "status": "pass",
+          "note": "76% of limit"
+        },
+        {
+          "name": "Envelope Exterior Wall U-value",
+          "value": "0.555",
+          "limit": "1.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Roof U-value",
+          "value": "0.498",
+          "limit": "0.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Window U-value",
+          "value": "2.0",
+          "limit": "5.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Window SHGC",
+          "value": "0.6",
+          "limit": "0.6",
+          "unit": "—",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope OTTV (Overall Thermal Transfer Value)",
+          "value": "needs facade analysis",
+          "limit": "25.0",
+          "unit": "W/m2",
+          "status": "pass",
+          "note": "OTTV requires detailed facade WWR + orientation data — not yet calculated."
+        },
+        {
+          "name": "Lighting Lighting Power Density",
+          "value": "8.0",
+          "limit": "10.0",
+          "unit": "W/m2",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Ventilation Fresh Air (ACH)",
+          "value": "0.7",
+          "limit": "0.5",
+          "unit": "ACH",
+          "status": "pass",
+          "note": ""
+        }
+      ],
+      "verdict": "COMPLIANT"
+    }
+  },
+  "variants": {
+    "list": []
+  },
+  "timeline": [],
+  "decks": [],
+  "downloads": [
+    {
+      "name": "12-recording-studio-bundle.zip",
+      "ext": "zip",
+      "sub": "All artifacts",
+      "size": "TBD"
+    }
+  ]
+}

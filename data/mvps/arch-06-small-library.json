@@ -1,0 +1,459 @@
+{
+  "slug": "arch-06-small-library",
+  "complete": false,
+  "project": {
+    "name": "社区小型图书馆 Bookhaven Library",
+    "zh": "",
+    "area": 287,
+    "location": "Hong Kong",
+    "budgetHKD": 0,
+    "style": "modern warm, wood + concrete, park-adjacent, daylight-driven, accessible",
+    "palette": [
+      {
+        "name": "warm_wood_oak",
+        "hex": "#B08654"
+      },
+      {
+        "name": "concrete_light",
+        "hex": "#C7C1B6"
+      },
+      {
+        "name": "deep_green_soft",
+        "hex": "#3B5A47"
+      },
+      {
+        "name": "white_plaster",
+        "hex": "#F4EFE6"
+      },
+      {
+        "name": "bronze_window",
+        "hex": "#8A6B45"
+      },
+      {
+        "name": "slate_roof",
+        "hex": "#4A4E54"
+      }
+    ]
+  },
+  "renders": [
+    {
+      "id": "interior",
+      "file": "/assets/mvps/arch-06-small-library/renders/interior.webp",
+      "title": "Interior",
+      "tag": "interior"
+    },
+    {
+      "id": "massing",
+      "file": "/assets/mvps/arch-06-small-library/renders/massing.webp",
+      "title": "Massing",
+      "tag": "massing"
+    },
+    {
+      "id": "elev-E",
+      "file": "/assets/mvps/arch-06-small-library/renders/elev-E.webp",
+      "title": "Elev E",
+      "tag": "elev-E"
+    },
+    {
+      "id": "elev-N",
+      "file": "/assets/mvps/arch-06-small-library/renders/elev-N.webp",
+      "title": "Elev N",
+      "tag": "elev-N"
+    },
+    {
+      "id": "elev-S",
+      "file": "/assets/mvps/arch-06-small-library/renders/elev-S.webp",
+      "title": "Elev S",
+      "tag": "elev-S"
+    },
+    {
+      "id": "elev-W",
+      "file": "/assets/mvps/arch-06-small-library/renders/elev-W.webp",
+      "title": "Elev W",
+      "tag": "elev-W"
+    },
+    {
+      "id": "floor-F1",
+      "file": "/assets/mvps/arch-06-small-library/renders/floor-F1.webp",
+      "title": "Floor F1",
+      "tag": "floor-F1"
+    },
+    {
+      "id": "floor-F2",
+      "file": "/assets/mvps/arch-06-small-library/renders/floor-F2.webp",
+      "title": "Floor F2",
+      "tag": "floor-F2"
+    },
+    {
+      "id": "floor-roof",
+      "file": "/assets/mvps/arch-06-small-library/renders/floor-roof.webp",
+      "title": "Floor Roof",
+      "tag": "floor-roof"
+    },
+    {
+      "id": "site-plan",
+      "file": "/assets/mvps/arch-06-small-library/renders/site-plan.webp",
+      "title": "Site Plan",
+      "tag": "site-plan"
+    }
+  ],
+  "floorplan": null,
+  "moodboard": "/assets/mvps/arch-06-small-library/moodboard.webp",
+  "hero_img": "/assets/mvps/arch-06-small-library/hero.webp",
+  "thumb_img": "/assets/mvps/arch-06-small-library/thumb.webp",
+  "zones": [],
+  "furniture": [],
+  "pricing": {
+    "HK": {
+      "label": "Hong Kong",
+      "currency": "HK$",
+      "perM2": 3736,
+      "rows": [
+        {
+          "cat": "1",
+          "desc": "slab",
+          "sub": "1 Floor Slab — RC slab (120mm) incl. formwork + rebar",
+          "qty": "493.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "2",
+          "desc": "slab",
+          "sub": "2 Floor Slab — RC slab (120mm) incl. formwork + rebar",
+          "qty": "418.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "3",
+          "desc": "slab",
+          "sub": "3 Floor Slab — RC slab (120mm) incl. formwork + rebar",
+          "qty": "300.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "4",
+          "desc": "wall",
+          "sub": "1 Exterior Walls — Common brick wall (200mm) incl. render",
+          "qty": "120.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "5",
+          "desc": "wall",
+          "sub": "1 Interior Partitions — Gypsum board partition (double-sided)",
+          "qty": "72.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "6",
+          "desc": "wall",
+          "sub": "2 Exterior Walls — Common brick wall (200mm) incl. render",
+          "qty": "120.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "7",
+          "desc": "wall",
+          "sub": "2 Interior Partitions — Gypsum board partition (double-sided)",
+          "qty": "57.6",
+          "amt": "m2"
+        },
+        {
+          "cat": "8",
+          "desc": "wall",
+          "sub": "3 Exterior Walls — Common brick wall (200mm) incl. render",
+          "qty": "120.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "9",
+          "desc": "wall",
+          "sub": "3 Interior Partitions — Gypsum board partition (double-sided)",
+          "qty": "14.4",
+          "amt": "m2"
+        },
+        {
+          "cat": "10",
+          "desc": "window",
+          "sub": "1 Windows — Thermal-break aluminum + Low-E double glazing",
+          "qty": "36.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "11",
+          "desc": "window",
+          "sub": "2 Windows — Thermal-break aluminum + Low-E double glazing",
+          "qty": "36.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "12",
+          "desc": "window",
+          "sub": "3 Windows — Thermal-break aluminum + Low-E double glazing",
+          "qty": "36.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "13",
+          "desc": "door",
+          "sub": "1 Doors — Solid wood door (900mm) + frame + hardware",
+          "qty": "9.0",
+          "amt": "ea"
+        },
+        {
+          "cat": "14",
+          "desc": "door",
+          "sub": "2 Doors — Solid wood door (900mm) + frame + hardware",
+          "qty": "7.0",
+          "amt": "ea"
+        },
+        {
+          "cat": "15",
+          "desc": "door",
+          "sub": "3 Doors — Solid wood door (900mm) + frame + hardware",
+          "qty": "1.0",
+          "amt": "ea"
+        },
+        {
+          "cat": "16",
+          "desc": "finish",
+          "sub": "1_lobby Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "35.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "17",
+          "desc": "finish",
+          "sub": "1_zone Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "25.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "18",
+          "desc": "finish",
+          "sub": "1_bathroom Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "18.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "19",
+          "desc": "finish",
+          "sub": "1_zone_2 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "180.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "20",
+          "desc": "finish",
+          "sub": "1_zone_3 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "80.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "21",
+          "desc": "finish",
+          "sub": "1_zone_4 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "80.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "22",
+          "desc": "finish",
+          "sub": "1_lounge Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "20.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "23",
+          "desc": "finish",
+          "sub": "1_utility Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "12.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "24",
+          "desc": "finish",
+          "sub": "1_stair Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "18.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "25",
+          "desc": "finish",
+          "sub": "1_9m Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "25.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "26",
+          "desc": "finish",
+          "sub": "2_zone Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "45.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "27",
+          "desc": "finish",
+          "sub": "2_zone_2 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "150.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "28",
+          "desc": "finish",
+          "sub": "2_zone_3 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "60.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "29",
+          "desc": "finish",
+          "sub": "2_A Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "30.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "30",
+          "desc": "finish",
+          "sub": "2_B Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "30.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "31",
+          "desc": "finish",
+          "sub": "2_zone_4 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "60.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "32",
+          "desc": "finish",
+          "sub": "2_meeting Floor Finish — Carpet with underlay",
+          "qty": "25.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "33",
+          "desc": "finish",
+          "sub": "2_stair Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "18.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "34",
+          "desc": "finish",
+          "sub": "3_zone Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "260.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "35",
+          "desc": "roof",
+          "sub": "Roof — RC roof slab + waterproofing + insulation",
+          "qty": "100.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "36",
+          "desc": "stair",
+          "sub": "Stairs (1 flights) — RC stair flight (one floor) + railing",
+          "qty": "1.0",
+          "amt": "flight"
+        }
+      ],
+      "total": 4524104.42
+    }
+  },
+  "energy": {
+    "eui": 206.62,
+    "limit": 150,
+    "annual": 59230.6,
+    "engine": "EnergyPlus"
+  },
+  "compliance": {
+    "HK": {
+      "code": "HK_BEEO_BEC_2021",
+      "checks": [
+        {
+          "name": "Energy Energy Use Intensity (EUI)",
+          "value": "206.6",
+          "limit": "200",
+          "unit": "kWh/m2*yr",
+          "status": "fail",
+          "note": "103% of limit"
+        },
+        {
+          "name": "Envelope Exterior Wall U-value",
+          "value": "0.555",
+          "limit": "1.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Roof U-value",
+          "value": "0.498",
+          "limit": "0.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Window U-value",
+          "value": "2.0",
+          "limit": "5.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Window SHGC",
+          "value": "0.6",
+          "limit": "0.6",
+          "unit": "—",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope OTTV (Overall Thermal Transfer Value)",
+          "value": "needs facade analysis",
+          "limit": "25.0",
+          "unit": "W/m2",
+          "status": "pass",
+          "note": "OTTV requires detailed facade WWR + orientation data — not yet calculated."
+        },
+        {
+          "name": "Lighting Lighting Power Density",
+          "value": "8.0",
+          "limit": "12.0",
+          "unit": "W/m2",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Ventilation Fresh Air (ACH)",
+          "value": "0.7",
+          "limit": "0.7",
+          "unit": "ACH",
+          "status": "pass",
+          "note": ""
+        }
+      ],
+      "verdict": "CONDITIONAL — minor remediation needed"
+    }
+  },
+  "variants": {
+    "list": []
+  },
+  "timeline": [],
+  "decks": [],
+  "downloads": [
+    {
+      "name": "arch-06-small-library-bundle.zip",
+      "ext": "zip",
+      "sub": "All artifacts",
+      "size": "TBD"
+    }
+  ]
+}

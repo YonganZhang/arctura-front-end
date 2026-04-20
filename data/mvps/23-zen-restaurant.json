@@ -1,0 +1,315 @@
+{
+  "slug": "23-zen-restaurant",
+  "complete": false,
+  "project": {
+    "name": "禅意日料餐厅",
+    "zh": "",
+    "area": 100,
+    "location": "Hong Kong",
+    "budgetHKD": 0,
+    "style": "wabi-sabi, zen, japanese, natural-wood, stone, minimal",
+    "palette": [
+      {
+        "name": "warm_cedar",
+        "hex": "#A0826D"
+      },
+      {
+        "name": "stone_grey",
+        "hex": "#8C8279"
+      },
+      {
+        "name": "charcoal",
+        "hex": "#2C2C2C"
+      },
+      {
+        "name": "rice_paper",
+        "hex": "#F5F0E0"
+      },
+      {
+        "name": "moss_green",
+        "hex": "#6B7B3A"
+      },
+      {
+        "name": "indigo_accent",
+        "hex": "#2C3E6B"
+      }
+    ]
+  },
+  "renders": [],
+  "floorplan": "/assets/mvps/23-zen-restaurant/floorplan.webp",
+  "moodboard": "/assets/mvps/23-zen-restaurant/moodboard.webp",
+  "hero_img": "/assets/mvps/23-zen-restaurant/hero.webp",
+  "thumb_img": "/assets/mvps/23-zen-restaurant/thumb.webp",
+  "zones": [
+    {
+      "id": "omakase吧台",
+      "name": "Omakase吧台",
+      "zh": "",
+      "area": 18,
+      "notes": "",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "散座区",
+      "name": "散座区",
+      "zh": "",
+      "area": 28,
+      "notes": "",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "包间×2",
+      "name": "包间×2",
+      "zh": "",
+      "area": 16,
+      "notes": "",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "开放式厨房",
+      "name": "开放式厨房",
+      "zh": "",
+      "area": 15,
+      "notes": "",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "等候区/玄关",
+      "name": "等候区/玄关",
+      "zh": "",
+      "area": 8,
+      "notes": "",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "卫生间",
+      "name": "卫生间",
+      "zh": "",
+      "area": 8,
+      "notes": "",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "储物/后勤",
+      "name": "储物/后勤",
+      "zh": "",
+      "area": 7,
+      "notes": "",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    }
+  ],
+  "furniture": [],
+  "pricing": {
+    "HK": {
+      "label": "Hong Kong",
+      "currency": "HK$",
+      "perM2": 0,
+      "rows": [
+        {
+          "cat": "1",
+          "desc": "slab",
+          "sub": "F1 Floor Slab — RC slab (120mm) incl. formwork + rebar",
+          "qty": "100.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "2",
+          "desc": "wall",
+          "sub": "F1 Exterior Walls — Brick wall no insulation (U>1.2, legacy)",
+          "qty": "123,000.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "3",
+          "desc": "wall",
+          "sub": "F1 Interior Partitions — Gypsum board partition (double-sided)",
+          "qty": "50.4",
+          "amt": "m2"
+        },
+        {
+          "cat": "4",
+          "desc": "window",
+          "sub": "F1 Windows — Single glazing + aluminum frame (legacy)",
+          "qty": "36,900.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "5",
+          "desc": "door",
+          "sub": "F1 Doors — Solid wood door (900mm) + frame + hardware",
+          "qty": "6.0",
+          "amt": "ea"
+        },
+        {
+          "cat": "6",
+          "desc": "finish",
+          "sub": "F1_Omakase Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "18.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "7",
+          "desc": "finish",
+          "sub": "F1_zone Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "28.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "8",
+          "desc": "finish",
+          "sub": "F1_2 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "16.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "9",
+          "desc": "finish",
+          "sub": "F1_kitchen Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "15.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "10",
+          "desc": "finish",
+          "sub": "F1_entry Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "8.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "11",
+          "desc": "finish",
+          "sub": "F1_bathroom Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "8.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "12",
+          "desc": "finish",
+          "sub": "F1_zone_2 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "7.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "13",
+          "desc": "roof",
+          "sub": "Roof — RC roof slab + waterproofing + insulation (U≤0.80)",
+          "qty": "100,000,000.0",
+          "amt": "m2"
+        }
+      ],
+      "total": 0
+    }
+  },
+  "energy": {
+    "eui": 0,
+    "limit": 150,
+    "annual": 0,
+    "engine": "EnergyPlus"
+  },
+  "compliance": {
+    "HK": {
+      "code": "HK_BEEO_BEC_2021",
+      "checks": [
+        {
+          "name": "Energy Energy Use Intensity (EUI)",
+          "value": "3846577821.7",
+          "limit": "150",
+          "unit": "kWh/m2*yr",
+          "status": "fail",
+          "note": "2564385214% of limit"
+        },
+        {
+          "name": "Envelope Exterior Wall U-value",
+          "value": "1.8",
+          "limit": "1.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Roof U-value",
+          "value": "0.8",
+          "limit": "0.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Window U-value",
+          "value": "5.8",
+          "limit": "5.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Window SHGC",
+          "value": "0.4",
+          "limit": "0.6",
+          "unit": "—",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope OTTV (Overall Thermal Transfer Value)",
+          "value": "needs facade analysis",
+          "limit": "25.0",
+          "unit": "W/m2",
+          "status": "pass",
+          "note": "OTTV requires detailed facade WWR + orientation data — not yet calculated."
+        },
+        {
+          "name": "Lighting Lighting Power Density",
+          "value": "8.0",
+          "limit": "10.0",
+          "unit": "W/m2",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Ventilation Fresh Air (ACH)",
+          "value": "0.7",
+          "limit": "0.5",
+          "unit": "ACH",
+          "status": "pass",
+          "note": ""
+        }
+      ],
+      "verdict": "—"
+    }
+  },
+  "variants": {
+    "list": []
+  },
+  "timeline": [],
+  "decks": [],
+  "downloads": [
+    {
+      "name": "23-zen-restaurant-bundle.zip",
+      "ext": "zip",
+      "sub": "All artifacts",
+      "size": "TBD"
+    }
+  ]
+}

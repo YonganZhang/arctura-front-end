@@ -1,0 +1,346 @@
+{
+  "slug": "15-floral-atelier",
+  "complete": true,
+  "project": {
+    "name": "西營盤花藝工作室 Atelier Vert · v1",
+    "zh": "",
+    "area": 50,
+    "location": "Hong Kong",
+    "budgetHKD": 550000,
+    "style": "light-airy, natural-linen, cool-green, timber-natural, plant-forward",
+    "palette": [
+      {
+        "name": "wall_cream",
+        "hex": "#F5F1E8"
+      },
+      {
+        "name": "linen_warm",
+        "hex": "#E0D6BE"
+      },
+      {
+        "name": "wood_ash",
+        "hex": "#B8A17C"
+      },
+      {
+        "name": "cool_green",
+        "hex": "#8CA491"
+      },
+      {
+        "name": "charcoal",
+        "hex": "#383836"
+      },
+      {
+        "name": "brass_detail",
+        "hex": "#B89968"
+      }
+    ]
+  },
+  "renders": [
+    {
+      "id": "01",
+      "file": "/assets/mvps/15-floral-atelier/renders/01_hero_corner.webp",
+      "title": "01 Hero Corner",
+      "tag": "01_hero_corner"
+    },
+    {
+      "id": "02",
+      "file": "/assets/mvps/15-floral-atelier/renders/02_reception.webp",
+      "title": "02 Reception",
+      "tag": "02_reception"
+    },
+    {
+      "id": "03",
+      "file": "/assets/mvps/15-floral-atelier/renders/03_main_zone.webp",
+      "title": "03 Main Zone",
+      "tag": "03_main_zone"
+    },
+    {
+      "id": "04",
+      "file": "/assets/mvps/15-floral-atelier/renders/04_feature_zone.webp",
+      "title": "04 Feature Zone",
+      "tag": "04_feature_zone"
+    },
+    {
+      "id": "05",
+      "file": "/assets/mvps/15-floral-atelier/renders/05_lounge_zone.webp",
+      "title": "05 Lounge Zone",
+      "tag": "05_lounge_zone"
+    },
+    {
+      "id": "06",
+      "file": "/assets/mvps/15-floral-atelier/renders/06_back_corner.webp",
+      "title": "06 Back Corner",
+      "tag": "06_back_corner"
+    },
+    {
+      "id": "07",
+      "file": "/assets/mvps/15-floral-atelier/renders/07_top_ortho.webp",
+      "title": "07 Top Ortho",
+      "tag": "07_top_ortho"
+    },
+    {
+      "id": "08",
+      "file": "/assets/mvps/15-floral-atelier/renders/08_birds_eye_3d.webp",
+      "title": "08 Birds Eye 3D",
+      "tag": "08_birds_eye_3d"
+    }
+  ],
+  "floorplan": "/assets/mvps/15-floral-atelier/floorplan.webp",
+  "moodboard": "/assets/mvps/15-floral-atelier/moodboard.webp",
+  "hero_img": "/assets/mvps/15-floral-atelier/hero.webp",
+  "thumb_img": "/assets/mvps/15-floral-atelier/thumb.webp",
+  "zones": [
+    {
+      "id": "入口_/_零售展示",
+      "name": "入口 / 零售展示",
+      "zh": "",
+      "area": 8,
+      "notes": "木質展示臺 × 2, 窗邊成品花架, 收銀小吧, 香氛蠟燭架",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "主製作長桌",
+      "name": "主製作長桌",
+      "zh": "",
+      "area": 14,
+      "notes": "8 人座長桌 3m (可拆), 水槽 + 剪枝器具架, 頂部吊燈鏈, 地漏預留",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "冷藏展示_/_鮮花庫",
+      "name": "冷藏展示 / 鮮花庫",
+      "zh": "",
+      "area": 6,
+      "notes": "1.5m 立式冷藏花櫃 4°C, 備品短冷藏櫃, 玻璃觀察門",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "課程區_/_可合併",
+      "name": "課程區 / 可合併",
+      "zh": "",
+      "area": 10,
+      "notes": "6 張可折疊矮凳, 小型移動工作島, 黑板牆, 投影布幕",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "後勤_/_員工",
+      "name": "後勤 / 員工",
+      "zh": "",
+      "area": 7,
+      "notes": "員工儲物櫃, 飲水機, 雙槽洗手臺, 垃圾分類桶（含濕垃圾）",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "後門動線",
+      "name": "後門動線",
+      "zh": "",
+      "area": 5,
+      "notes": "鮮花到貨卸貨區, 垃圾外運, 員工進出",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    }
+  ],
+  "furniture": [],
+  "pricing": {
+    "HK": {
+      "label": "Hong Kong",
+      "currency": "HK$",
+      "perM2": 0,
+      "rows": [
+        {
+          "cat": "1",
+          "desc": "slab",
+          "sub": "F1 Floor Slab — RC slab (120mm) incl. formwork + rebar",
+          "qty": "50.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "2",
+          "desc": "wall",
+          "sub": "F1 Exterior Walls — Common brick wall (200mm) incl. render (U≤1.2)",
+          "qty": "85.8",
+          "amt": "m2"
+        },
+        {
+          "cat": "3",
+          "desc": "wall",
+          "sub": "F1 Interior Partitions — Gypsum board partition (double-sided)",
+          "qty": "43.2",
+          "amt": "m2"
+        },
+        {
+          "cat": "4",
+          "desc": "window",
+          "sub": "F1 Windows — Aluminum frame + double clear glazing (U≤3.5)",
+          "qty": "25.7",
+          "amt": "m2"
+        },
+        {
+          "cat": "5",
+          "desc": "door",
+          "sub": "F1 Doors — Solid wood door (900mm) + frame + hardware",
+          "qty": "6.0",
+          "amt": "ea"
+        },
+        {
+          "cat": "6",
+          "desc": "finish",
+          "sub": "F1_zone Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "8.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "7",
+          "desc": "finish",
+          "sub": "F1_zone_2 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "14.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "8",
+          "desc": "finish",
+          "sub": "F1_zone_3 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "6.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "9",
+          "desc": "finish",
+          "sub": "F1_zone_4 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "10.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "10",
+          "desc": "finish",
+          "sub": "F1_zone_5 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "7.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "11",
+          "desc": "finish",
+          "sub": "F1_zone_6 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "5.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "12",
+          "desc": "roof",
+          "sub": "Roof — RC roof + 60mm XPS + membrane (U≤0.50)",
+          "qty": "50.4",
+          "amt": "m2"
+        }
+      ],
+      "total": 0
+    }
+  },
+  "energy": {
+    "eui": 0,
+    "limit": 150,
+    "annual": 0,
+    "engine": "EnergyPlus"
+  },
+  "compliance": {
+    "HK": {
+      "code": "HK_BEEO_BEC_2021",
+      "checks": [
+        {
+          "name": "Energy Energy Use Intensity (EUI)",
+          "value": "110.6",
+          "limit": "150",
+          "unit": "kWh/m2*yr",
+          "status": "pass",
+          "note": "74% of limit"
+        },
+        {
+          "name": "Envelope Exterior Wall U-value",
+          "value": "0.555",
+          "limit": "1.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Roof U-value",
+          "value": "0.498",
+          "limit": "0.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Window U-value",
+          "value": "2.0",
+          "limit": "5.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Window SHGC",
+          "value": "0.6",
+          "limit": "0.6",
+          "unit": "—",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope OTTV (Overall Thermal Transfer Value)",
+          "value": "needs facade analysis",
+          "limit": "25.0",
+          "unit": "W/m2",
+          "status": "pass",
+          "note": "OTTV requires detailed facade WWR + orientation data — not yet calculated."
+        },
+        {
+          "name": "Lighting Lighting Power Density",
+          "value": "8.0",
+          "limit": "10.0",
+          "unit": "W/m2",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Ventilation Fresh Air (ACH)",
+          "value": "0.7",
+          "limit": "0.5",
+          "unit": "ACH",
+          "status": "pass",
+          "note": ""
+        }
+      ],
+      "verdict": "—"
+    }
+  },
+  "variants": {
+    "list": []
+  },
+  "timeline": [],
+  "decks": [],
+  "downloads": [
+    {
+      "name": "15-floral-atelier-bundle.zip",
+      "ext": "zip",
+      "sub": "All artifacts",
+      "size": "TBD"
+    }
+  ]
+}

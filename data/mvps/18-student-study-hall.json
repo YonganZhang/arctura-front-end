@@ -1,0 +1,218 @@
+{
+  "slug": "18-student-study-hall",
+  "complete": false,
+  "project": {
+    "name": "大学生自习室",
+    "zh": "",
+    "area": 80,
+    "location": "Hong Kong",
+    "budgetHKD": 480000,
+    "style": "北欧, 学院风, 暖木, 安静, 专注, 绿植",
+    "palette": [
+      {
+        "name": "primary",
+        "hex": "#F5F0E8"
+      },
+      {
+        "name": "secondary",
+        "hex": "#D4C5A9"
+      },
+      {
+        "name": "accent",
+        "hex": "#4A6741"
+      },
+      {
+        "name": "wall",
+        "hex": "#F5F0E8"
+      },
+      {
+        "name": "floor",
+        "hex": "#B8956A"
+      },
+      {
+        "name": "highlight",
+        "hex": "#C8864A"
+      }
+    ]
+  },
+  "renders": [
+    {
+      "id": "01",
+      "file": "/assets/mvps/18-student-study-hall/renders/01_hero_corner.webp",
+      "title": "01 Hero Corner",
+      "tag": "01_hero_corner"
+    },
+    {
+      "id": "02",
+      "file": "/assets/mvps/18-student-study-hall/renders/02_entrance.webp",
+      "title": "02 Entrance",
+      "tag": "02_entrance"
+    },
+    {
+      "id": "03",
+      "file": "/assets/mvps/18-student-study-hall/renders/03_study_zone.webp",
+      "title": "03 Study Zone",
+      "tag": "03_study_zone"
+    },
+    {
+      "id": "04",
+      "file": "/assets/mvps/18-student-study-hall/renders/04_group_area.webp",
+      "title": "04 Group Area",
+      "tag": "04_group_area"
+    },
+    {
+      "id": "05",
+      "file": "/assets/mvps/18-student-study-hall/renders/05_silent_booths.webp",
+      "title": "05 Silent Booths",
+      "tag": "05_silent_booths"
+    },
+    {
+      "id": "06",
+      "file": "/assets/mvps/18-student-study-hall/renders/06_break_corner.webp",
+      "title": "06 Break Corner",
+      "tag": "06_break_corner"
+    },
+    {
+      "id": "07",
+      "file": "/assets/mvps/18-student-study-hall/renders/07_top_ortho.webp",
+      "title": "07 Top Ortho",
+      "tag": "07_top_ortho"
+    },
+    {
+      "id": "08",
+      "file": "/assets/mvps/18-student-study-hall/renders/08_birds_eye_3d.webp",
+      "title": "08 Birds Eye 3D",
+      "tag": "08_birds_eye_3d"
+    }
+  ],
+  "floorplan": "/assets/mvps/18-student-study-hall/floorplan.webp",
+  "moodboard": "/assets/mvps/18-student-study-hall/moodboard.webp",
+  "hero_img": "/assets/mvps/18-student-study-hall/hero.webp",
+  "thumb_img": "/assets/mvps/18-student-study-hall/thumb.webp",
+  "zones": [
+    {
+      "id": "独立学习区",
+      "name": "独立学习区",
+      "zh": "",
+      "area": 32,
+      "notes": "",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "小组讨论区",
+      "name": "小组讨论区",
+      "zh": "",
+      "area": 12,
+      "notes": "",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "静音深度学习区",
+      "name": "静音深度学习区",
+      "zh": "",
+      "area": 10,
+      "notes": "",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "休息充电角",
+      "name": "休息充电角",
+      "zh": "",
+      "area": 8,
+      "notes": "",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "入口接待",
+      "name": "入口接待",
+      "zh": "",
+      "area": 6,
+      "notes": "",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "打印复印区",
+      "name": "打印复印区",
+      "zh": "",
+      "area": 4,
+      "notes": "",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "书架展示区",
+      "name": "书架展示区",
+      "zh": "",
+      "area": 5,
+      "notes": "",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "过道",
+      "name": "过道",
+      "zh": "",
+      "area": 3,
+      "notes": "",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    }
+  ],
+  "furniture": [],
+  "pricing": {
+    "HK": {
+      "label": "Hong Kong",
+      "currency": "HK$",
+      "perM2": 0,
+      "rows": [],
+      "total": 0
+    }
+  },
+  "energy": {
+    "eui": 0,
+    "limit": 150,
+    "annual": 0,
+    "engine": "EnergyPlus"
+  },
+  "compliance": {
+    "HK": {
+      "code": "HK_BEEO_BEC_2021",
+      "checks": [],
+      "verdict": "—"
+    }
+  },
+  "variants": {
+    "list": []
+  },
+  "timeline": [],
+  "decks": [],
+  "downloads": [
+    {
+      "name": "18-student-study-hall-bundle.zip",
+      "ext": "zip",
+      "sub": "All artifacts",
+      "size": "TBD"
+    }
+  ]
+}

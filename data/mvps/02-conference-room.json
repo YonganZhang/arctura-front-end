@@ -1,0 +1,229 @@
+{
+  "slug": "02-conference-room",
+  "complete": true,
+  "project": {
+    "name": "小型会议室改造 v1",
+    "zh": "",
+    "area": 30,
+    "location": "Hong Kong",
+    "budgetHKD": 0,
+    "style": "modern, professional, plant-friendly, warm-tech",
+    "palette": [
+      {
+        "name": "primary",
+        "hex": "#EDEDE8"
+      },
+      {
+        "name": "secondary",
+        "hex": "#4A5C6A"
+      },
+      {
+        "name": "accent",
+        "hex": "#C9A96E"
+      },
+      {
+        "name": "wood",
+        "hex": "#8B6F4E"
+      }
+    ]
+  },
+  "renders": [
+    {
+      "id": "01",
+      "file": "/assets/mvps/02-conference-room/renders/01_hero_corner.webp",
+      "title": "01 Hero Corner",
+      "tag": "01_hero_corner"
+    },
+    {
+      "id": "02",
+      "file": "/assets/mvps/02-conference-room/renders/02_reception.webp",
+      "title": "02 Reception",
+      "tag": "02_reception"
+    },
+    {
+      "id": "03",
+      "file": "/assets/mvps/02-conference-room/renders/03_main_zone.webp",
+      "title": "03 Main Zone",
+      "tag": "03_main_zone"
+    },
+    {
+      "id": "04",
+      "file": "/assets/mvps/02-conference-room/renders/04_feature_zone.webp",
+      "title": "04 Feature Zone",
+      "tag": "04_feature_zone"
+    },
+    {
+      "id": "05",
+      "file": "/assets/mvps/02-conference-room/renders/05_lounge_zone.webp",
+      "title": "05 Lounge Zone",
+      "tag": "05_lounge_zone"
+    },
+    {
+      "id": "06",
+      "file": "/assets/mvps/02-conference-room/renders/06_back_corner.webp",
+      "title": "06 Back Corner",
+      "tag": "06_back_corner"
+    },
+    {
+      "id": "07",
+      "file": "/assets/mvps/02-conference-room/renders/07_top_ortho.webp",
+      "title": "07 Top Ortho",
+      "tag": "07_top_ortho"
+    },
+    {
+      "id": "08",
+      "file": "/assets/mvps/02-conference-room/renders/08_birds_eye_3d.webp",
+      "title": "08 Birds Eye 3D",
+      "tag": "08_birds_eye_3d"
+    }
+  ],
+  "floorplan": "/assets/mvps/02-conference-room/floorplan.webp",
+  "moodboard": "/assets/mvps/02-conference-room/moodboard.webp",
+  "hero_img": "/assets/mvps/02-conference-room/hero.webp",
+  "thumb_img": "/assets/mvps/02-conference-room/thumb.webp",
+  "zones": [],
+  "furniture": [],
+  "pricing": {
+    "HK": {
+      "label": "Hong Kong",
+      "currency": "HK$",
+      "perM2": 11666,
+      "rows": [
+        {
+          "cat": "1",
+          "desc": "slab",
+          "sub": "F1 Floor Slab — RC slab (120mm) incl. formwork + rebar",
+          "qty": "30.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "2",
+          "desc": "wall",
+          "sub": "F1 Exterior Walls — Common brick wall (200mm) incl. render",
+          "qty": "66.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "3",
+          "desc": "window",
+          "sub": "F1 Windows — Thermal-break aluminum + Low-E double glazing",
+          "qty": "19.8",
+          "amt": "m2"
+        },
+        {
+          "cat": "4",
+          "desc": "door",
+          "sub": "F1 Doors — Solid wood door (900mm) + frame + hardware",
+          "qty": "1.0",
+          "amt": "ea"
+        },
+        {
+          "cat": "5",
+          "desc": "finish",
+          "sub": "F1_meeting Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "30.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "6",
+          "desc": "roof",
+          "sub": "Roof — RC roof slab + waterproofing + insulation",
+          "qty": "30.0",
+          "amt": "m2"
+        }
+      ],
+      "total": 349985.68
+    }
+  },
+  "energy": {
+    "eui": 39.54,
+    "limit": 150,
+    "annual": 1186.11,
+    "engine": "EnergyPlus"
+  },
+  "compliance": {
+    "HK": {
+      "code": "HK_BEEO_BEC_2021",
+      "checks": [
+        {
+          "name": "Energy Energy Use Intensity (EUI)",
+          "value": "39.5",
+          "limit": "150",
+          "unit": "kWh/m2*yr",
+          "status": "pass",
+          "note": "26% of limit"
+        },
+        {
+          "name": "Envelope Exterior Wall U-value",
+          "value": "0.555",
+          "limit": "1.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Roof U-value",
+          "value": "0.498",
+          "limit": "0.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Window U-value",
+          "value": "2.0",
+          "limit": "5.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Window SHGC",
+          "value": "0.6",
+          "limit": "0.6",
+          "unit": "—",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope OTTV (Overall Thermal Transfer Value)",
+          "value": "needs facade analysis",
+          "limit": "25.0",
+          "unit": "W/m2",
+          "status": "pass",
+          "note": "OTTV requires detailed facade WWR + orientation data — not yet calculated."
+        },
+        {
+          "name": "Lighting Lighting Power Density",
+          "value": "8.0",
+          "limit": "10.0",
+          "unit": "W/m2",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Ventilation Fresh Air (ACH)",
+          "value": "0.7",
+          "limit": "0.5",
+          "unit": "ACH",
+          "status": "pass",
+          "note": ""
+        }
+      ],
+      "verdict": "COMPLIANT"
+    }
+  },
+  "variants": {
+    "list": []
+  },
+  "timeline": [],
+  "decks": [],
+  "downloads": [
+    {
+      "name": "02-conference-room-bundle.zip",
+      "ext": "zip",
+      "sub": "All artifacts",
+      "size": "TBD"
+    }
+  ]
+}

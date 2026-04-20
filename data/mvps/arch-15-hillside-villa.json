@@ -1,0 +1,326 @@
+{
+  "slug": "arch-15-hillside-villa",
+  "complete": false,
+  "project": {
+    "name": "南区山地别墅",
+    "zh": "",
+    "area": 0,
+    "location": "Hong Kong",
+    "budgetHKD": 0,
+    "style": "modern-tropical, luxury-villa, infinity-pool, stone, glass, tropical-plants",
+    "palette": [
+      {
+        "name": "travertine_beige",
+        "hex": "#D4C9B0"
+      },
+      {
+        "name": "teak_brown",
+        "hex": "#6B4226"
+      },
+      {
+        "name": "ocean_blue",
+        "hex": "#2196F3"
+      },
+      {
+        "name": "palm_green",
+        "hex": "#2E7D32"
+      },
+      {
+        "name": "cloud_white",
+        "hex": "#F8F8F8"
+      },
+      {
+        "name": "volcanic_grey",
+        "hex": "#424242"
+      }
+    ]
+  },
+  "renders": [
+    {
+      "id": "interior",
+      "file": "/assets/mvps/arch-15-hillside-villa/renders/interior.webp",
+      "title": "Interior",
+      "tag": "interior"
+    },
+    {
+      "id": "massing",
+      "file": "/assets/mvps/arch-15-hillside-villa/renders/massing.webp",
+      "title": "Massing",
+      "tag": "massing"
+    },
+    {
+      "id": "elev-E",
+      "file": "/assets/mvps/arch-15-hillside-villa/renders/elev-E.webp",
+      "title": "Elev E",
+      "tag": "elev-E"
+    },
+    {
+      "id": "elev-N",
+      "file": "/assets/mvps/arch-15-hillside-villa/renders/elev-N.webp",
+      "title": "Elev N",
+      "tag": "elev-N"
+    },
+    {
+      "id": "elev-S",
+      "file": "/assets/mvps/arch-15-hillside-villa/renders/elev-S.webp",
+      "title": "Elev S",
+      "tag": "elev-S"
+    },
+    {
+      "id": "elev-W",
+      "file": "/assets/mvps/arch-15-hillside-villa/renders/elev-W.webp",
+      "title": "Elev W",
+      "tag": "elev-W"
+    },
+    {
+      "id": "floor-F1",
+      "file": "/assets/mvps/arch-15-hillside-villa/renders/floor-F1.webp",
+      "title": "Floor F1",
+      "tag": "floor-F1"
+    },
+    {
+      "id": "floor-F2",
+      "file": "/assets/mvps/arch-15-hillside-villa/renders/floor-F2.webp",
+      "title": "Floor F2",
+      "tag": "floor-F2"
+    },
+    {
+      "id": "floor-F3",
+      "file": "/assets/mvps/arch-15-hillside-villa/renders/floor-F3.webp",
+      "title": "Floor F3",
+      "tag": "floor-F3"
+    },
+    {
+      "id": "site-plan",
+      "file": "/assets/mvps/arch-15-hillside-villa/renders/site-plan.webp",
+      "title": "Site Plan",
+      "tag": "site-plan"
+    }
+  ],
+  "floorplan": null,
+  "moodboard": "/assets/mvps/arch-15-hillside-villa/moodboard.webp",
+  "hero_img": "/assets/mvps/arch-15-hillside-villa/hero.webp",
+  "thumb_img": "/assets/mvps/arch-15-hillside-villa/thumb.webp",
+  "zones": [],
+  "furniture": [],
+  "pricing": {
+    "HK": {
+      "label": "Hong Kong",
+      "currency": "HK$",
+      "perM2": 0,
+      "rows": [
+        {
+          "cat": "1",
+          "desc": "slab",
+          "sub": "1 Floor Slab — RC slab (120mm) incl. formwork + rebar",
+          "qty": "200.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "2",
+          "desc": "slab",
+          "sub": "2 Floor Slab — RC slab (120mm) incl. formwork + rebar",
+          "qty": "180.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "3",
+          "desc": "slab",
+          "sub": "3 Floor Slab — RC slab (120mm) incl. formwork + rebar",
+          "qty": "120.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "4",
+          "desc": "wall",
+          "sub": "1 Exterior Walls — Common brick wall (200mm) incl. render (U≤1.2)",
+          "qty": "204.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "5",
+          "desc": "wall",
+          "sub": "2 Exterior Walls — Common brick wall (200mm) incl. render (U≤1.2)",
+          "qty": "204.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "6",
+          "desc": "wall",
+          "sub": "3 Exterior Walls — Common brick wall (200mm) incl. render (U≤1.2)",
+          "qty": "204.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "7",
+          "desc": "window",
+          "sub": "1 Windows — Aluminum frame + double clear glazing (U≤3.5)",
+          "qty": "61.2",
+          "amt": "m2"
+        },
+        {
+          "cat": "8",
+          "desc": "window",
+          "sub": "2 Windows — Aluminum frame + double clear glazing (U≤3.5)",
+          "qty": "61.2",
+          "amt": "m2"
+        },
+        {
+          "cat": "9",
+          "desc": "window",
+          "sub": "3 Windows — Aluminum frame + double clear glazing (U≤3.5)",
+          "qty": "61.2",
+          "amt": "m2"
+        },
+        {
+          "cat": "10",
+          "desc": "door",
+          "sub": "1 Doors — Solid wood door (900mm) + frame + hardware",
+          "qty": "1.0",
+          "amt": "ea"
+        },
+        {
+          "cat": "11",
+          "desc": "door",
+          "sub": "2 Doors — Solid wood door (900mm) + frame + hardware",
+          "qty": "1.0",
+          "amt": "ea"
+        },
+        {
+          "cat": "12",
+          "desc": "door",
+          "sub": "3 Doors — Solid wood door (900mm) + frame + hardware",
+          "qty": "1.0",
+          "amt": "ea"
+        },
+        {
+          "cat": "13",
+          "desc": "finish",
+          "sub": "F1 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "200.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "14",
+          "desc": "finish",
+          "sub": "F2 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "180.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "15",
+          "desc": "finish",
+          "sub": "F3 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "120.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "16",
+          "desc": "roof",
+          "sub": "Roof — RC roof + 60mm XPS + membrane (U≤0.50)",
+          "qty": "280.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "17",
+          "desc": "stair",
+          "sub": "Stairs (2 flights) — RC stair flight (one floor) + railing",
+          "qty": "2.0",
+          "amt": "flight"
+        }
+      ],
+      "total": 0
+    }
+  },
+  "energy": {
+    "eui": 0,
+    "limit": 150,
+    "annual": 0,
+    "engine": "EnergyPlus"
+  },
+  "compliance": {
+    "HK": {
+      "code": "HK_BEEO_BEC_2021",
+      "checks": [
+        {
+          "name": "Energy Energy Use Intensity (EUI)",
+          "value": "78.3",
+          "limit": "150",
+          "unit": "kWh/m2*yr",
+          "status": "pass",
+          "note": "52% of limit"
+        },
+        {
+          "name": "Envelope Exterior Wall U-value",
+          "value": "0.555",
+          "limit": "1.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Roof U-value",
+          "value": "0.498",
+          "limit": "0.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Window U-value",
+          "value": "2.0",
+          "limit": "5.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Window SHGC",
+          "value": "0.6",
+          "limit": "0.6",
+          "unit": "—",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope OTTV (Overall Thermal Transfer Value)",
+          "value": "needs facade analysis",
+          "limit": "25.0",
+          "unit": "W/m2",
+          "status": "pass",
+          "note": "OTTV requires detailed facade WWR + orientation data — not yet calculated."
+        },
+        {
+          "name": "Lighting Lighting Power Density",
+          "value": "6.0",
+          "limit": "10.0",
+          "unit": "W/m2",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Ventilation Fresh Air (ACH)",
+          "value": "0.5",
+          "limit": "0.5",
+          "unit": "ACH",
+          "status": "pass",
+          "note": ""
+        }
+      ],
+      "verdict": "—"
+    }
+  },
+  "variants": {
+    "list": []
+  },
+  "timeline": [],
+  "decks": [],
+  "downloads": [
+    {
+      "name": "arch-15-hillside-villa-bundle.zip",
+      "ext": "zip",
+      "sub": "All artifacts",
+      "size": "TBD"
+    }
+  ]
+}

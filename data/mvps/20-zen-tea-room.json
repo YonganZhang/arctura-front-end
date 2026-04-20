@@ -1,0 +1,55 @@
+{
+  "slug": "20-zen-tea-room",
+  "complete": false,
+  "project": {
+    "name": "20-zen-tea-room",
+    "zh": "",
+    "area": 0,
+    "location": "Hong Kong",
+    "budgetHKD": 0,
+    "style": "",
+    "palette": []
+  },
+  "renders": [],
+  "floorplan": null,
+  "moodboard": null,
+  "hero_img": "/assets/mvps/20-zen-tea-room/hero.webp",
+  "thumb_img": "/assets/mvps/20-zen-tea-room/thumb.webp",
+  "zones": [],
+  "furniture": [],
+  "pricing": {
+    "HK": {
+      "label": "Hong Kong",
+      "currency": "HK$",
+      "perM2": 0,
+      "rows": [],
+      "total": 0
+    }
+  },
+  "energy": {
+    "eui": 0,
+    "limit": 150,
+    "annual": 0,
+    "engine": "EnergyPlus"
+  },
+  "compliance": {
+    "HK": {
+      "code": "HK_BEEO_BEC_2021",
+      "checks": [],
+      "verdict": "—"
+    }
+  },
+  "variants": {
+    "list": []
+  },
+  "timeline": [],
+  "decks": [],
+  "downloads": [
+    {
+      "name": "20-zen-tea-room-bundle.zip",
+      "ext": "zip",
+      "sub": "All artifacts",
+      "size": "TBD"
+    }
+  ]
+}

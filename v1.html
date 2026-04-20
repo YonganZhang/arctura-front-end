@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Arctura Labs — Space, as a conversation.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<script>
+const TWEAKS = /*EDITMODE-BEGIN*/{
+  "accentHue": 150,
+  "showGrid": false,
+  "heroTagline": "Space, as a conversation."
+}/*EDITMODE-END*/;
+</script>
+
+<style>
+  :root {
+    --bg: #F7F4EE;
+    --bg-2: #EFEAE0;
+    --bg-dark: #141311;
+    --bg-dark-2: #1C1A17;
+    --bg-dark-3: #26231F;
+    --ink: #1A1916;
+    --ink-2: #2C2A26;
+    --ink-soft: #5A564E;
+    --ink-mute: #8A857B;
+    --line: #D9D2C4;
+    --line-dark: #2E2A25;
+    --line-dark-2: #3A352E;
+    --paper: #FDFBF5;
+    --accent: oklch(0.68 0.09 165);
+    --accent-dim: oklch(0.68 0.09 165 / 0.15);
+    --accent-line: oklch(0.68 0.09 165 / 0.45);
+    --warn: oklch(0.78 0.13 75);
+    --bad: oklch(0.65 0.18 25);
+
+    --f-display: "Fraunces", "Songti SC", "SimSun", Georgia, serif;
+    --f-sans: "Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    --f-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--ink); font-family: var(--f-sans); -webkit-font-smoothing: antialiased; }
+  body { font-size: 16px; line-height: 1.5; overflow-x: hidden; }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+  img { max-width: 100%; display: block; }
+
+  /* ───────── Layout ───────── */
+  .container { max-width: 1480px; margin: 0 auto; padding: 0 48px; }
+  @media (max-width: 720px) { .container { padding: 0 24px; } }
+
+  /* ───────── Nav ───────── */
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 20px 48px;
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(247, 244, 238, 0.72);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s ease, background 0.3s ease;
+  }
+  .nav.scrolled { border-bottom-color: var(--line); }
+  .nav.dark { background: rgba(20, 19, 17, 0.72); color: var(--bg); }
+  .nav.dark.scrolled { border-bottom-color: var(--line-dark); }
+
+  .logo {
+    display: flex; align-items: center; gap: 10px;
+    font-family: var(--f-display); font-size: 19px; font-weight: 500; letter-spacing: -0.01em;
+  }
+  .logo-mark {
+    width: 22px; height: 22px; position: relative; display: inline-block;
+  }
+  .logo-mark::before, .logo-mark::after {
+    content: ""; position: absolute; inset: 0;
+    border: 1.2px solid currentColor;
+  }
+  .logo-mark::before { border-radius: 50%; }
+  .logo-mark::after {
+    width: 6px; height: 6px; background: var(--accent); border: none;
+    top: 50%; left: 50%; transform: translate(-50%, -50%); border-radius: 50%;
+  }
+  .logo-name { display: flex; align-items: baseline; gap: 6px; }
+  .logo-name .labs { font-family: var(--f-sans); font-size: 12px; font-weight: 500; color: var(--ink-mute); letter-spacing: 0.08em; text-transform: uppercase; }
+  .nav.dark .logo-name .labs { color: rgba(247,244,238,0.5); }
+
+  .nav-links { display: flex; gap: 36px; font-size: 14px; font-weight: 500; }
+  .nav-links a { position: relative; color: var(--ink-soft); transition: color 0.2s; }
+  .nav.dark .nav-links a { color: rgba(247,244,238,0.65); }
+  .nav-links a:hover { color: var(--ink); }
+  .nav.dark .nav-links a:hover { color: var(--bg); }
+
+  .nav-cta {
+    font-size: 13px; font-weight: 500; padding: 9px 18px;
+    border: 1px solid var(--ink); border-radius: 999px;
+    transition: all 0.2s;
+  }
+  .nav-cta:hover { background: var(--ink); color: var(--bg); }
+  .nav.dark .nav-cta { border-color: var(--bg); }
+  .nav.dark .nav-cta:hover { background: var(--bg); color: var(--ink); }
+
+  @media (max-width: 900px) {
+    .nav { padding: 16px 24px; }
+    .nav-links { display: none; }
+  }
+
+  /* ───────── HERO ───────── */
+  .hero {
+    min-height: 100vh; padding-top: 100px; padding-bottom: 60px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 64px;
+    align-items: center;
+    border-bottom: 1px solid var(--line);
+  }
+  .hero-left { padding-left: 48px; max-width: 680px; }
+  .hero-right { height: calc(100vh - 100px); min-height: 600px; position: relative; overflow: hidden; background: var(--bg-2); border-left: 1px solid var(--line); }
+
+  .hero-eyebrow {
+    font-family: var(--f-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.18em;
+    color: var(--ink-mute); margin-bottom: 28px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .hero-eyebrow::before {
+    content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent);
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.85); }
+  }
+
+  .hero-tagline {
+    font-family: var(--f-display); font-weight: 300;
+    font-size: clamp(44px, 6.2vw, 88px);
+    line-height: 0.98; letter-spacing: -0.035em;
+    margin-bottom: 32px;
+    text-wrap: pretty;
+  }
+  .hero-tagline em { font-style: italic; font-weight: 400; color: var(--ink-soft); }
+  .hero-tagline .dot { color: var(--accent); }
+
+  .hero-sub {
+    font-size: 17px; line-height: 1.5; color: var(--ink-soft);
+    max-width: 520px; margin-bottom: 40px;
+    text-wrap: pretty;
+  }
+
+  .hero-ctas { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+  .btn-primary {
+    padding: 14px 26px; background: var(--ink); color: var(--bg);
+    border-radius: 999px; font-size: 14px; font-weight: 500;
+    display: inline-flex; align-items: center; gap: 10px;
+    transition: all 0.2s;
+  }
+  .btn-primary:hover { background: var(--accent); color: var(--ink); }
+  .btn-primary svg { transition: transform 0.2s; }
+  .btn-primary:hover svg { transform: translateX(3px); }
+  .btn-ghost {
+    padding: 14px 22px; font-size: 14px; font-weight: 500;
+    color: var(--ink-soft); border-bottom: 1px solid transparent;
+    transition: all 0.2s;
+  }
+  .btn-ghost:hover { color: var(--ink); border-bottom-color: var(--ink); }
+
+  .hero-footnote {
+    margin-top: 56px; padding-top: 24px; border-top: 1px solid var(--line);
+    display: flex; gap: 40px; font-family: var(--f-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--ink-mute);
+  }
+  .hero-footnote div span { display: block; color: var(--ink); font-family: var(--f-display); font-size: 20px; font-weight: 400; letter-spacing: -0.01em; text-transform: none; margin-bottom: 2px; }
+
+  @media (max-width: 960px) {
+    .hero { grid-template-columns: 1fr; gap: 0; }
+    .hero-left { padding: 0 24px; max-width: none; }
+    .hero-right { height: 60vh; min-height: 440px; border-left: none; border-top: 1px solid var(--line); margin-top: 48px; }
+  }
+
+  /* ───────── Pipeline Canvas (hero right) ───────── */
+  .canvas-wrap { position: absolute; inset: 0; }
+  .canvas-wrap .canvas-label {
+    position: absolute; top: 20px; left: 24px; right: 24px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-mute);
+    z-index: 5;
+  }
+  .canvas-label .live { display: flex; align-items: center; gap: 8px; color: var(--ink-soft); }
+  .canvas-label .live::before {
+    content: ""; width: 6px; height: 6px; background: var(--accent); border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  .pipeline-stage {
+    position: absolute; inset: 56px 24px 24px 24px;
+    display: flex; flex-direction: column;
+  }
+  .pipeline-steps {
+    display: flex; gap: 4px; margin-bottom: 14px;
+  }
+  .pipe-step {
+    flex: 1; padding: 8px 10px; background: transparent; border: 1px solid var(--line);
+    border-radius: 4px; font-family: var(--f-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--ink-mute); transition: all 0.35s ease;
+    display: flex; flex-direction: column; gap: 3px;
+  }
+  .pipe-step .pipe-num { font-size: 9px; opacity: 0.6; }
+  .pipe-step.active {
+    background: var(--ink); color: var(--bg); border-color: var(--ink);
+  }
+  .pipe-step.active .pipe-num { color: var(--accent); opacity: 1; }
+  .pipe-step.done { background: var(--bg); border-color: var(--ink-soft); color: var(--ink); }
+
+  .pipeline-viewport {
+    flex: 1; position: relative; background: var(--paper);
+    border: 1px solid var(--line); border-radius: 4px;
+    overflow: hidden;
+  }
+  .pipe-scene {
+    position: absolute; inset: 0;
+    opacity: 0; transition: opacity 0.5s ease;
+    display: flex; flex-direction: column; padding: 20px;
+  }
+  .pipe-scene.active { opacity: 1; }
+
+  /* Scene 1 — BRIEF */
+  .scene-brief { justify-content: flex-start; gap: 12px; }
+  .brief-quote {
+    font-family: var(--f-display); font-style: italic; font-weight: 300;
+    font-size: 24px; line-height: 1.3; letter-spacing: -0.01em; color: var(--ink);
+    padding-left: 18px; border-left: 2px solid var(--accent);
+    max-width: 340px;
+  }
+  .brief-meta { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 12px; font-family: var(--f-mono); font-size: 10px; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.1em; }
+  .brief-meta b { color: var(--ink); font-weight: 500; display: block; font-size: 11px; }
+  .brief-cursor {
+    display: inline-block; width: 2px; height: 22px; background: var(--accent);
+    vertical-align: middle; animation: blink 0.9s step-end infinite;
+    margin-left: 4px;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* Scene 2 — 3D */
+  .scene-3d { align-items: center; justify-content: center; }
+  .scene-3d-wrap {
+    position: relative;
+    perspective: 900px;
+    width: 88%; height: 85%;
+  }
+  .iso-box {
+    position: absolute; inset: 0;
+    transform-style: preserve-3d;
+    animation: isoRotate 18s linear infinite;
+  }
+  @keyframes isoRotate {
+    from { transform: rotateX(55deg) rotateZ(0deg); }
+    to { transform: rotateX(55deg) rotateZ(360deg); }
+  }
+  .iso-face { position: absolute; inset: 0; border: 1px solid var(--ink); }
+  .iso-face.floor { background: var(--bg-2); transform: translateZ(0); }
+  .iso-block {
+    position: absolute; background: var(--ink); border: 1px solid var(--ink);
+    transform-style: preserve-3d;
+  }
+  .iso-block.table { width: 38%; height: 22%; left: 31%; top: 39%; background: #4a3a2a; border-color: #6b5742; transform: translateZ(18px); }
+  .iso-block.chair1 { width: 10%; height: 10%; left: 20%; top: 45%; background: #8b5a3c; transform: translateZ(10px); }
+  .iso-block.chair2 { width: 10%; height: 10%; left: 70%; top: 45%; background: #8b5a3c; transform: translateZ(10px); }
+  .iso-block.chair3 { width: 10%; height: 10%; left: 44%; top: 28%; background: #8b5a3c; transform: translateZ(10px); }
+  .iso-block.chair4 { width: 10%; height: 10%; left: 44%; top: 63%; background: #8b5a3c; transform: translateZ(10px); }
+  .iso-block.cabinet { width: 18%; height: 14%; left: 78%; top: 12%; background: #5a3925; transform: translateZ(34px); }
+  .iso-block.zen { width: 16%; height: 16%; left: 78%; top: 72%; background: #b8a584; transform: translateZ(3px); }
+  .iso-block.screen { width: 4%; height: 24%; left: 60%; top: 70%; background: #3a2818; transform: translateZ(30px); }
+
+  /* Scene 3 — BOQ */
+  .scene-boq { justify-content: flex-start; gap: 12px; font-family: var(--f-mono); }
+  .boq-header {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding-bottom: 10px; border-bottom: 1px solid var(--line);
+  }
+  .boq-title { font-family: var(--f-display); font-size: 20px; font-weight: 400; color: var(--ink); }
+  .boq-region { font-size: 10px; letter-spacing: 0.1em; color: var(--ink-soft); text-transform: uppercase; }
+  .boq-rows { display: flex; flex-direction: column; gap: 4px; flex: 1; overflow: hidden; }
+  .boq-row {
+    display: grid; grid-template-columns: 1fr auto auto; gap: 12px; align-items: center;
+    padding: 6px 0; font-size: 11px; color: var(--ink-soft);
+    border-bottom: 1px dotted var(--line);
+    opacity: 0; transform: translateX(-8px);
+    animation: boqIn 0.4s ease forwards;
+  }
+  .boq-row b { color: var(--ink); font-weight: 500; }
+  .boq-row .boq-amt { color: var(--ink); font-weight: 500; font-variant-numeric: tabular-nums; }
+  @keyframes boqIn { to { opacity: 1; transform: translateX(0); } }
+  .boq-total {
+    margin-top: auto; padding-top: 10px; border-top: 1px solid var(--ink);
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  .boq-total-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--ink-soft); }
+  .boq-total-amt { font-family: var(--f-display); font-size: 28px; font-weight: 400; letter-spacing: -0.01em; color: var(--ink); }
+  .boq-total-amt em { font-style: normal; color: var(--accent); font-weight: 500; }
+
+  /* Scene 4 — ENERGY */
+  .scene-energy { justify-content: space-between; gap: 12px; }
+  .energy-head { display: flex; justify-content: space-between; align-items: baseline; }
+  .energy-title { font-family: var(--f-display); font-size: 20px; font-weight: 400; }
+  .energy-code { font-family: var(--f-mono); font-size: 10px; color: var(--ink-soft); letter-spacing: 0.1em; text-transform: uppercase; }
+  .energy-big {
+    display: flex; align-items: baseline; gap: 14px;
+    font-family: var(--f-display);
+  }
+  .energy-big .val { font-size: 80px; font-weight: 300; letter-spacing: -0.04em; color: var(--ink); line-height: 1; }
+  .energy-big .unit { font-size: 12px; color: var(--ink-soft); font-family: var(--f-mono); letter-spacing: 0.08em; text-transform: uppercase; }
+  .energy-big .delta {
+    margin-left: auto; padding: 4px 10px; background: var(--accent-dim); color: oklch(0.35 0.09 165);
+    border-radius: 999px; font-size: 11px; font-weight: 500; font-family: var(--f-sans);
+  }
+  .energy-bars { display: flex; flex-direction: column; gap: 8px; }
+  .energy-bar { display: grid; grid-template-columns: 80px 1fr 40px; gap: 10px; align-items: center; font-family: var(--f-mono); font-size: 10px; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.06em; }
+  .energy-bar .track { height: 4px; background: var(--line); position: relative; overflow: hidden; border-radius: 2px; }
+  .energy-bar .fill { position: absolute; left: 0; top: 0; bottom: 0; background: var(--ink); width: 0%; animation: barGrow 1.2s cubic-bezier(.2,.7,.2,1) forwards; }
+  .energy-bar .fill.accent { background: var(--accent); }
+  @keyframes barGrow { to { width: var(--w); } }
+  .energy-bar .num { color: var(--ink); font-weight: 500; text-align: right; }
+  .energy-compliance { display: flex; gap: 6px; flex-wrap: wrap; font-family: var(--f-mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-soft); }
+  .energy-compliance .chk { padding: 4px 8px; border: 1px solid var(--line); border-radius: 3px; display: flex; align-items: center; gap: 5px; }
+  .energy-compliance .chk::before { content: ""; width: 5px; height: 5px; background: var(--accent); border-radius: 50%; }
+
+  /* ───────── SECTION CHROME ───────── */
+  section { position: relative; }
+  .section-head {
+    display: flex; justify-content: space-between; align-items: flex-end; gap: 40px;
+    padding: 100px 0 48px 0; border-bottom: 1px solid var(--line);
+    margin-bottom: 56px;
+  }
+  .section-eyebrow {
+    font-family: var(--f-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.18em;
+    color: var(--ink-mute); margin-bottom: 14px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-eyebrow::before { content: ""; width: 24px; height: 1px; background: var(--accent); }
+  .section-title { font-family: var(--f-display); font-weight: 300; font-size: clamp(36px, 4.6vw, 64px); line-height: 1.02; letter-spacing: -0.03em; max-width: 860px; text-wrap: balance; }
+  .section-title em { font-style: italic; color: var(--ink-soft); }
+  .section-sub { max-width: 420px; color: var(--ink-soft); font-size: 15px; line-height: 1.6; }
+
+  /* ───────── CAPABILITIES ───────── */
+  .caps { padding-bottom: 120px; }
+  .cap-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .cap { background: var(--bg); padding: 36px 32px; min-height: 280px; display: flex; flex-direction: column; justify-content: space-between; transition: background 0.2s; position: relative; }
+  .cap:hover { background: var(--paper); }
+  .cap-num { font-family: var(--f-mono); font-size: 11px; color: var(--ink-mute); letter-spacing: 0.12em; }
+  .cap-title { font-family: var(--f-display); font-size: 28px; font-weight: 400; letter-spacing: -0.02em; margin: 14px 0 16px; }
+  .cap-title .cn { display: block; font-size: 14px; color: var(--ink-mute); font-weight: 400; margin-top: 4px; font-family: var(--f-sans); letter-spacing: 0; }
+  .cap-desc { font-size: 14px; line-height: 1.6; color: var(--ink-soft); }
+  .cap-meta { margin-top: 24px; padding-top: 14px; border-top: 1px solid var(--line); font-family: var(--f-mono); font-size: 10px; color: var(--ink-mute); text-transform: uppercase; letter-spacing: 0.1em; display: flex; justify-content: space-between; }
+  .cap-meta b { color: var(--ink); font-weight: 500; }
+
+  @media (max-width: 960px) { .cap-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 640px) { .cap-grid { grid-template-columns: 1fr; } }
+
+  /* ───────── LIVE DEMO Strip (handoff into dark) ───────── */
+  .demo-strip {
+    background: var(--bg-dark); color: var(--bg);
+    padding: 0;
+  }
+  .demo-strip .section-head { border-bottom-color: var(--line-dark); padding-top: 120px; }
+  .demo-strip .section-eyebrow { color: rgba(247,244,238,0.45); }
+  .demo-strip .section-title em { color: rgba(247,244,238,0.55); }
+  .demo-strip .section-sub { color: rgba(247,244,238,0.65); }
+
+  .demo-preview {
+    margin: 0 0 120px 0;
+    border: 1px solid var(--line-dark);
+    border-radius: 6px; overflow: hidden;
+    background: var(--bg-dark-2);
+    position: relative;
+    box-shadow: 0 40px 80px -20px rgba(0,0,0,0.5);
+  }
+  .demo-chrome {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 18px; background: var(--bg-dark-3);
+    border-bottom: 1px solid var(--line-dark);
+  }
+  .demo-chrome .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--line-dark-2); }
+  .demo-chrome .url { margin-left: 16px; font-family: var(--f-mono); font-size: 11px; color: rgba(247,244,238,0.45); }
+  .demo-chrome .url b { color: var(--bg); font-weight: 400; }
+  .demo-chrome .enter {
+    margin-left: auto; font-size: 12px; padding: 6px 14px; border: 1px solid var(--line-dark-2);
+    border-radius: 999px; color: rgba(247,244,238,0.85); transition: all 0.2s;
+    display: inline-flex; align-items: center; gap: 6px; font-weight: 500;
+  }
+  .demo-chrome .enter:hover { background: var(--accent); color: var(--ink); border-color: var(--accent); }
+
+  .demo-body {
+    display: grid; grid-template-columns: 220px 1fr 280px; gap: 0;
+    min-height: 540px;
+  }
+  .demo-sidebar { padding: 24px 20px; border-right: 1px solid var(--line-dark); font-family: var(--f-mono); font-size: 11px; display: flex; flex-direction: column; gap: 4px; }
+  .demo-sidebar .ds-lbl { color: rgba(247,244,238,0.35); text-transform: uppercase; letter-spacing: 0.14em; margin: 16px 0 8px 0; font-size: 9px; }
+  .demo-sidebar .ds-lbl:first-child { margin-top: 0; }
+  .demo-sidebar .ds-item { padding: 8px 10px; border-radius: 3px; color: rgba(247,244,238,0.7); cursor: default; display: flex; justify-content: space-between; transition: background 0.15s; }
+  .demo-sidebar .ds-item.active { background: var(--bg-dark-3); color: var(--bg); }
+  .demo-sidebar .ds-item .ds-sub { color: rgba(247,244,238,0.35); font-size: 10px; }
+
+  .demo-main {
+    padding: 36px 40px; position: relative;
+    display: flex; flex-direction: column; gap: 24px;
+    border-right: 1px solid var(--line-dark);
+  }
+  .demo-main-head { display: flex; justify-content: space-between; align-items: baseline; }
+  .demo-main-title { font-family: var(--f-display); font-size: 36px; font-weight: 300; letter-spacing: -0.02em; }
+  .demo-main-title .zh { font-size: 14px; color: rgba(247,244,238,0.45); display: block; margin-top: 2px; font-family: var(--f-sans); }
+  .demo-main-tabs { display: flex; gap: 18px; font-family: var(--f-mono); font-size: 11px; color: rgba(247,244,238,0.5); text-transform: uppercase; letter-spacing: 0.1em; }
+  .demo-main-tabs span { padding-bottom: 6px; border-bottom: 1px solid transparent; }
+  .demo-main-tabs span.on { color: var(--bg); border-bottom-color: var(--accent); }
+
+  .demo-viz {
+    flex: 1; position: relative;
+    display: grid; grid-template-columns: 1.5fr 1fr; gap: 16px; min-height: 320px;
+  }
+  .demo-render {
+    position: relative; overflow: hidden; border-radius: 4px;
+    border: 1px solid var(--line-dark); background: #2a2621;
+  }
+  .demo-render img { width: 100%; height: 100%; object-fit: cover; filter: saturate(0.85) contrast(1.02); }
+  .demo-render .tag { position: absolute; bottom: 10px; left: 12px; font-family: var(--f-mono); font-size: 10px; color: rgba(247,244,238,0.8); background: rgba(20,19,17,0.6); padding: 4px 8px; border-radius: 3px; letter-spacing: 0.08em; text-transform: uppercase; }
+
+  .demo-metrics { display: flex; flex-direction: column; gap: 10px; }
+  .demo-metric { background: var(--bg-dark-3); border: 1px solid var(--line-dark); border-radius: 4px; padding: 14px 16px; }
+  .demo-metric .m-lbl { font-family: var(--f-mono); font-size: 10px; color: rgba(247,244,238,0.45); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; }
+  .demo-metric .m-val { font-family: var(--f-display); font-size: 26px; font-weight: 400; letter-spacing: -0.02em; }
+  .demo-metric .m-val small { font-family: var(--f-mono); font-size: 11px; color: rgba(247,244,238,0.5); margin-left: 4px; letter-spacing: 0.08em; }
+  .demo-metric .m-bar { height: 3px; background: var(--line-dark-2); margin-top: 10px; border-radius: 2px; overflow: hidden; }
+  .demo-metric .m-bar i { display: block; height: 100%; background: var(--accent); }
+  .demo-metric .m-foot { font-family: var(--f-mono); font-size: 10px; color: rgba(247,244,238,0.45); margin-top: 6px; letter-spacing: 0.06em; }
+  .demo-metric.ok .m-val { color: oklch(0.78 0.09 165); }
+
+  .demo-chat { padding: 24px 22px; display: flex; flex-direction: column; gap: 16px; background: var(--bg-dark); }
+  .demo-chat-head { font-family: var(--f-mono); font-size: 10px; color: rgba(247,244,238,0.45); text-transform: uppercase; letter-spacing: 0.12em; display: flex; align-items: center; gap: 8px; }
+  .demo-chat-head::before { content: ""; width: 5px; height: 5px; background: var(--accent); border-radius: 50%; }
+  .chat-msg {
+    padding: 12px 14px; border-radius: 6px;
+    font-size: 13px; line-height: 1.5;
+  }
+  .chat-msg.user { background: var(--bg-dark-3); color: var(--bg); border: 1px solid var(--line-dark); align-self: flex-end; max-width: 90%; }
+  .chat-msg.bot { color: rgba(247,244,238,0.85); border-left: 2px solid var(--accent); padding-left: 12px; background: transparent; border-radius: 0; }
+  .chat-msg.bot b { color: var(--bg); font-weight: 500; }
+  .chat-diff { font-family: var(--f-mono); font-size: 11px; margin-top: 6px; display: flex; gap: 12px; color: rgba(247,244,238,0.6); }
+  .chat-diff i { font-style: normal; color: oklch(0.78 0.09 165); }
+  .chat-diff u { text-decoration: none; color: oklch(0.78 0.13 75); }
+  .chat-input {
+    margin-top: auto; padding: 12px 14px; border: 1px solid var(--line-dark-2);
+    border-radius: 6px; font-family: var(--f-mono); font-size: 12px;
+    color: rgba(247,244,238,0.4); display: flex; justify-content: space-between; align-items: center;
+  }
+  .chat-input::after { content: "⏎"; color: var(--accent); }
+
+  @media (max-width: 1100px) {
+    .demo-body { grid-template-columns: 1fr; }
+    .demo-sidebar, .demo-main { border-right: none; border-bottom: 1px solid var(--line-dark); }
+    .demo-sidebar { flex-direction: row; gap: 8px; overflow-x: auto; }
+    .demo-sidebar .ds-lbl { display: none; }
+  }
+
+  /* ───────── NUMBERS ───────── */
+  .numbers { background: var(--bg-dark); color: var(--bg); padding: 120px 0; border-top: 1px solid var(--line-dark); }
+  .numbers-head { max-width: 920px; margin-bottom: 80px; }
+  .numbers-head .section-eyebrow { color: rgba(247,244,238,0.5); }
+  .numbers-head h2 { font-family: var(--f-display); font-weight: 300; font-size: clamp(36px, 4.6vw, 64px); line-height: 1.02; letter-spacing: -0.03em; text-wrap: balance; }
+  .numbers-head h2 em { font-style: italic; color: rgba(247,244,238,0.55); }
+
+  .num-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line-dark); border-top: 1px solid var(--line-dark); border-bottom: 1px solid var(--line-dark); }
+  .num-cell { background: var(--bg-dark); padding: 48px 36px 40px; display: flex; flex-direction: column; gap: 8px; position: relative; }
+  .num-val { font-family: var(--f-display); font-weight: 300; font-size: clamp(54px, 6vw, 84px); letter-spacing: -0.035em; line-height: 1; color: var(--bg); }
+  .num-val small { font-family: var(--f-mono); font-size: 14px; color: rgba(247,244,238,0.45); letter-spacing: 0.04em; margin-left: 6px; font-weight: 400; }
+  .num-val .accent-dot { color: var(--accent); }
+  .num-label { font-size: 14px; color: rgba(247,244,238,0.7); line-height: 1.45; max-width: 240px; margin-top: 16px; text-wrap: pretty; }
+  .num-cap { margin-top: auto; padding-top: 28px; font-family: var(--f-mono); font-size: 10px; color: rgba(247,244,238,0.45); text-transform: uppercase; letter-spacing: 0.1em; }
+  @media (max-width: 960px) { .num-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 560px) { .num-grid { grid-template-columns: 1fr; } }
+
+  /* ───────── ABOUT / FLOW ───────── */
+  .about { padding: 120px 0; background: var(--bg); }
+  .about-head { display: grid; grid-template-columns: 1.1fr 1fr; gap: 80px; margin-bottom: 80px; }
+  .about-head h2 { font-family: var(--f-display); font-weight: 300; font-size: clamp(36px, 4.6vw, 64px); line-height: 1.02; letter-spacing: -0.03em; text-wrap: balance; }
+  .about-head h2 em { font-style: italic; color: var(--ink-soft); }
+  .about-head p { color: var(--ink-soft); font-size: 15px; line-height: 1.7; max-width: 480px; align-self: end; text-wrap: pretty; }
+
+  .flow {
+    border: 1px solid var(--line); background: var(--paper);
+    padding: 48px; display: grid; grid-template-columns: 1fr; gap: 0;
+    font-family: var(--f-mono); position: relative;
+  }
+  .flow-row {
+    display: grid; grid-template-columns: 120px 1fr 180px;
+    padding: 20px 0; border-bottom: 1px dashed var(--line);
+    align-items: center; gap: 24px;
+  }
+  .flow-row:last-child { border-bottom: none; }
+  .flow-stage {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.14em; color: var(--ink-mute);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .flow-stage b { color: var(--ink); font-family: var(--f-display); font-size: 15px; font-weight: 400; letter-spacing: -0.01em; text-transform: none; }
+  .flow-body { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .flow-pill { padding: 6px 14px; background: var(--bg); border: 1px solid var(--line); border-radius: 999px; font-size: 11px; color: var(--ink); letter-spacing: 0.04em; }
+  .flow-pill.main { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .flow-pill.accent { background: var(--accent-dim); border-color: var(--accent-line); }
+  .flow-arrow { color: var(--ink-mute); font-size: 14px; }
+  .flow-out { font-size: 11px; color: var(--ink-soft); text-align: right; line-height: 1.5; }
+  .flow-out b { display: block; color: var(--ink); font-family: var(--f-display); font-size: 14px; font-weight: 400; letter-spacing: -0.01em; text-transform: none; }
+
+  @media (max-width: 900px) {
+    .about-head { grid-template-columns: 1fr; gap: 24px; }
+    .flow { padding: 24px; }
+    .flow-row { grid-template-columns: 1fr; }
+    .flow-out { text-align: left; }
+  }
+
+  /* ───────── AUDIENCES ───────── */
+  .audiences { padding: 120px 0; background: var(--bg-2); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .aud-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .aud {
+    background: var(--paper); border: 1px solid var(--line); border-radius: 6px;
+    padding: 40px 36px; display: flex; flex-direction: column; gap: 14px;
+    transition: all 0.2s;
+  }
+  .aud:hover { border-color: var(--ink); transform: translateY(-2px); }
+  .aud-tag { font-family: var(--f-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.14em; color: var(--ink-mute); }
+  .aud h3 { font-family: var(--f-display); font-size: 32px; font-weight: 400; letter-spacing: -0.02em; line-height: 1.1; }
+  .aud h3 em { font-style: italic; color: var(--ink-soft); }
+  .aud p { color: var(--ink-soft); font-size: 14px; line-height: 1.6; }
+  .aud ul { list-style: none; margin-top: 8px; display: flex; flex-direction: column; gap: 8px; }
+  .aud ul li { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: var(--ink); }
+  .aud ul li::before { content: ""; width: 5px; height: 5px; background: var(--accent); border-radius: 50%; margin-top: 8px; flex-shrink: 0; }
+  .aud a { margin-top: auto; font-size: 13px; font-weight: 500; color: var(--ink); display: inline-flex; align-items: center; gap: 8px; padding-top: 16px; }
+  .aud a svg { transition: transform 0.2s; }
+  .aud a:hover svg { transform: translateX(4px); }
+  @media (max-width: 720px) { .aud-grid { grid-template-columns: 1fr; } }
+
+  /* ───────── CTA ───────── */
+  .cta-band {
+    padding: 140px 0; background: var(--bg-dark); color: var(--bg); text-align: center;
+  }
+  .cta-band h2 {
+    font-family: var(--f-display); font-weight: 300; font-size: clamp(44px, 6.2vw, 88px);
+    line-height: 1; letter-spacing: -0.035em; max-width: 900px; margin: 0 auto 32px;
+    text-wrap: balance;
+  }
+  .cta-band h2 em { font-style: italic; color: rgba(247,244,238,0.55); }
+  .cta-band h2 .dot { color: var(--accent); }
+  .cta-band p { max-width: 520px; margin: 0 auto 40px; color: rgba(247,244,238,0.7); font-size: 16px; line-height: 1.6; }
+  .cta-band .btn-primary { background: var(--bg); color: var(--ink); }
+  .cta-band .btn-primary:hover { background: var(--accent); }
+
+  /* ───────── FOOTER ───────── */
+  footer { background: var(--bg-dark); color: rgba(247,244,238,0.6); padding: 60px 0 40px; border-top: 1px solid var(--line-dark); }
+  .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; padding-bottom: 40px; border-bottom: 1px solid var(--line-dark); }
+  .footer-brand .logo { color: var(--bg); margin-bottom: 16px; }
+  .footer-brand p { font-size: 13px; line-height: 1.6; max-width: 280px; }
+  .footer-col h5 { font-family: var(--f-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.14em; color: rgba(247,244,238,0.4); margin-bottom: 16px; }
+  .footer-col a { display: block; padding: 5px 0; font-size: 13px; color: rgba(247,244,238,0.75); }
+  .footer-col a:hover { color: var(--bg); }
+  .footer-bottom { padding-top: 24px; display: flex; justify-content: space-between; font-family: var(--f-mono); font-size: 11px; color: rgba(247,244,238,0.4); letter-spacing: 0.06em; }
+  @media (max-width: 720px) { .footer-grid { grid-template-columns: 1fr 1fr; } }
+
+  /* ───────── Tweaks Panel ───────── */
+  .tweaks-panel {
+    position: fixed; bottom: 24px; right: 24px; z-index: 999;
+    background: var(--bg-dark); color: var(--bg);
+    border: 1px solid var(--line-dark-2); border-radius: 10px;
+    padding: 20px; width: 280px;
+    box-shadow: 0 20px 60px -10px rgba(0,0,0,0.4);
+    font-family: var(--f-sans); font-size: 12px;
+    display: none;
+  }
+  .tweaks-panel.open { display: block; }
+  .tweaks-panel h4 { font-family: var(--f-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.14em; color: rgba(247,244,238,0.5); margin-bottom: 14px; }
+  .tweak-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 12px; }
+  .tweak-row label { color: rgba(247,244,238,0.8); }
+  .tweak-row input[type="range"] { flex: 1; accent-color: var(--accent); }
+  .tweak-row input[type="text"] { flex: 1; background: var(--bg-dark-3); border: 1px solid var(--line-dark-2); padding: 6px 8px; border-radius: 4px; color: var(--bg); font-family: inherit; font-size: 11px; }
+  .tweak-val { font-family: var(--f-mono); font-size: 10px; color: var(--accent); min-width: 30px; text-align: right; }
+</style>
+</head>
+<body>
+
+<!-- ─────────── NAV ─────────── -->
+<nav class="nav" id="nav">
+  <a href="#" class="logo">
+    <span class="logo-mark"></span>
+    <span class="logo-name"><b style="font-weight:500;">Arctura</b><span class="labs">Labs</span></span>
+  </a>
+  <div class="nav-links">
+    <a href="#capabilities">Capabilities</a>
+    <a href="#demo">Live Demo</a>
+    <a href="#numbers">Numbers</a>
+    <a href="#about">How it works</a>
+    <a href="#investors">For investors</a>
+  </div>
+  <a href="/project/" class="nav-cta">Try it live →</a>
+</nav>
+
+<!-- ─────────── HERO ─────────── -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow">AI-native studio · est. 2026 · Hong Kong</div>
+    <h1 class="hero-tagline" id="tagline">
+      Space,<br>
+      as a <em>conversation</em><span class="dot">.</span>
+    </h1>
+    <p class="hero-sub">
+      Arctura Labs turns a single sentence of intent into a fully-specified space — 3D model, floorplan, bill of quantities, energy compliance, and eight stakeholder decks. Then hands it to your client as a living, editable document.
+    </p>
+    <div class="hero-ctas">
+      <a href="/project/" class="btn-primary">
+        Open a live project
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8m0 0L7.5 3.5M11 7l-3.5 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <a href="#capabilities" class="btn-ghost">See what we build →</a>
+    </div>
+    <div class="hero-footnote">
+      <div><span>15 min</span>brief to delivery</div>
+      <div><span>29</span>projects delivered</div>
+      <div><span>5</span>regional codes</div>
+    </div>
+  </div>
+
+  <div class="hero-right" id="heroCanvas">
+    <div class="canvas-label">
+      <span>PIPELINE / AUTO-LOOP</span>
+      <span class="live">running · zen-tea.demo</span>
+    </div>
+
+    <div class="pipeline-stage">
+      <div class="pipeline-steps" id="pipeSteps">
+        <div class="pipe-step" data-idx="0"><span class="pipe-num">01</span><span>Brief</span></div>
+        <div class="pipe-step" data-idx="1"><span class="pipe-num">02</span><span>Design 3D</span></div>
+        <div class="pipe-step" data-idx="2"><span class="pipe-num">03</span><span>BOQ</span></div>
+        <div class="pipe-step" data-idx="3"><span class="pipe-num">04</span><span>Energy</span></div>
+      </div>
+
+      <div class="pipeline-viewport">
+        <!-- scene 0 — brief -->
+        <div class="pipe-scene scene-brief" data-scene="0">
+          <div style="font-family:var(--f-mono); font-size:10px; color:var(--ink-mute); text-transform:uppercase; letter-spacing:0.1em;">01 · Client intent</div>
+          <div class="brief-quote" id="briefText"></div>
+          <div class="brief-meta">
+            <div><b>40 m²</b>Tea room</div>
+            <div><b>Hong Kong</b>Commercial</div>
+            <div><b>HK$360k</b>Budget</div>
+            <div><b>Neo-Chinese</b>Style</div>
+          </div>
+        </div>
+
+        <!-- scene 1 — 3D -->
+        <div class="pipe-scene scene-3d" data-scene="1">
+          <div style="position:absolute; top:20px; left:20px; font-family:var(--f-mono); font-size:10px; color:var(--ink-mute); text-transform:uppercase; letter-spacing:0.1em;">02 · Model · 115 objects · 8 zones</div>
+          <div class="scene-3d-wrap">
+            <div class="iso-box">
+              <div class="iso-face floor"></div>
+              <div class="iso-block table"></div>
+              <div class="iso-block chair1"></div>
+              <div class="iso-block chair2"></div>
+              <div class="iso-block chair3"></div>
+              <div class="iso-block chair4"></div>
+              <div class="iso-block cabinet"></div>
+              <div class="iso-block zen"></div>
+              <div class="iso-block screen"></div>
+            </div>
+          </div>
+          <div style="position:absolute; bottom:20px; left:20px; right:20px; font-family:var(--f-mono); font-size:10px; color:var(--ink-soft); display:flex; justify-content:space-between; letter-spacing:0.06em;">
+            <span>EXPORT · GLB / OBJ / FBX / IFC4 / DXF</span>
+            <span>8.0 × 5.0 × 3.0m</span>
+          </div>
+        </div>
+
+        <!-- scene 2 — BOQ -->
+        <div class="pipe-scene scene-boq" data-scene="2">
+          <div class="boq-header">
+            <div>
+              <div style="font-family:var(--f-mono); font-size:10px; color:var(--ink-mute); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:4px;">03 · Bill of quantities</div>
+              <div class="boq-title">HK$ 540,392</div>
+            </div>
+            <div class="boq-region">Region · HK</div>
+          </div>
+          <div class="boq-rows" id="boqRows"></div>
+          <div class="boq-total">
+            <span class="boq-total-label">Unit cost</span>
+            <span class="boq-total-amt"><em>HK$13,510</em> / m²</span>
+          </div>
+        </div>
+
+        <!-- scene 3 — ENERGY -->
+        <div class="pipe-scene scene-energy" data-scene="3">
+          <div class="energy-head">
+            <div>
+              <div style="font-family:var(--f-mono); font-size:10px; color:var(--ink-mute); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:4px;">04 · Energy & compliance</div>
+              <div class="energy-title">EUI simulation</div>
+            </div>
+            <div class="energy-code">HK · BEEO 2021</div>
+          </div>
+          <div class="energy-big">
+            <span class="val" id="euiVal">84</span>
+            <span class="unit">kWh/<br>m²·yr</span>
+            <span class="delta">56% of limit</span>
+          </div>
+          <div class="energy-bars">
+            <div class="energy-bar"><span>HVAC</span><span class="track"><i class="fill" style="--w:62%"></i></span><span class="num">52</span></div>
+            <div class="energy-bar"><span>Lighting</span><span class="track"><i class="fill accent" style="--w:24%"></i></span><span class="num">20</span></div>
+            <div class="energy-bar"><span>Equipment</span><span class="track"><i class="fill" style="--w:14%"></i></span><span class="num">12</span></div>
+          </div>
+          <div class="energy-compliance">
+            <span class="chk">Envelope</span>
+            <span class="chk">Roof U</span>
+            <span class="chk">Window U</span>
+            <span class="chk">SHGC</span>
+            <span class="chk">OTTV</span>
+            <span class="chk">LPD</span>
+            <span class="chk">ACH</span>
+            <span class="chk">EUI</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────── CAPABILITIES ─────────── -->
+<section class="caps container" id="capabilities">
+  <div class="section-head">
+    <div>
+      <div class="section-eyebrow">01 / Capabilities</div>
+      <h2 class="section-title">Nine pipelines. <em>One fluent delivery.</em></h2>
+    </div>
+    <div class="section-sub">
+      Every Arctura project is assembled from a small set of specialized engines — each the output of dozens of prior deliveries. You don't configure them. You describe what you want.
+    </div>
+  </div>
+
+  <div class="cap-grid">
+    <div class="cap">
+      <div>
+        <div class="cap-num">01 — 02</div>
+        <div class="cap-title">Design<span class="cn">室内 · 建筑 · 两条路径</span></div>
+        <div class="cap-desc">From a sentence to a 3D model with 100+ objects, dimensioned floorplans, and four render angles. Interior or full architectural — routed automatically.</div>
+      </div>
+      <div class="cap-meta"><span>Output</span><b>5 exports</b></div>
+    </div>
+
+    <div class="cap">
+      <div>
+        <div class="cap-num">03</div>
+        <div class="cap-title">Brief intake<span class="cn">客户进件漏斗</span></div>
+        <div class="cap-desc">Clients describe a space in their own words. We fill the missing 90% — defaults tuned per-market, schema-validated, ready for downstream.</div>
+      </div>
+      <div class="cap-meta"><span>Format</span><b>brief.json</b></div>
+    </div>
+
+    <div class="cap">
+      <div>
+        <div class="cap-num">06</div>
+        <div class="cap-title">Bill of quantities<span class="cn">报价 · 三套区域价</span></div>
+        <div class="cap-desc">Structural, finishes, MEP — priced from the model or from an enriched IFC. Switch between HK, Mainland, and international pricing in a click.</div>
+      </div>
+      <div class="cap-meta"><span>Regions</span><b>HK · CN · INTL</b></div>
+    </div>
+
+    <div class="cap">
+      <div>
+        <div class="cap-num">07</div>
+        <div class="cap-title">Energy simulation<span class="cn">能耗模拟</span></div>
+        <div class="cap-desc">A real EnergyPlus model, not an estimate. EUI, breakdown, baseline delta — in seconds, swappable climate files.</div>
+      </div>
+      <div class="cap-meta"><span>Engine</span><b>EnergyPlus</b></div>
+    </div>
+
+    <div class="cap">
+      <div>
+        <div class="cap-num">08</div>
+        <div class="cap-title">Compliance<span class="cn">合规 · 五地法规</span></div>
+        <div class="cap-desc">HK BEEO, GB 50189, ASHRAE 90.1, and Japan's 省エネ法 — checked line-by-line with actionable fixes, not just a verdict.</div>
+      </div>
+      <div class="cap-meta"><span>Codes</span><b>HK · CN · US · JP</b></div>
+    </div>
+
+    <div class="cap">
+      <div>
+        <div class="cap-num">09 — 10</div>
+        <div class="cap-title">What-If · A/B/C<span class="cn">参数敏感性 · 方案对比</span></div>
+        <div class="cap-desc">"Is the insulation upgrade worth it?" "Economy vs premium?" Dedicated engines for parameter sweeps and full scheme comparisons.</div>
+      </div>
+      <div class="cap-meta"><span>Run time</span><b>10–60 s</b></div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────── LIVE DEMO ─────────── -->
+<section class="demo-strip" id="demo">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <div class="section-eyebrow">02 / Live demo</div>
+        <h2 class="section-title">Not a screenshot. <em>A working project.</em></h2>
+      </div>
+      <div class="section-sub">
+        Every Arctura client gets a Project Space — a single link that stays alive. Change a parameter in plain language, and the model, the BOQ, the compliance report all re-settle.
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <a href="/project/" class="demo-preview" style="display:block;">
+      <div class="demo-chrome">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="url">arctura.app / <b>zen-tea</b> / project</span>
+        <span class="enter">Open the live project
+          <svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M3 7h8m0 0L7.5 3.5M11 7l-3.5 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+      </div>
+
+      <div class="demo-body">
+        <div class="demo-sidebar">
+          <div class="ds-lbl">Project</div>
+          <div class="ds-item active">Overview <span class="ds-sub">4</span></div>
+          <div class="ds-item">3D viewer <span class="ds-sub">115</span></div>
+          <div class="ds-item">Renders <span class="ds-sub">4</span></div>
+          <div class="ds-item">Floorplan <span class="ds-sub">7</span></div>
+
+          <div class="ds-lbl">Analysis</div>
+          <div class="ds-item">BOQ <span class="ds-sub">HK</span></div>
+          <div class="ds-item">Energy <span class="ds-sub">84</span></div>
+          <div class="ds-item">Compliance <span class="ds-sub">7/8</span></div>
+
+          <div class="ds-lbl">Explore</div>
+          <div class="ds-item">What-If</div>
+          <div class="ds-item">A/B/C</div>
+
+          <div class="ds-lbl">Delivery</div>
+          <div class="ds-item">Decks <span class="ds-sub">8</span></div>
+          <div class="ds-item">Downloads</div>
+        </div>
+
+        <div class="demo-main">
+          <div class="demo-main-head">
+            <div class="demo-main-title">Zen Tea Room<span class="zh">禅意茶室 · 新中式 · 40 m² · Hong Kong</span></div>
+            <div class="demo-main-tabs">
+              <span class="on">Render</span>
+              <span>Floorplan</span>
+              <span>3D</span>
+            </div>
+          </div>
+
+          <div class="demo-viz">
+            <div class="demo-render">
+              <img src="assets/zen-tea/render-01-hero.png" alt="Zen tea room hero render" />
+              <div class="tag">01 · Hero corner</div>
+            </div>
+            <div class="demo-metrics">
+              <div class="demo-metric ok">
+                <div class="m-lbl">Compliance · HK BEEO</div>
+                <div class="m-val">7 / 8 <small>passed</small></div>
+                <div class="m-bar"><i style="width:87.5%"></i></div>
+                <div class="m-foot">OTTV requires facade WWR</div>
+              </div>
+              <div class="demo-metric">
+                <div class="m-lbl">EUI (kWh/m²·yr)</div>
+                <div class="m-val">84 <small>of 150 limit</small></div>
+                <div class="m-bar"><i style="width:56%"></i></div>
+                <div class="m-foot">56% of regulatory cap</div>
+              </div>
+              <div class="demo-metric">
+                <div class="m-lbl">BOQ · Hong Kong</div>
+                <div class="m-val">HK$540k <small>· 13,510 / m²</small></div>
+                <div class="m-foot">Switch region · HK / CN / INTL</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="demo-chat">
+          <div class="demo-chat-head">Conversation · zen-tea</div>
+
+          <div class="chat-msg user">What if we use a Beijing compliance code instead?</div>
+          <div class="chat-msg bot">
+            <b>Switched to GB 50189 · Cold Zone.</b>
+            Three envelope values fall short; the wall U-value is the binding one.
+            <div class="chat-diff">
+              <i>+60mm rockwool suggested</i>
+              <u>passes 6/7 after change</u>
+            </div>
+          </div>
+
+          <div class="chat-msg user">Cut the budget by 20%.</div>
+          <div class="chat-msg bot">
+            <b>Regenerating Economy variant…</b> swapping rosewood for walnut veneer, reducing copperware count from 12 to 7.
+            <div class="chat-diff">
+              <i>−HK$108k</i>
+              <u>mood-board re-scored</u>
+            </div>
+          </div>
+
+          <div class="chat-input">Tell me what to change…</div>
+        </div>
+      </div>
+    </a>
+  </div>
+</section>
+
+<!-- ─────────── NUMBERS ─────────── -->
+<section class="numbers" id="numbers">
+  <div class="container">
+    <div class="numbers-head">
+      <div class="section-eyebrow" style="color:rgba(247,244,238,0.5);">03 / By the numbers</div>
+      <h2>Every delivery is a <em>data trail</em>, not a hand-wave.</h2>
+    </div>
+
+    <div class="num-grid">
+      <div class="num-cell">
+        <div class="num-val">15<small>min</small></div>
+        <div class="num-label">Median time from a client brief to a complete, export-ready design package.</div>
+        <div class="num-cap">Brief → 3D → BOQ → Energy</div>
+      </div>
+      <div class="num-cell">
+        <div class="num-val">29<span class="accent-dot">.</span></div>
+        <div class="num-label">Live interior and architectural projects delivered — tea rooms, clinics, workspaces, residential.</div>
+        <div class="num-cap">MVP portfolio · 2026</div>
+      </div>
+      <div class="num-cell">
+        <div class="num-val">5<small>regions</small></div>
+        <div class="num-label">Regulatory codes checked — HK BEEO, GB 50189, ASHRAE 90.1, Japan 省エネ法, and a neutral international baseline.</div>
+        <div class="num-cap">Compliance coverage</div>
+      </div>
+      <div class="num-cell">
+        <div class="num-val">5<small>formats</small></div>
+        <div class="num-label">3D exports per project — GLB for the web, OBJ, FBX, IFC4 for BIM, DXF for floorplans.</div>
+        <div class="num-cap">Every project, every time</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────── ABOUT / FLOW ─────────── -->
+<section class="about container" id="about">
+  <div class="about-head">
+    <h2>Under the hood: <em>a small graph of specialists,</em> wired to run in parallel.</h2>
+    <p>We designed Arctura around a simple observation: interior work, architecture, quantity surveying, energy modeling, and compliance all ask for the same underlying object — a room with materials, geometry, and intent. Express that object once, and the rest is downstream computation.</p>
+  </div>
+
+  <div class="flow">
+    <div class="flow-row">
+      <div class="flow-stage"><b>Intake</b>stage 1</div>
+      <div class="flow-body">
+        <span class="flow-pill accent">brief · one sentence</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-pill">intake LLM</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-pill">schema · validated</span>
+      </div>
+      <div class="flow-out"><b>brief.json</b>Client intent → structured object</div>
+    </div>
+
+    <div class="flow-row">
+      <div class="flow-stage"><b>Design</b>stage 2</div>
+      <div class="flow-body">
+        <span class="flow-pill main">P1 · Interior</span>
+        <span class="flow-pill main">P2 · Architecture</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-pill">3D · renders · plans</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-pill">5 exports</span>
+      </div>
+      <div class="flow-out"><b>Deliverable model</b>115 objects · 4 renders · 7 decks</div>
+    </div>
+
+    <div class="flow-row">
+      <div class="flow-stage"><b>Analysis</b>stage 3</div>
+      <div class="flow-body">
+        <span class="flow-pill">IFC enrich</span>
+        <span class="flow-arrow">/</span>
+        <span class="flow-pill">IFC audit</span>
+        <span class="flow-arrow">||</span>
+        <span class="flow-pill main">P7 · Energy</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-pill main">P8 · Compliance</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-pill main">P6 · BOQ</span>
+      </div>
+      <div class="flow-out"><b>Parallel paths</b>IFC quality + EUI + pricing</div>
+    </div>
+
+    <div class="flow-row">
+      <div class="flow-stage"><b>Compare</b>stage 4</div>
+      <div class="flow-body">
+        <span class="flow-pill">P9 · What-If</span>
+        <span class="flow-arrow">|</span>
+        <span class="flow-pill">P10 · A/B/C</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-pill accent">decision matrix</span>
+      </div>
+      <div class="flow-out"><b>Sensitivity + choice</b>Same scheme ↔ different schemes</div>
+    </div>
+
+    <div class="flow-row">
+      <div class="flow-stage"><b>Delivery</b>stage 5</div>
+      <div class="flow-body">
+        <span class="flow-pill">P11 · Case study</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-pill">portfolio</span>
+        <span class="flow-pill">impact</span>
+        <span class="flow-pill">sales</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-pill accent">Project Space · live link</span>
+      </div>
+      <div class="flow-out"><b>Handoff</b>Static files + live interactive doc</div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────── AUDIENCES ─────────── -->
+<section class="audiences" id="investors">
+  <div class="container">
+    <div class="section-head" style="border-bottom-color:var(--line);">
+      <div>
+        <div class="section-eyebrow">04 / Audiences</div>
+        <h2 class="section-title">Two audiences, <em>one product.</em></h2>
+      </div>
+      <div class="section-sub">
+        A studio's software stops being a studio's software the moment it's this fast. Clients don't buy pipelines — they buy speed and clarity. Investors buy the asymmetry underneath it.
+      </div>
+    </div>
+
+    <div class="aud-grid">
+      <div class="aud">
+        <div class="aud-tag">For clients</div>
+        <h3>Your space, <em>in a working link.</em></h3>
+        <p>Stop waiting weeks between revisions. Describe what you want. We reply with a complete package — and a link that stays editable by conversation.</p>
+        <ul>
+          <li>First complete delivery in 15 minutes</li>
+          <li>Talk to the project in plain language</li>
+          <li>Priced for HK, Mainland, or international</li>
+          <li>Compliance checked before you see it</li>
+        </ul>
+        <a href="/project/">Try a sample project
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8m0 0L7.5 3.5M11 7l-3.5 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+
+      <div class="aud">
+        <div class="aud-tag">For investors</div>
+        <h3>A studio operating <em>at software margins.</em></h3>
+        <p>Nine interlocking pipelines turn each delivery into training data for the next. The stack compounds. The unit cost of a design approaches zero. The moat is the data trail, not any single model.</p>
+        <ul>
+          <li>Structured object for every project (brief.json)</li>
+          <li>Five regulatory regimes, one code path</li>
+          <li>Case-study engine — every delivery becomes sales material</li>
+          <li>Vertical depth in AEC — not a horizontal AI wrapper</li>
+        </ul>
+        <a href="#">Read the deck
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8m0 0L7.5 3.5M11 7l-3.5 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────── CTA ─────────── -->
+<section class="cta-band">
+  <div class="container">
+    <h2>One sentence. <em>One space.</em><span class="dot">.</span></h2>
+    <p>Open the sample project to see exactly what a client receives — and what they can change, just by asking.</p>
+    <a href="/project/" class="btn-primary">
+      Open the live project
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8m0 0L7.5 3.5M11 7l-3.5 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </div>
+</section>
+
+<!-- ─────────── FOOTER ─────────── -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="logo">
+          <span class="logo-mark"></span>
+          <span class="logo-name"><b style="font-weight:500;">Arctura</b><span class="labs">Labs</span></span>
+        </div>
+        <p>AI-native architecture & interior studio, building in Hong Kong. Every delivery becomes training data for the next.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Product</h5>
+        <a href="#capabilities">Capabilities</a>
+        <a href="/project/">Live demo</a>
+        <a href="#about">How it works</a>
+      </div>
+      <div class="footer-col">
+        <h5>Company</h5>
+        <a href="#investors">For investors</a>
+        <a href="#">Careers</a>
+        <a href="#">Press</a>
+      </div>
+      <div class="footer-col">
+        <h5>Contact</h5>
+        <a href="mailto:hello@arctura.app">hello@arctura.app</a>
+        <a href="#">Hong Kong</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 ARCTURA LABS</span>
+      <span>SPACE, AS A CONVERSATION.</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ─────────── Tweaks Panel ─────────── -->
+<div class="tweaks-panel" id="tweaksPanel">
+  <h4>Tweaks</h4>
+  <div class="tweak-row">
+    <label>Accent hue</label>
+    <input type="range" min="0" max="360" step="5" id="twHue" />
+    <span class="tweak-val" id="twHueVal"></span>
+  </div>
+  <div class="tweak-row" style="flex-direction:column; align-items:stretch; gap:6px;">
+    <label style="font-size:10px; text-transform:uppercase; letter-spacing:0.1em; color:rgba(247,244,238,0.5);">Hero tagline</label>
+    <input type="text" id="twTagline" />
+  </div>
+</div>
+
+<!-- ─────────── Scripts ─────────── -->
+<script>
+(function() {
+  // ── Nav scroll ──
+  const nav = document.getElementById('nav');
+  const demo = document.getElementById('demo');
+  const numbers = document.getElementById('numbers');
+  const ctaBand = document.querySelector('.cta-band');
+  function onScroll() {
+    const y = window.scrollY;
+    nav.classList.toggle('scrolled', y > 12);
+    // dark sections
+    const demoTop = demo.offsetTop;
+    const numTop = numbers.offsetTop;
+    const numBot = numTop + numbers.offsetHeight;
+    const ctaTop = ctaBand.offsetTop;
+    const scrollPos = y + 50;
+    const inDemo = scrollPos > demoTop && scrollPos < demoTop + demo.offsetHeight;
+    const inNums = scrollPos > numTop && scrollPos < numBot;
+    const inCta = scrollPos > ctaTop;
+    nav.classList.toggle('dark', inDemo || inNums || inCta);
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  // ── Pipeline loop ──
+  const briefFull = '"Design me a 40 m² neo-Chinese tea room in Hong Kong, HK$360k budget, rosewood and copper, mood of a scholar\'s retreat."';
+  const steps = document.querySelectorAll('.pipe-step');
+  const scenes = document.querySelectorAll('.pipe-scene');
+  const briefText = document.getElementById('briefText');
+  const boqRows = document.getElementById('boqRows');
+  const euiVal = document.getElementById('euiVal');
+
+  const boqData = [
+    ['Structural slab + walls', '40 m²', 'HK$ 114,300'],
+    ['Envelope & windows', '23 m²', 'HK$ 88,920'],
+    ['Doors & interior partitions', '50 m²', 'HK$ 72,168'],
+    ['Floor finishes (ceramic)', '40 m²', 'HK$ 15,200'],
+    ['Roof + insulation (XPS)', '40 m²', 'HK$ 68,000'],
+    ['MEP allowance (25%)', '—', 'HK$ 89,647'],
+    ['Preliminaries (12%)', '—', 'HK$ 43,031'],
+    ['Contingency (10%)', '—', 'HK$ 49,127'],
+  ];
+
+  function typeBrief(cb) {
+    briefText.innerHTML = '<span class="brief-cursor"></span>';
+    let i = 0;
+    const cursor = briefText.querySelector('.brief-cursor');
+    const tick = () => {
+      if (i <= briefFull.length) {
+        briefText.innerHTML = briefFull.slice(0, i) + '<span class="brief-cursor"></span>';
+        i += Math.random() > 0.9 ? 1 : 2;
+        setTimeout(tick, 22 + Math.random() * 30);
+      } else {
+        briefText.innerHTML = briefFull;
+        if (cb) setTimeout(cb, 600);
+      }
+    };
+    tick();
+  }
+
+  function fillBoq() {
+    boqRows.innerHTML = '';
+    boqData.forEach((row, idx) => {
+      const el = document.createElement('div');
+      el.className = 'boq-row';
+      el.style.animationDelay = (idx * 0.08) + 's';
+      el.innerHTML = `<b>${row[0]}</b><span>${row[1]}</span><span class="boq-amt">${row[2]}</span>`;
+      boqRows.appendChild(el);
+    });
+  }
+
+  function countUp(el, from, to, dur) {
+    const start = performance.now();
+    const tick = (now) => {
+      const t = Math.min(1, (now - start) / dur);
+      const eased = 1 - Math.pow(1 - t, 3);
+      el.textContent = Math.round(from + (to - from) * eased);
+      if (t < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }
+
+  let idx = 0;
+  function setScene(n) {
+    steps.forEach((s, i) => {
+      s.classList.remove('active', 'done');
+      if (i < n) s.classList.add('done');
+      if (i === n) s.classList.add('active');
+    });
+    scenes.forEach((s, i) => s.classList.toggle('active', i === n));
+    if (n === 0) typeBrief();
+    if (n === 2) fillBoq();
+    if (n === 3) countUp(euiVal, 0, 84, 1400);
+  }
+
+  const durations = [5200, 4200, 4600, 4800];
+  function advance() {
+    setScene(idx);
+    const dur = durations[idx];
+    setTimeout(() => { idx = (idx + 1) % 4; advance(); }, dur);
+  }
+  setTimeout(advance, 400);
+
+  // ── Apply saved tweaks ──
+  function applyAccent(h) {
+    document.documentElement.style.setProperty('--accent', `oklch(0.68 0.09 ${h})`);
+    document.documentElement.style.setProperty('--accent-dim', `oklch(0.68 0.09 ${h} / 0.15)`);
+    document.documentElement.style.setProperty('--accent-line', `oklch(0.68 0.09 ${h} / 0.45)`);
+  }
+  function applyTagline(t) {
+    const el = document.getElementById('tagline');
+    const parts = (t || 'Space, as a conversation.').split(',');
+    if (parts.length >= 2) {
+      el.innerHTML = parts[0] + ',<br>as a <em>' + parts[1].replace(/^\s*as a\s*/i, '').replace(/[.!?]$/, '').trim() + '</em><span class="dot">.</span>';
+    } else {
+      el.innerHTML = t + '<span class="dot">.</span>';
+    }
+  }
+  applyAccent(TWEAKS.accentHue);
+  applyTagline(TWEAKS.heroTagline);
+
+  // ── Tweaks panel ──
+  const panel = document.getElementById('tweaksPanel');
+  const twHue = document.getElementById('twHue');
+  const twHueVal = document.getElementById('twHueVal');
+  const twTag = document.getElementById('twTagline');
+  twHue.value = TWEAKS.accentHue;
+  twHueVal.textContent = TWEAKS.accentHue;
+  twTag.value = TWEAKS.heroTagline;
+
+  twHue.addEventListener('input', (e) => {
+    const v = +e.target.value;
+    twHueVal.textContent = v;
+    applyAccent(v);
+    postEdit({ accentHue: v });
+  });
+  twTag.addEventListener('input', (e) => {
+    applyTagline(e.target.value);
+    postEdit({ heroTagline: e.target.value });
+  });
+  function postEdit(edits) {
+    try { window.parent.postMessage({ type: '__edit_mode_set_keys', edits }, '*'); } catch(e) {}
+  }
+
+  window.addEventListener('message', (ev) => {
+    const d = ev.data || {};
+    if (d.type === '__activate_edit_mode') panel.classList.add('open');
+    if (d.type === '__deactivate_edit_mode') panel.classList.remove('open');
+  });
+  try { window.parent.postMessage({ type: '__edit_mode_available' }, '*'); } catch(e) {}
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,730 @@
+{
+  "slug": "arch-09-mixed-use",
+  "complete": false,
+  "project": {
+    "name": "Meridian Plaza — 底商+办公综合体 v1",
+    "zh": "",
+    "area": 3011,
+    "location": "Hong Kong",
+    "budgetHKD": 0,
+    "style": "modern business, metal + glass curtain wall, timber interior accent, urban minimalism, sustainable rooftop",
+    "palette": [
+      {
+        "name": "dark_grey_aluminum",
+        "hex": "#3E4043"
+      },
+      {
+        "name": "silver_metal_frame",
+        "hex": "#A8ADB2"
+      },
+      {
+        "name": "low_iron_glass",
+        "hex": "#B9D0DA"
+      },
+      {
+        "name": "warm_oak_interior",
+        "hex": "#8B6F4E"
+      },
+      {
+        "name": "terrazzo_lobby",
+        "hex": "#D6D3CC"
+      },
+      {
+        "name": "accent_brass",
+        "hex": "#B89968"
+      }
+    ]
+  },
+  "renders": [
+    {
+      "id": "interior",
+      "file": "/assets/mvps/arch-09-mixed-use/renders/interior.webp",
+      "title": "Interior",
+      "tag": "interior"
+    },
+    {
+      "id": "massing",
+      "file": "/assets/mvps/arch-09-mixed-use/renders/massing.webp",
+      "title": "Massing",
+      "tag": "massing"
+    },
+    {
+      "id": "elev-E",
+      "file": "/assets/mvps/arch-09-mixed-use/renders/elev-E.webp",
+      "title": "Elev E",
+      "tag": "elev-E"
+    },
+    {
+      "id": "elev-N",
+      "file": "/assets/mvps/arch-09-mixed-use/renders/elev-N.webp",
+      "title": "Elev N",
+      "tag": "elev-N"
+    },
+    {
+      "id": "elev-S",
+      "file": "/assets/mvps/arch-09-mixed-use/renders/elev-S.webp",
+      "title": "Elev S",
+      "tag": "elev-S"
+    },
+    {
+      "id": "elev-W",
+      "file": "/assets/mvps/arch-09-mixed-use/renders/elev-W.webp",
+      "title": "Elev W",
+      "tag": "elev-W"
+    },
+    {
+      "id": "floor-B1",
+      "file": "/assets/mvps/arch-09-mixed-use/renders/floor-B1.webp",
+      "title": "Floor B1",
+      "tag": "floor-B1"
+    },
+    {
+      "id": "floor-F1",
+      "file": "/assets/mvps/arch-09-mixed-use/renders/floor-F1.webp",
+      "title": "Floor F1",
+      "tag": "floor-F1"
+    },
+    {
+      "id": "floor-F2",
+      "file": "/assets/mvps/arch-09-mixed-use/renders/floor-F2.webp",
+      "title": "Floor F2",
+      "tag": "floor-F2"
+    },
+    {
+      "id": "floor-F5",
+      "file": "/assets/mvps/arch-09-mixed-use/renders/floor-F5.webp",
+      "title": "Floor F5",
+      "tag": "floor-F5"
+    },
+    {
+      "id": "floor-roof",
+      "file": "/assets/mvps/arch-09-mixed-use/renders/floor-roof.webp",
+      "title": "Floor Roof",
+      "tag": "floor-roof"
+    },
+    {
+      "id": "site-plan",
+      "file": "/assets/mvps/arch-09-mixed-use/renders/site-plan.webp",
+      "title": "Site Plan",
+      "tag": "site-plan"
+    }
+  ],
+  "floorplan": null,
+  "moodboard": "/assets/mvps/arch-09-mixed-use/moodboard.webp",
+  "hero_img": "/assets/mvps/arch-09-mixed-use/hero.webp",
+  "thumb_img": "/assets/mvps/arch-09-mixed-use/thumb.webp",
+  "zones": [],
+  "furniture": [],
+  "pricing": {
+    "HK": {
+      "label": "Hong Kong",
+      "currency": "HK$",
+      "perM2": 5462,
+      "rows": [
+        {
+          "cat": "1",
+          "desc": "slab",
+          "sub": "B1 Floor Slab — RC slab (120mm) incl. formwork + rebar",
+          "qty": "556.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "2",
+          "desc": "slab",
+          "sub": "F1 Floor Slab — RC slab (120mm) incl. formwork + rebar",
+          "qty": "545.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "3",
+          "desc": "slab",
+          "sub": "F2 Floor Slab — RC slab (120mm) incl. formwork + rebar",
+          "qty": "374.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "4",
+          "desc": "slab",
+          "sub": "F3 Floor Slab — RC slab (120mm) incl. formwork + rebar",
+          "qty": "374.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "5",
+          "desc": "slab",
+          "sub": "F4 Floor Slab — RC slab (120mm) incl. formwork + rebar",
+          "qty": "374.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "6",
+          "desc": "slab",
+          "sub": "F5 Floor Slab — RC slab (120mm) incl. formwork + rebar",
+          "qty": "374.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "7",
+          "desc": "wall",
+          "sub": "B1 Exterior Walls — Common brick wall (200mm) incl. render",
+          "qty": "313.6",
+          "amt": "m2"
+        },
+        {
+          "cat": "8",
+          "desc": "wall",
+          "sub": "B1 Interior Partitions — Gypsum board partition (double-sided)",
+          "qty": "84.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "9",
+          "desc": "wall",
+          "sub": "F1 Exterior Walls — Common brick wall (200mm) incl. render",
+          "qty": "403.2",
+          "amt": "m2"
+        },
+        {
+          "cat": "10",
+          "desc": "wall",
+          "sub": "F1 Interior Partitions — Gypsum board partition (double-sided)",
+          "qty": "97.2",
+          "amt": "m2"
+        },
+        {
+          "cat": "11",
+          "desc": "wall",
+          "sub": "F2 Exterior Walls — Common brick wall (200mm) incl. render",
+          "qty": "322.6",
+          "amt": "m2"
+        },
+        {
+          "cat": "12",
+          "desc": "wall",
+          "sub": "F2 Interior Partitions — Gypsum board partition (double-sided)",
+          "qty": "86.4",
+          "amt": "m2"
+        },
+        {
+          "cat": "13",
+          "desc": "wall",
+          "sub": "F3 Exterior Walls — Common brick wall (200mm) incl. render",
+          "qty": "322.6",
+          "amt": "m2"
+        },
+        {
+          "cat": "14",
+          "desc": "wall",
+          "sub": "F3 Interior Partitions — Gypsum board partition (double-sided)",
+          "qty": "34.6",
+          "amt": "m2"
+        },
+        {
+          "cat": "15",
+          "desc": "wall",
+          "sub": "F4 Exterior Walls — Common brick wall (200mm) incl. render",
+          "qty": "322.6",
+          "amt": "m2"
+        },
+        {
+          "cat": "16",
+          "desc": "wall",
+          "sub": "F4 Interior Partitions — Gypsum board partition (double-sided)",
+          "qty": "34.6",
+          "amt": "m2"
+        },
+        {
+          "cat": "17",
+          "desc": "wall",
+          "sub": "F5 Exterior Walls — Common brick wall (200mm) incl. render",
+          "qty": "322.6",
+          "amt": "m2"
+        },
+        {
+          "cat": "18",
+          "desc": "wall",
+          "sub": "F5 Interior Partitions — Gypsum board partition (double-sided)",
+          "qty": "34.6",
+          "amt": "m2"
+        },
+        {
+          "cat": "19",
+          "desc": "window",
+          "sub": "B1 Windows — Thermal-break aluminum + Low-E double glazing",
+          "qty": "94.1",
+          "amt": "m2"
+        },
+        {
+          "cat": "20",
+          "desc": "window",
+          "sub": "F1 Windows — Thermal-break aluminum + Low-E double glazing",
+          "qty": "121.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "21",
+          "desc": "window",
+          "sub": "F2 Windows — Thermal-break aluminum + Low-E double glazing",
+          "qty": "96.8",
+          "amt": "m2"
+        },
+        {
+          "cat": "22",
+          "desc": "window",
+          "sub": "F3 Windows — Thermal-break aluminum + Low-E double glazing",
+          "qty": "96.8",
+          "amt": "m2"
+        },
+        {
+          "cat": "23",
+          "desc": "window",
+          "sub": "F4 Windows — Thermal-break aluminum + Low-E double glazing",
+          "qty": "96.8",
+          "amt": "m2"
+        },
+        {
+          "cat": "24",
+          "desc": "window",
+          "sub": "F5 Windows — Thermal-break aluminum + Low-E double glazing",
+          "qty": "96.8",
+          "amt": "m2"
+        },
+        {
+          "cat": "25",
+          "desc": "door",
+          "sub": "B1 Doors — Solid wood door (900mm) + frame + hardware",
+          "qty": "8.0",
+          "amt": "ea"
+        },
+        {
+          "cat": "26",
+          "desc": "door",
+          "sub": "F1 Doors — Solid wood door (900mm) + frame + hardware",
+          "qty": "8.0",
+          "amt": "ea"
+        },
+        {
+          "cat": "27",
+          "desc": "door",
+          "sub": "F2 Doors — Solid wood door (900mm) + frame + hardware",
+          "qty": "10.0",
+          "amt": "ea"
+        },
+        {
+          "cat": "28",
+          "desc": "door",
+          "sub": "F3 Doors — Solid wood door (900mm) + frame + hardware",
+          "qty": "4.0",
+          "amt": "ea"
+        },
+        {
+          "cat": "29",
+          "desc": "door",
+          "sub": "F4 Doors — Solid wood door (900mm) + frame + hardware",
+          "qty": "4.0",
+          "amt": "ea"
+        },
+        {
+          "cat": "30",
+          "desc": "door",
+          "sub": "F5 Doors — Solid wood door (900mm) + frame + hardware",
+          "qty": "4.0",
+          "amt": "ea"
+        },
+        {
+          "cat": "31",
+          "desc": "finish",
+          "sub": "B1_zone Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "320.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "32",
+          "desc": "finish",
+          "sub": "B1_zone_2 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "15.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "33",
+          "desc": "finish",
+          "sub": "B1_zone_3 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "18.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "34",
+          "desc": "finish",
+          "sub": "B1_zone_4 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "12.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "35",
+          "desc": "finish",
+          "sub": "B1_zone_5 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "60.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "36",
+          "desc": "finish",
+          "sub": "B1_zone_6 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "40.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "37",
+          "desc": "finish",
+          "sub": "B1_office Floor Finish — Carpet with underlay",
+          "qty": "30.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "38",
+          "desc": "finish",
+          "sub": "B1_zone_7 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "45.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "39",
+          "desc": "finish",
+          "sub": "B1_stair Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "8.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "40",
+          "desc": "finish",
+          "sub": "B1_stair_2 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "8.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "41",
+          "desc": "finish",
+          "sub": "F1_1 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "80.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "42",
+          "desc": "finish",
+          "sub": "F1_2 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "80.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "43",
+          "desc": "finish",
+          "sub": "F1_3 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "80.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "44",
+          "desc": "finish",
+          "sub": "F1_zone Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "80.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "45",
+          "desc": "finish",
+          "sub": "F1_zone_2 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "10.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "46",
+          "desc": "finish",
+          "sub": "F1_zone_3 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "60.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "47",
+          "desc": "finish",
+          "sub": "F1_office Floor Finish — Carpet with underlay",
+          "qty": "70.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "48",
+          "desc": "finish",
+          "sub": "F1_bathroom Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "30.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "49",
+          "desc": "finish",
+          "sub": "F1_stair Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "55.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "50",
+          "desc": "finish",
+          "sub": "F2_office Floor Finish — Carpet with underlay",
+          "qty": "150.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "51",
+          "desc": "finish",
+          "sub": "F2_office_2 Floor Finish — Carpet with underlay",
+          "qty": "18.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "52",
+          "desc": "finish",
+          "sub": "F2_office_3 Floor Finish — Carpet with underlay",
+          "qty": "18.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "53",
+          "desc": "finish",
+          "sub": "F2_office_4 Floor Finish — Carpet with underlay",
+          "qty": "18.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "54",
+          "desc": "finish",
+          "sub": "F2_meeting Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "10.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "55",
+          "desc": "finish",
+          "sub": "F2_meeting_2 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "20.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "56",
+          "desc": "finish",
+          "sub": "F2_meeting_3 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "40.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "57",
+          "desc": "finish",
+          "sub": "F2_zone Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "15.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "58",
+          "desc": "finish",
+          "sub": "F2_bathroom Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "30.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "59",
+          "desc": "finish",
+          "sub": "F2_zone_2 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "55.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "60",
+          "desc": "finish",
+          "sub": "F3_office Floor Finish — Carpet with underlay",
+          "qty": "150.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "61",
+          "desc": "finish",
+          "sub": "F3_office_2 Floor Finish — Carpet with underlay",
+          "qty": "54.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "62",
+          "desc": "finish",
+          "sub": "F3_meeting Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "70.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "63",
+          "desc": "finish",
+          "sub": "F3_bathroom Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "100.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "64",
+          "desc": "finish",
+          "sub": "F4_office Floor Finish — Carpet with underlay",
+          "qty": "150.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "65",
+          "desc": "finish",
+          "sub": "F4_office_2 Floor Finish — Carpet with underlay",
+          "qty": "54.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "66",
+          "desc": "finish",
+          "sub": "F4_meeting Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "70.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "67",
+          "desc": "finish",
+          "sub": "F4_bathroom Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "100.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "68",
+          "desc": "finish",
+          "sub": "F5_office Floor Finish — Carpet with underlay",
+          "qty": "150.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "69",
+          "desc": "finish",
+          "sub": "F5_office_2 Floor Finish — Carpet with underlay",
+          "qty": "54.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "70",
+          "desc": "finish",
+          "sub": "F5_meeting Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "70.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "71",
+          "desc": "finish",
+          "sub": "F5_bathroom Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "100.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "72",
+          "desc": "roof",
+          "sub": "Roof — RC roof slab + waterproofing + insulation",
+          "qty": "501.8",
+          "amt": "m2"
+        },
+        {
+          "cat": "73",
+          "desc": "stair",
+          "sub": "Stairs (5 flights) — RC stair flight (one floor) + railing",
+          "qty": "5.0",
+          "amt": "flight"
+        }
+      ],
+      "total": 14185614.04
+    }
+  },
+  "energy": {
+    "eui": 180.81,
+    "limit": 150,
+    "annual": 544350.44,
+    "engine": "EnergyPlus"
+  },
+  "compliance": {
+    "HK": {
+      "code": "HK_BEEO_BEC_2021",
+      "checks": [
+        {
+          "name": "Energy Energy Use Intensity (EUI)",
+          "value": "180.8",
+          "limit": "220",
+          "unit": "kWh/m2*yr",
+          "status": "pass",
+          "note": "82% of limit"
+        },
+        {
+          "name": "Envelope Exterior Wall U-value",
+          "value": "0.555",
+          "limit": "1.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Roof U-value",
+          "value": "0.498",
+          "limit": "0.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Window U-value",
+          "value": "2.0",
+          "limit": "5.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Window SHGC",
+          "value": "0.6",
+          "limit": "0.6",
+          "unit": "—",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope OTTV (Overall Thermal Transfer Value)",
+          "value": "needs facade analysis",
+          "limit": "25.0",
+          "unit": "W/m2",
+          "status": "pass",
+          "note": "OTTV requires detailed facade WWR + orientation data — not yet calculated."
+        },
+        {
+          "name": "Lighting Lighting Power Density",
+          "value": "9.0",
+          "limit": "12.0",
+          "unit": "W/m2",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Ventilation Fresh Air (ACH)",
+          "value": "1.0",
+          "limit": "1.0",
+          "unit": "ACH",
+          "status": "pass",
+          "note": ""
+        }
+      ],
+      "verdict": "COMPLIANT"
+    }
+  },
+  "variants": {
+    "list": []
+  },
+  "timeline": [],
+  "decks": [],
+  "downloads": [
+    {
+      "name": "arch-09-mixed-use-bundle.zip",
+      "ext": "zip",
+      "sub": "All artifacts",
+      "size": "TBD"
+    }
+  ]
+}

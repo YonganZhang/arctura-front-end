@@ -1,0 +1,13 @@
+{
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
+    { "source": "/project/:slug([^/]+)", "destination": "/project" },
+    { "source": "/project/:slug([^/]+)/", "destination": "/project" }
+  ],
+  "redirects": [
+    { "source": "/Arctura Labs", "destination": "/", "permanent": true },
+    { "source": "/Arctura Labs v1", "destination": "/v1", "permanent": true },
+    { "source": "/Project Space", "destination": "/project", "permanent": true }
+  ]
+}

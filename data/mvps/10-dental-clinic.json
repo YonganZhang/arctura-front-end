@@ -1,0 +1,400 @@
+{
+  "slug": "10-dental-clinic",
+  "complete": true,
+  "project": {
+    "name": "Smile Lab · 牙科诊所 · v1",
+    "zh": "",
+    "area": 130,
+    "location": "Hong Kong",
+    "budgetHKD": 0,
+    "style": "medical-clean, calming-wood-touch, mint-soft, patient-friendly",
+    "palette": [
+      {
+        "name": "mint_white",
+        "hex": "#F0F5F2"
+      },
+      {
+        "name": "soft_mint",
+        "hex": "#BFD9CC"
+      },
+      {
+        "name": "warm_wood",
+        "hex": "#C9A26F"
+      },
+      {
+        "name": "brass",
+        "hex": "#B89968"
+      },
+      {
+        "name": "navy",
+        "hex": "#2C3E50"
+      },
+      {
+        "name": "peach",
+        "hex": "#F5C8B5"
+      }
+    ]
+  },
+  "renders": [
+    {
+      "id": "01",
+      "file": "/assets/mvps/10-dental-clinic/renders/01_hero_corner.webp",
+      "title": "01 Hero Corner",
+      "tag": "01_hero_corner"
+    },
+    {
+      "id": "02",
+      "file": "/assets/mvps/10-dental-clinic/renders/02_reception.webp",
+      "title": "02 Reception",
+      "tag": "02_reception"
+    },
+    {
+      "id": "03",
+      "file": "/assets/mvps/10-dental-clinic/renders/03_main_zone.webp",
+      "title": "03 Main Zone",
+      "tag": "03_main_zone"
+    },
+    {
+      "id": "04",
+      "file": "/assets/mvps/10-dental-clinic/renders/04_feature_zone.webp",
+      "title": "04 Feature Zone",
+      "tag": "04_feature_zone"
+    },
+    {
+      "id": "05",
+      "file": "/assets/mvps/10-dental-clinic/renders/05_lounge_zone.webp",
+      "title": "05 Lounge Zone",
+      "tag": "05_lounge_zone"
+    },
+    {
+      "id": "06",
+      "file": "/assets/mvps/10-dental-clinic/renders/06_back_corner.webp",
+      "title": "06 Back Corner",
+      "tag": "06_back_corner"
+    },
+    {
+      "id": "07",
+      "file": "/assets/mvps/10-dental-clinic/renders/07_top_ortho.webp",
+      "title": "07 Top Ortho",
+      "tag": "07_top_ortho"
+    },
+    {
+      "id": "08",
+      "file": "/assets/mvps/10-dental-clinic/renders/08_birds_eye_3d.webp",
+      "title": "08 Birds Eye 3D",
+      "tag": "08_birds_eye_3d"
+    }
+  ],
+  "floorplan": "/assets/mvps/10-dental-clinic/floorplan.webp",
+  "moodboard": "/assets/mvps/10-dental-clinic/moodboard.webp",
+  "hero_img": "/assets/mvps/10-dental-clinic/hero.webp",
+  "thumb_img": "/assets/mvps/10-dental-clinic/thumb.webp",
+  "zones": [
+    {
+      "id": "入口前台",
+      "name": "入口前台",
+      "zh": "",
+      "area": 10,
+      "notes": "接待台, LOGO 背景墙, 等候指示",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "等候沙发区_(6_座)",
+      "name": "等候沙发区 (6 座)",
+      "zh": "",
+      "area": 14,
+      "notes": "3 段沙发, 茶几, 绿植",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "诊疗室_a_(独立)",
+      "name": "诊疗室 A (独立)",
+      "zh": "",
+      "area": 14,
+      "notes": "牙椅, 灯臂, 工具柜, 显示屏",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "诊疗室_b_(独立)",
+      "name": "诊疗室 B (独立)",
+      "zh": "",
+      "area": 14,
+      "notes": "牙椅, 灯臂, 工具柜, 显示屏",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "诊疗室_c_(独立)",
+      "name": "诊疗室 C (独立)",
+      "zh": "",
+      "area": 14,
+      "notes": "牙椅, 灯臂, 工具柜, 显示屏",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "消毒备品间",
+      "name": "消毒备品间",
+      "zh": "",
+      "area": 10,
+      "notes": "不锈钢架 3 层, 消毒柜, 水池",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "数字化扫描室",
+      "name": "数字化扫描室",
+      "zh": "",
+      "area": 10,
+      "notes": "CBCT / 扫描仪占位, 辅助椅, 显示屏",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "主任办公室",
+      "name": "主任办公室",
+      "zh": "",
+      "area": 12,
+      "notes": "办公桌, 办公椅, 双屏显示",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "患者卫生间_+_员工后勤",
+      "name": "患者卫生间 + 员工后勤",
+      "zh": "",
+      "area": 12,
+      "notes": "马桶隔断, 洗手台",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    }
+  ],
+  "furniture": [],
+  "pricing": {
+    "HK": {
+      "label": "Hong Kong",
+      "currency": "HK$",
+      "perM2": 10219,
+      "rows": [
+        {
+          "cat": "1",
+          "desc": "slab",
+          "sub": "F1 Floor Slab — RC slab (120mm) incl. formwork + rebar",
+          "qty": "110.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "2",
+          "desc": "wall",
+          "sub": "F1 Exterior Walls — Common brick wall (200mm) incl. render",
+          "qty": "138.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "3",
+          "desc": "wall",
+          "sub": "F1 Interior Partitions — Gypsum board partition (double-sided)",
+          "qty": "64.8",
+          "amt": "m2"
+        },
+        {
+          "cat": "4",
+          "desc": "window",
+          "sub": "F1 Windows — Thermal-break aluminum + Low-E double glazing",
+          "qty": "41.4",
+          "amt": "m2"
+        },
+        {
+          "cat": "5",
+          "desc": "door",
+          "sub": "F1 Doors — Solid wood door (900mm) + frame + hardware",
+          "qty": "9.0",
+          "amt": "ea"
+        },
+        {
+          "cat": "6",
+          "desc": "finish",
+          "sub": "F1_reception Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "10.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "7",
+          "desc": "finish",
+          "sub": "F1_6 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "14.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "8",
+          "desc": "finish",
+          "sub": "F1_A Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "14.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "9",
+          "desc": "finish",
+          "sub": "F1_B Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "14.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "10",
+          "desc": "finish",
+          "sub": "F1_C Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "14.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "11",
+          "desc": "finish",
+          "sub": "F1_zone Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "10.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "12",
+          "desc": "finish",
+          "sub": "F1_zone_2 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "10.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "13",
+          "desc": "finish",
+          "sub": "F1_office Floor Finish — Carpet with underlay",
+          "qty": "12.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "14",
+          "desc": "finish",
+          "sub": "F1_bathroom Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "12.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "15",
+          "desc": "roof",
+          "sub": "Roof — RC roof slab + waterproofing + insulation",
+          "qty": "130.0",
+          "amt": "m2"
+        }
+      ],
+      "total": 1124125.55
+    }
+  },
+  "energy": {
+    "eui": 74.12,
+    "limit": 150,
+    "annual": 9636.12,
+    "engine": "EnergyPlus"
+  },
+  "compliance": {
+    "HK": {
+      "code": "HK_BEEO_BEC_2021",
+      "checks": [
+        {
+          "name": "Energy Energy Use Intensity (EUI)",
+          "value": "74.1",
+          "limit": "150",
+          "unit": "kWh/m2*yr",
+          "status": "pass",
+          "note": "49% of limit"
+        },
+        {
+          "name": "Envelope Exterior Wall U-value",
+          "value": "0.555",
+          "limit": "1.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Roof U-value",
+          "value": "0.498",
+          "limit": "0.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Window U-value",
+          "value": "2.0",
+          "limit": "5.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Window SHGC",
+          "value": "0.6",
+          "limit": "0.6",
+          "unit": "—",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope OTTV (Overall Thermal Transfer Value)",
+          "value": "needs facade analysis",
+          "limit": "25.0",
+          "unit": "W/m2",
+          "status": "pass",
+          "note": "OTTV requires detailed facade WWR + orientation data — not yet calculated."
+        },
+        {
+          "name": "Lighting Lighting Power Density",
+          "value": "8.0",
+          "limit": "10.0",
+          "unit": "W/m2",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Ventilation Fresh Air (ACH)",
+          "value": "0.7",
+          "limit": "0.5",
+          "unit": "ACH",
+          "status": "pass",
+          "note": ""
+        }
+      ],
+      "verdict": "COMPLIANT"
+    }
+  },
+  "variants": {
+    "list": []
+  },
+  "timeline": [],
+  "decks": [],
+  "downloads": [
+    {
+      "name": "10-dental-clinic-bundle.zip",
+      "ext": "zip",
+      "sub": "All artifacts",
+      "size": "TBD"
+    }
+  ]
+}

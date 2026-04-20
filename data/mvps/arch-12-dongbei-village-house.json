@@ -1,0 +1,155 @@
+{
+  "slug": "arch-12-dongbei-village-house",
+  "complete": false,
+  "project": {
+    "name": "东北混搭乡村小楼 · 长春 · v1",
+    "zh": "",
+    "area": 0,
+    "location": "Hong Kong",
+    "budgetHKD": 0,
+    "style": "东北民居, modern-vernacular, pitched-roof, warm-wood-brick, smart-interior, 三代同堂",
+    "palette": [
+      {
+        "name": "roof_dark_grey_tile",
+        "hex": "#4A4D50"
+      },
+      {
+        "name": "wall_warm_ochre",
+        "hex": "#E8D5B0"
+      },
+      {
+        "name": "brick_accent_red",
+        "hex": "#9B4B3A"
+      },
+      {
+        "name": "wood_warm_louver",
+        "hex": "#8B6F4E"
+      },
+      {
+        "name": "window_frame_dark",
+        "hex": "#2C2C2E"
+      },
+      {
+        "name": "courtyard_grey_stone",
+        "hex": "#A8A39E"
+      },
+      {
+        "name": "door_lacquer_red",
+        "hex": "#8C3A2E"
+      },
+      {
+        "name": "interior_warm_white",
+        "hex": "#F5F0E6"
+      }
+    ]
+  },
+  "renders": [
+    {
+      "id": "interior",
+      "file": "/assets/mvps/arch-12-dongbei-village-house/renders/interior.webp",
+      "title": "Interior",
+      "tag": "interior"
+    },
+    {
+      "id": "massing",
+      "file": "/assets/mvps/arch-12-dongbei-village-house/renders/massing.webp",
+      "title": "Massing",
+      "tag": "massing"
+    },
+    {
+      "id": "elev-E",
+      "file": "/assets/mvps/arch-12-dongbei-village-house/renders/elev-E.webp",
+      "title": "Elev E",
+      "tag": "elev-E"
+    },
+    {
+      "id": "elev-N",
+      "file": "/assets/mvps/arch-12-dongbei-village-house/renders/elev-N.webp",
+      "title": "Elev N",
+      "tag": "elev-N"
+    },
+    {
+      "id": "elev-S",
+      "file": "/assets/mvps/arch-12-dongbei-village-house/renders/elev-S.webp",
+      "title": "Elev S",
+      "tag": "elev-S"
+    },
+    {
+      "id": "elev-W",
+      "file": "/assets/mvps/arch-12-dongbei-village-house/renders/elev-W.webp",
+      "title": "Elev W",
+      "tag": "elev-W"
+    },
+    {
+      "id": "floor-B1",
+      "file": "/assets/mvps/arch-12-dongbei-village-house/renders/floor-B1.webp",
+      "title": "Floor B1",
+      "tag": "floor-B1"
+    },
+    {
+      "id": "floor-F1",
+      "file": "/assets/mvps/arch-12-dongbei-village-house/renders/floor-F1.webp",
+      "title": "Floor F1",
+      "tag": "floor-F1"
+    },
+    {
+      "id": "floor-F2",
+      "file": "/assets/mvps/arch-12-dongbei-village-house/renders/floor-F2.webp",
+      "title": "Floor F2",
+      "tag": "floor-F2"
+    },
+    {
+      "id": "floor-F3",
+      "file": "/assets/mvps/arch-12-dongbei-village-house/renders/floor-F3.webp",
+      "title": "Floor F3",
+      "tag": "floor-F3"
+    },
+    {
+      "id": "site-plan",
+      "file": "/assets/mvps/arch-12-dongbei-village-house/renders/site-plan.webp",
+      "title": "Site Plan",
+      "tag": "site-plan"
+    }
+  ],
+  "floorplan": null,
+  "moodboard": "/assets/mvps/arch-12-dongbei-village-house/moodboard.webp",
+  "hero_img": "/assets/mvps/arch-12-dongbei-village-house/hero.webp",
+  "thumb_img": "/assets/mvps/arch-12-dongbei-village-house/thumb.webp",
+  "zones": [],
+  "furniture": [],
+  "pricing": {
+    "HK": {
+      "label": "Hong Kong",
+      "currency": "HK$",
+      "perM2": 0,
+      "rows": [],
+      "total": 0
+    }
+  },
+  "energy": {
+    "eui": 0,
+    "limit": 150,
+    "annual": 0,
+    "engine": "EnergyPlus"
+  },
+  "compliance": {
+    "HK": {
+      "code": "HK_BEEO_BEC_2021",
+      "checks": [],
+      "verdict": "—"
+    }
+  },
+  "variants": {
+    "list": []
+  },
+  "timeline": [],
+  "decks": [],
+  "downloads": [
+    {
+      "name": "arch-12-dongbei-village-house-bundle.zip",
+      "ext": "zip",
+      "sub": "All artifacts",
+      "size": "TBD"
+    }
+  ]
+}

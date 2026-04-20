@@ -1,0 +1,36 @@
+# 白名单模式：默认屏蔽一切，显式放行
+/*
+# 顶层源码 + 配置
+!api/
+!_build/
+!assets/
+!data/
+!project/
+!project-space/
+!screenshots/
+!uploads/
+!app.js
+!index.html
+!mvps-data.js
+!styles.css
+!v1.html
+!vercel.json
+!.vercelignore
+!README.md
+!.gitignore
+
+# uploads 里的图片噪音（保留 md 文档）
+uploads/pasted-*.png
+uploads/intake-*.png
+
+# debug 屏幕截图
+debug/
+
+# Vercel 本地缓存（有 project.json 但无凭证；不 track 更干净）
+.vercel/
+
+# 临时文件 / OS
+.DS_Store
+Thumbs.db
+*.log
+node_modules/

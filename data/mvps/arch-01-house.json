@@ -1,0 +1,360 @@
+{
+  "slug": "arch-01-house",
+  "complete": false,
+  "project": {
+    "name": "Maison Compact · 独栋住宅 · v1",
+    "zh": "",
+    "area": 189,
+    "location": "Hong Kong",
+    "budgetHKD": 0,
+    "style": "当代极简, 暖木饰面, 大窗采光, 坡平折中",
+    "palette": [
+      {
+        "name": "wall_white",
+        "hex": "#EEEAE2"
+      },
+      {
+        "name": "wood_warm",
+        "hex": "#8B6F4E"
+      },
+      {
+        "name": "glass_blue",
+        "hex": "#9DB5C4"
+      },
+      {
+        "name": "roof_charcoal",
+        "hex": "#3A3A3D"
+      },
+      {
+        "name": "grass_green",
+        "hex": "#5C8C5A"
+      },
+      {
+        "name": "door_walnut",
+        "hex": "#5C3E2E"
+      }
+    ]
+  },
+  "renders": [
+    {
+      "id": "interior",
+      "file": "/assets/mvps/arch-01-house/renders/interior.webp",
+      "title": "Interior",
+      "tag": "interior"
+    },
+    {
+      "id": "massing",
+      "file": "/assets/mvps/arch-01-house/renders/massing.webp",
+      "title": "Massing",
+      "tag": "massing"
+    },
+    {
+      "id": "floor-F1",
+      "file": "/assets/mvps/arch-01-house/renders/floor-F1.webp",
+      "title": "Floor F1",
+      "tag": "floor-F1"
+    },
+    {
+      "id": "floor-F2",
+      "file": "/assets/mvps/arch-01-house/renders/floor-F2.webp",
+      "title": "Floor F2",
+      "tag": "floor-F2"
+    },
+    {
+      "id": "site-plan",
+      "file": "/assets/mvps/arch-01-house/renders/site-plan.webp",
+      "title": "Site Plan",
+      "tag": "site-plan"
+    }
+  ],
+  "floorplan": null,
+  "moodboard": "/assets/mvps/arch-01-house/moodboard.webp",
+  "hero_img": "/assets/mvps/arch-01-house/hero.webp",
+  "thumb_img": "/assets/mvps/arch-01-house/thumb.webp",
+  "zones": [],
+  "furniture": [],
+  "pricing": {
+    "HK": {
+      "label": "Hong Kong",
+      "currency": "HK$",
+      "perM2": 10989,
+      "rows": [
+        {
+          "cat": "1",
+          "desc": "slab",
+          "sub": "F1 Floor Slab — RC slab (120mm) incl. formwork + rebar",
+          "qty": "66.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "2",
+          "desc": "slab",
+          "sub": "F2 Floor Slab — RC slab (120mm) incl. formwork + rebar",
+          "qty": "72.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "3",
+          "desc": "wall",
+          "sub": "F1 Exterior Walls — Common brick wall (200mm) incl. render",
+          "qty": "120.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "4",
+          "desc": "wall",
+          "sub": "F1 Interior Partitions — Gypsum board partition (double-sided)",
+          "qty": "50.4",
+          "amt": "m2"
+        },
+        {
+          "cat": "5",
+          "desc": "wall",
+          "sub": "F2 Exterior Walls — Common brick wall (200mm) incl. render",
+          "qty": "120.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "6",
+          "desc": "wall",
+          "sub": "F2 Interior Partitions — Gypsum board partition (double-sided)",
+          "qty": "50.4",
+          "amt": "m2"
+        },
+        {
+          "cat": "7",
+          "desc": "window",
+          "sub": "F1 Windows — Thermal-break aluminum + Low-E double glazing",
+          "qty": "36.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "8",
+          "desc": "window",
+          "sub": "F2 Windows — Thermal-break aluminum + Low-E double glazing",
+          "qty": "36.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "9",
+          "desc": "door",
+          "sub": "F1 Doors — Solid wood door (900mm) + frame + hardware",
+          "qty": "5.0",
+          "amt": "ea"
+        },
+        {
+          "cat": "10",
+          "desc": "door",
+          "sub": "F2 Doors — Solid wood door (900mm) + frame + hardware",
+          "qty": "6.0",
+          "amt": "ea"
+        },
+        {
+          "cat": "11",
+          "desc": "finish",
+          "sub": "F1_entry Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "5.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "12",
+          "desc": "finish",
+          "sub": "F1_living Floor Finish — Carpet with underlay",
+          "qty": "22.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "13",
+          "desc": "finish",
+          "sub": "F1_dining Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "14.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "14",
+          "desc": "finish",
+          "sub": "F1_kitchen Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "12.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "15",
+          "desc": "finish",
+          "sub": "F1_guest_bath Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "4.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "16",
+          "desc": "finish",
+          "sub": "F1_stair Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "6.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "17",
+          "desc": "finish",
+          "sub": "F1_storage Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "3.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "18",
+          "desc": "finish",
+          "sub": "F2_master_bed Floor Finish — Carpet with underlay",
+          "qty": "18.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "19",
+          "desc": "finish",
+          "sub": "F2_master_bath Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "10.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "20",
+          "desc": "finish",
+          "sub": "F2_bedroom Floor Finish — Carpet with underlay",
+          "qty": "12.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "21",
+          "desc": "finish",
+          "sub": "F2_bedroom_2 Floor Finish — Carpet with underlay",
+          "qty": "11.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "22",
+          "desc": "finish",
+          "sub": "F2_study Floor Finish — Carpet with underlay",
+          "qty": "8.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "23",
+          "desc": "finish",
+          "sub": "F2_family_bath Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "5.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "24",
+          "desc": "roof",
+          "sub": "Roof — RC roof slab + waterproofing + insulation",
+          "qty": "100.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "25",
+          "desc": "stair",
+          "sub": "Stairs (1 flights) — RC stair flight (one floor) + railing",
+          "qty": "1.0",
+          "amt": "flight"
+        }
+      ],
+      "total": 1516548.35
+    }
+  },
+  "energy": {
+    "eui": 113.34,
+    "limit": 150,
+    "annual": 21408.35,
+    "engine": "EnergyPlus"
+  },
+  "compliance": {
+    "HK": {
+      "code": "HK_BEEO_BEC_2021",
+      "checks": [
+        {
+          "name": "Energy Energy Use Intensity (EUI)",
+          "value": "113.3",
+          "limit": "150",
+          "unit": "kWh/m2*yr",
+          "status": "pass",
+          "note": "76% of limit"
+        },
+        {
+          "name": "Envelope Exterior Wall U-value",
+          "value": "0.555",
+          "limit": "1.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Roof U-value",
+          "value": "0.498",
+          "limit": "0.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Window U-value",
+          "value": "1.6",
+          "limit": "5.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Window SHGC",
+          "value": "0.4",
+          "limit": "0.6",
+          "unit": "—",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope OTTV (Overall Thermal Transfer Value)",
+          "value": "needs facade analysis",
+          "limit": "25.0",
+          "unit": "W/m2",
+          "status": "pass",
+          "note": "OTTV requires detailed facade WWR + orientation data — not yet calculated."
+        },
+        {
+          "name": "Lighting Lighting Power Density",
+          "value": "6.0",
+          "limit": "10.0",
+          "unit": "W/m2",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "HVAC HVAC COP (vrf)",
+          "value": "not specified",
+          "limit": "3.5",
+          "unit": "—",
+          "status": "fail",
+          "note": "COP not set in model — use 'model set-hvac' with COP"
+        },
+        {
+          "name": "Ventilation Fresh Air (ACH)",
+          "value": "0.5",
+          "limit": "0.5",
+          "unit": "ACH",
+          "status": "pass",
+          "note": ""
+        }
+      ],
+      "verdict": "CONDITIONAL — minor remediation needed"
+    }
+  },
+  "variants": {
+    "list": []
+  },
+  "timeline": [],
+  "decks": [],
+  "downloads": [
+    {
+      "name": "arch-01-house-bundle.zip",
+      "ext": "zip",
+      "sub": "All artifacts",
+      "size": "TBD"
+    }
+  ]
+}

@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 620" width="880" height="620" font-family="PingFang SC, Heiti SC, sans-serif">
+  <defs>
+    
+  </defs>
+
+  
+  <text x="440" y="30" class="title" text-anchor="middle">禅意茶室 · 新中式 · 平面图</text>
+  <text x="440" y="50" class="subtitle" text-anchor="middle">8.0m x 5.0m · 40m2 · 层高3.0m</text>
+
+  
+  <rect x="150" y="70" width="640" height="400" class="room-fill"></rect>
+  <rect x="150" y="70" width="640" height="400" class="wall"></rect>
+
+  
+  <rect x="278" y="466" width="128" height="8" class="window"></rect>
+  <rect x="470" y="466" width="128" height="8" class="window"></rect>
+
+  
+  <path d="M 790 310 Q 790 350 760 350" class="door"></path>
+  <line x1="790" y1="310" x2="790" y2="350" stroke="#8B4513" stroke-width="2"></line>
+
+  
+  <rect x="190" y="150" width="320" height="240" class="zone"></rect>
+  <text x="350" y="265" class="label">品茶区</text>
+  <text x="350" y="282" class="label-sm">16m2 · 红木茶台+4椅</text>
+
+  
+  <rect x="300" y="230" width="160" height="64" class="furniture" rx="3"></rect>
+  
+  <rect x="340" y="196" width="35" height="28" class="furniture" rx="2" opacity="0.4"></rect>
+  <rect x="340" y="300" width="35" height="28" class="furniture" rx="2" opacity="0.4"></rect>
+  <rect x="270" y="248" width="28" height="35" class="furniture" rx="2" opacity="0.4"></rect>
+  <rect x="464" y="248" width="28" height="35" class="furniture" rx="2" opacity="0.4"></rect>
+
+  
+  <circle cx="380" cy="262" r="8" class="copper"></circle>
+
+  
+  <rect x="190" y="80" width="340" height="60" class="zone"></rect>
+  <text x="360" y="115" class="label">水墨展示区</text>
+  <text x="360" y="130" class="label-sm">6m2</text>
+  
+  <rect x="220" y="82" width="50" height="6" fill="#2C1810" opacity="0.3"></rect>
+  <rect x="330" y="82" width="50" height="6" fill="#2C1810" opacity="0.3"></rect>
+  <rect x="440" y="82" width="50" height="6" fill="#2C1810" opacity="0.3"></rect>
+
+  
+  <rect x="600" y="150" width="160" height="130" class="zone"></rect>
+  <text x="680" y="210" class="label">茶叶展示柜</text>
+  <text x="680" y="227" class="label-sm">4m2 · 多宝格</text>
+  <rect x="620" y="160" width="100" height="30" class="furniture" rx="2"></rect>
+
+  
+  <rect x="160" y="340" width="130" height="120" class="zone"></rect>
+  <text x="225" y="400" class="label">煮水区</text>
+  <text x="225" y="415" class="label-sm">4m2</text>
+  <rect x="175" y="355" width="60" height="40" class="furniture" rx="2"></rect>
+
+  
+  <rect x="600" y="310" width="160" height="130" class="zone"></rect>
+  <text x="680" y="370" class="label">禅意庭院角</text>
+  <text x="680" y="387" class="label-sm">4m2 · 枯山水</text>
+  
+  <rect x="630" y="340" width="100" height="80" fill="#E8DFD0" opacity="0.5" rx="3"></rect>
+  
+  <circle cx="650" cy="365" r="5" fill="#888" opacity="0.5"></circle>
+  <circle cx="680" cy="395" r="7" fill="#777" opacity="0.5"></circle>
+  <circle cx="710" cy="370" r="4" fill="#999" opacity="0.5"></circle>
+
+  
+  <rect x="660" y="270" width="110" height="80" class="zone"></rect>
+  <text x="715" y="310" class="label">入口玄关</text>
+  <text x="715" y="325" class="label-sm">3m2 · 屏风</text>
+
+  
+  <line x1="680" y1="270" x2="680" y2="350" stroke="#8B4513" stroke-width="2" stroke-dasharray="4,2"></line>
+
+  
+  
+  <line x1="150" y1="500" x2="790" y2="500" stroke="#888" stroke-width="0.5"></line>
+  <line x1="150" y1="495" x2="150" y2="505" stroke="#888" stroke-width="1"></line>
+  <line x1="790" y1="495" x2="790" y2="505" stroke="#888" stroke-width="1"></line>
+  <text x="470" y="515" class="dim">8.0m</text>
+
+  
+  <line x1="820" y1="70" x2="820" y2="470" stroke="#888" stroke-width="0.5"></line>
+  <line x1="815" y1="70" x2="825" y2="70" stroke="#888" stroke-width="1"></line>
+  <line x1="815" y1="470" x2="825" y2="470" stroke="#888" stroke-width="1"></line>
+  <text x="845" y="275" class="dim" transform="rotate(90,845,275)">5.0m</text>
+
+  
+  <line x1="150" y1="580" x2="230" y2="580" stroke="#333" stroke-width="2"></line>
+  <line x1="150" y1="575" x2="150" y2="585" stroke="#333" stroke-width="1"></line>
+  <line x1="230" y1="575" x2="230" y2="585" stroke="#333" stroke-width="1"></line>
+  <text x="190" y="598" class="scale" text-anchor="middle">1m</text>
+
+  
+  <polygon points="830,85 825,100 835,100" fill="#2C1810"></polygon>
+  <text x="830" y="112" class="scale" text-anchor="middle">N</text>
+
+  
+  <rect x="150" y="555" width="12" height="12" fill="#8B4513" opacity="0.6"></rect>
+  <text x="168" y="565" class="scale" text-anchor="start">家具</text>
+  <rect x="220" y="555" width="12" height="12" fill="#B8860B" opacity="0.7"></rect>
+  <text x="238" y="565" class="scale" text-anchor="start">铜器</text>
+  <rect x="290" y="555" width="12" height="12" fill="#87CEEB" opacity="0.5"></rect>
+  <text x="308" y="565" class="scale" text-anchor="start">窗户</text>
+</svg>

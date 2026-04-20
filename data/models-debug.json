@@ -1,0 +1,297 @@
+[
+  {
+    "id": "claude-opus-4-6",
+    "label": "Claude Opus 4.6 ⭐",
+    "vendor": "Anthropic",
+    "tier": "flagship",
+    "ok": true,
+    "latency": 6179,
+    "sample": "hello",
+    "usage": {
+      "claude_cache_creation_1_h_tokens": 0,
+      "claude_cache_creation_5_m_tokens": 0,
+      "completion_tokens": 4,
+      "completion_tokens_details": {
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "text_tokens": 0
+      },
+      "prompt_tokens": 20,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 0,
+        "image_tokens": 0,
+        "text_tokens": 0
+      },
+      "total_tokens": 24,
+      "usage_semantic": "openai",
+      "usage_source": "anthropic"
+    }
+  },
+  {
+    "id": "claude-sonnet-4-5",
+    "label": "Claude Sonnet 4.5",
+    "vendor": "Anthropic",
+    "tier": "balanced",
+    "ok": true,
+    "latency": 27766,
+    "sample": "Hello",
+    "usage": {
+      "claude_cache_creation_1_h_tokens": 0,
+      "claude_cache_creation_5_m_tokens": 0,
+      "completion_tokens": 4,
+      "completion_tokens_details": {
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "text_tokens": 0
+      },
+      "prompt_tokens": 20,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 0,
+        "image_tokens": 0,
+        "text_tokens": 0
+      },
+      "total_tokens": 24,
+      "usage_semantic": "openai",
+      "usage_source": "anthropic"
+    }
+  },
+  {
+    "id": "claude-haiku-4-5",
+    "label": "Claude Haiku 4.5",
+    "vendor": "Anthropic",
+    "tier": "fast",
+    "ok": true,
+    "latency": 7947,
+    "sample": "Hello",
+    "usage": {
+      "claude_cache_creation_1_h_tokens": 0,
+      "claude_cache_creation_5_m_tokens": 0,
+      "completion_tokens": 4,
+      "completion_tokens_details": {
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "text_tokens": 0
+      },
+      "prompt_tokens": 20,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 0,
+        "image_tokens": 0,
+        "text_tokens": 0
+      },
+      "total_tokens": 24,
+      "usage_semantic": "openai",
+      "usage_source": "anthropic"
+    }
+  },
+  {
+    "id": "gpt-5.4",
+    "label": "GPT-5.4 ⭐",
+    "vendor": "OpenAI",
+    "tier": "flagship",
+    "ok": true,
+    "latency": 13601,
+    "sample": "hello",
+    "usage": {
+      "completion_tokens": 4,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 18,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 0
+      },
+      "total_tokens": 22
+    }
+  },
+  {
+    "id": "gpt-5.4-nano",
+    "label": "GPT-5.4 nano",
+    "vendor": "OpenAI",
+    "tier": "fast",
+    "ok": true,
+    "latency": 5732,
+    "sample": "Hello",
+    "usage": {
+      "completion_tokens": 4,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 18,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 0
+      },
+      "total_tokens": 22
+    }
+  },
+  {
+    "id": "gpt-4o-mini",
+    "label": "GPT-4o-mini",
+    "vendor": "OpenAI",
+    "tier": "balanced",
+    "ok": true,
+    "latency": 12525,
+    "sample": "Hello.",
+    "usage": {
+      "completion_tokens": 2,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 19,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 0
+      },
+      "total_tokens": 21
+    }
+  },
+  {
+    "id": "gemini-3.1-pro-preview",
+    "label": "Gemini 3.1 Pro ⭐",
+    "vendor": "Google",
+    "tier": "flagship",
+    "ok": true,
+    "latency": 4305,
+    "sample": "Hello",
+    "usage": {
+      "completion_tokens": 26,
+      "completion_tokens_details": {
+        "audio_tokens": 0,
+        "reasoning_tokens": 25,
+        "text_tokens": 0
+      },
+      "input_tokens": 0,
+      "input_tokens_details": null,
+      "output_tokens": 0,
+      "prompt_tokens": 13,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 0,
+        "image_tokens": 0,
+        "text_tokens": 0
+      },
+      "total_tokens": 39
+    }
+  },
+  {
+    "id": "gemini-2.5-flash",
+    "label": "Gemini 2.5 Flash",
+    "vendor": "Google",
+    "tier": "fast",
+    "ok": false,
+    "latency": 11959,
+    "error": "{\"choices\":[{\"finish_reason\":\"length\",\"index\":0,\"message\":{\"content\":\"\",\"role\":\"assistant\"}}],\"created\":1776684993,\"id\":\"chatcmpl-20260420193632951554650A1bTmLCm\",\"model\":\"gemini-2.5-flash\",\"object\":\""
+  },
+  {
+    "id": "deepseek-v3.2",
+    "label": "DeepSeek V3.2 🇨🇳",
+    "vendor": "DeepSeek",
+    "tier": "balanced",
+    "default": true,
+    "ok": true,
+    "latency": 11701,
+    "sample": "hello",
+    "usage": {
+      "completion_tokens": 2,
+      "prompt_tokens": 22,
+      "total_tokens": 24
+    }
+  },
+  {
+    "id": "qwen3-max",
+    "label": "Qwen3 Max",
+    "vendor": "阿里",
+    "tier": "balanced",
+    "ok": true,
+    "latency": 4012,
+    "sample": "Hello",
+    "usage": {
+      "completion_tokens": 1,
+      "prompt_tokens": 20,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 21
+    }
+  },
+  {
+    "id": "glm-4-flash",
+    "label": "GLM 4 Flash 🆓",
+    "vendor": "智谱",
+    "tier": "free",
+    "ok": true,
+    "latency": 5618,
+    "sample": "Hello",
+    "usage": {
+      "completion_tokens": 3,
+      "prompt_tokens": 17,
+      "total_tokens": 20
+    }
+  },
+  {
+    "id": "grok-4",
+    "label": "Grok-4",
+    "vendor": "xAI",
+    "tier": "flagship",
+    "ok": true,
+    "latency": 17796,
+    "sample": "hello",
+    "usage": {
+      "completion_tokens": 1,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 211,
+        "rejected_prediction_tokens": 0
+      },
+      "cost_in_usd_ticks": 37402500,
+      "num_sources_used": 0,
+      "prompt_tokens": 696,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 679,
+        "image_tokens": 0,
+        "text_tokens": 696
+      },
+      "total_tokens": 908
+    }
+  },
+  {
+    "id": "llama-4-maverick",
+    "label": "Llama 4 Maverick",
+    "vendor": "Meta",
+    "tier": "balanced",
+    "ok": true,
+    "latency": 3430,
+    "sample": "Hello.",
+    "usage": {
+      "completion_tokens": 3,
+      "completion_tokens_details": {
+        "audio_tokens": 0,
+        "image_tokens": 0,
+        "reasoning_tokens": 0
+      },
+      "prompt_tokens": 22,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "video_tokens": 0
+      },
+      "total_tokens": 25
+    }
+  }
+]

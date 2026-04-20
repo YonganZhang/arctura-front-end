@@ -1,0 +1,98 @@
+[
+  {
+    "id": "claude-opus-4-6",
+    "label": "Claude Opus 4.6 ⭐",
+    "vendor": "Anthropic",
+    "tier": "flagship",
+    "default": false,
+    "latency_ms": 6179
+  },
+  {
+    "id": "claude-sonnet-4-5",
+    "label": "Claude Sonnet 4.5",
+    "vendor": "Anthropic",
+    "tier": "balanced",
+    "default": false,
+    "latency_ms": 27766
+  },
+  {
+    "id": "claude-haiku-4-5",
+    "label": "Claude Haiku 4.5",
+    "vendor": "Anthropic",
+    "tier": "fast",
+    "default": false,
+    "latency_ms": 7947
+  },
+  {
+    "id": "gpt-5.4",
+    "label": "GPT-5.4 ⭐",
+    "vendor": "OpenAI",
+    "tier": "flagship",
+    "default": false,
+    "latency_ms": 13601
+  },
+  {
+    "id": "gpt-5.4-nano",
+    "label": "GPT-5.4 nano",
+    "vendor": "OpenAI",
+    "tier": "fast",
+    "default": false,
+    "latency_ms": 5732
+  },
+  {
+    "id": "gpt-4o-mini",
+    "label": "GPT-4o-mini",
+    "vendor": "OpenAI",
+    "tier": "balanced",
+    "default": false,
+    "latency_ms": 12525
+  },
+  {
+    "id": "gemini-3.1-pro-preview",
+    "label": "Gemini 3.1 Pro ⭐",
+    "vendor": "Google",
+    "tier": "flagship",
+    "default": false,
+    "latency_ms": 4305
+  },
+  {
+    "id": "deepseek-v3.2",
+    "label": "DeepSeek V3.2 🇨🇳",
+    "vendor": "DeepSeek",
+    "tier": "balanced",
+    "default": true,
+    "latency_ms": 11701
+  },
+  {
+    "id": "qwen3-max",
+    "label": "Qwen3 Max",
+    "vendor": "阿里",
+    "tier": "balanced",
+    "default": false,
+    "latency_ms": 4012
+  },
+  {
+    "id": "glm-4-flash",
+    "label": "GLM 4 Flash 🆓",
+    "vendor": "智谱",
+    "tier": "free",
+    "default": false,
+    "latency_ms": 5618
+  },
+  {
+    "id": "grok-4",
+    "label": "Grok-4",
+    "vendor": "xAI",
+    "tier": "flagship",
+    "default": false,
+    "latency_ms": 17796
+  },
+  {
+    "id": "llama-4-maverick",
+    "label": "Llama 4 Maverick",
+    "vendor": "Meta",
+    "tier": "balanced",
+    "default": false,
+    "latency_ms": 3430
+  }
+]

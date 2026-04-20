@@ -1,0 +1,400 @@
+{
+  "slug": "13-ai-startup-office",
+  "complete": true,
+  "project": {
+    "name": "Stack Lab · AI Startup 办公室 · v1",
+    "zh": "",
+    "area": 130,
+    "location": "Hong Kong",
+    "budgetHKD": 0,
+    "style": "tech-loft, plant-rich, exposed-pipe, code-cave-lite",
+    "palette": [
+      {
+        "name": "concrete_gray",
+        "hex": "#B5B0A8"
+      },
+      {
+        "name": "warm_wood",
+        "hex": "#8B6F4E"
+      },
+      {
+        "name": "deep_teal",
+        "hex": "#2E5454"
+      },
+      {
+        "name": "soft_white",
+        "hex": "#F0EDE5"
+      },
+      {
+        "name": "lime_green",
+        "hex": "#A8C947"
+      },
+      {
+        "name": "charcoal",
+        "hex": "#2A2A2C"
+      }
+    ]
+  },
+  "renders": [
+    {
+      "id": "01",
+      "file": "/assets/mvps/13-ai-startup-office/renders/01_hero_corner.webp",
+      "title": "01 Hero Corner",
+      "tag": "01_hero_corner"
+    },
+    {
+      "id": "02",
+      "file": "/assets/mvps/13-ai-startup-office/renders/02_reception.webp",
+      "title": "02 Reception",
+      "tag": "02_reception"
+    },
+    {
+      "id": "03",
+      "file": "/assets/mvps/13-ai-startup-office/renders/03_main_zone.webp",
+      "title": "03 Main Zone",
+      "tag": "03_main_zone"
+    },
+    {
+      "id": "04",
+      "file": "/assets/mvps/13-ai-startup-office/renders/04_feature_zone.webp",
+      "title": "04 Feature Zone",
+      "tag": "04_feature_zone"
+    },
+    {
+      "id": "05",
+      "file": "/assets/mvps/13-ai-startup-office/renders/05_lounge_zone.webp",
+      "title": "05 Lounge Zone",
+      "tag": "05_lounge_zone"
+    },
+    {
+      "id": "06",
+      "file": "/assets/mvps/13-ai-startup-office/renders/06_back_corner.webp",
+      "title": "06 Back Corner",
+      "tag": "06_back_corner"
+    },
+    {
+      "id": "07",
+      "file": "/assets/mvps/13-ai-startup-office/renders/07_top_ortho.webp",
+      "title": "07 Top Ortho",
+      "tag": "07_top_ortho"
+    },
+    {
+      "id": "08",
+      "file": "/assets/mvps/13-ai-startup-office/renders/08_birds_eye_3d.webp",
+      "title": "08 Birds Eye 3D",
+      "tag": "08_birds_eye_3d"
+    }
+  ],
+  "floorplan": "/assets/mvps/13-ai-startup-office/floorplan.webp",
+  "moodboard": "/assets/mvps/13-ai-startup-office/moodboard.webp",
+  "hero_img": "/assets/mvps/13-ai-startup-office/hero.webp",
+  "thumb_img": "/assets/mvps/13-ai-startup-office/thumb.webp",
+  "zones": [
+    {
+      "id": "入口接待_+_logo_墙",
+      "name": "入口接待 + LOGO 墙",
+      "zh": "",
+      "area": 10,
+      "notes": "品牌墙, 接待台, LOGO 背光, 等候长凳",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "开放工位_(10_位_·_双屏)",
+      "name": "开放工位 (10 位 · 双屏)",
+      "zh": "",
+      "area": 45,
+      "notes": "10 × 电动升降桌, 10 × 人体工学椅, 20 × 27寸显示器, 工位隔板",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "gpu_机柜服务器室",
+      "name": "GPU 机柜服务器室",
+      "zh": "",
+      "area": 10,
+      "notes": "3 × 42U 标准机柜, 蓝色 LED accent, 玻璃门, 精密空调",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "玻璃会议室_(10_人)",
+      "name": "玻璃会议室 (10 人)",
+      "zh": "",
+      "area": 18,
+      "notes": "玻璃四面隔断, 2.4m 会议桌, 10 × 椅, 75寸大屏, 4m 白板墙",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "电话亭_×_2",
+      "name": "电话亭 × 2",
+      "zh": "",
+      "area": 3,
+      "notes": "1.2×1.2×2.5 m 隔音亭 × 2, 小桌板, USB-C hub",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "茶水间",
+      "name": "茶水间",
+      "zh": "",
+      "area": 8,
+      "notes": "台面 + 水槽, 咖啡机, 冰箱, 微波炉, 吊柜",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "休闲沙发吧_+_桌足球",
+      "name": "休闲沙发吧 + 桌足球",
+      "zh": "",
+      "area": 12,
+      "notes": "3 座沙发 × 2, 茶几, 桌足球桌, 豆袋",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "卫生间",
+      "name": "卫生间",
+      "zh": "",
+      "area": 6,
+      "notes": "马桶, 洗手台, 干区隔断",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "室内绿植区",
+      "name": "室内绿植区",
+      "zh": "",
+      "area": 4,
+      "notes": "5 × 大型盆栽 (榕 / 龟背竹)",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    }
+  ],
+  "furniture": [],
+  "pricing": {
+    "HK": {
+      "label": "Hong Kong",
+      "currency": "HK$",
+      "perM2": 9829,
+      "rows": [
+        {
+          "cat": "1",
+          "desc": "slab",
+          "sub": "F1 Floor Slab — RC slab (120mm) incl. formwork + rebar",
+          "qty": "116.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "2",
+          "desc": "wall",
+          "sub": "F1 Exterior Walls — Common brick wall (200mm) incl. render",
+          "qty": "138.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "3",
+          "desc": "wall",
+          "sub": "F1 Interior Partitions — Gypsum board partition (double-sided)",
+          "qty": "64.8",
+          "amt": "m2"
+        },
+        {
+          "cat": "4",
+          "desc": "window",
+          "sub": "F1 Windows — Thermal-break aluminum + Low-E double glazing",
+          "qty": "41.4",
+          "amt": "m2"
+        },
+        {
+          "cat": "5",
+          "desc": "door",
+          "sub": "F1 Doors — Solid wood door (900mm) + frame + hardware",
+          "qty": "9.0",
+          "amt": "ea"
+        },
+        {
+          "cat": "6",
+          "desc": "finish",
+          "sub": "F1_LOGO Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "10.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "7",
+          "desc": "finish",
+          "sub": "F1_10 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "45.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "8",
+          "desc": "finish",
+          "sub": "F1_GPU Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "10.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "9",
+          "desc": "finish",
+          "sub": "F1_meeting Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "18.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "10",
+          "desc": "finish",
+          "sub": "F1_2 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "3.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "11",
+          "desc": "finish",
+          "sub": "F1_zone Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "8.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "12",
+          "desc": "finish",
+          "sub": "F1_zone_2 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "12.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "13",
+          "desc": "finish",
+          "sub": "F1_bathroom Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "6.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "14",
+          "desc": "finish",
+          "sub": "F1_zone_3 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "4.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "15",
+          "desc": "roof",
+          "sub": "Roof — RC roof slab + waterproofing + insulation",
+          "qty": "130.0",
+          "amt": "m2"
+        }
+      ],
+      "total": 1140220.31
+    }
+  },
+  "energy": {
+    "eui": 88.1,
+    "limit": 150,
+    "annual": 11452.79,
+    "engine": "EnergyPlus"
+  },
+  "compliance": {
+    "HK": {
+      "code": "HK_BEEO_BEC_2021",
+      "checks": [
+        {
+          "name": "Energy Energy Use Intensity (EUI)",
+          "value": "88.1",
+          "limit": "150",
+          "unit": "kWh/m2*yr",
+          "status": "pass",
+          "note": "59% of limit"
+        },
+        {
+          "name": "Envelope Exterior Wall U-value",
+          "value": "0.555",
+          "limit": "1.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Roof U-value",
+          "value": "0.498",
+          "limit": "0.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Window U-value",
+          "value": "2.0",
+          "limit": "5.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Window SHGC",
+          "value": "0.6",
+          "limit": "0.6",
+          "unit": "—",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope OTTV (Overall Thermal Transfer Value)",
+          "value": "needs facade analysis",
+          "limit": "25.0",
+          "unit": "W/m2",
+          "status": "pass",
+          "note": "OTTV requires detailed facade WWR + orientation data — not yet calculated."
+        },
+        {
+          "name": "Lighting Lighting Power Density",
+          "value": "8.0",
+          "limit": "10.0",
+          "unit": "W/m2",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Ventilation Fresh Air (ACH)",
+          "value": "0.7",
+          "limit": "0.5",
+          "unit": "ACH",
+          "status": "pass",
+          "note": ""
+        }
+      ],
+      "verdict": "COMPLIANT"
+    }
+  },
+  "variants": {
+    "list": []
+  },
+  "timeline": [],
+  "decks": [],
+  "downloads": [
+    {
+      "name": "13-ai-startup-office-bundle.zip",
+      "ext": "zip",
+      "sub": "All artifacts",
+      "size": "TBD"
+    }
+  ]
+}

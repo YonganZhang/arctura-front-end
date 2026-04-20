@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Project Space · Zen Tea Room · Arctura Labs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:wght@400;500&family=Space+Grotesk:wght@400;500;600&family=DM+Serif+Display&family=Instrument+Serif&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/project-space/styles.css?v=3">
+
+<script>
+const TWEAKS = /*EDITMODE-BEGIN*/{
+  "accentHue": 165,
+  "accentChroma": 0.09,
+  "displayFont": "Fraunces",
+  "sansFont": "Inter",
+  "density": "comfortable",
+  "monoUi": false
+}/*EDITMODE-END*/;
+</script>
+
+</head>
+<body>
+<div id="root"></div>
+
+<!-- Tweaks panel -->
+<div id="tw-panel" class="tw-panel">
+  <div class="tw-head">
+    <div class="tw-title">Tweaks</div>
+    <button class="tw-close" id="tw-close">×</button>
+  </div>
+  <div class="tw-body">
+    <div class="tw-section">
+      <div class="tw-row">
+        <label>Accent hue</label>
+        <span class="tw-val" id="tw-hue-val">165</span>
+      </div>
+      <input type="range" id="tw-hue" min="0" max="360" step="1" />
+      <div class="tw-hue-track"></div>
+    </div>
+    <div class="tw-section">
+      <div class="tw-row">
+        <label>Accent saturation</label>
+        <span class="tw-val" id="tw-chroma-val">0.09</span>
+      </div>
+      <input type="range" id="tw-chroma" min="0" max="0.24" step="0.01" />
+    </div>
+    <div class="tw-section">
+      <div class="tw-label">Display font</div>
+      <div class="tw-font-grid">
+        <button class="tw-font" data-font="Fraunces" style="font-family: Fraunces, serif">Fraunces</button>
+        <button class="tw-font" data-font="Playfair Display" style="font-family: 'Playfair Display', serif">Playfair</button>
+        <button class="tw-font" data-font="DM Serif Display" style="font-family: 'DM Serif Display', serif">DM Serif</button>
+        <button class="tw-font" data-font="Instrument Serif" style="font-family: 'Instrument Serif', serif">Instrument</button>
+        <button class="tw-font" data-font="Space Grotesk" style="font-family: 'Space Grotesk', sans-serif">Space Grotesk</button>
+      </div>
+    </div>
+    <div class="tw-section">
+      <div class="tw-label">UI font</div>
+      <div class="tw-font-grid">
+        <button class="tw-sans" data-font="Inter" style="font-family: Inter, sans-serif">Inter</button>
+        <button class="tw-sans" data-font="Space Grotesk" style="font-family: 'Space Grotesk', sans-serif">Space Grotesk</button>
+      </div>
+    </div>
+    <div class="tw-section">
+      <div class="tw-label">Density</div>
+      <div class="tw-density">
+        <button class="tw-dens" data-dens="compact">Compact</button>
+        <button class="tw-dens" data-dens="comfortable">Comfortable</button>
+        <button class="tw-dens" data-dens="spacious">Spacious</button>
+      </div>
+    </div>
+    <div class="tw-section">
+      <div class="tw-label">Extras</div>
+      <label class="tw-check"><input type="checkbox" id="tw-mono" /> Data-dense mode (mono for UI labels)</label>
+    </div>
+    <div class="tw-hint">Tweaks auto-save. Reload keeps your settings.</div>
+  </div>
+</div>
+
+<style>
+  .tw-panel {
+    position: fixed; top: 72px; right: 16px; z-index: 9999;
+    width: 320px; background: #13120F; color: #E8E4DB;
+    border: 1px solid rgba(232, 228, 219, 0.14); border-radius: 8px;
+    box-shadow: 0 24px 48px -12px rgba(0,0,0,0.6);
+    font-family: Inter, sans-serif;
+    display: none; flex-direction: column;
+    max-height: calc(100vh - 100px);
+    overflow: hidden;
+  }
+  .tw-panel.open { display: flex; }
+  .tw-head {
+    padding: 14px 16px; border-bottom: 1px solid rgba(232, 228, 219, 0.08);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .tw-title {
+    font-family: Fraunces, serif; font-size: 16px; font-weight: 400;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .tw-title::before {
+    content: ""; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent, oklch(0.78 0.11 165));
+  }
+  .tw-close {
+    width: 24px; height: 24px; border-radius: 4px;
+    color: rgba(232, 228, 219, 0.48); font-size: 18px; line-height: 1;
+  }
+  .tw-close:hover { background: rgba(232, 228, 219, 0.08); color: #E8E4DB; }
+  .tw-body { padding: 14px 16px 18px; overflow-y: auto; }
+  .tw-section { padding: 8px 0 14px; border-bottom: 1px solid rgba(232, 228, 219, 0.06); }
+  .tw-section:last-of-type { border-bottom: none; }
+  .tw-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .tw-row label {
+    font-family: "JetBrains Mono", monospace; font-size: 10px;
+    color: rgba(232, 228, 219, 0.48);
+    letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  .tw-val {
+    font-family: "JetBrains Mono", monospace; font-size: 11px;
+    color: #E8E4DB; font-variant-numeric: tabular-nums;
+  }
+  .tw-label {
+    font-family: "JetBrains Mono", monospace; font-size: 10px;
+    color: rgba(232, 228, 219, 0.48);
+    letter-spacing: 0.1em; text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .tw-panel input[type="range"] {
+    width: 100%; -webkit-appearance: none; appearance: none;
+    height: 3px; background: rgba(232, 228, 219, 0.14); border-radius: 2px; outline: none;
+    margin: 4px 0;
+  }
+  .tw-panel input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 14px; height: 14px; border-radius: 50%;
+    background: var(--accent, oklch(0.78 0.11 165));
+    cursor: pointer; border: 2px solid #13120F;
+  }
+  .tw-panel input[type="range"]::-moz-range-thumb {
+    width: 14px; height: 14px; border-radius: 50%;
+    background: var(--accent, oklch(0.78 0.11 165));
+    cursor: pointer; border: 2px solid #13120F;
+  }
+  .tw-hue-track {
+    height: 4px; border-radius: 2px; margin-top: 2px;
+    background: linear-gradient(90deg,
+      oklch(0.78 0.11 0), oklch(0.78 0.11 60), oklch(0.78 0.11 120),
+      oklch(0.78 0.11 180), oklch(0.78 0.11 240), oklch(0.78 0.11 300),
+      oklch(0.78 0.11 360));
+    opacity: 0.5;
+  }
+  .tw-font-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+  .tw-font, .tw-sans, .tw-dens {
+    padding: 8px 10px; font-size: 13px;
+    background: rgba(232, 228, 219, 0.04);
+    border: 1px solid rgba(232, 228, 219, 0.08);
+    border-radius: 4px; color: rgba(232, 228, 219, 0.72);
+    transition: all 0.12s; text-align: left;
+  }
+  .tw-font:hover, .tw-sans:hover, .tw-dens:hover {
+    border-color: rgba(232, 228, 219, 0.16); color: #E8E4DB;
+  }
+  .tw-font.on, .tw-sans.on, .tw-dens.on {
+    background: var(--accent, oklch(0.78 0.11 165));
+    color: #13120F; border-color: var(--accent, oklch(0.78 0.11 165));
+  }
+  .tw-density { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px; }
+  .tw-density button { text-align: center; font-size: 11px; padding: 6px 4px; }
+  .tw-check {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12px; color: rgba(232, 228, 219, 0.72); cursor: pointer;
+  }
+  .tw-check input { accent-color: var(--accent, oklch(0.78 0.11 165)); }
+  .tw-hint {
+    margin-top: 12px;
+    font-family: "JetBrains Mono", monospace; font-size: 10px;
+    color: rgba(232, 228, 219, 0.35);
+    letter-spacing: 0.08em; text-transform: uppercase;
+  }
+
+  /* Density variants — adjust globally via body class */
+  body[data-density="compact"] .view { padding: 20px 24px 40px; }
+  body[data-density="compact"] .card { padding: 14px 16px; }
+  body[data-density="compact"] .view-title { font-size: 28px; }
+  body[data-density="spacious"] .view { padding: 40px 48px 80px; }
+  body[data-density="spacious"] .view-head { margin-bottom: 36px; }
+  body[data-density="spacious"] .card { padding: 26px 28px; }
+  body[data-density="spacious"] .view-title { font-size: 44px; }
+
+  /* Mono UI mode for labels */
+  body[data-mono-ui="true"] .card-lbl,
+  body[data-mono-ui="true"] .view-sub,
+  body[data-mono-ui="true"] .sb-label { letter-spacing: 0.18em; }
+  body[data-mono-ui="true"] .card-value,
+  body[data-mono-ui="true"] .view-title {
+    font-family: "JetBrains Mono", monospace !important;
+    letter-spacing: -0.01em;
+  }
+</style>
+
+<script>
+(function() {
+  const panel = document.getElementById('tw-panel');
+  const close = document.getElementById('tw-close');
+  const tweaks = Object.assign({
+    accentHue: 165, accentChroma: 0.09,
+    displayFont: "Fraunces", sansFont: "Inter",
+    density: "comfortable", monoUi: false
+  }, window.TWEAKS || {});
+
+  function applyAccent() {
+    const h = tweaks.accentHue, c = tweaks.accentChroma;
+    const root = document.documentElement;
+    root.style.setProperty('--accent', `oklch(0.78 ${c} ${h})`);
+    root.style.setProperty('--accent-2', `oklch(0.68 ${c} ${h})`);
+    root.style.setProperty('--accent-dim', `oklch(0.68 ${c} ${h} / 0.18)`);
+    root.style.setProperty('--accent-line', `oklch(0.68 ${c} ${h} / 0.5)`);
+  }
+  function applyFonts() {
+    const root = document.documentElement;
+    const dispStack = {
+      "Fraunces": '"Fraunces", "Songti SC", Georgia, serif',
+      "Playfair Display": '"Playfair Display", Georgia, serif',
+      "DM Serif Display": '"DM Serif Display", Georgia, serif',
+      "Instrument Serif": '"Instrument Serif", Georgia, serif',
+      "Space Grotesk": '"Space Grotesk", sans-serif'
+    }[tweaks.displayFont] || tweaks.displayFont;
+    const sansStack = {
+      "Inter": '"Inter", -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif',
+      "Space Grotesk": '"Space Grotesk", -apple-system, "PingFang SC", sans-serif'
+    }[tweaks.sansFont] || tweaks.sansFont;
+    root.style.setProperty('--f-display', dispStack);
+    root.style.setProperty('--f-sans', sansStack);
+  }
+  function applyDensity() {
+    document.body.dataset.density = tweaks.density;
+  }
+  function applyMono() {
+    document.body.dataset.monoUi = String(!!tweaks.monoUi);
+  }
+  function applyAll() { applyAccent(); applyFonts(); applyDensity(); applyMono(); }
+  applyAll();
+
+  // Sync panel controls to current state
+  const twHue = document.getElementById('tw-hue');
+  const twHueVal = document.getElementById('tw-hue-val');
+  const twChroma = document.getElementById('tw-chroma');
+  const twChromaVal = document.getElementById('tw-chroma-val');
+  const twMono = document.getElementById('tw-mono');
+  twHue.value = tweaks.accentHue; twHueVal.textContent = tweaks.accentHue;
+  twChroma.value = tweaks.accentChroma; twChromaVal.textContent = tweaks.accentChroma;
+  twMono.checked = !!tweaks.monoUi;
+  const refreshBtns = () => {
+    document.querySelectorAll('.tw-font').forEach(b => b.classList.toggle('on', b.dataset.font === tweaks.displayFont));
+    document.querySelectorAll('.tw-sans').forEach(b => b.classList.toggle('on', b.dataset.font === tweaks.sansFont));
+    document.querySelectorAll('.tw-dens').forEach(b => b.classList.toggle('on', b.dataset.dens === tweaks.density));
+  };
+  refreshBtns();
+
+  function postEdit(patch) {
+    Object.assign(tweaks, patch);
+    try { window.parent.postMessage({ type: '__edit_mode_set_keys', edits: patch }, '*'); } catch(e) {}
+  }
+
+  twHue.addEventListener('input', e => {
+    const v = Number(e.target.value);
+    twHueVal.textContent = v;
+    tweaks.accentHue = v;
+    applyAccent();
+    postEdit({ accentHue: v });
+  });
+  twChroma.addEventListener('input', e => {
+    const v = Number(e.target.value);
+    twChromaVal.textContent = v.toFixed(2);
+    tweaks.accentChroma = v;
+    applyAccent();
+    postEdit({ accentChroma: v });
+  });
+  document.querySelectorAll('.tw-font').forEach(btn => {
+    btn.addEventListener('click', () => {
+      tweaks.displayFont = btn.dataset.font;
+      applyFonts(); refreshBtns();
+      postEdit({ displayFont: btn.dataset.font });
+    });
+  });
+  document.querySelectorAll('.tw-sans').forEach(btn => {
+    btn.addEventListener('click', () => {
+      tweaks.sansFont = btn.dataset.font;
+      applyFonts(); refreshBtns();
+      postEdit({ sansFont: btn.dataset.font });
+    });
+  });
+  document.querySelectorAll('.tw-dens').forEach(btn => {
+    btn.addEventListener('click', () => {
+      tweaks.density = btn.dataset.dens;
+      applyDensity(); refreshBtns();
+      postEdit({ density: btn.dataset.dens });
+    });
+  });
+  twMono.addEventListener('change', e => {
+    tweaks.monoUi = e.target.checked;
+    applyMono();
+    postEdit({ monoUi: e.target.checked });
+  });
+
+  close.addEventListener('click', () => {
+    panel.classList.remove('open');
+    try { window.parent.postMessage({ type: '__edit_mode_closed' }, '*'); } catch(e) {}
+  });
+
+  // Host protocol — register listener FIRST
+  window.addEventListener('message', (ev) => {
+    const d = ev.data || {};
+    if (d.type === '__activate_edit_mode') panel.classList.add('open');
+    if (d.type === '__deactivate_edit_mode') panel.classList.remove('open');
+  });
+  try { window.parent.postMessage({ type: '__edit_mode_available' }, '*'); } catch(e) {}
+})();
+</script>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="/project-space/data.js?v=3"></script>
+<script type="text/babel" src="/project-space/app.jsx?v=4"></script>
+</body>
+</html>

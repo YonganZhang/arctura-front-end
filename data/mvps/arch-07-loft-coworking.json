@@ -1,0 +1,494 @@
+{
+  "slug": "arch-07-loft-coworking",
+  "complete": false,
+  "project": {
+    "name": "Ironworks Commons — 旧厂房改造 Coworking (adaptive reuse loft coworking)",
+    "zh": "",
+    "area": 271,
+    "location": "Hong Kong",
+    "budgetHKD": 0,
+    "style": "industrial, adaptive-reuse, loft, modern-industrial, warm-minimal",
+    "palette": [
+      {
+        "name": "existing_red_brick",
+        "hex": "#A84B3A"
+      },
+      {
+        "name": "steel_structure_charcoal",
+        "hex": "#2E2E30"
+      },
+      {
+        "name": "low_iron_glass",
+        "hex": "#C9DCE3"
+      },
+      {
+        "name": "fsc_oak_desk",
+        "hex": "#B08A5F"
+      },
+      {
+        "name": "plant_wall_green",
+        "hex": "#4B7A3C"
+      },
+      {
+        "name": "edison_bulb_warm",
+        "hex": "#F2C37B"
+      }
+    ]
+  },
+  "renders": [
+    {
+      "id": "interior",
+      "file": "/assets/mvps/arch-07-loft-coworking/renders/interior.webp",
+      "title": "Interior",
+      "tag": "interior"
+    },
+    {
+      "id": "massing",
+      "file": "/assets/mvps/arch-07-loft-coworking/renders/massing.webp",
+      "title": "Massing",
+      "tag": "massing"
+    },
+    {
+      "id": "elev-E",
+      "file": "/assets/mvps/arch-07-loft-coworking/renders/elev-E.webp",
+      "title": "Elev E",
+      "tag": "elev-E"
+    },
+    {
+      "id": "elev-N",
+      "file": "/assets/mvps/arch-07-loft-coworking/renders/elev-N.webp",
+      "title": "Elev N",
+      "tag": "elev-N"
+    },
+    {
+      "id": "elev-S",
+      "file": "/assets/mvps/arch-07-loft-coworking/renders/elev-S.webp",
+      "title": "Elev S",
+      "tag": "elev-S"
+    },
+    {
+      "id": "elev-W",
+      "file": "/assets/mvps/arch-07-loft-coworking/renders/elev-W.webp",
+      "title": "Elev W",
+      "tag": "elev-W"
+    },
+    {
+      "id": "floor-F1",
+      "file": "/assets/mvps/arch-07-loft-coworking/renders/floor-F1.webp",
+      "title": "Floor F1",
+      "tag": "floor-F1"
+    },
+    {
+      "id": "floor-F2",
+      "file": "/assets/mvps/arch-07-loft-coworking/renders/floor-F2.webp",
+      "title": "Floor F2",
+      "tag": "floor-F2"
+    },
+    {
+      "id": "floor-M",
+      "file": "/assets/mvps/arch-07-loft-coworking/renders/floor-M.webp",
+      "title": "Floor M",
+      "tag": "floor-M"
+    },
+    {
+      "id": "site-plan",
+      "file": "/assets/mvps/arch-07-loft-coworking/renders/site-plan.webp",
+      "title": "Site Plan",
+      "tag": "site-plan"
+    }
+  ],
+  "floorplan": null,
+  "moodboard": "/assets/mvps/arch-07-loft-coworking/moodboard.webp",
+  "hero_img": "/assets/mvps/arch-07-loft-coworking/hero.webp",
+  "thumb_img": "/assets/mvps/arch-07-loft-coworking/thumb.webp",
+  "zones": [],
+  "furniture": [],
+  "pricing": {
+    "HK": {
+      "label": "Hong Kong",
+      "currency": "HK$",
+      "perM2": 4215,
+      "rows": [
+        {
+          "cat": "1",
+          "desc": "slab",
+          "sub": "F1 Floor Slab — RC slab (120mm) incl. formwork + rebar",
+          "qty": "435.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "2",
+          "desc": "slab",
+          "sub": "F2 Floor Slab — RC slab (120mm) incl. formwork + rebar",
+          "qty": "405.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "3",
+          "desc": "slab",
+          "sub": "M Floor Slab — RC slab (120mm) incl. formwork + rebar",
+          "qty": "140.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "4",
+          "desc": "wall",
+          "sub": "F1 Exterior Walls — Common brick wall (200mm) incl. render",
+          "qty": "120.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "5",
+          "desc": "wall",
+          "sub": "F1 Interior Partitions — Gypsum board partition (double-sided)",
+          "qty": "50.4",
+          "amt": "m2"
+        },
+        {
+          "cat": "6",
+          "desc": "wall",
+          "sub": "F2 Exterior Walls — Common brick wall (200mm) incl. render",
+          "qty": "120.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "7",
+          "desc": "wall",
+          "sub": "F2 Interior Partitions — Gypsum board partition (double-sided)",
+          "qty": "86.4",
+          "amt": "m2"
+        },
+        {
+          "cat": "8",
+          "desc": "wall",
+          "sub": "M Exterior Walls — Common brick wall (200mm) incl. render",
+          "qty": "120.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "9",
+          "desc": "wall",
+          "sub": "M Interior Partitions — Gypsum board partition (double-sided)",
+          "qty": "43.2",
+          "amt": "m2"
+        },
+        {
+          "cat": "10",
+          "desc": "window",
+          "sub": "F1 Windows — Thermal-break aluminum + Low-E double glazing",
+          "qty": "36.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "11",
+          "desc": "window",
+          "sub": "F2 Windows — Thermal-break aluminum + Low-E double glazing",
+          "qty": "36.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "12",
+          "desc": "window",
+          "sub": "M Windows — Thermal-break aluminum + Low-E double glazing",
+          "qty": "36.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "13",
+          "desc": "door",
+          "sub": "F1 Doors — Solid wood door (900mm) + frame + hardware",
+          "qty": "7.0",
+          "amt": "ea"
+        },
+        {
+          "cat": "14",
+          "desc": "door",
+          "sub": "F2 Doors — Solid wood door (900mm) + frame + hardware",
+          "qty": "12.0",
+          "amt": "ea"
+        },
+        {
+          "cat": "15",
+          "desc": "door",
+          "sub": "M Doors — Solid wood door (900mm) + frame + hardware",
+          "qty": "5.0",
+          "amt": "ea"
+        },
+        {
+          "cat": "16",
+          "desc": "finish",
+          "sub": "F1_reception_foyer Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "25.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "17",
+          "desc": "finish",
+          "sub": "F1_cafe_bar Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "40.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "18",
+          "desc": "finish",
+          "sub": "F1_hotdesk_open Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "200.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "19",
+          "desc": "finish",
+          "sub": "F1_big_meeting Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "40.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "20",
+          "desc": "finish",
+          "sub": "F1_event_launch Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "80.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "21",
+          "desc": "finish",
+          "sub": "F1_lockers_zone Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "20.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "22",
+          "desc": "finish",
+          "sub": "F1_public_bath_F1 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "30.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "23",
+          "desc": "finish",
+          "sub": "F2_fixed_desks_cluster_A Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "42.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "24",
+          "desc": "finish",
+          "sub": "F2_fixed_desks_cluster_B Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "42.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "25",
+          "desc": "finish",
+          "sub": "F2_fixed_desks_cluster_C Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "42.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "26",
+          "desc": "finish",
+          "sub": "F2_fixed_desks_cluster_D Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "42.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "27",
+          "desc": "finish",
+          "sub": "F2_fixed_desks_cluster_E Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "42.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "28",
+          "desc": "finish",
+          "sub": "F2_fixed_desks_cluster_F Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "42.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "29",
+          "desc": "finish",
+          "sub": "F2_small_meeting_1 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "15.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "30",
+          "desc": "finish",
+          "sub": "F2_small_meeting_2 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "15.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "31",
+          "desc": "finish",
+          "sub": "F2_phone_booth_1_to_6 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "18.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "32",
+          "desc": "finish",
+          "sub": "F2_lounge_bar Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "60.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "33",
+          "desc": "finish",
+          "sub": "F2_pantry Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "15.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "34",
+          "desc": "finish",
+          "sub": "F2_public_bath_F2 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "30.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "35",
+          "desc": "finish",
+          "sub": "M_private_office_1 Floor Finish — Carpet with underlay",
+          "qty": "20.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "36",
+          "desc": "finish",
+          "sub": "M_private_office_2 Floor Finish — Carpet with underlay",
+          "qty": "20.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "37",
+          "desc": "finish",
+          "sub": "M_private_office_3 Floor Finish — Carpet with underlay",
+          "qty": "20.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "38",
+          "desc": "finish",
+          "sub": "M_private_office_4 Floor Finish — Carpet with underlay",
+          "qty": "20.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "39",
+          "desc": "finish",
+          "sub": "M_meditation_napping Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "20.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "40",
+          "desc": "roof",
+          "sub": "Roof — RC roof slab + waterproofing + insulation",
+          "qty": "100.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "41",
+          "desc": "stair",
+          "sub": "Stairs (2 flights) — RC stair flight (one floor) + railing",
+          "qty": "2.0",
+          "amt": "flight"
+        }
+      ],
+      "total": 4130988.4
+    }
+  },
+  "energy": {
+    "eui": 227.42,
+    "limit": 150,
+    "annual": 61727.83,
+    "engine": "EnergyPlus"
+  },
+  "compliance": {
+    "HK": {
+      "code": "HK_BEEO_BEC_2021",
+      "checks": [
+        {
+          "name": "Energy Energy Use Intensity (EUI)",
+          "value": "227.4",
+          "limit": "150",
+          "unit": "kWh/m2*yr",
+          "status": "fail",
+          "note": "152% of limit"
+        },
+        {
+          "name": "Envelope Exterior Wall U-value",
+          "value": "0.555",
+          "limit": "1.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Roof U-value",
+          "value": "0.498",
+          "limit": "0.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Window U-value",
+          "value": "2.0",
+          "limit": "5.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Window SHGC",
+          "value": "0.6",
+          "limit": "0.6",
+          "unit": "—",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope OTTV (Overall Thermal Transfer Value)",
+          "value": "needs facade analysis",
+          "limit": "25.0",
+          "unit": "W/m2",
+          "status": "pass",
+          "note": "OTTV requires detailed facade WWR + orientation data — not yet calculated."
+        },
+        {
+          "name": "Lighting Lighting Power Density",
+          "value": "8.0",
+          "limit": "10.0",
+          "unit": "W/m2",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Ventilation Fresh Air (ACH)",
+          "value": "0.7",
+          "limit": "0.5",
+          "unit": "ACH",
+          "status": "pass",
+          "note": ""
+        }
+      ],
+      "verdict": "CONDITIONAL — minor remediation needed"
+    }
+  },
+  "variants": {
+    "list": []
+  },
+  "timeline": [],
+  "decks": [],
+  "downloads": [
+    {
+      "name": "arch-07-loft-coworking-bundle.zip",
+      "ext": "zip",
+      "sub": "All artifacts",
+      "size": "TBD"
+    }
+  ]
+}

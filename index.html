@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Arctura Labs — Design that compiles</title>
+<meta name="description" content="A design studio that runs as a pipeline. A growing room catalog, a growing compliance library, deliverable tiers from concept to bid-ready." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css?v=4">
+
+<script>
+const TWEAKS = /*EDITMODE-BEGIN*/{
+  "accentHue": 165,
+  "heroTagline": "Design\nthat compiles.",
+  "heroSub": "Arctura Labs runs an architectural studio as a pipeline. A room brief becomes, automatically: renders, drawings, BOQ, energy report, stakeholder decks — with Hong Kong / China / ASHRAE / Japan compliance baked in.",
+  "layoutMode": "standard"
+}/*EDITMODE-END*/;
+</script>
+</head>
+<body data-screen-label="Arctura Labs Homepage">
+
+<!-- ============ NAV ============ -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <span class="nav-mark"></span>
+      Arctura Labs
+    </a>
+    <div class="nav-links">
+      <a href="#pipeline">Pipeline</a>
+      <a href="#work">Portfolio</a>
+      <a href="#compliance">Compliance</a>
+      <a href="#pricing">Pricing</a>
+    </div>
+    <a href="#cta" class="nav-cta">
+      Open a live project
+      <svg class="nav-cta-arrow" width="12" height="12" viewBox="0 0 12 12" fill="none">
+        <path d="M3 9L9 3M9 3H4.5M9 3V7.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+      </svg>
+    </a>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<section class="hero wrap" data-screen-label="01 Hero">
+  <div class="hero-grid">
+    <div class="hero-copy">
+      <div class="hero-eyebrow">
+        <span class="dot"></span>
+        A studio that runs as a pipeline
+      </div>
+      <h1 class="hero-title" id="hero-title">
+        Design<br/>that <em>compiles</em>.
+      </h1>
+      <p class="hero-sub" id="hero-sub">
+        A brief — typed, spoken or sketched — becomes a complete package: renders, drawings, BOQ, energy report, stakeholder decks. Everything is editable in place. No CAD, no months, no gatekeepers.
+      </p>
+      <div class="hero-actions">
+        <a href="/project/" class="btn-primary">
+          See a live project
+          <svg width="14" height="14" viewBox="0 0 12 12" fill="none">
+            <path d="M3 9L9 3M9 3H4.5M9 3V7.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+        </a>
+        <a href="#pipeline" class="btn-ghost">How it works</a>
+      </div>
+      <div class="hero-meta">
+        <div class="hero-meta-item">
+          <div class="label">Brief → full package</div>
+          <div class="value"><em class="meta-em">under</em> 30 <span class="meta-unit">min</span></div>
+        </div>
+        <div class="hero-meta-item">
+          <div class="label">Every output</div>
+          <div class="value">live-<em class="meta-em">editable</em></div>
+        </div>
+        <div class="hero-meta-item">
+          <div class="label">Needed to start</div>
+          <div class="value">just a <em class="meta-em">brief</em></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="demo" id="demo">
+      <!-- Terminal: brief input -->
+      <div class="demo-term">
+        <div class="demo-term-head">
+          <div class="demo-dots"><span></span><span></span><span></span></div>
+          <div class="demo-term-title">brief › project</div>
+          <div class="demo-status" id="demo-status"><span class="dot"></span>compiling</div>
+        </div>
+        <div class="demo-term-body">
+          <div class="demo-line prompt">
+            <span class="demo-caret">&gt;</span>
+            <span class="demo-typed" id="demo-typed"></span><span class="demo-cursor">▍</span>
+          </div>
+          <div class="demo-progress">
+            <div class="demo-progress-bar" id="demo-progress-bar"></div>
+          </div>
+          <div class="demo-stages" id="demo-stages"></div>
+        </div>
+      </div>
+
+      <!-- Stage canvas: switches between outputs -->
+      <div class="demo-stage">
+        <div class="demo-tabs" id="demo-tabs">
+          <button class="demo-tab" data-tab="plan">Plan</button>
+          <button class="demo-tab" data-tab="render">Render</button>
+          <button class="demo-tab" data-tab="energy">Energy</button>
+          <button class="demo-tab" data-tab="boq">BOQ</button>
+        </div>
+
+        <!-- Plan: SVG drawing itself -->
+        <div class="demo-panel" data-panel="plan">
+          <svg viewBox="0 0 400 260" class="demo-plan" id="demo-plan" preserveAspectRatio="xMidYMid meet">
+            <defs>
+              <pattern id="gridp" width="20" height="20" patternUnits="userSpaceOnUse">
+                <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="0.5"/>
+              </pattern>
+            </defs>
+            <rect width="400" height="260" fill="url(#gridp)"/>
+            <!-- outer walls -->
+            <path class="pl" d="M 40 40 L 360 40 L 360 220 L 40 220 Z" fill="none"/>
+            <!-- tatami zone -->
+            <path class="pl" d="M 60 60 L 200 60 L 200 160 L 60 160 Z" fill="none"/>
+            <!-- tea bar -->
+            <path class="pl" d="M 220 60 L 340 60 L 340 120 L 220 120 Z" fill="none"/>
+            <!-- entry -->
+            <path class="pl" d="M 220 140 L 340 140 L 340 200 L 60 200 L 60 180" fill="none"/>
+            <!-- door swing -->
+            <path class="pl dash" d="M 360 130 A 20 20 0 0 0 340 110" fill="none"/>
+            <!-- table circles -->
+            <circle class="pl" cx="130" cy="110" r="14" fill="none"/>
+            <circle class="pl" cx="280" cy="90" r="10" fill="none"/>
+            <circle class="pl" cx="280" cy="170" r="10" fill="none"/>
+            <!-- labels -->
+            <text x="130" y="155" class="pl-label">茶室 · tatami</text>
+            <text x="280" y="175" class="pl-label">bar</text>
+            <text x="200" y="235" class="pl-label">entry · 58 m²</text>
+            <!-- dim lines -->
+            <path class="pl-dim" d="M 40 30 L 360 30" />
+            <text x="200" y="24" class="pl-dim-t">9800</text>
+            <path class="pl-dim" d="M 30 40 L 30 220" />
+            <text x="18" y="132" class="pl-dim-t" transform="rotate(-90 18 132)">5920</text>
+          </svg>
+        </div>
+
+        <!-- Render: image fading in -->
+        <div class="demo-panel" data-panel="render">
+          <div class="demo-render-wrap">
+            <img src="assets/zen-tea/render-01-hero.png" alt="Zen Tea render" class="demo-render-img" />
+            <div class="demo-render-scan"></div>
+          </div>
+        </div>
+
+        <!-- Energy: bars filling -->
+        <div class="demo-panel" data-panel="energy">
+          <div class="demo-energy">
+            <div class="demo-energy-row">
+              <span class="er-name">HVAC</span>
+              <div class="er-bar"><div class="er-fill" data-pct="42" style="background:oklch(0.72 0.13 75)"></div></div>
+              <span class="er-val" data-count="37.1">0</span>
+            </div>
+            <div class="demo-energy-row">
+              <span class="er-name">Lighting</span>
+              <div class="er-bar"><div class="er-fill" data-pct="24"></div></div>
+              <span class="er-val" data-count="21.2">0</span>
+            </div>
+            <div class="demo-energy-row">
+              <span class="er-name">Plug load</span>
+              <div class="er-bar"><div class="er-fill" data-pct="22"></div></div>
+              <span class="er-val" data-count="19.5">0</span>
+            </div>
+            <div class="demo-energy-row">
+              <span class="er-name">DHW</span>
+              <div class="er-bar"><div class="er-fill" data-pct="12"></div></div>
+              <span class="er-val" data-count="10.6">0</span>
+            </div>
+            <div class="demo-energy-total">
+              <span>EUI total</span>
+              <span class="er-total-val" data-count="88.4">0</span>
+              <span class="er-unit">kWh/m²·yr</span>
+            </div>
+            <div class="demo-energy-note">
+              vs. HK hospitality median <em>142 kWh/m²·yr</em> · <span style="color:var(--accent-2)">38% below baseline ✓</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- BOQ: table rows appearing -->
+        <div class="demo-panel" data-panel="boq">
+          <div class="demo-boq">
+            <div class="demo-boq-head">
+              <span>Item</span><span>Qty</span><span>HK$</span>
+            </div>
+            <div class="demo-boq-rows" id="demo-boq-rows"></div>
+            <div class="demo-boq-total">
+              <span>Total FF&amp;E + fit-out</span>
+              <span class="boq-total-val" data-count="498300">0</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- live readouts -->
+      <div class="demo-footer">
+        <div class="demo-kpi">
+          <div class="demo-kpi-k">EUI</div>
+          <div class="demo-kpi-v" data-count="88.4">—</div>
+          <div class="demo-kpi-u">kWh/m²</div>
+        </div>
+        <div class="demo-kpi">
+          <div class="demo-kpi-k">FF&amp;E</div>
+          <div class="demo-kpi-v" data-count="498" data-prefix="HK$ " data-suffix="K">—</div>
+        </div>
+        <div class="demo-kpi">
+          <div class="demo-kpi-k">Codes</div>
+          <div class="demo-kpi-v demo-kpi-ok">PASS ✓</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap"><div class="hr"></div></div>
+
+<!-- ============ THE GAP ============ -->
+<section data-screen-label="02 The Gap">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">The studio gap</div>
+      <h2 class="sec-title">A render isn't a deliverable.<br/>A drawing isn't a package.<br/><em>A shipped project is both.</em></h2>
+    </div>
+
+    <div class="gap-grid">
+      <div class="quadrant">
+        <div class="quad-axes">
+          <div class="quad-axis-x"></div>
+          <div class="quad-axis-y"></div>
+          <div class="quad-axis-label top">Buildable</div>
+          <div class="quad-axis-label bottom">Mood only</div>
+          <div class="quad-axis-label left">Slow</div>
+          <div class="quad-axis-label right">Fast</div>
+
+          <div class="quad-region" style="bottom: -20px; right: -20px;"></div>
+
+          <div class="quad-dot" style="top: 22%; left: 25%;">
+            <span class="dot-mark"></span>
+            <span class="dot-label">BIM / CAD tools</span>
+          </div>
+          <div class="quad-dot" style="top: 72%; right: 20%; left: auto;">
+            <span class="dot-mark"></span>
+            <span class="dot-label">AI renderers</span>
+          </div>
+          <div class="quad-dot" style="top: 35%; left: 55%;">
+            <span class="dot-mark"></span>
+            <span class="dot-label">Traditional studio</span>
+          </div>
+          <div class="quad-dot" style="top: 78%; left: 30%;">
+            <span class="dot-mark"></span>
+            <span class="dot-label">Mood boards</span>
+          </div>
+          <div class="quad-dot us" style="top: 20%; left: 82%;">
+            <span class="dot-mark"></span>
+            <span class="dot-label">Arctura</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="gap-copy">
+        <h3>A good image isn't a deliverable.<br/>A good deliverable is a package.</h3>
+        <p>
+          Boutique studios ship the same project over and over: a brief, a few renders, a floorplan, a rough quote. Each one burns <strong>two to three weeks</strong> of senior time on the parts that don't change.
+        </p>
+        <p>
+          Arctura Labs packages that repetitive layer into a pipeline. Every project produces the full set — renders, drawings, BOQ, energy model, compliance check, and decks for each stakeholder — from a single structured brief.
+        </p>
+        <p class="emphasis">
+          You keep the taste, the client relationship, and the judgment. We remove the production bottleneck underneath.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ INTAKE (P0) ============ -->
+<section data-screen-label="03 Intake">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">The front door · P0 Asset Intake</div>
+      <h2 class="sec-title">Bring what you <em>already have.</em></h2>
+      <p class="sec-sub">A sentence, a photo, a PDF, a model. Six front doors, one pipeline. Whatever you walk in with gets normalised into the same project object — then the rest happens.</p>
+    </div>
+
+    <div class="intake-term" id="intake-term">
+      <!-- HEAD: traffic lights + breadcrumb + status -->
+      <div class="intake-term-head">
+        <div class="demo-dots"><span></span><span></span><span></span></div>
+        <div class="intake-term-title">intake › p0</div>
+        <div class="intake-term-status" id="intake-status"><span class="dot"></span><span data-intake-status>detecting</span></div>
+      </div>
+
+      <!-- Typed input line -->
+      <div class="intake-term-body">
+        <div class="intake-line">
+          <span class="intake-caret">&gt;</span>
+          <span class="intake-typed" id="intake-typed"></span><span class="intake-cursor">▍</span>
+        </div>
+        <div class="intake-stages" id="intake-stages">
+          <span class="intake-stage-item" data-id="detect">detecting format</span>
+          <span class="intake-stage-item" data-id="parse">parsing</span>
+          <span class="intake-stage-item" data-id="extract">extracting signals</span>
+          <span class="intake-stage-item" data-id="normalise">normalising</span>
+          <span class="intake-stage-item" data-id="commit">→ brief.json</span>
+        </div>
+      </div>
+
+      <!-- Tabs: 6 input types -->
+      <div class="intake-term-tabs" id="intake-tabs">
+        <button class="intake-tab" data-tab="sentence"><span class="intake-tab-n">01</span>sentence</button>
+        <button class="intake-tab" data-tab="photo"><span class="intake-tab-n">02</span>photo</button>
+        <button class="intake-tab" data-tab="moodboard"><span class="intake-tab-n">03</span>moodboard</button>
+        <button class="intake-tab" data-tab="pdf"><span class="intake-tab-n">04</span>pdf · dwg</button>
+        <button class="intake-tab" data-tab="model"><span class="intake-tab-n">05</span>3d model</button>
+        <button class="intake-tab" data-tab="json"><span class="intake-tab-n">06</span>json</button>
+      </div>
+
+      <!-- Stage canvas: switches per-input visual -->
+      <div class="intake-term-stage">
+
+        <!-- 01 sentence: waveform + transcription -->
+        <div class="intake-panel" data-panel="sentence">
+          <div class="intake-wave" id="intake-wave">
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
+          <div class="intake-transcribe">
+            <span class="intake-transcribe-lbl">transcript</span>
+            <span class="intake-transcribe-txt">“改成像茶室的样子, 4 个人坐得下” <em>&nbsp;→&nbsp;</em> <code>zh</code> · <code>intent: redesign</code> · <code>program: tea_room</code> · <code>capacity: 4</code></span>
+          </div>
+        </div>
+
+        <!-- 02 photo: image with vision overlay boxes -->
+        <div class="intake-panel" data-panel="photo">
+          <div class="intake-photo-frame">
+            <svg viewBox="0 0 400 220" class="intake-photo-svg" preserveAspectRatio="xMidYMid slice">
+              <defs>
+                <linearGradient id="floorGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0" stop-color="#3b342b"/>
+                  <stop offset="1" stop-color="#1a1612"/>
+                </linearGradient>
+                <linearGradient id="wallGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0" stop-color="#504638"/>
+                  <stop offset="1" stop-color="#2a2419"/>
+                </linearGradient>
+              </defs>
+              <!-- fake photo: a room interior -->
+              <rect width="400" height="220" fill="url(#wallGrad)"/>
+              <polygon points="0,140 400,140 400,220 0,220" fill="url(#floorGrad)"/>
+              <rect x="50" y="40" width="80" height="100" fill="#6b5a45" opacity="0.6"/>
+              <rect x="270" y="60" width="90" height="80" fill="#2a2419" stroke="#8a7960" stroke-width="1.5"/>
+              <rect x="160" y="110" width="90" height="40" fill="#4a3f30" rx="2"/>
+              <circle cx="360" cy="30" r="12" fill="#d4a86a" opacity="0.5"/>
+              <!-- vision overlay: detected objects -->
+              <g class="intake-vision">
+                <rect x="50" y="40" width="80" height="100" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="3 2"/>
+                <text x="52" y="36" class="intake-vision-lbl">window · 0.94</text>
+                <rect x="270" y="60" width="90" height="80" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="3 2"/>
+                <text x="272" y="56" class="intake-vision-lbl">shelf · 0.88</text>
+                <rect x="160" y="110" width="90" height="40" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="3 2"/>
+                <text x="162" y="106" class="intake-vision-lbl">counter · 0.91</text>
+              </g>
+            </svg>
+            <div class="intake-photo-scan"></div>
+          </div>
+        </div>
+
+        <!-- 03 moodboard: 6 image tiles + palette -->
+        <div class="intake-panel" data-panel="moodboard">
+          <div class="intake-moodboard">
+            <div class="intake-mb-tile" style="--c1:#a07848;--c2:#4a3622;"></div>
+            <div class="intake-mb-tile" style="--c1:#6b5e4a;--c2:#2a2418;"></div>
+            <div class="intake-mb-tile" style="--c1:#c8a876;--c2:#8a6a40;"></div>
+            <div class="intake-mb-tile" style="--c1:#5a4f3a;--c2:#1f1a12;"></div>
+            <div class="intake-mb-tile" style="--c1:#8a7450;--c2:#3a2e1f;"></div>
+            <div class="intake-mb-tile" style="--c1:#d4b87a;--c2:#7a5a32;"></div>
+          </div>
+          <div class="intake-palette">
+            <span class="intake-palette-lbl">palette extracted</span>
+            <span class="intake-palette-chip" style="background:#a07848"></span>
+            <span class="intake-palette-chip" style="background:#4a3622"></span>
+            <span class="intake-palette-chip" style="background:#c8a876"></span>
+            <span class="intake-palette-chip" style="background:#8a6a40"></span>
+            <span class="intake-palette-chip" style="background:#d4b87a"></span>
+            <span class="intake-palette-code">warm minimal · natural</span>
+          </div>
+        </div>
+
+        <!-- 04 pdf: document with ocr boxes -->
+        <div class="intake-panel" data-panel="pdf">
+          <div class="intake-pdf">
+            <svg viewBox="0 0 360 220" preserveAspectRatio="xMidYMid meet" class="intake-pdf-svg">
+              <rect x="40" y="12" width="280" height="200" fill="#1a1714" stroke="#3a342b" stroke-width="1"/>
+              <!-- fake floorplan lines -->
+              <g stroke="#8a7e68" stroke-width="1" fill="none">
+                <rect x="60" y="36" width="240" height="160"/>
+                <line x1="150" y1="36" x2="150" y2="196"/>
+                <line x1="150" y1="120" x2="300" y2="120"/>
+                <rect x="70" y="50" width="70" height="30" fill="#2a2419"/>
+                <circle cx="220" cy="70" r="14"/>
+                <rect x="210" y="140" width="24" height="40"/>
+              </g>
+              <text x="70" y="30" class="intake-pdf-text">FLOOR PLAN — L1</text>
+              <text x="70" y="210" class="intake-pdf-text-sm">scale 1:50 · sheet 2/6</text>
+              <!-- ocr detection boxes -->
+              <g class="intake-pdf-ocr">
+                <rect x="60" y="36" width="240" height="160" fill="none" stroke="currentColor" stroke-width="0.8" stroke-dasharray="3 2"/>
+                <text x="310" y="40" class="intake-vision-lbl">room · 180m²</text>
+                <rect x="70" y="50" width="70" height="30" fill="none" stroke="currentColor" stroke-width="0.8" stroke-dasharray="3 2"/>
+                <text x="70" y="46" class="intake-vision-lbl">kitchen</text>
+                <rect x="210" y="140" width="24" height="40" fill="none" stroke="currentColor" stroke-width="0.8" stroke-dasharray="3 2"/>
+                <text x="212" y="136" class="intake-vision-lbl">wc</text>
+              </g>
+            </svg>
+          </div>
+        </div>
+
+        <!-- 05 3d model: rotating wireframe -->
+        <div class="intake-panel" data-panel="model">
+          <div class="intake-model">
+            <svg viewBox="-100 -60 200 120" preserveAspectRatio="xMidYMid meet" class="intake-model-svg">
+              <g class="intake-model-rot">
+                <!-- wireframe box, isometric -->
+                <g stroke="currentColor" stroke-width="0.8" fill="none" opacity="0.9">
+                  <!-- floor -->
+                  <polygon points="-60,20 60,20 80,0 -40,0"/>
+                  <!-- back walls -->
+                  <polygon points="-60,20 -60,-20 -40,-40 -40,0"/>
+                  <polygon points="60,20 60,-20 80,-40 80,0"/>
+                  <!-- front walls (dashed) -->
+                  <line x1="-40" y1="-40" x2="80" y2="-40" stroke-dasharray="2 2"/>
+                  <line x1="-40" y1="0" x2="80" y2="0" stroke-dasharray="2 2" opacity="0.4"/>
+                  <!-- interior divider -->
+                  <polygon points="10,20 10,-20 30,-40 30,0" opacity="0.5"/>
+                  <!-- furniture blocks -->
+                  <polygon points="-30,10 -5,10 5,0 -20,0" fill="currentColor" fill-opacity="0.08"/>
+                  <polygon points="30,10 50,10 60,0 40,0" fill="currentColor" fill-opacity="0.08"/>
+                  <circle cx="-15" cy="5" r="6" opacity="0.7"/>
+                </g>
+                <!-- vertices -->
+                <g fill="currentColor" opacity="0.6">
+                  <circle cx="-60" cy="20" r="1.4"/>
+                  <circle cx="60" cy="20" r="1.4"/>
+                  <circle cx="80" cy="0" r="1.4"/>
+                  <circle cx="80" cy="-40" r="1.4"/>
+                  <circle cx="-40" cy="-40" r="1.4"/>
+                  <circle cx="-60" cy="-20" r="1.4"/>
+                </g>
+              </g>
+            </svg>
+            <div class="intake-model-meta">
+              <span><span class="k">format</span><span class="v">.ifc</span></span>
+              <span><span class="k">spaces</span><span class="v">12</span></span>
+              <span><span class="k">elements</span><span class="v">284</span></span>
+              <span><span class="k">IFC-check</span><span class="v ok">pass</span></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 06 json: typed structured brief -->
+        <div class="intake-panel" data-panel="json">
+          <pre class="intake-json"><span class="jk">{</span>
+  <span class="jk">"space"</span>: <span class="jk">{</span>
+    <span class="jk">"type"</span>: <span class="jv">"tea_room"</span>,
+    <span class="jk">"area_sqm"</span>: <span class="jn">40</span>,
+    <span class="jk">"capacity"</span>: <span class="jn">4</span>,
+    <span class="jk">"locale"</span>: <span class="jv">"zh-HK"</span>
+  <span class="jk">}</span>,
+  <span class="jk">"style"</span>: <span class="jv">"新中式"</span>,
+  <span class="jk">"deliver_tier"</span>: <span class="jv">"delivery"</span>
+<span class="jk">}</span></pre>
+        </div>
+
+      </div>
+
+      <!-- Footer: formats / route / status -->
+      <div class="intake-term-foot">
+        <div class="intake-foot-cell">
+          <div class="intake-foot-k">formats</div>
+          <div class="intake-foot-v" data-intake-formats>text · voice</div>
+        </div>
+        <div class="intake-foot-cell">
+          <div class="intake-foot-k">route</div>
+          <div class="intake-foot-v" data-intake-route>path a — nl parser</div>
+        </div>
+        <div class="intake-foot-cell">
+          <div class="intake-foot-k">output</div>
+          <div class="intake-foot-v mono"><code>brief.json</code></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PIPELINE ============ -->
+<section id="pipeline" class="dark" data-screen-label="04 Pipeline">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">How a project flows</div>
+      <h2 class="sec-title" style="color: var(--paper)">Six stages,<br/>one <em>living</em> project.</h2>
+      <p class="sec-sub">Every stage reads from the same source of truth. Change one decision — a dimension, a material, a code, a budget — and every downstream deliverable regenerates. Nothing gets out of sync.</p>
+    </div>
+
+    <div class="pipeline">
+      <div class="pipeline-track">
+        <div class="pipe-node">
+          <div class="pipe-id">01 · Intake</div>
+          <div class="pipe-name">The brief, in any form</div>
+          <div class="pipe-desc">A sentence, a sketch, a site photo, a CAD drawing, an existing IFC model, a reference image, or a Pinterest board — we take whatever the project already has.</div>
+          <div class="pipe-trigger">text · sketch · CAD · IFC · photos · refs</div>
+        </div>
+        <div class="pipe-arrow"></div>
+        <div class="pipe-node">
+          <div class="pipe-id">02 · Scope</div>
+          <div class="pipe-name">Program &amp; constraints</div>
+          <div class="pipe-desc">Site, program, budget, local codes, accessibility, acoustic &amp; thermal targets are locked as a single scope. Conflicts surface before design starts.</div>
+          <div class="pipe-trigger">scope confirmed · open questions flagged</div>
+        </div>
+        <div class="pipe-arrow"></div>
+        <div class="pipe-node">
+          <div class="pipe-id">03 · Design</div>
+          <div class="pipe-name">Plans &amp; 3D model</div>
+          <div class="pipe-desc">Floorplans, sections, elevations, and a full 3D model. Exported in formats your engineers, contractors and BIM team already use.</div>
+          <div class="pipe-trigger">drawings · sections · 3D · IFC4</div>
+        </div>
+        <div class="pipe-arrow"></div>
+        <div class="pipe-node">
+          <div class="pipe-id">04 · Visualize</div>
+          <div class="pipe-name">Renders &amp; mood</div>
+          <div class="pipe-desc">Hero, main zone, feature wall, bird's eye — consistent camera, lighting and material language across every revision.</div>
+          <div class="pipe-trigger">consistent camera · consistent light · consistent material</div>
+        </div>
+        <div class="pipe-arrow"></div>
+        <div class="pipe-node">
+          <div class="pipe-id">05 · Quantify</div>
+          <div class="pipe-name">Budget, energy, compliance</div>
+          <div class="pipe-desc">Priced BOQ in local currency, simulated energy performance &amp; thermal comfort, plus a code-by-code compliance check against the jurisdiction.</div>
+          <div class="pipe-trigger">BOQ · EUI · daylight · code check</div>
+        </div>
+        <div class="pipe-arrow"></div>
+        <div class="pipe-node">
+          <div class="pipe-id">06 · Package</div>
+          <div class="pipe-name">Decks per audience</div>
+          <div class="pipe-desc">The same project, retold for each stakeholder — client, investor, contractor, engineer, marketing — with language and data weight tuned to the room.</div>
+          <div class="pipe-trigger">decks per audience · one source of truth</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ EDIT MODALITIES ============ -->
+<section data-screen-label="05 Edit">
+  <div class="wrap">
+    <div class="section-head section-head-tight">
+      <div class="eyebrow">How you iterate</div>
+      <h2 class="sec-title">Change anything. <em>In the way that feels natural.</em></h2>
+      <p class="sec-sub">Every element is editable — by voice, by typing, or by grabbing it. The pipeline re-runs the affected parts and the change propagates to every output at once.</p>
+    </div>
+
+    <div class="edit-stage" id="edit-stage">
+
+      <!-- HEAD: mode pills + status -->
+      <div class="edit-head">
+        <div class="edit-pills" role="tablist">
+          <div class="edit-pill" data-mode="voice">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+              <rect x="6" y="2" width="4" height="8" rx="2"/>
+              <path d="M3 8a5 5 0 0 0 10 0"/><path d="M8 13v2"/>
+            </svg>
+            <span>Voice</span>
+          </div>
+          <div class="edit-pill" data-mode="text">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+              <path d="M3 3h10M3 8h10M3 13h7"/>
+            </svg>
+            <span>Type</span>
+          </div>
+          <div class="edit-pill" data-mode="touch">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 2v6M5 4.5l3-2.5 3 2.5"/>
+              <path d="M4 10v3a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-3"/>
+            </svg>
+            <span>Drag</span>
+          </div>
+        </div>
+        <div class="edit-status"><span class="edit-dot"></span><span data-edit-status>idle</span></div>
+      </div>
+
+      <!-- BODY: input column + canvas -->
+      <div class="edit-body">
+
+        <!-- INPUT COLUMN -->
+        <div class="edit-input-col">
+          <!-- Voice mode panel -->
+          <div class="edit-mode-panel" data-panel="voice">
+            <div class="edit-mic">
+              <div class="edit-mic-icon">
+                <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+                  <rect x="6" y="2" width="4" height="8" rx="2" fill="currentColor" fill-opacity="0.15"/>
+                  <path d="M3 8a5 5 0 0 0 10 0"/><path d="M8 13v2"/>
+                </svg>
+              </div>
+              <div class="edit-wave">
+                <span></span><span></span><span></span><span></span><span></span>
+                <span></span><span></span><span></span><span></span>
+              </div>
+            </div>
+            <div class="edit-panel-hint">plain speech · 中 / EN · no commands</div>
+          </div>
+
+          <!-- Text mode panel -->
+          <div class="edit-mode-panel" data-panel="text">
+            <div class="edit-textbox">
+              <span class="edit-caret">&gt;</span>
+              <span class="edit-typed" data-edit-typed></span>
+              <span class="edit-cursor">▍</span>
+            </div>
+            <div class="edit-panel-hint">plain English · sentences, not syntax</div>
+          </div>
+
+          <!-- Touch mode panel -->
+          <div class="edit-mode-panel" data-panel="touch">
+            <div class="edit-touchpad">
+              <div class="edit-touch-row">
+                <span class="edit-touch-lbl">target</span>
+                <span class="edit-touch-val" data-touch-target>sofa · 1</span>
+              </div>
+              <div class="edit-touch-row">
+                <span class="edit-touch-lbl">from</span>
+                <span class="edit-touch-val" data-touch-from>80, 170</span>
+              </div>
+              <div class="edit-touch-row">
+                <span class="edit-touch-lbl">to</span>
+                <span class="edit-touch-val edit-touch-val-new" data-touch-to>—</span>
+              </div>
+            </div>
+            <div class="edit-panel-hint">grab, rotate, snap · pixel-exact</div>
+          </div>
+
+          <!-- Shared transcript -->
+          <div class="edit-transcript">
+            <div class="edit-transcript-lbl">intent</div>
+            <div class="edit-transcript-txt" data-edit-transcript>—</div>
+          </div>
+        </div>
+
+        <!-- CANVAS COLUMN -->
+        <div class="edit-canvas-col">
+          <div class="edit-canvas-head">
+            <span class="edit-canvas-name">tea-room-01.plan</span>
+            <span class="edit-canvas-meta">40 m² · zh-HK · 新中式</span>
+          </div>
+          <svg class="edit-canvas-svg" viewBox="0 0 400 280" preserveAspectRatio="xMidYMid meet">
+            <defs>
+              <radialGradient id="warmGrad2" cx="0.72" cy="0.28" r="0.9">
+                <stop offset="0" stop-color="#ffa057" stop-opacity="0.5"/>
+                <stop offset="1" stop-color="#ffa057" stop-opacity="0"/>
+              </radialGradient>
+              <pattern id="tatamiPat" x="0" y="0" width="60" height="44" patternUnits="userSpaceOnUse">
+                <rect width="60" height="44" fill="currentColor" opacity="0.09"/>
+                <rect width="60" height="44" fill="none" stroke="currentColor" stroke-width="0.5" opacity="0.4"/>
+                <line x1="30" y1="0" x2="30" y2="22" stroke="currentColor" stroke-width="0.4" opacity="0.35"/>
+                <line x1="0" y1="22" x2="30" y2="22" stroke="currentColor" stroke-width="0.4" opacity="0.35"/>
+                <line x1="30" y1="22" x2="60" y2="22" stroke="currentColor" stroke-width="0.4" opacity="0.35"/>
+              </pattern>
+            </defs>
+
+            <!-- Floor base: carpet -->
+            <rect data-layer="carpet" x="30" y="30" width="340" height="220" fill="currentColor" opacity="0.05"/>
+            <!-- Floor overlay: tatami (swaps in) -->
+            <rect data-layer="tatami" x="30" y="30" width="340" height="220" fill="url(#tatamiPat)" opacity="0"/>
+
+            <!-- Warm tint -->
+            <rect data-layer="warm" x="0" y="0" width="400" height="280" fill="url(#warmGrad2)" opacity="0"/>
+
+            <!-- Walls -->
+            <path d="M 30 30 L 370 30 L 370 250 L 30 250 Z" fill="none" stroke="currentColor" stroke-width="2"/>
+            <!-- Window -->
+            <path d="M 150 30 L 250 30" stroke="currentColor" stroke-width="4" stroke-dasharray="4 2"/>
+            <!-- Door swing -->
+            <path d="M 30 180 L 30 220" stroke="var(--bg-2)" stroke-width="4"/>
+            <path d="M 30 180 A 40 40 0 0 1 70 220" fill="none" stroke="currentColor" stroke-width="0.8" stroke-dasharray="3 2" opacity="0.5"/>
+
+            <!-- Tea table (center) -->
+            <circle cx="200" cy="140" r="28" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <circle cx="200" cy="140" r="6" fill="currentColor" opacity="0.3"/>
+            <text x="200" y="145" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="currentColor" opacity="0.4">TABLE</text>
+
+            <!-- Chairs -->
+            <rect x="245" y="75" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" rx="2"/>
+            <rect x="245" y="183" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" rx="2"/>
+            <rect x="133" y="75" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" rx="2"/>
+
+            <!-- Display shelf top -->
+            <rect x="80" y="34" width="50" height="12" fill="currentColor" opacity="0.08"/>
+            <rect x="80" y="34" width="50" height="12" fill="none" stroke="currentColor" stroke-width="1" opacity="0.6"/>
+
+            <!-- Counter -->
+            <rect x="300" y="34" width="68" height="20" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <circle cx="315" cy="44" r="3" fill="none" stroke="currentColor" stroke-width="1"/>
+            <circle cx="330" cy="44" r="3" fill="none" stroke="currentColor" stroke-width="1"/>
+
+            <!-- Sofa ghost (original position for touch demo) -->
+            <g data-layer="ghost" opacity="0" transform="translate(70 190)">
+              <rect width="70" height="28" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="3 2" opacity="0.5" rx="3"/>
+            </g>
+
+            <!-- Sofa (draggable) -->
+            <g data-layer="sofa" transform="translate(70 190)">
+              <rect width="70" height="28" fill="none" stroke="currentColor" stroke-width="1.5" rx="3"/>
+              <rect x="4" y="4" width="62" height="20" fill="currentColor" opacity="0.1" rx="2"/>
+              <line x1="27" y1="0" x2="27" y2="28" stroke="currentColor" stroke-width="1"/>
+              <line x1="47" y1="0" x2="47" y2="28" stroke="currentColor" stroke-width="1"/>
+            </g>
+
+            <!-- Lamp (added by voice) -->
+            <g data-layer="lamp" opacity="0" transform="translate(340 220)">
+              <circle r="12" fill="currentColor" opacity="0.08"/>
+              <circle r="7" fill="currentColor" opacity="0.18"/>
+              <circle r="3" fill="currentColor" opacity="0.4"/>
+            </g>
+
+            <!-- Cursor (touch) -->
+            <g data-layer="cursor" opacity="0" transform="translate(120 210)">
+              <circle data-layer="cursor-ring" r="0" fill="none" stroke="var(--accent-2)" stroke-width="1.5" opacity="0"/>
+              <path d="M 0 0 L 11 22 L 14 14 L 23 13 Z" fill="var(--paper)" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/>
+            </g>
+          </svg>
+        </div>
+      </div>
+
+      <!-- FOOT: commit + progress -->
+      <div class="edit-foot">
+        <div class="edit-commit" data-edit-commit><span class="edit-commit-dot"></span><span data-commit-txt>ready</span></div>
+        <div class="edit-progress"><span class="edit-progress-fill" data-edit-progress></span></div>
+        <div class="edit-counter"><span data-edit-counter>1</span> / 3</div>
+      </div>
+    </div>
+
+    <div class="edit-note">
+      Every edit runs the same pipeline underneath — plan constraints, compliance, BOQ, renders — so the package stays internally consistent. No "final_v3_REAL_final.dwg".
+    </div>
+  </div>
+</section>
+
+<!-- ============ DELIVERABLE TIERS ============ -->
+<section data-screen-label="06 Tiers">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Deliverable tiers</div>
+      <h2 class="sec-title">From <em>moodboard in three minutes</em><br/>to a fully bid-ready package in ten.</h2>
+      <p class="sec-sub">Five tiers, 15 numbered deliverables, one underlying project. Pick the tier that fits the stage of the conversation — upgrading never restarts the work, it adds the next set of outputs.</p>
+    </div>
+
+    <div class="tiers">
+      <div class="tier">
+        <div class="tier-num">Tier 01</div>
+        <div class="tier-name">Concept 概念</div>
+        <div class="tier-who">internal alignment, quick look</div>
+        <div class="tier-includes">Brief + 3D model + hero render + floorplan (5 numbered deliverables).</div>
+        <div class="tier-time"><span class="tier-time-val">3~5</span><span class="tier-time-unit">min</span></div>
+      </div>
+      <div class="tier">
+        <div class="tier-num">Tier 02</div>
+        <div class="tier-name">Delivery 交付</div>
+        <div class="tier-who">send to the client</div>
+        <div class="tier-includes">Adds scheme deck + client-facing document set (items 1–7).</div>
+        <div class="tier-time"><span class="tier-time-val">5~10</span><span class="tier-time-unit">min</span></div>
+      </div>
+      <div class="tier">
+        <div class="tier-num">Tier 03</div>
+        <div class="tier-name">Quote 报价</div>
+        <div class="tier-who">pricing conversation</div>
+        <div class="tier-includes">Adds energy simulation + BOQ in local currency (items 1–9).</div>
+        <div class="tier-time"><span class="tier-time-val">8~15</span><span class="tier-time-unit">min</span></div>
+      </div>
+      <div class="tier">
+        <div class="tier-num">Tier 04</div>
+        <div class="tier-name">Full 全案</div>
+        <div class="tier-who">construction handoff</div>
+        <div class="tier-includes">Adds BIM export + compliance report + IFC audit + 8 stakeholder decks (items 1–13).</div>
+        <div class="tier-time"><span class="tier-time-val">10～20</span><span class="tier-time-unit">min</span></div>
+      </div>
+      <div class="tier">
+        <div class="tier-num">Tier 05</div>
+        <div class="tier-name">Shortlist 甄选</div>
+        <div class="tier-who">direction not yet decided</div>
+        <div class="tier-includes">Three directions generated in parallel at Delivery fidelity, side-by-side with divergent materials &amp; mood.</div>
+        <div class="tier-time"><span class="tier-time-val">~40</span><span class="tier-time-unit">min</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap"><div class="hr"></div></div>
+
+<!-- ============ ROOM CATALOG ============ -->
+<section id="work" data-screen-label="07 Catalog">
+  <div class="wrap">
+    <div class="gallery-head">
+      <div>
+        <div class="eyebrow">A growing room catalog</div>
+        <h2 class="sec-title">Rooms we can already <em>ship end-to-end.</em></h2>
+        <p class="sec-sub">Each room in the catalog is a tested pipeline: reference materials, code map, render presets, costing skeleton. New projects of the same type start at 80% complete — and the catalog grows every quarter.</p>
+      </div>
+      <div class="gallery-stats">
+        <div class="gallery-stat">
+          <div class="label">Avg cost / m²</div>
+          <div class="value">HK$ 8,592</div>
+        </div>
+        <div class="gallery-stat">
+          <div class="label">Avg EUI</div>
+          <div class="value">94 kWh/m²</div>
+        </div>
+        <div class="gallery-stat">
+          <div class="label">Compliance pass-rate</div>
+          <div class="value">&gt; 85%</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="gallery-filters">
+      <button class="gal-filter active" data-filter="all">All rooms</button>
+      <button class="gal-filter" data-filter="hospitality">Hospitality</button>
+      <button class="gal-filter" data-filter="workplace">Workplace</button>
+      <button class="gal-filter" data-filter="residential">Residential</button>
+      <button class="gal-filter" data-filter="civic">Civic / retail</button>
+      <button class="gal-filter" data-filter="wellness">Wellness</button>
+    </div>
+
+    <div class="mvp-grid" id="mvp-grid">
+      <!-- injected by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- ============ COMPLIANCE ============ -->
+<section id="compliance" class="dark" data-screen-label="08 Compliance">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">A growing code library</div>
+      <h2 class="sec-title" style="color: var(--paper)">Designs that pass <em>where they're built.</em></h2>
+      <p class="sec-sub">Every project runs against the relevant local codes before a render is approved. Four jurisdictions are live today — the library grows with every new market we enter.</p>
+    </div>
+
+    <div class="codes">
+      <div class="code-card">
+        <div class="code-flag">HK</div>
+        <div class="code-name">BD · HK</div>
+        <div class="code-title">Hong Kong<br/>Buildings Dept.</div>
+        <div class="code-desc">Means of escape, fire resistance, natural lighting, ventilation, accessibility (BD-2008 + code on barrier-free access).</div>
+      </div>
+      <div class="code-card">
+        <div class="code-flag">CN</div>
+        <div class="code-name">GB · PRC</div>
+        <div class="code-title">China<br/>GB Standards</div>
+        <div class="code-desc">GB 50016 fire, GB 50096 residential, GB 50189 public-building energy. Tier-1 city amendments (SH, SZ, BJ).</div>
+      </div>
+      <div class="code-card">
+        <div class="code-flag">US</div>
+        <div class="code-name">ASHRAE 90.1</div>
+        <div class="code-title">US Energy<br/>Standard</div>
+        <div class="code-desc">Envelope, HVAC, lighting power density. Climate-zone-aware. Basis for LEED &amp; most US municipal energy codes.</div>
+      </div>
+      <div class="code-card">
+        <div class="code-flag">JP</div>
+        <div class="code-name">建築基準法</div>
+        <div class="code-title">Japan<br/>Building Standard</div>
+        <div class="code-desc">Seismic category, interior finish restrictions, shakyō (borrowing light) + earthquake-evacuation routes.</div>
+      </div>
+      <div class="code-card" style="border-color: var(--accent-line); background: oklch(0.26 0.02 165);">
+        <div class="code-flag">+</div>
+        <div class="code-name">COMING</div>
+        <div class="code-title" style="color: var(--accent-2)">Singapore<br/>BCA Green Mark</div>
+        <div class="code-desc">Planned Q2 — tropical-zone envelope, daylight &amp; thermal comfort for SE Asia boutique studio partners.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STAKEHOLDER DECKS ============ -->
+<section data-screen-label="09 Stakeholders">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">One project, every audience</div>
+      <h2 class="sec-title">The same room,<br/><em>retold for every audience.</em></h2>
+      <p class="sec-sub">The hardest part of running a studio isn't designing the room — it's re-explaining it. We generate every deck from one source so language, emphasis, and data weight are tuned to who's in the meeting.</p>
+    </div>
+
+    <div class="stakes">
+      <div class="stake">
+        <div class="stake-icon">C</div>
+        <div class="stake-title">Client</div>
+        <div class="stake-sub">Narrative, mood, lifestyle. Minimal numbers. Maximum feeling.</div>
+        <div class="stake-meta"><span>Narrative</span><span>A4 landscape</span></div>
+      </div>
+      <div class="stake">
+        <div class="stake-icon">I</div>
+        <div class="stake-title">Investor</div>
+        <div class="stake-sub">ROI, comparable projects, market positioning, unit economics.</div>
+        <div class="stake-meta"><span>Numbers-led</span><span>16:9</span></div>
+      </div>
+      <div class="stake">
+        <div class="stake-icon">B</div>
+        <div class="stake-title">BIM lead</div>
+        <div class="stake-sub">IFC class map, clash-check scope, coordinate system, LOD targets.</div>
+        <div class="stake-meta"><span>Technical</span><span>+ IFC4 bundle</span></div>
+      </div>
+      <div class="stake">
+        <div class="stake-icon">K</div>
+        <div class="stake-title">Contractor</div>
+        <div class="stake-sub">BOQ in local currency, phasing, site access, buildability callouts.</div>
+        <div class="stake-meta"><span>Operational</span><span>+ Excel BOQ</span></div>
+      </div>
+      <div class="stake">
+        <div class="stake-icon">D</div>
+        <div class="stake-title">Designer</div>
+        <div class="stake-sub">Material specs, detail sections, finish schedule, supplier sheet.</div>
+        <div class="stake-meta"><span>Spec-led</span><span>+ spec PDFs</span></div>
+      </div>
+      <div class="stake">
+        <div class="stake-icon">M</div>
+        <div class="stake-title">Marketing</div>
+        <div class="stake-sub">Hero shots, captions, social crops, press one-pager, photo tour.</div>
+        <div class="stake-meta"><span>Editorial</span><span>+ IG / PR kit</span></div>
+      </div>
+      <div class="stake">
+        <div class="stake-icon">O</div>
+        <div class="stake-title">Operations</div>
+        <div class="stake-sub">Daily loop, maintenance, staffing, consumables, cleaning cadence.</div>
+        <div class="stake-meta"><span>Procedural</span><span>+ SOP doc</span></div>
+      </div>
+      <div class="stake">
+        <div class="stake-icon">P</div>
+        <div class="stake-title">Principal</div>
+        <div class="stake-sub">Design intent, references, precedent canon, critique-ready diagrams.</div>
+        <div class="stake-meta"><span>Intent-led</span><span>keynote</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap"><div class="hr"></div></div>
+
+<!-- ============ ECOSYSTEM ============ -->
+<section data-screen-label="10 Divisions">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">核心科技 · Core technology</div>
+      <h2 class="sec-title">Four layers. <em>One engine.</em></h2>
+    </div>
+
+    <!-- Engine strip -->
+    <div class="engine">
+      <div class="engine-grid">
+        <div class="engine-cell">
+          <div class="engine-num">01</div>
+          <div class="engine-label">AI-driven</div>
+          <div class="engine-desc">Generative and reasoning models tuned for architectural work — brief parsing, plan generation, material language, render control. Not a wrapper on a generalist model. A stack built for how rooms and buildings actually work.</div>
+        </div>
+        <div class="engine-cell">
+          <div class="engine-num">02</div>
+          <div class="engine-label">Research roots</div>
+          <div class="engine-desc">Graduate-level work in generative design and spatial intelligence. The pipeline reflects how a schooled architect thinks — not how a generalist model guesses.</div>
+        </div>
+        <div class="engine-cell">
+          <div class="engine-num">03</div>
+          <div class="engine-label">Domain depth</div>
+          <div class="engine-desc">Years of boutique practice layered into every default, every preset, every reference. The quiet things — what looks right, what breaks on site, what a contractor will flag — are already in the system.</div>
+        </div>
+        <div class="engine-cell">
+          <div class="engine-num">04</div>
+          <div class="engine-label">Compounding corpus</div>
+          <div class="engine-desc">Every project feeds a private library of drawings, materials, code mappings and precedents. Each engagement ships faster because the one before it left something behind.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Divisions -->
+    <div class="divs-wrap">
+      <div class="divs-sub-head">
+        <div class="eyebrow">Three divisions · one roof</div>
+        <p class="divs-sub-lead">What you've been reading lives in <em>Pipeline.</em> Two more divisions share the same engine.</p>
+      </div>
+      <div class="divs-parent">
+        <span class="divs-parent-mark"></span>
+        <span class="divs-parent-name">Arctura Labs</span>
+        <span class="divs-parent-sub">— the company</span>
+      </div>
+      <div class="eco-grid">
+        <a class="eco-card eco-live" href="/">
+          <div class="eco-status"><span class="eco-dot"></span>Live</div>
+          <div class="eco-mark">01</div>
+          <div class="eco-name">Arctura Labs <em>Pipeline</em></div>
+          <div class="eco-tag">Automated design practice</div>
+          <div class="eco-desc">Self-serve and subscription access to the full design-to-handoff pipeline. For boutique studios running six or more projects a year. Everything you've been reading lives here.</div>
+          <div class="eco-foot"><span>You are here</span><svg width="14" height="14" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M9 3H4.5M9 3V7.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+        </a>
+        <div class="eco-card eco-beta">
+          <div class="eco-status"><span class="eco-dot"></span>Private beta</div>
+          <div class="eco-mark">02</div>
+          <div class="eco-name">Arctura Labs <em>Studio</em></div>
+          <div class="eco-tag">Human-led practice</div>
+          <div class="eco-desc">Bespoke hospitality and residential projects, principal-led end-to-end — with the pipeline running quietly underneath to handle everything the principal shouldn't be spending time on.</div>
+          <div class="eco-foot"><span>Opening 2026</span><svg width="14" height="14" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M9 3H4.5M9 3V7.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" opacity="0.5"/></svg></div>
+        </div>
+        <div class="eco-card eco-soon">
+          <div class="eco-status"><span class="eco-dot"></span>In development</div>
+          <div class="eco-mark">03</div>
+          <div class="eco-name">Arctura Labs <em>Research</em></div>
+          <div class="eco-tag">Research &amp; publications</div>
+          <div class="eco-desc">Open datasets, papers, and collaborations on generative design, spatial intelligence and code-aware automation. Where the thinking that shapes the pipeline is published back out.</div>
+          <div class="eco-foot"><span>First release 2026 Q3</span><svg width="14" height="14" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M9 3H4.5M9 3V7.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" opacity="0.5"/></svg></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRICING ============ -->
+<section id="pricing" class="dark" data-screen-label="11 Pricing">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Pricing</div>
+      <h2 class="sec-title" style="color: var(--paper)">Per project, per month,<br/>or <em>per pipeline.</em></h2>
+      <p class="sec-sub">Most boutique studios start on the project tier — one room, one package, one flat fee. Studios running 4+ rooms per month move to the subscription.</p>
+    </div>
+
+    <div class="pricing">
+      <div class="price">
+        <div class="price-name">Single project</div>
+        <div class="price-target">One room, end-to-end delivery. Pay once, keep the outputs.</div>
+        <div class="price-val"><span class="amt">HK$ 12K</span><span class="unit">/ project</span></div>
+        <ul class="price-features">
+          <li>Any room from the catalog</li>
+          <li>Tier 01 – 04 deliverables</li>
+          <li>3 revision rounds included</li>
+          <li>All file formats (IFC, DXF, GLB, PDF)</li>
+          <li>One stakeholder deck bundle</li>
+        </ul>
+      </div>
+      <div class="price featured">
+        <div class="price-name">Studio subscription</div>
+        <div class="price-target">For working studios. Unlimited rooms, full stakeholder deck set.</div>
+        <div class="price-val"><span class="amt">HK$ 28K</span><span class="unit">/ month</span></div>
+        <ul class="price-features">
+          <li>Unlimited projects / month</li>
+          <li>All tiers, full stakeholder deck set</li>
+          <li>All live compliance jurisdictions</li>
+          <li>Private MVP extensions (your new room types)</li>
+          <li>Slack channel + 1-business-day SLA</li>
+        </ul>
+      </div>
+      <div class="price">
+        <div class="price-name">Per pipeline</div>
+        <div class="price-target">White-label the pipeline. You run it on your own infra.</div>
+        <div class="price-val"><span class="amt">Custom</span><span class="unit"></span></div>
+        <ul class="price-features">
+          <li>Source pipeline deployed to your cloud</li>
+          <li>Your branding, your project types</li>
+          <li>Quarterly pipeline updates</li>
+          <li>Training for 3 – 5 team members</li>
+          <li>Typical range HK$ 400K – 1.2M</li>
+        </ul>
+      </div>
+      <div class="price">
+        <div class="price-name">Pilot / academic</div>
+        <div class="price-target">Schools, student competitions, thesis projects.</div>
+        <div class="price-val"><span class="amt">Free</span><span class="unit">/ 1 project</span></div>
+        <ul class="price-features">
+          <li>One project, Tier 01 – 02</li>
+          <li>Academic license on outputs</li>
+          <li>Watermark on renders</li>
+          <li>Published to Arctura case library</li>
+          <li>By application · principal approval</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA ============ -->
+<section id="cta">
+  <div class="wrap">
+    <div class="cta-block">
+      <h2 class="cta-title">See what <em>your brief</em><br/>looks like as a package.</h2>
+      <div class="cta-info">
+        <p style="color:var(--ink-soft);font-size:15px;line-height:1.6;max-width:40ch;">
+          Drop a one-paragraph brief. We'll send back a Tier 02 package — renders, floorplan, and a client deck — <em>inside the hour</em>. First project free for qualifying studios.
+        </p>
+        <div>
+          <div class="cta-info-row">
+            <span class="k">Studio</span>
+            <a href="mailto:hello@arctura.lab" class="v">hello@arctura.lab</a>
+          </div>
+          <div class="cta-info-row">
+            <span class="k">Location</span>
+            <span class="v">Hong Kong</span>
+          </div>
+          <div class="cta-info-row">
+            <span class="k">Principal</span>
+            <span class="v">By introduction</span>
+          </div>
+          <div class="cta-info-row" style="border-bottom:none;">
+            <span class="k">Live demo</span>
+            <a href="/project/" class="v">Zen Tea Room · HK</a>
+          </div>
+        </div>
+        <a href="/project/" class="btn-primary" style="align-self:start;margin-top:8px;">
+          Walk through a live project
+          <svg width="14" height="14" viewBox="0 0 12 12" fill="none">
+            <path d="M3 9L9 3M9 3H4.5M9 3V7.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="foot">
+    <div class="foot-col foot-brand">
+      <div class="foot-name">Arctura Labs</div>
+      <p>A design studio that runs as a pipeline. Boutique-scale interior architecture, compiled.</p>
+    </div>
+    <div class="foot-col">
+      <h4>Studio</h4>
+      <a href="#pipeline">The pipeline</a>
+      <a href="#work">Room catalog</a>
+      <a href="#compliance">Compliance</a>
+      <a href="#pricing">Pricing</a>
+    </div>
+    <div class="foot-col">
+      <h4>Work</h4>
+      <a href="/project/">Zen Tea Room · HK</a>
+      <a href="#">Case library (soon)</a>
+      <a href="#">Press / research</a>
+    </div>
+    <div class="foot-col">
+      <h4>Contact</h4>
+      <a href="mailto:hello@arctura.lab">hello@arctura.lab</a>
+      <p>Hong Kong</p>
+      <p>By introduction only</p>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <span>© 2026 Arctura Labs Limited</span>
+    <span>v0.23 · pipeline build 2026.04</span>
+  </div>
+</footer>
+
+<!-- ============ TWEAKS PANEL ============ -->
+<div id="tw-panel">
+  <div class="tw-head">
+    <div class="tw-title">Tweaks</div>
+    <button class="tw-close" id="tw-close">×</button>
+  </div>
+  <div class="tw-body">
+    <div class="tw-row">
+      <div class="tw-row-head">
+        <span class="tw-label">Accent hue</span>
+        <span class="tw-val" id="tw-hue-val">165</span>
+      </div>
+      <input type="range" id="tw-hue" min="0" max="360" step="5" />
+      <div class="tw-hue-track"></div>
+    </div>
+    <div class="tw-row">
+      <div class="tw-row-head">
+        <span class="tw-label">Hero tagline</span>
+      </div>
+      <input type="text" id="tw-tagline" />
+    </div>
+    <div class="tw-row">
+      <div class="tw-row-head">
+        <span class="tw-label">Hero subtitle</span>
+      </div>
+      <input type="text" id="tw-sub" />
+    </div>
+    <div class="tw-row">
+      <div class="tw-row-head">
+        <span class="tw-label">Density</span>
+      </div>
+      <div class="tw-opts" id="tw-density">
+        <button class="tw-opt" data-val="compact">Compact</button>
+        <button class="tw-opt active" data-val="standard">Standard</button>
+        <button class="tw-opt" data-val="editorial">Editorial</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="app.js?v=3"></script>
+</body>
+</html>

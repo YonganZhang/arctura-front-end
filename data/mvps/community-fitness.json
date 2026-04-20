@@ -1,0 +1,55 @@
+{
+  "slug": "community-fitness",
+  "complete": false,
+  "project": {
+    "name": "社區健身中心 Community Fitness Center",
+    "zh": "",
+    "area": 0,
+    "location": "Hong Kong",
+    "budgetHKD": 6000000,
+    "style": "awaiting-variant-axis",
+    "palette": []
+  },
+  "renders": [],
+  "floorplan": null,
+  "moodboard": null,
+  "hero_img": "/assets/mvps/community-fitness/hero.webp",
+  "thumb_img": "/assets/mvps/community-fitness/thumb.webp",
+  "zones": [],
+  "furniture": [],
+  "pricing": {
+    "HK": {
+      "label": "Hong Kong",
+      "currency": "HK$",
+      "perM2": 0,
+      "rows": [],
+      "total": 0
+    }
+  },
+  "energy": {
+    "eui": 0,
+    "limit": 150,
+    "annual": 0,
+    "engine": "EnergyPlus"
+  },
+  "compliance": {
+    "HK": {
+      "code": "HK_BEEO_BEC_2021",
+      "checks": [],
+      "verdict": "—"
+    }
+  },
+  "variants": {
+    "list": []
+  },
+  "timeline": [],
+  "decks": [],
+  "downloads": [
+    {
+      "name": "community-fitness-bundle.zip",
+      "ext": "zip",
+      "sub": "All artifacts",
+      "size": "TBD"
+    }
+  ]
+}

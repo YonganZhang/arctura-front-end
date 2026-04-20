@@ -1,0 +1,382 @@
+{
+  "slug": "22-boutique-book-cafe",
+  "complete": true,
+  "project": {
+    "name": "Boutique Book Cafe",
+    "zh": "精品书吧 Book Cafe",
+    "area": 80,
+    "location": "Hong Kong",
+    "budgetHKD": 600000,
+    "style": "warm-wood, literary-cozy, japandi-nordic, soft-reading-light, plant-accent",
+    "palette": [
+      {
+        "name": "wood_oak",
+        "hex": "#9B7B5A"
+      },
+      {
+        "name": "cream_wall",
+        "hex": "#F5EFE4"
+      },
+      {
+        "name": "deep_green",
+        "hex": "#3A5C44"
+      },
+      {
+        "name": "warm_brass",
+        "hex": "#C9A86A"
+      },
+      {
+        "name": "soft_black",
+        "hex": "#3A3A3A"
+      },
+      {
+        "name": "fabric_beige",
+        "hex": "#D4C4A8"
+      }
+    ]
+  },
+  "renders": [
+    {
+      "id": "01",
+      "file": "/assets/mvps/22-boutique-book-cafe/renders/01_hero_corner.webp",
+      "title": "01 Hero Corner",
+      "tag": "01_hero_corner"
+    },
+    {
+      "id": "02",
+      "file": "/assets/mvps/22-boutique-book-cafe/renders/02_reception.webp",
+      "title": "02 Reception",
+      "tag": "02_reception"
+    },
+    {
+      "id": "03",
+      "file": "/assets/mvps/22-boutique-book-cafe/renders/03_main_zone.webp",
+      "title": "03 Main Zone",
+      "tag": "03_main_zone"
+    },
+    {
+      "id": "04",
+      "file": "/assets/mvps/22-boutique-book-cafe/renders/04_feature_zone.webp",
+      "title": "04 Feature Zone",
+      "tag": "04_feature_zone"
+    },
+    {
+      "id": "05",
+      "file": "/assets/mvps/22-boutique-book-cafe/renders/05_lounge_zone.webp",
+      "title": "05 Lounge Zone",
+      "tag": "05_lounge_zone"
+    },
+    {
+      "id": "06",
+      "file": "/assets/mvps/22-boutique-book-cafe/renders/06_back_corner.webp",
+      "title": "06 Back Corner",
+      "tag": "06_back_corner"
+    },
+    {
+      "id": "07",
+      "file": "/assets/mvps/22-boutique-book-cafe/renders/07_top_ortho.webp",
+      "title": "07 Top Ortho",
+      "tag": "07_top_ortho"
+    },
+    {
+      "id": "08",
+      "file": "/assets/mvps/22-boutique-book-cafe/renders/08_birds_eye_3d.webp",
+      "title": "08 Birds Eye 3D",
+      "tag": "08_birds_eye_3d"
+    }
+  ],
+  "floorplan": "/assets/mvps/22-boutique-book-cafe/floorplan.webp",
+  "moodboard": "/assets/mvps/22-boutique-book-cafe/moodboard.webp",
+  "hero_img": "/assets/mvps/22-boutique-book-cafe/hero.webp",
+  "thumb_img": "/assets/mvps/22-boutique-book-cafe/thumb.webp",
+  "zones": [
+    {
+      "id": "入口_/_接待",
+      "name": "入口 / 接待",
+      "zh": "",
+      "area": 4,
+      "notes": "落地木门, 木质地垫, 小型衣帽架",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "吧台_/_点单",
+      "name": "吧台 / 点单",
+      "zh": "",
+      "area": 9,
+      "notes": "直线吧台 3m, 单头手冲台, 小型意式咖啡机, 后吧展示架 2 层",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "长桌阅读区",
+      "name": "长桌阅读区",
+      "zh": "",
+      "area": 14,
+      "notes": "1 × 3.5m 长木桌, 6 × 木椅配软座垫, 桌面可充电插座",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "沙发散座区",
+      "name": "沙发散座区",
+      "zh": "",
+      "area": 11,
+      "notes": "2 × 双人布艺沙发, 2 × 单人扶手椅, 2 × 小茶几",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "书架墙",
+      "name": "书架墙",
+      "zh": "",
+      "area": 0,
+      "notes": "整面 6m × 2.8m 通高木书架 · 5 层混合展示 / 收纳",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "后吧_/_备餐",
+      "name": "后吧 / 备餐",
+      "zh": "",
+      "area": 7,
+      "notes": "操作台, 小水槽, 小冰柜, 开水器",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "卫生间",
+      "name": "卫生间",
+      "zh": "",
+      "area": 3,
+      "notes": "单间卫生间 · 洗手台",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "绿植点缀",
+      "name": "绿植点缀",
+      "zh": "",
+      "area": 2,
+      "notes": "2 × 落地大型绿植（Monstera / 橄榄树）",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    }
+  ],
+  "furniture": [],
+  "pricing": {
+    "HK": {
+      "label": "Hong Kong",
+      "currency": "HK$",
+      "perM2": 11952,
+      "rows": [
+        {
+          "cat": "1",
+          "desc": "slab",
+          "sub": "F1 Floor Slab — RC slab (120mm) incl. formwork + rebar",
+          "qty": "60.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "2",
+          "desc": "wall",
+          "sub": "F1 Exterior Walls — Common brick wall (200mm) incl. render (U≤1.2)",
+          "qty": "102.4",
+          "amt": "m2"
+        },
+        {
+          "cat": "3",
+          "desc": "wall",
+          "sub": "F1 Interior Partitions — Gypsum board partition (double-sided)",
+          "qty": "61.4",
+          "amt": "m2"
+        },
+        {
+          "cat": "4",
+          "desc": "window",
+          "sub": "F1 Windows — Aluminum frame + double clear glazing (U≤3.5)",
+          "qty": "30.7",
+          "amt": "m2"
+        },
+        {
+          "cat": "5",
+          "desc": "door",
+          "sub": "F1 Doors — Solid wood door (900mm) + frame + hardware",
+          "qty": "8.0",
+          "amt": "ea"
+        },
+        {
+          "cat": "6",
+          "desc": "finish",
+          "sub": "F1_zone Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "4.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "7",
+          "desc": "finish",
+          "sub": "F1_zone_2 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "9.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "8",
+          "desc": "finish",
+          "sub": "F1_zone_3 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "14.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "9",
+          "desc": "finish",
+          "sub": "F1_zone_4 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "11.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "10",
+          "desc": "finish",
+          "sub": "F1_zone_5 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "10.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "11",
+          "desc": "finish",
+          "sub": "F1_zone_6 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "7.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "12",
+          "desc": "finish",
+          "sub": "F1_bathroom Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "3.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "13",
+          "desc": "finish",
+          "sub": "F1_zone_7 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "2.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "14",
+          "desc": "roof",
+          "sub": "Roof — RC roof + 60mm XPS + membrane (U≤0.50)",
+          "qty": "60.0",
+          "amt": "m2"
+        }
+      ],
+      "total": 717133
+    }
+  },
+  "energy": {
+    "eui": 127.04,
+    "limit": 150,
+    "annual": 7622,
+    "engine": "EnergyPlus 26.1.0"
+  },
+  "compliance": {
+    "HK": {
+      "code": "HK_BEEO_BEC_2021",
+      "checks": [
+        {
+          "name": "Energy Energy Use Intensity (EUI)",
+          "value": "127.0",
+          "limit": "150",
+          "unit": "kWh/m2*yr",
+          "status": "pass",
+          "note": "85% of limit"
+        },
+        {
+          "name": "Envelope Exterior Wall U-value",
+          "value": "0.555",
+          "limit": "1.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Roof U-value",
+          "value": "0.498",
+          "limit": "0.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Window U-value",
+          "value": "2.0",
+          "limit": "5.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Window SHGC",
+          "value": "0.6",
+          "limit": "0.6",
+          "unit": "—",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope OTTV (Overall Thermal Transfer Value)",
+          "value": "needs facade analysis",
+          "limit": "25.0",
+          "unit": "W/m2",
+          "status": "pass",
+          "note": "OTTV requires detailed facade WWR + orientation data — not yet calculated."
+        },
+        {
+          "name": "Lighting Lighting Power Density",
+          "value": "8.0",
+          "limit": "10.0",
+          "unit": "W/m2",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Ventilation Fresh Air (ACH)",
+          "value": "0.7",
+          "limit": "0.5",
+          "unit": "ACH",
+          "status": "pass",
+          "note": ""
+        }
+      ],
+      "verdict": "PASS"
+    }
+  },
+  "variants": {
+    "list": []
+  },
+  "timeline": [],
+  "decks": [],
+  "downloads": [
+    {
+      "name": "22-boutique-book-cafe-bundle.zip",
+      "ext": "zip",
+      "sub": "All artifacts",
+      "size": "TBD"
+    }
+  ]
+}

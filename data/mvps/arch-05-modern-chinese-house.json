@@ -1,0 +1,393 @@
+{
+  "slug": "arch-05-modern-chinese-house",
+  "complete": false,
+  "project": {
+    "name": "现代中式乡村住宅 v1 (客户委托案)",
+    "zh": "",
+    "area": 300,
+    "location": "Hong Kong",
+    "budgetHKD": 0,
+    "style": "modern Chinese, vernacular, pitched-roof, warm-wood-grey, private-yet-bright",
+    "palette": [
+      {
+        "name": "roof_grey_tile",
+        "hex": "#5A5C5E"
+      },
+      {
+        "name": "wall_off_white",
+        "hex": "#EFE9DD"
+      },
+      {
+        "name": "wood_warm_louver",
+        "hex": "#8B6F4E"
+      },
+      {
+        "name": "steel_window_black",
+        "hex": "#2A2A2C"
+      },
+      {
+        "name": "courtyard_stone",
+        "hex": "#B2AFA8"
+      },
+      {
+        "name": "entry_red_lacquer",
+        "hex": "#8C3A2E"
+      }
+    ]
+  },
+  "renders": [
+    {
+      "id": "interior",
+      "file": "/assets/mvps/arch-05-modern-chinese-house/renders/interior.webp",
+      "title": "Interior",
+      "tag": "interior"
+    },
+    {
+      "id": "massing",
+      "file": "/assets/mvps/arch-05-modern-chinese-house/renders/massing.webp",
+      "title": "Massing",
+      "tag": "massing"
+    },
+    {
+      "id": "floor-F1",
+      "file": "/assets/mvps/arch-05-modern-chinese-house/renders/floor-F1.webp",
+      "title": "Floor F1",
+      "tag": "floor-F1"
+    },
+    {
+      "id": "floor-F2",
+      "file": "/assets/mvps/arch-05-modern-chinese-house/renders/floor-F2.webp",
+      "title": "Floor F2",
+      "tag": "floor-F2"
+    },
+    {
+      "id": "floor-F3",
+      "file": "/assets/mvps/arch-05-modern-chinese-house/renders/floor-F3.webp",
+      "title": "Floor F3",
+      "tag": "floor-F3"
+    },
+    {
+      "id": "site-plan",
+      "file": "/assets/mvps/arch-05-modern-chinese-house/renders/site-plan.webp",
+      "title": "Site Plan",
+      "tag": "site-plan"
+    }
+  ],
+  "floorplan": null,
+  "moodboard": "/assets/mvps/arch-05-modern-chinese-house/moodboard.webp",
+  "hero_img": "/assets/mvps/arch-05-modern-chinese-house/hero.webp",
+  "thumb_img": "/assets/mvps/arch-05-modern-chinese-house/thumb.webp",
+  "zones": [],
+  "furniture": [],
+  "pricing": {
+    "HK": {
+      "label": "Hong Kong",
+      "currency": "HK$",
+      "perM2": 7670,
+      "rows": [
+        {
+          "cat": "1",
+          "desc": "slab",
+          "sub": "F1 Floor Slab — RC slab (120mm) incl. formwork + rebar",
+          "qty": "100.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "2",
+          "desc": "slab",
+          "sub": "F2 Floor Slab — RC slab (120mm) incl. formwork + rebar",
+          "qty": "100.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "3",
+          "desc": "slab",
+          "sub": "F3 Floor Slab — RC slab (120mm) incl. formwork + rebar",
+          "qty": "99.9",
+          "amt": "m2"
+        },
+        {
+          "cat": "4",
+          "desc": "wall",
+          "sub": "F1 Exterior Walls — Common brick wall (200mm) incl. render",
+          "qty": "116.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "5",
+          "desc": "wall",
+          "sub": "F1 Interior Partitions — Gypsum board partition (double-sided)",
+          "qty": "34.8",
+          "amt": "m2"
+        },
+        {
+          "cat": "6",
+          "desc": "wall",
+          "sub": "F2 Exterior Walls — Common brick wall (200mm) incl. render",
+          "qty": "116.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "7",
+          "desc": "wall",
+          "sub": "F2 Interior Partitions — Gypsum board partition (double-sided)",
+          "qty": "34.8",
+          "amt": "m2"
+        },
+        {
+          "cat": "8",
+          "desc": "wall",
+          "sub": "F3 Exterior Walls — Common brick wall (200mm) incl. render",
+          "qty": "116.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "9",
+          "desc": "wall",
+          "sub": "F3 Interior Partitions — Gypsum board partition (double-sided)",
+          "qty": "20.9",
+          "amt": "m2"
+        },
+        {
+          "cat": "10",
+          "desc": "window",
+          "sub": "F1 Windows — Thermal-break aluminum + Low-E double glazing",
+          "qty": "34.8",
+          "amt": "m2"
+        },
+        {
+          "cat": "11",
+          "desc": "window",
+          "sub": "F2 Windows — Thermal-break aluminum + Low-E double glazing",
+          "qty": "34.8",
+          "amt": "m2"
+        },
+        {
+          "cat": "12",
+          "desc": "window",
+          "sub": "F3 Windows — Thermal-break aluminum + Low-E double glazing",
+          "qty": "34.8",
+          "amt": "m2"
+        },
+        {
+          "cat": "13",
+          "desc": "door",
+          "sub": "F1 Doors — Solid wood door (900mm) + frame + hardware",
+          "qty": "4.0",
+          "amt": "ea"
+        },
+        {
+          "cat": "14",
+          "desc": "door",
+          "sub": "F2 Doors — Solid wood door (900mm) + frame + hardware",
+          "qty": "5.0",
+          "amt": "ea"
+        },
+        {
+          "cat": "15",
+          "desc": "door",
+          "sub": "F3 Doors — Solid wood door (900mm) + frame + hardware",
+          "qty": "3.0",
+          "amt": "ea"
+        },
+        {
+          "cat": "16",
+          "desc": "finish",
+          "sub": "F1_central Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "20.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "17",
+          "desc": "finish",
+          "sub": "F1_south_entry Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "20.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "18",
+          "desc": "finish",
+          "sub": "F1_north Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "20.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "19",
+          "desc": "finish",
+          "sub": "F1_side Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "20.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "20",
+          "desc": "finish",
+          "sub": "F1_east_yard Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "20.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "21",
+          "desc": "finish",
+          "sub": "F2_north Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "20.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "22",
+          "desc": "finish",
+          "sub": "F2_east Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "20.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "23",
+          "desc": "finish",
+          "sub": "F2_west Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "20.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "24",
+          "desc": "finish",
+          "sub": "F2_central Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "20.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "25",
+          "desc": "finish",
+          "sub": "F2_south Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "20.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "26",
+          "desc": "finish",
+          "sub": "F3_main Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "33.3",
+          "amt": "m2"
+        },
+        {
+          "cat": "27",
+          "desc": "finish",
+          "sub": "F3_side Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "33.3",
+          "amt": "m2"
+        },
+        {
+          "cat": "28",
+          "desc": "finish",
+          "sub": "F3_feature Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "33.3",
+          "amt": "m2"
+        },
+        {
+          "cat": "29",
+          "desc": "roof",
+          "sub": "Roof — RC roof slab + waterproofing + insulation",
+          "qty": "100.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "30",
+          "desc": "stair",
+          "sub": "Stairs (2 flights) — RC stair flight (one floor) + railing",
+          "qty": "2.0",
+          "amt": "flight"
+        }
+      ],
+      "total": 2300242.6
+    }
+  },
+  "energy": {
+    "eui": 136.53,
+    "limit": 150,
+    "annual": 40958.37,
+    "engine": "EnergyPlus"
+  },
+  "compliance": {
+    "HK": {
+      "code": "HK_BEEO_BEC_2021",
+      "checks": [
+        {
+          "name": "Energy Energy Use Intensity (EUI)",
+          "value": "136.5",
+          "limit": "150",
+          "unit": "kWh/m2*yr",
+          "status": "pass",
+          "note": "91% of limit"
+        },
+        {
+          "name": "Envelope Exterior Wall U-value",
+          "value": "0.555",
+          "limit": "1.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Roof U-value",
+          "value": "0.498",
+          "limit": "0.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Window U-value",
+          "value": "2.0",
+          "limit": "5.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Window SHGC",
+          "value": "0.6",
+          "limit": "0.6",
+          "unit": "—",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope OTTV (Overall Thermal Transfer Value)",
+          "value": "needs facade analysis",
+          "limit": "25.0",
+          "unit": "W/m2",
+          "status": "pass",
+          "note": "OTTV requires detailed facade WWR + orientation data — not yet calculated."
+        },
+        {
+          "name": "Lighting Lighting Power Density",
+          "value": "6.0",
+          "limit": "10.0",
+          "unit": "W/m2",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Ventilation Fresh Air (ACH)",
+          "value": "0.5",
+          "limit": "0.5",
+          "unit": "ACH",
+          "status": "pass",
+          "note": ""
+        }
+      ],
+      "verdict": "COMPLIANT"
+    }
+  },
+  "variants": {
+    "list": []
+  },
+  "timeline": [],
+  "decks": [],
+  "downloads": [
+    {
+      "name": "arch-05-modern-chinese-house-bundle.zip",
+      "ext": "zip",
+      "sub": "All artifacts",
+      "size": "TBD"
+    }
+  ]
+}

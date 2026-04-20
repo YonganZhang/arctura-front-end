@@ -1,0 +1,899 @@
+{
+  "slug": "arch-10-sports-complex",
+  "complete": false,
+  "project": {
+    "name": "Horizon Sports Complex — 地区级综合体育场 v1",
+    "zh": "",
+    "area": 77028,
+    "location": "Hong Kong",
+    "budgetHKD": 0,
+    "style": "civic monumental, silver metal + warm wood entry, stadium bowl, dynamic roof cantilever, LED media facade",
+    "palette": [
+      {
+        "name": "silver_perforated_aluminum",
+        "hex": "#A8ADB2"
+      },
+      {
+        "name": "warm_wood_entry_canopy",
+        "hex": "#8B6F4E"
+      },
+      {
+        "name": "low_iron_glass_band",
+        "hex": "#B9D0DA"
+      },
+      {
+        "name": "exposed_fair_concrete",
+        "hex": "#B5B0A8"
+      },
+      {
+        "name": "track_red",
+        "hex": "#C44035"
+      },
+      {
+        "name": "turf_green",
+        "hex": "#5C8C5A"
+      },
+      {
+        "name": "steel_truss_charcoal",
+        "hex": "#3E4043"
+      },
+      {
+        "name": "accent_led_cyan",
+        "hex": "#4CC3D4"
+      }
+    ]
+  },
+  "renders": [
+    {
+      "id": "interior",
+      "file": "/assets/mvps/arch-10-sports-complex/renders/interior.webp",
+      "title": "Interior",
+      "tag": "interior"
+    },
+    {
+      "id": "massing",
+      "file": "/assets/mvps/arch-10-sports-complex/renders/massing.webp",
+      "title": "Massing",
+      "tag": "massing"
+    },
+    {
+      "id": "elev-E",
+      "file": "/assets/mvps/arch-10-sports-complex/renders/elev-E.webp",
+      "title": "Elev E",
+      "tag": "elev-E"
+    },
+    {
+      "id": "elev-N",
+      "file": "/assets/mvps/arch-10-sports-complex/renders/elev-N.webp",
+      "title": "Elev N",
+      "tag": "elev-N"
+    },
+    {
+      "id": "elev-S",
+      "file": "/assets/mvps/arch-10-sports-complex/renders/elev-S.webp",
+      "title": "Elev S",
+      "tag": "elev-S"
+    },
+    {
+      "id": "elev-W",
+      "file": "/assets/mvps/arch-10-sports-complex/renders/elev-W.webp",
+      "title": "Elev W",
+      "tag": "elev-W"
+    },
+    {
+      "id": "floor-B1",
+      "file": "/assets/mvps/arch-10-sports-complex/renders/floor-B1.webp",
+      "title": "Floor B1",
+      "tag": "floor-B1"
+    },
+    {
+      "id": "floor-F1",
+      "file": "/assets/mvps/arch-10-sports-complex/renders/floor-F1.webp",
+      "title": "Floor F1",
+      "tag": "floor-F1"
+    },
+    {
+      "id": "floor-F2",
+      "file": "/assets/mvps/arch-10-sports-complex/renders/floor-F2.webp",
+      "title": "Floor F2",
+      "tag": "floor-F2"
+    },
+    {
+      "id": "floor-F3",
+      "file": "/assets/mvps/arch-10-sports-complex/renders/floor-F3.webp",
+      "title": "Floor F3",
+      "tag": "floor-F3"
+    },
+    {
+      "id": "floor-F4",
+      "file": "/assets/mvps/arch-10-sports-complex/renders/floor-F4.webp",
+      "title": "Floor F4",
+      "tag": "floor-F4"
+    },
+    {
+      "id": "site-plan",
+      "file": "/assets/mvps/arch-10-sports-complex/renders/site-plan.webp",
+      "title": "Site Plan",
+      "tag": "site-plan"
+    }
+  ],
+  "floorplan": null,
+  "moodboard": "/assets/mvps/arch-10-sports-complex/moodboard.webp",
+  "hero_img": "/assets/mvps/arch-10-sports-complex/hero.webp",
+  "thumb_img": "/assets/mvps/arch-10-sports-complex/thumb.webp",
+  "zones": [],
+  "furniture": [],
+  "pricing": {
+    "HK": {
+      "label": "Hong Kong",
+      "currency": "HK$",
+      "perM2": 3435,
+      "rows": [
+        {
+          "cat": "1",
+          "desc": "slab",
+          "sub": "B1 Floor Slab — RC slab (120mm) incl. formwork + rebar",
+          "qty": "10,760.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "2",
+          "desc": "slab",
+          "sub": "F1 Floor Slab — RC slab (120mm) incl. formwork + rebar",
+          "qty": "21,970.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "3",
+          "desc": "slab",
+          "sub": "F2 Floor Slab — RC slab (120mm) incl. formwork + rebar",
+          "qty": "11,600.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "4",
+          "desc": "slab",
+          "sub": "F3 Floor Slab — RC slab (120mm) incl. formwork + rebar",
+          "qty": "4,930.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "5",
+          "desc": "slab",
+          "sub": "F4 Floor Slab — RC slab (120mm) incl. formwork + rebar",
+          "qty": "1,280.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "6",
+          "desc": "slab",
+          "sub": "TRAINING Floor Slab — RC slab (120mm) incl. formwork + rebar",
+          "qty": "7,700.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "7",
+          "desc": "slab",
+          "sub": "WARMUP Floor Slab — RC slab (120mm) incl. formwork + rebar",
+          "qty": "2,500.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "8",
+          "desc": "wall",
+          "sub": "B1 Exterior Walls — Common brick wall (200mm) incl. render",
+          "qty": "1,888.2",
+          "amt": "m2"
+        },
+        {
+          "cat": "9",
+          "desc": "wall",
+          "sub": "B1 Interior Partitions — Gypsum board partition (double-sided)",
+          "qty": "140.4",
+          "amt": "m2"
+        },
+        {
+          "cat": "10",
+          "desc": "wall",
+          "sub": "F1 Exterior Walls — Common brick wall (200mm) incl. render",
+          "qty": "2,517.6",
+          "amt": "m2"
+        },
+        {
+          "cat": "11",
+          "desc": "wall",
+          "sub": "F1 Interior Partitions — Gypsum board partition (double-sided)",
+          "qty": "273.6",
+          "amt": "m2"
+        },
+        {
+          "cat": "12",
+          "desc": "wall",
+          "sub": "F2 Exterior Walls — Common brick wall (200mm) incl. render",
+          "qty": "2,098.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "13",
+          "desc": "wall",
+          "sub": "F2 Interior Partitions — Gypsum board partition (double-sided)",
+          "qty": "84.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "14",
+          "desc": "wall",
+          "sub": "F3 Exterior Walls — Common brick wall (200mm) incl. render",
+          "qty": "1,678.4",
+          "amt": "m2"
+        },
+        {
+          "cat": "15",
+          "desc": "wall",
+          "sub": "F3 Interior Partitions — Gypsum board partition (double-sided)",
+          "qty": "76.8",
+          "amt": "m2"
+        },
+        {
+          "cat": "16",
+          "desc": "wall",
+          "sub": "F4 Exterior Walls — Common brick wall (200mm) incl. render",
+          "qty": "1,888.2",
+          "amt": "m2"
+        },
+        {
+          "cat": "17",
+          "desc": "wall",
+          "sub": "F4 Interior Partitions — Gypsum board partition (double-sided)",
+          "qty": "75.6",
+          "amt": "m2"
+        },
+        {
+          "cat": "18",
+          "desc": "wall",
+          "sub": "TRAINING Exterior Walls — Common brick wall (200mm) incl. render",
+          "qty": "1,258.8",
+          "amt": "m2"
+        },
+        {
+          "cat": "19",
+          "desc": "wall",
+          "sub": "TRAINING Interior Partitions — Gypsum board partition (double-sided)",
+          "qty": "21.6",
+          "amt": "m2"
+        },
+        {
+          "cat": "20",
+          "desc": "wall",
+          "sub": "WARMUP Exterior Walls — Common brick wall (200mm) incl. render",
+          "qty": "1,258.8",
+          "amt": "m2"
+        },
+        {
+          "cat": "21",
+          "desc": "wall",
+          "sub": "WARMUP Interior Partitions — Gypsum board partition (double-sided)",
+          "qty": "14.4",
+          "amt": "m2"
+        },
+        {
+          "cat": "22",
+          "desc": "window",
+          "sub": "B1 Windows — Thermal-break aluminum + Low-E double glazing",
+          "qty": "566.5",
+          "amt": "m2"
+        },
+        {
+          "cat": "23",
+          "desc": "window",
+          "sub": "F1 Windows — Thermal-break aluminum + Low-E double glazing",
+          "qty": "755.3",
+          "amt": "m2"
+        },
+        {
+          "cat": "24",
+          "desc": "window",
+          "sub": "F2 Windows — Thermal-break aluminum + Low-E double glazing",
+          "qty": "629.4",
+          "amt": "m2"
+        },
+        {
+          "cat": "25",
+          "desc": "window",
+          "sub": "F3 Windows — Thermal-break aluminum + Low-E double glazing",
+          "qty": "503.5",
+          "amt": "m2"
+        },
+        {
+          "cat": "26",
+          "desc": "window",
+          "sub": "F4 Windows — Thermal-break aluminum + Low-E double glazing",
+          "qty": "566.5",
+          "amt": "m2"
+        },
+        {
+          "cat": "27",
+          "desc": "window",
+          "sub": "TRAINING Windows — Thermal-break aluminum + Low-E double glazing",
+          "qty": "377.6",
+          "amt": "m2"
+        },
+        {
+          "cat": "28",
+          "desc": "window",
+          "sub": "WARMUP Windows — Thermal-break aluminum + Low-E double glazing",
+          "qty": "377.6",
+          "amt": "m2"
+        },
+        {
+          "cat": "29",
+          "desc": "door",
+          "sub": "B1 Doors — Solid wood door (900mm) + frame + hardware",
+          "qty": "12.0",
+          "amt": "ea"
+        },
+        {
+          "cat": "30",
+          "desc": "door",
+          "sub": "F1 Doors — Solid wood door (900mm) + frame + hardware",
+          "qty": "18.0",
+          "amt": "ea"
+        },
+        {
+          "cat": "31",
+          "desc": "door",
+          "sub": "F2 Doors — Solid wood door (900mm) + frame + hardware",
+          "qty": "7.0",
+          "amt": "ea"
+        },
+        {
+          "cat": "32",
+          "desc": "door",
+          "sub": "F3 Doors — Solid wood door (900mm) + frame + hardware",
+          "qty": "8.0",
+          "amt": "ea"
+        },
+        {
+          "cat": "33",
+          "desc": "door",
+          "sub": "F4 Doors — Solid wood door (900mm) + frame + hardware",
+          "qty": "7.0",
+          "amt": "ea"
+        },
+        {
+          "cat": "34",
+          "desc": "door",
+          "sub": "TRAINING Doors — Solid wood door (900mm) + frame + hardware",
+          "qty": "3.0",
+          "amt": "ea"
+        },
+        {
+          "cat": "35",
+          "desc": "door",
+          "sub": "WARMUP Doors — Solid wood door (900mm) + frame + hardware",
+          "qty": "2.0",
+          "amt": "ea"
+        },
+        {
+          "cat": "36",
+          "desc": "finish",
+          "sub": "B1_zone Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "7,200.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "37",
+          "desc": "finish",
+          "sub": "B1_VIP Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "900.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "38",
+          "desc": "finish",
+          "sub": "B1_zone_2 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "600.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "39",
+          "desc": "finish",
+          "sub": "B1_A Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "120.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "40",
+          "desc": "finish",
+          "sub": "B1_B Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "120.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "41",
+          "desc": "finish",
+          "sub": "B1_zone_3 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "150.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "42",
+          "desc": "finish",
+          "sub": "B1_zone_4 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "80.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "43",
+          "desc": "finish",
+          "sub": "B1_UPS Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "80.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "44",
+          "desc": "finish",
+          "sub": "B1_zone_5 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "600.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "45",
+          "desc": "finish",
+          "sub": "B1_zone_6 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "200.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "46",
+          "desc": "finish",
+          "sub": "B1_zone_7 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "350.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "47",
+          "desc": "finish",
+          "sub": "B1_dining Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "280.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "48",
+          "desc": "finish",
+          "sub": "B1_stair Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "80.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "49",
+          "desc": "finish",
+          "sub": "F1_zone Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "7,140.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "50",
+          "desc": "finish",
+          "sub": "F1_400m Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "860.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "51",
+          "desc": "finish",
+          "sub": "F1_F1_concourse Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "5,800.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "52",
+          "desc": "finish",
+          "sub": "F1_lobby Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "400.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "53",
+          "desc": "finish",
+          "sub": "F1_lobby_2 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "520.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "54",
+          "desc": "finish",
+          "sub": "F1_lobby_3 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "380.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "55",
+          "desc": "finish",
+          "sub": "F1_lobby_4 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "400.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "56",
+          "desc": "finish",
+          "sub": "F1_8 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "320.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "57",
+          "desc": "finish",
+          "sub": "F1_bathroom Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "720.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "58",
+          "desc": "finish",
+          "sub": "F1_zone_2 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "60.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "59",
+          "desc": "finish",
+          "sub": "F1_zone_3 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "60.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "60",
+          "desc": "finish",
+          "sub": "F1_zone_4 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "20.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "61",
+          "desc": "finish",
+          "sub": "F1_zone_5 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "40.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "62",
+          "desc": "finish",
+          "sub": "F1_zone_6 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "30.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "63",
+          "desc": "finish",
+          "sub": "F1_2 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "40.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "64",
+          "desc": "finish",
+          "sub": "F1_corridor Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "250.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "65",
+          "desc": "finish",
+          "sub": "F1_zone_7 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "80.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "66",
+          "desc": "finish",
+          "sub": "F1_office Floor Finish — Carpet with underlay",
+          "qty": "50.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "67",
+          "desc": "finish",
+          "sub": "F1_N_S_E_W_Lower Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "4,800.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "68",
+          "desc": "finish",
+          "sub": "F2_F2 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "5,200.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "69",
+          "desc": "finish",
+          "sub": "F2_6 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "240.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "70",
+          "desc": "finish",
+          "sub": "F2_bathroom Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "600.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "71",
+          "desc": "finish",
+          "sub": "F2_4 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "120.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "72",
+          "desc": "finish",
+          "sub": "F2_8 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "320.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "73",
+          "desc": "finish",
+          "sub": "F2_N_S_E_W_Middle Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "4,800.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "74",
+          "desc": "finish",
+          "sub": "F2_F2_8 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "320.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "75",
+          "desc": "finish",
+          "sub": "F3_VIP_16_30m_each Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "480.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "76",
+          "desc": "finish",
+          "sub": "F3_VIP_8_30m_each Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "240.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "77",
+          "desc": "finish",
+          "sub": "F3_VIP Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "120.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "78",
+          "desc": "finish",
+          "sub": "F3_dining Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "150.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "79",
+          "desc": "finish",
+          "sub": "F3_VIP_3 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "60.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "80",
+          "desc": "finish",
+          "sub": "F3_lounge Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "80.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "81",
+          "desc": "finish",
+          "sub": "F3_N_S_E_W_Upper Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "3,200.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "82",
+          "desc": "finish",
+          "sub": "F3_F3_VIP Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "600.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "83",
+          "desc": "finish",
+          "sub": "F4_200 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "400.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "84",
+          "desc": "finish",
+          "sub": "F4_200_2 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "300.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "85",
+          "desc": "finish",
+          "sub": "F4_4 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "160.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "86",
+          "desc": "finish",
+          "sub": "F4_16 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "80.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "87",
+          "desc": "finish",
+          "sub": "F4_OCC Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "200.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "88",
+          "desc": "finish",
+          "sub": "F4_lounge Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "80.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "89",
+          "desc": "finish",
+          "sub": "F4_utility Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "60.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "90",
+          "desc": "finish",
+          "sub": "TRAINING_400m Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "7,200.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "91",
+          "desc": "finish",
+          "sub": "TRAINING_500 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "300.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "92",
+          "desc": "finish",
+          "sub": "TRAINING_zone Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "200.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "93",
+          "desc": "finish",
+          "sub": "WARMUP_60_40m Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "2,400.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "94",
+          "desc": "finish",
+          "sub": "WARMUP_bathroom Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "100.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "95",
+          "desc": "roof",
+          "sub": "Roof — RC roof slab + waterproofing + insulation",
+          "qty": "11,004.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "96",
+          "desc": "stair",
+          "sub": "Stairs (4 flights) — RC stair flight (one floor) + railing",
+          "qty": "4.0",
+          "amt": "flight"
+        }
+      ],
+      "total": 208618716.36
+    }
+  },
+  "energy": {
+    "eui": 102.95,
+    "limit": 150,
+    "annual": 7929839.68,
+    "engine": "EnergyPlus"
+  },
+  "compliance": {
+    "HK": {
+      "code": "HK_BEEO_BEC_2021",
+      "checks": [
+        {
+          "name": "Energy Energy Use Intensity (EUI)",
+          "value": "103.0",
+          "limit": "200",
+          "unit": "kWh/m2*yr",
+          "status": "pass",
+          "note": "51% of limit"
+        },
+        {
+          "name": "Envelope Exterior Wall U-value",
+          "value": "0.555",
+          "limit": "1.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Roof U-value",
+          "value": "0.498",
+          "limit": "0.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Window U-value",
+          "value": "2.0",
+          "limit": "5.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Window SHGC",
+          "value": "0.6",
+          "limit": "0.6",
+          "unit": "—",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope OTTV (Overall Thermal Transfer Value)",
+          "value": "needs facade analysis",
+          "limit": "25.0",
+          "unit": "W/m2",
+          "status": "pass",
+          "note": "OTTV requires detailed facade WWR + orientation data — not yet calculated."
+        },
+        {
+          "name": "Lighting Lighting Power Density",
+          "value": "8.0",
+          "limit": "12.0",
+          "unit": "W/m2",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Ventilation Fresh Air (ACH)",
+          "value": "0.7",
+          "limit": "0.7",
+          "unit": "ACH",
+          "status": "pass",
+          "note": ""
+        }
+      ],
+      "verdict": "COMPLIANT"
+    }
+  },
+  "variants": {
+    "list": []
+  },
+  "timeline": [],
+  "decks": [],
+  "downloads": [
+    {
+      "name": "arch-10-sports-complex-bundle.zip",
+      "ext": "zip",
+      "sub": "All artifacts",
+      "size": "TBD"
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+uploads/*.png
+uploads/pasted-*.png
+debug/
+*.md.backup

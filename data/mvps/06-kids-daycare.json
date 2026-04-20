@@ -1,0 +1,400 @@
+{
+  "slug": "06-kids-daycare",
+  "complete": true,
+  "project": {
+    "name": "儿童托育中心 Little Sprout · v1",
+    "zh": "",
+    "area": 150,
+    "location": "Hong Kong",
+    "budgetHKD": 0,
+    "style": "warm-soft, child-safe, rounded-edges, plant-rich, sage-peach-coral",
+    "palette": [
+      {
+        "name": "wall_cream",
+        "hex": "#F5EFE3"
+      },
+      {
+        "name": "baby_blue",
+        "hex": "#A8C8DC"
+      },
+      {
+        "name": "warm_wood",
+        "hex": "#C9A26F"
+      },
+      {
+        "name": "sage_green",
+        "hex": "#B5C9A8"
+      },
+      {
+        "name": "coral_peach",
+        "hex": "#E89A7F"
+      },
+      {
+        "name": "terracotta",
+        "hex": "#C46D5C"
+      }
+    ]
+  },
+  "renders": [
+    {
+      "id": "01",
+      "file": "/assets/mvps/06-kids-daycare/renders/01_hero_corner.webp",
+      "title": "01 Hero Corner",
+      "tag": "01_hero_corner"
+    },
+    {
+      "id": "02",
+      "file": "/assets/mvps/06-kids-daycare/renders/02_reception.webp",
+      "title": "02 Reception",
+      "tag": "02_reception"
+    },
+    {
+      "id": "03",
+      "file": "/assets/mvps/06-kids-daycare/renders/03_main_zone.webp",
+      "title": "03 Main Zone",
+      "tag": "03_main_zone"
+    },
+    {
+      "id": "04",
+      "file": "/assets/mvps/06-kids-daycare/renders/04_feature_zone.webp",
+      "title": "04 Feature Zone",
+      "tag": "04_feature_zone"
+    },
+    {
+      "id": "05",
+      "file": "/assets/mvps/06-kids-daycare/renders/05_lounge_zone.webp",
+      "title": "05 Lounge Zone",
+      "tag": "05_lounge_zone"
+    },
+    {
+      "id": "06",
+      "file": "/assets/mvps/06-kids-daycare/renders/06_back_corner.webp",
+      "title": "06 Back Corner",
+      "tag": "06_back_corner"
+    },
+    {
+      "id": "07",
+      "file": "/assets/mvps/06-kids-daycare/renders/07_top_ortho.webp",
+      "title": "07 Top Ortho",
+      "tag": "07_top_ortho"
+    },
+    {
+      "id": "08",
+      "file": "/assets/mvps/06-kids-daycare/renders/08_birds_eye_3d.webp",
+      "title": "08 Birds Eye 3D",
+      "tag": "08_birds_eye_3d"
+    }
+  ],
+  "floorplan": "/assets/mvps/06-kids-daycare/floorplan.webp",
+  "moodboard": "/assets/mvps/06-kids-daycare/moodboard.webp",
+  "hero_img": "/assets/mvps/06-kids-daycare/hero.webp",
+  "thumb_img": "/assets/mvps/06-kids-daycare/thumb.webp",
+  "zones": [
+    {
+      "id": "入口接送_+_鞋柜",
+      "name": "入口接送 + 鞋柜",
+      "zh": "",
+      "area": 10,
+      "notes": "家长等候凳, 鞋柜 3 层, 签到台, 地垫",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "大活动室",
+      "name": "大活动室",
+      "zh": "",
+      "area": 45,
+      "notes": "软垫地毯, 玩具柜 3 个, 5 球池球, 小攀爬",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "午睡室_(10_张小床)",
+      "name": "午睡室 (10 张小床)",
+      "zh": "",
+      "area": 25,
+      "notes": "10 张儿童小床 (1.2×0.6×0.3) 2 列 5 排, 床头小柜",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "小教室_(10_座)",
+      "name": "小教室 (10 座)",
+      "zh": "",
+      "area": 20,
+      "notes": "10 把矮椅, 10 张矮桌, 老师桌, 白板",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "儿童卫生间",
+      "name": "儿童卫生间",
+      "zh": "",
+      "area": 8,
+      "notes": "3 个儿童小马桶, 矮洗手台 (3 龙头), 镜子",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "厨房备餐",
+      "name": "厨房备餐",
+      "zh": "",
+      "area": 12,
+      "notes": "操作台, 水槽, 冰箱, 消毒柜",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "户外平台",
+      "name": "户外平台",
+      "zh": "",
+      "area": 15,
+      "notes": "户外地板, 小沙坑, 围栏",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "教师办公",
+      "name": "教师办公",
+      "zh": "",
+      "area": 8,
+      "notes": "办公桌 2, 书柜, 打印机",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "储物_+_衣物",
+      "name": "储物 + 衣物",
+      "zh": "",
+      "area": 7,
+      "notes": "储物柜, 衣物架",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    }
+  ],
+  "furniture": [],
+  "pricing": {
+    "HK": {
+      "label": "Hong Kong",
+      "currency": "HK$",
+      "perM2": 8893,
+      "rows": [
+        {
+          "cat": "1",
+          "desc": "slab",
+          "sub": "F1 Floor Slab — RC slab (120mm) incl. formwork + rebar",
+          "qty": "150.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "2",
+          "desc": "wall",
+          "sub": "F1 Exterior Walls — Common brick wall (200mm) incl. render",
+          "qty": "160.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "3",
+          "desc": "wall",
+          "sub": "F1 Interior Partitions — Gypsum board partition (double-sided)",
+          "qty": "69.1",
+          "amt": "m2"
+        },
+        {
+          "cat": "4",
+          "desc": "window",
+          "sub": "F1 Windows — Thermal-break aluminum + Low-E double glazing",
+          "qty": "48.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "5",
+          "desc": "door",
+          "sub": "F1 Doors — Solid wood door (900mm) + frame + hardware",
+          "qty": "9.0",
+          "amt": "ea"
+        },
+        {
+          "cat": "6",
+          "desc": "finish",
+          "sub": "F1_zone Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "10.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "7",
+          "desc": "finish",
+          "sub": "F1_zone_2 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "45.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "8",
+          "desc": "finish",
+          "sub": "F1_10 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "25.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "9",
+          "desc": "finish",
+          "sub": "F1_10_2 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "20.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "10",
+          "desc": "finish",
+          "sub": "F1_bathroom Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "8.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "11",
+          "desc": "finish",
+          "sub": "F1_kitchen Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "12.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "12",
+          "desc": "finish",
+          "sub": "F1_zone_3 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "15.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "13",
+          "desc": "finish",
+          "sub": "F1_office Floor Finish — Carpet with underlay",
+          "qty": "8.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "14",
+          "desc": "finish",
+          "sub": "F1_zone_4 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "7.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "15",
+          "desc": "roof",
+          "sub": "Roof — RC roof slab + waterproofing + insulation",
+          "qty": "150.0",
+          "amt": "m2"
+        }
+      ],
+      "total": 1333878.85
+    }
+  },
+  "energy": {
+    "eui": 82.26,
+    "limit": 150,
+    "annual": 12338.9,
+    "engine": "EnergyPlus"
+  },
+  "compliance": {
+    "HK": {
+      "code": "HK_BEEO_BEC_2021",
+      "checks": [
+        {
+          "name": "Energy Energy Use Intensity (EUI)",
+          "value": "82.3",
+          "limit": "150",
+          "unit": "kWh/m2*yr",
+          "status": "pass",
+          "note": "55% of limit"
+        },
+        {
+          "name": "Envelope Exterior Wall U-value",
+          "value": "0.555",
+          "limit": "1.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Roof U-value",
+          "value": "0.498",
+          "limit": "0.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Window U-value",
+          "value": "2.0",
+          "limit": "5.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Window SHGC",
+          "value": "0.6",
+          "limit": "0.6",
+          "unit": "—",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope OTTV (Overall Thermal Transfer Value)",
+          "value": "needs facade analysis",
+          "limit": "25.0",
+          "unit": "W/m2",
+          "status": "pass",
+          "note": "OTTV requires detailed facade WWR + orientation data — not yet calculated."
+        },
+        {
+          "name": "Lighting Lighting Power Density",
+          "value": "8.0",
+          "limit": "10.0",
+          "unit": "W/m2",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Ventilation Fresh Air (ACH)",
+          "value": "0.7",
+          "limit": "0.5",
+          "unit": "ACH",
+          "status": "pass",
+          "note": ""
+        }
+      ],
+      "verdict": "COMPLIANT"
+    }
+  },
+  "variants": {
+    "list": []
+  },
+  "timeline": [],
+  "decks": [],
+  "downloads": [
+    {
+      "name": "06-kids-daycare-bundle.zip",
+      "ext": "zip",
+      "sub": "All artifacts",
+      "size": "TBD"
+    }
+  ]
+}

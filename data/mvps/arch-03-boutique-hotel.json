@@ -1,0 +1,256 @@
+{
+  "slug": "arch-03-boutique-hotel",
+  "complete": false,
+  "project": {
+    "name": "精品酒店 Stay Boutique · v1",
+    "zh": "",
+    "area": 100,
+    "location": "Hong Kong",
+    "budgetHKD": 0,
+    "style": "contemporary-mediterranean, warm-stucco, timber-lattice, courtyard-retreat",
+    "palette": [
+      {
+        "name": "stucco_cream",
+        "hex": "#E8DCC8"
+      },
+      {
+        "name": "timber_warm",
+        "hex": "#8B6F4E"
+      },
+      {
+        "name": "glass_blue",
+        "hex": "#A8C2D0"
+      },
+      {
+        "name": "terracotta_roof",
+        "hex": "#A35740"
+      },
+      {
+        "name": "courtyard_green",
+        "hex": "#3F6B3C"
+      },
+      {
+        "name": "brass_frame",
+        "hex": "#B89968"
+      }
+    ]
+  },
+  "renders": [
+    {
+      "id": "interior",
+      "file": "/assets/mvps/arch-03-boutique-hotel/renders/interior.webp",
+      "title": "Interior",
+      "tag": "interior"
+    },
+    {
+      "id": "massing",
+      "file": "/assets/mvps/arch-03-boutique-hotel/renders/massing.webp",
+      "title": "Massing",
+      "tag": "massing"
+    },
+    {
+      "id": "site-plan",
+      "file": "/assets/mvps/arch-03-boutique-hotel/renders/site-plan.webp",
+      "title": "Site Plan",
+      "tag": "site-plan"
+    }
+  ],
+  "floorplan": null,
+  "moodboard": "/assets/mvps/arch-03-boutique-hotel/moodboard.webp",
+  "hero_img": "/assets/mvps/arch-03-boutique-hotel/hero.webp",
+  "thumb_img": "/assets/mvps/arch-03-boutique-hotel/thumb.webp",
+  "zones": [],
+  "furniture": [],
+  "pricing": {
+    "HK": {
+      "label": "Hong Kong",
+      "currency": "HK$",
+      "perM2": 5962,
+      "rows": [
+        {
+          "cat": "1",
+          "desc": "slab",
+          "sub": "F1_lobby_floor Floor Slab — RC slab (120mm) incl. formwork + rebar",
+          "qty": "194.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "2",
+          "desc": "wall",
+          "sub": "F1_lobby_floor Exterior Walls — Common brick wall (200mm) incl. render",
+          "qty": "120.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "3",
+          "desc": "wall",
+          "sub": "F1_lobby_floor Interior Partitions — Gypsum board partition (double-sided)",
+          "qty": "50.4",
+          "amt": "m2"
+        },
+        {
+          "cat": "4",
+          "desc": "window",
+          "sub": "F1_lobby_floor Windows — Thermal-break aluminum + Low-E double glazing",
+          "qty": "36.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "5",
+          "desc": "door",
+          "sub": "F1_lobby_floor Doors — Solid wood door (900mm) + frame + hardware",
+          "qty": "6.0",
+          "amt": "ea"
+        },
+        {
+          "cat": "6",
+          "desc": "finish",
+          "sub": "F1_lobby_floor_zone Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "38.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "7",
+          "desc": "finish",
+          "sub": "F1_lobby_floor_dining Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "45.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "8",
+          "desc": "finish",
+          "sub": "F1_lobby_floor_zone_2 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "22.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "9",
+          "desc": "finish",
+          "sub": "F1_lobby_floor_zone_3 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "25.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "10",
+          "desc": "finish",
+          "sub": "F1_lobby_floor_bathroom Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "10.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "11",
+          "desc": "finish",
+          "sub": "F1_lobby_floor_stair Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "14.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "12",
+          "desc": "finish",
+          "sub": "F1_lobby_floor_zone_4 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "40.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "13",
+          "desc": "roof",
+          "sub": "Roof — RC roof slab + waterproofing + insulation",
+          "qty": "100.0",
+          "amt": "m2"
+        }
+      ],
+      "total": 1156604.42
+    }
+  },
+  "energy": {
+    "eui": 74.06,
+    "limit": 150,
+    "annual": 7405.56,
+    "engine": "EnergyPlus"
+  },
+  "compliance": {
+    "HK": {
+      "code": "HK_BEEO_BEC_2021",
+      "checks": [
+        {
+          "name": "Energy Energy Use Intensity (EUI)",
+          "value": "74.1",
+          "limit": "280",
+          "unit": "kWh/m2*yr",
+          "status": "pass",
+          "note": "26% of limit"
+        },
+        {
+          "name": "Envelope Exterior Wall U-value",
+          "value": "0.555",
+          "limit": "1.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Roof U-value",
+          "value": "0.498",
+          "limit": "0.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Window U-value",
+          "value": "2.0",
+          "limit": "5.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Window SHGC",
+          "value": "0.6",
+          "limit": "0.6",
+          "unit": "—",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope OTTV (Overall Thermal Transfer Value)",
+          "value": "needs facade analysis",
+          "limit": "25.0",
+          "unit": "W/m2",
+          "status": "pass",
+          "note": "OTTV requires detailed facade WWR + orientation data — not yet calculated."
+        },
+        {
+          "name": "Lighting Lighting Power Density",
+          "value": "8.0",
+          "limit": "12.0",
+          "unit": "W/m2",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Ventilation Fresh Air (ACH)",
+          "value": "0.7",
+          "limit": "0.7",
+          "unit": "ACH",
+          "status": "pass",
+          "note": ""
+        }
+      ],
+      "verdict": "COMPLIANT"
+    }
+  },
+  "variants": {
+    "list": []
+  },
+  "timeline": [],
+  "decks": [],
+  "downloads": [
+    {
+      "name": "arch-03-boutique-hotel-bundle.zip",
+      "ext": "zip",
+      "sub": "All artifacts",
+      "size": "TBD"
+    }
+  ]
+}
