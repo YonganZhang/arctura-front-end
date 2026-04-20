@@ -918,9 +918,10 @@ Response format (STRICT — always exactly this shape):
 Tone: confident, specific, numeric. Never generic. Mix in Chinese only if the user writes in Chinese. Do not use bullet points or markdown headers. Do not ask "anything else?" — keep it tight.`;
 
 function Chat({ onNavigate }) {
+  const { current, dispatch } = useProject();
   const [msgs, setMsgs] = useState([
-    { role:"bot", text:"Hello — I'm your project assistant. Tell me what you'd like to change and I'll regenerate the affected artifacts.", diff:null },
-    { role:"sys", text:"v1 · new-chinese · delivered 1 day ago" }
+    { role:"bot", text:"Hello — I'm your project assistant. Tell me what you'd like to change and I'll actually apply it to the data.", diff:null },
+    { role:"sys", text:"Chat → real data edits · refresh 回到原始" }
   ]);
   const [input, setInput] = useState("");
   const [thinking, setThinking] = useState(false);
@@ -971,45 +972,60 @@ function Chat({ onNavigate }) {
 
   const send = async (text) => {
     if (!text.trim() || thinking) return;
+    if (!current || !current.slug) {
+      setMsgs(m => [...m, { role: "user", text }, { role: "bot", text: "项目数据还在加载，稍等一秒再问。", diff: null }]);
+      return;
+    }
     const userMsg = { role:"user", text };
     const nextMsgs = [...msgs, userMsg];
     setMsgs(nextMsgs);
     setInput("");
     setThinking(true);
 
-    let replyRaw;
-    let fromModel = null;
     try {
-      // 1. 首选：/api/chat Edge Function → 智增增 gateway
-      const r = await fetch("/api/chat", {
+      // 调 /api/chat-edit（tool-use 端点）· 失败时自动降级到 /api/chat（纯 LLM）
+      const r = await fetch("/api/chat-edit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          slug: current.slug,
+          userMessage: text,
+          currentState: current,
           model,
-          system: SYSTEM_PROMPT,
-          messages: buildMessages(msgs, text),
-          max_tokens: 800,
+          chatHistory: buildMessages(msgs, text).slice(0, -1),
         }),
       });
-      if (r.ok) {
-        const data = await r.json();
-        replyRaw = data.text || "";
-        fromModel = data.model;
-      } else {
-        // 2. API 失败 → 用降级关键词匹配
+      if (!r.ok) {
         const err = await r.json().catch(() => ({}));
-        console.warn("chat API failed:", r.status, err);
-        replyRaw = offlineFallback(text) + "\n\n(fell back · api error " + r.status + ")";
+        console.warn("chat-edit failed:", r.status, err);
+        setMsgs(m => [...m, {
+          role: "bot",
+          text: `(Backend error ${r.status}: ${err.error || "unknown"}${err.detail ? " · " + err.detail.slice(0, 120) : ""})`,
+          error: true,
+        }]);
+      } else {
+        const data = await r.json();
+        if (data.newState && data.applied && data.applied.length > 0) {
+          dispatch({ type: "APPLY_EDIT", newState: data.newState });
+        }
+        setMsgs(m => [...m, {
+          role: "bot",
+          text: data.text || "(processed)",
+          applied: data.applied || [],
+          rejected: data.rejected || [],
+          model: data.model,
+        }]);
       }
     } catch (err) {
-      // 3. 网络 / 超时 → 降级
-      console.warn("chat API exception:", err);
-      replyRaw = offlineFallback(text) + "\n\n(fell back · " + (err.message || "network error") + ")";
+      console.warn("chat-edit exception:", err);
+      setMsgs(m => [...m, {
+        role: "bot",
+        text: `(Network error · ${err.message || err}) · 检查 ZHIZENGZENG_API_KEY 是否设了。`,
+        error: true,
+      }]);
+    } finally {
+      setThinking(false);
     }
-
-    const { text: replyText, diff } = parseReply(replyRaw);
-    setThinking(false);
-    setMsgs(m => [...m, { role:"bot", text: replyText, diff, model: fromModel }]);
   };
 
   // Used only if window.claude isn't available (e.g. local preview)
@@ -1030,12 +1046,15 @@ function Chat({ onNavigate }) {
     return "Understood — I'll regenerate the affected artifacts and write the diff to the Timeline tab.\nDIFF: 1 revision queued";
   };
 
+  // 根据 MVP 是否有 variants 动态选建议
+  const hasVariants = (current?.variants?.list || []).length > 0;
+  const firstVariant = (current?.variants?.list || [])[0];
   const chips = [
-    "Show me a budget variant",
-    "Check Beijing code",
     "Make it warmer",
-    "Reduce EUI further"
-  ];
+    "Scale up 25%",
+    "Check Tokyo code",
+    hasVariants && firstVariant ? `Show ${firstVariant.name || firstVariant.id}` : "Upgrade insulation to 100mm",
+  ].filter(Boolean);
 
   return (
     <aside className="chat">
@@ -1087,9 +1106,19 @@ function Chat({ onNavigate }) {
           m.role === "sys" ? (
             <div key={i} className="msg sys">{m.text}</div>
           ) : (
-            <div key={i} className={"msg " + m.role}>
+            <div key={i} className={"msg " + m.role + (m.error ? " error" : "")}>
               {m.text}
               {m.diff && <div className="msg-diff"><i>+</i>{m.diff}</div>}
+              {m.applied && m.applied.length > 0 && (
+                <div className="msg-diff" style={{background:"rgba(76,175,80,0.1)", color:"#2c7a2c"}}>
+                  <i>✓</i>{m.applied.map(a => a.summary).join(" · ")}
+                </div>
+              )}
+              {m.rejected && m.rejected.length > 0 && (
+                <div className="msg-diff" style={{background:"rgba(216,87,42,0.1)", color:"#b54e2c"}}>
+                  <i>✗</i>{m.rejected.map(r => r.reason).join(" · ")}
+                </div>
+              )}
               {m.model && (
                 <div style={{
                   fontSize: 9, color: "var(--text-3)", marginTop: 4,
