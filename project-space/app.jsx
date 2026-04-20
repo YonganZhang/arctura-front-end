@@ -1261,14 +1261,13 @@ function Root() {
   const slug = getSlugFromUrl();
   const [projectState, dispatch] = useReducer(projectReducer, { current: null, original: null, history: [] });
 
-  // 每次 state 变化 → 同步到 stateHolder / window.ZEN_DATA · 让 D Proxy 读到新值
-  // 初始 null 不覆盖 · 保留 data.js 的默认 ZEN_DATA（给 DEFAULT_ZEN_DATA fallback 用）
-  useEffect(() => {
-    if (projectState.current) {
-      stateHolder.current = projectState.current;
-      window.ZEN_DATA = projectState.current;
-    }
-  }, [projectState.current]);
+  // ⚠️ 关键：必须在 render 期间就同步 stateHolder/window.ZEN_DATA
+  // useEffect 是 render 之后才跑 · 那时子组件已读完旧 D.xxx · 会显示 stale 数据
+  // 对 ref 的赋值是"副作用"但可重入 · 在 render 中做是安全的（React 文档 "Resetting state with a key" 类似模式）
+  if (projectState.current && stateHolder.current !== projectState.current) {
+    stateHolder.current = projectState.current;
+    window.ZEN_DATA = projectState.current;
+  }
 
   useEffect(() => {
     loadMvpData(slug)
