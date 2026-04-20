@@ -1,5 +1,7 @@
 {
   "slug": "arch-05-modern-chinese-house",
+  "cat": "residential",
+  "type": "P2-architecture",
   "complete": false,
   "project": {
     "name": "现代中式乡村住宅 v1 (客户委托案)",

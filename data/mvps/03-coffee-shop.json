@@ -1,5 +1,7 @@
 {
   "slug": "03-coffee-shop",
+  "cat": "hospitality",
+  "type": "P1-interior",
   "complete": true,
   "project": {
     "name": "独立精品咖啡店 Coffee Lab · v1",

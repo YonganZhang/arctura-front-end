@@ -1,5 +1,7 @@
 {
   "slug": "01-study-room",
+  "cat": "workplace",
+  "type": "P1-interior",
   "complete": true,
   "project": {
     "name": "极简书房改造 v1",

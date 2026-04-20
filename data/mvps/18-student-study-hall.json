@@ -1,5 +1,7 @@
 {
   "slug": "18-student-study-hall",
+  "cat": "workplace",
+  "type": "P1-interior",
   "complete": false,
   "project": {
     "name": "大学生自习室",

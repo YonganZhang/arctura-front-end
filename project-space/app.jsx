@@ -1,15 +1,56 @@
 /* global React, ReactDOM, ZEN_DATA */
-const { useState, useRef, useEffect, useMemo } = React;
-// D 是 live-proxy 到 window.ZEN_DATA · 动态加载后各组件无需重写
+const { useState, useRef, useEffect, useMemo, useReducer, useContext, createContext } = React;
+
+// D 是 live-proxy 到 window.ZEN_DATA · 读取当前 state
+// 运行时被 ProjectProvider 通过 stateHolder 接管（chat-edit 后切换数据）
+const stateHolder = { current: null };
 const D = new Proxy({}, {
-  get: (_, prop) => (window.ZEN_DATA || {})[prop],
-  has: (_, prop) => prop in (window.ZEN_DATA || {}),
-  ownKeys: () => Object.keys(window.ZEN_DATA || {}),
+  get: (_, prop) => (stateHolder.current || window.ZEN_DATA || {})[prop],
+  has: (_, prop) => prop in (stateHolder.current || window.ZEN_DATA || {}),
+  ownKeys: () => Object.keys(stateHolder.current || window.ZEN_DATA || {}),
   getOwnPropertyDescriptor: (_, prop) => {
-    const v = (window.ZEN_DATA || {})[prop];
+    const v = (stateHolder.current || window.ZEN_DATA || {})[prop];
     return v !== undefined ? { enumerable: true, configurable: true, value: v } : undefined;
   },
 });
+
+// ───────── Project State Context · chat-edit 驱动的状态层 ─────────
+
+// reducer manages { current, original, history }
+//   SET_ORIGINAL  初始化 base · 从 JSON 加载后调
+//   APPLY_EDIT    chat 返回 newState → 推 history 顶 · 切 current
+//   REWIND(idx)   Undo 到 history[idx]
+//   RESET         current = original · 清 history
+function projectReducer(state, action) {
+  switch (action.type) {
+    case "SET_ORIGINAL":
+      return { current: action.data, original: action.data, history: [] };
+    case "APPLY_EDIT": {
+      if (!action.newState) return state;
+      return {
+        ...state,
+        current: action.newState,
+        history: [...state.history, state.current].slice(-20),
+      };
+    }
+    case "REWIND": {
+      const i = Math.max(0, Math.min(action.index, state.history.length - 1));
+      const target = state.history[i];
+      return { ...state, current: target, history: state.history.slice(0, i) };
+    }
+    case "RESET":
+      return { ...state, current: state.original, history: [] };
+    default:
+      return state;
+  }
+}
+
+const ProjectCtx = createContext({ current: null, dispatch: () => {}, history: [], canUndo: false, canReset: false });
+
+// 组件调这个钩子就自动订阅 state 变化（触发 re-render）+ 获得 dispatch
+function useProject() {
+  return useContext(ProjectCtx);
+}
 
 // URL slug 解析：?mvp=<slug> 或 /project/<slug>/ 或 /project/
 function getSlugFromUrl() {
@@ -75,6 +116,7 @@ async function handleShare() {
 
 // ───────── Topbar ─────────
 function Topbar() {
+  useProject();
   return (
     <header className="topbar">
       <div className="tb-logo">
@@ -163,9 +205,10 @@ function Sidebar({ active, setActive }) {
 
 // ───────── Overview ─────────
 function Overview({ setActive }) {
-  const mainRender = D.renders[0];
+  useProject();
+  const mainRender = (D.renders || [])[0];
   const [thumb, setThumb] = useState(0);
-  const current = D.renders[thumb];
+  const current = (D.renders || [])[thumb];
   return (
     <section>
       <div className="view-head">
@@ -234,9 +277,10 @@ function Overview({ setActive }) {
 
 // ───────── Floorplan (drag-able + hover info) ─────────
 function Floorplan() {
+  useProject();
   const wrapRef = useRef(null);
-  const [hovered, setHovered] = useState(D.zones[0]);
-  const [furn, setFurn] = useState(D.furniture);
+  const [hovered, setHovered] = useState((D.zones || [])[0]);
+  const [furn, setFurn] = useState(D.furniture || []);
   const dragRef = useRef({ active:null, dx:0, dy:0 });
 
   const startDrag = (e, id) => {
@@ -379,8 +423,9 @@ function Viewer3D() {
 
 // ───────── BOQ ─────────
 function BOQ() {
+  useProject();
   const [region, setRegion] = useState("HK");
-  const P = D.pricing[region];
+  const P = (D.pricing || {})[region] || { currency: "HK$", perM2: 0, total: 0, rows: [] };
   return (
     <section>
       <div className="view-head">
@@ -460,7 +505,8 @@ function BOQ() {
 
 // ───────── Energy ─────────
 function Energy() {
-  const E = D.energy;
+  useProject();
+  const E = D.energy || { eui: 0, limit: 150, annual: 0, engine: "EnergyPlus" };
   const bars = [
     { label:"HVAC", val:52, unit:"%", pct:52 },
     { label:"Lighting", val:20, unit:"%", pct:20 },
@@ -507,9 +553,10 @@ function Energy() {
 
 // ───────── Compliance ─────────
 function Compliance() {
+  useProject();
   const [code, setCode] = useState("HK");
-  const C = D.compliance[code];
-  const vclass = C.verdict === "COMPLIANT" ? "" : C.verdict === "REVIEW NEEDED" ? "warn" : "fail";
+  const C = (D.compliance || {})[code] || { verdict: "—", items: [] };
+  const vclass = C.verdict === "COMPLIANT" ? "" : /REVIEW|ADVISORY|CONDITIONAL/i.test(C.verdict || "") ? "warn" : C.verdict === "—" ? "" : "fail";
   return (
     <section>
       <div className="view-head">
@@ -539,13 +586,13 @@ function Compliance() {
         </div>
       </div>
       <div className="cmp-table">
-        {C.items.map((it,i)=>(
-          <div key={i} className={"cmp-row " + it.status}>
+        {((C.items || C.checks) || []).map((it,i)=>(
+          <div key={i} className={"cmp-row " + (it.status === "advisory" ? "warn" : it.status)}>
             <span className="cmp-dot" />
-            <div className="cmp-check"><b>{it.check}</b><span>{it.zh}</span></div>
-            <div className="cmp-value">Current <b>{it.val}</b> {it.unit !== "—" && it.unit}</div>
-            <div className="cmp-limit">Limit {it.limit} {it.unit !== "—" && it.unit}</div>
-            <div className="cmp-status">{it.status === "pass" ? "Pass" : it.status === "warn" ? "Review" : "Fail"}</div>
+            <div className="cmp-check"><b>{it.check || it.name}</b><span>{it.zh || ""}</span></div>
+            <div className="cmp-value">Current <b>{it.val !== undefined ? it.val : it.value}</b> {it.unit && it.unit !== "—" && it.unit}</div>
+            <div className="cmp-limit">Limit {it.limit} {it.unit && it.unit !== "—" && it.unit}</div>
+            <div className="cmp-status">{it.status === "pass" ? "Pass" : /advisory|warn/i.test(it.status) ? "Review" : "Fail"}</div>
           </div>
         ))}
       </div>
@@ -619,7 +666,10 @@ function WhatIf() {
 
 // ───────── A / B / C variants ─────────
 function Variants() {
+  useProject();
   const [chosen, setChosen] = useState("A");
+  // 兼容两种 schema：legacy data.js 是 array · 新版是 {list: [...]}
+  const variantArray = Array.isArray(D.variants) ? D.variants : (D.variants?.list || []);
   return (
     <section>
       <div className="view-head">
@@ -629,7 +679,7 @@ function Variants() {
         </div>
       </div>
       <div className="abc-grid">
-        {D.variants.map(v => (
+        {variantArray.map(v => (
           <div key={v.id} className={"abc-variant " + (chosen===v.id ? "chosen":"")} onClick={()=>setChosen(v.id)}>
             <div className="abc-img">
               <div className="abc-label">Option {v.id}</div>
@@ -681,6 +731,7 @@ function Variants() {
 
 // ───────── Decks ─────────
 function Decks() {
+  useProject();
   return (
     <section>
       <div className="view-head">
@@ -690,7 +741,7 @@ function Decks() {
         </div>
       </div>
       <div className="deck-grid">
-        {D.decks.map(d => (
+        {(D.decks || []).map(d => (
           <div key={d.num} className="deck-card" title="Preview">
             <div className="deck-thumb">
               <div className="deck-thumb-num">Deck {d.num} · {d.pages}p</div>
@@ -709,6 +760,8 @@ function Decks() {
 
 // ───────── Timeline ─────────
 function Timeline() {
+  const { canUndo, canReset, dispatch } = useProject();
+  const items = D.timeline || [];
   return (
     <section>
       <div className="view-head">
@@ -716,19 +769,37 @@ function Timeline() {
           <h1 className="view-title">Timeline</h1>
           <div className="view-sub">修改历史 · every change, every diff, every minute</div>
         </div>
+        <div style={{display:"flex", gap:8}}>
+          <button className="d3-btn" disabled={!canUndo}
+                  onClick={()=>dispatch({type:"REWIND", index: Math.max(0, (items.length - 2))})}
+                  title="Undo last change">↶ Undo</button>
+          <button className="d3-btn" disabled={!canReset}
+                  onClick={()=>dispatch({type:"RESET"})}
+                  title="Reset to original baseline">⟲ Reset</button>
+        </div>
       </div>
       <div className="tl-wrap">
-        {D.timeline.map((t,i)=>(
+        {items.length === 0 && (
+          <div style={{padding: "24px", color: "var(--text-3)", fontSize: 13}}>
+            暂无修改 · 在 Chat 里说一句话试试（"make it warmer" / "scale to 60m²" / "check Tokyo code"）
+          </div>
+        )}
+        {items.map((t,i)=>{
+          // 时间可能是 ISO 或者 "15 min ago" 这种 legacy 格式
+          const timeLabel = t.time && t.time.includes("T")
+            ? new Date(t.time).toLocaleTimeString([], {hour: "2-digit", minute: "2-digit"})
+            : t.time;
+          return (
           <div key={i} className="tl-row">
-            <div className="tl-time">{t.time}</div>
+            <div className="tl-time">{timeLabel}</div>
             <div className="tl-mark" />
             <div className="tl-content">
               <b>{t.title}</b>
-              <p>{t.desc}</p>
+              <p>{t.desc || t.source}</p>
               {t.diff && <div className="tl-diff"><i>+</i> {t.diff}</div>}
             </div>
           </div>
-        ))}
+        );})}
       </div>
     </section>
   );
@@ -736,6 +807,7 @@ function Timeline() {
 
 // ───────── Downloads ─────────
 function Files() {
+  useProject();
   return (
     <section>
       <div className="view-head">
@@ -745,7 +817,7 @@ function Files() {
         </div>
       </div>
       <div className="dl-grid">
-        {D.downloads.map((f,i)=>(
+        {(D.downloads || []).map((f,i)=>(
           <div key={i} className="dl-file">
             <div className="dl-ext">{f.ext}</div>
             <div className="dl-name">{f.name}<span>{f.sub}</span></div>
@@ -775,14 +847,33 @@ function Files() {
 
 // ───────── Renders gallery (reuse overview) ─────────
 function Renders() {
+  useProject();
+  const renders = D.renders || [];
   const [active, setActive] = useState(0);
-  const r = D.renders[active];
+  // 如果 state 切了 variant 导致 renders 换了，active index 可能超界
+  const safeIdx = Math.min(active, Math.max(0, renders.length - 1));
+  const r = renders[safeIdx];
+  if (!r) {
+    return (
+      <section>
+        <div className="view-head">
+          <div>
+            <h1 className="view-title">Renders</h1>
+            <div className="view-sub">渲染图 · 暂无可用视角</div>
+          </div>
+        </div>
+        <div style={{padding:60, textAlign:"center", color:"var(--text-3)"}}>
+          此 MVP 暂无 3D 渲染图产出（pipeline 未跑完）· Chat 里可以改数值 / 切合规 / 切方案。
+        </div>
+      </section>
+    );
+  }
   return (
     <section>
       <div className="view-head">
         <div>
           <h1 className="view-title">Renders</h1>
-          <div className="view-sub">渲染图 · 4 views · 4K photoreal · re-generate from any modified model</div>
+          <div className="view-sub">渲染图 · {renders.length} views · 4K photoreal · re-generate from any modified model</div>
         </div>
       </div>
       <div className="render-feature">
@@ -794,8 +885,8 @@ function Renders() {
           </div>
         </div>
         <div className="render-thumbs">
-          {D.renders.map((x,i)=>(
-            <div key={i} className={"render-thumb " + (active===i?"active":"")} onClick={()=>setActive(i)}>
+          {renders.map((x,i)=>(
+            <div key={i} className={"render-thumb " + (safeIdx===i?"active":"")} onClick={()=>setActive(i)}>
               <Img src={x.file} alt={x.title} />
               <div className="render-thumb-lbl">{x.tag}</div>
             </div>
@@ -1070,11 +1161,22 @@ function Root() {
   const [status, setStatus] = useState("loading"); // loading | ready | notfound | error
   const [errMsg, setErrMsg] = useState("");
   const slug = getSlugFromUrl();
+  const [projectState, dispatch] = useReducer(projectReducer, { current: null, original: null, history: [] });
+
+  // 每次 state 变化 → 同步到 stateHolder / window.ZEN_DATA · 让 D Proxy 读到新值
+  useEffect(() => {
+    stateHolder.current = projectState.current;
+    window.ZEN_DATA = projectState.current;
+  }, [projectState.current]);
 
   useEffect(() => {
     loadMvpData(slug)
       .then(data => {
-        window.ZEN_DATA = data; // 让 Proxy D 生效
+        // 确保 slug 字段存在（默认 zen-tea 可能没有）
+        if (!data.slug) data.slug = slug || "zen-tea";
+        window.ZEN_DATA = data;
+        stateHolder.current = data;
+        dispatch({ type: "SET_ORIGINAL", data });
         setStatus("ready");
       })
       .catch(e => {
@@ -1126,7 +1228,20 @@ function Root() {
     );
   }
 
-  return <App />;
+  const ctxValue = {
+    current: projectState.current,
+    history: projectState.history,
+    original: projectState.original,
+    canUndo: projectState.history.length > 0,
+    canReset: projectState.current !== projectState.original,
+    dispatch,
+  };
+
+  return (
+    <ProjectCtx.Provider value={ctxValue}>
+      <App />
+    </ProjectCtx.Provider>
+  );
 }
 
 ReactDOM.createRoot(document.getElementById("root")).render(<Root />);

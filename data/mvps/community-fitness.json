@@ -1,5 +1,7 @@
 {
   "slug": "community-fitness",
+  "cat": "wellness",
+  "type": "P2-architecture",
   "complete": false,
   "project": {
     "name": "社區健身中心 Community Fitness Center",

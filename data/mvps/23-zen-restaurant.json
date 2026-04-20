@@ -1,5 +1,7 @@
 {
   "slug": "23-zen-restaurant",
+  "cat": "hospitality",
+  "type": "P1-interior",
   "complete": false,
   "project": {
     "name": "禅意日料餐厅",

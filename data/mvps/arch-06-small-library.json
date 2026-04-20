@@ -1,5 +1,7 @@
 {
   "slug": "arch-06-small-library",
+  "cat": "civic",
+  "type": "P2-architecture",
   "complete": false,
   "project": {
     "name": "社区小型图书馆 Bookhaven Library",

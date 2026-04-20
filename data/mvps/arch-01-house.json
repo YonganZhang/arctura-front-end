@@ -1,5 +1,7 @@
 {
   "slug": "arch-01-house",
+  "cat": "residential",
+  "type": "P2-architecture",
   "complete": false,
   "project": {
     "name": "Maison Compact · 独栋住宅 · v1",

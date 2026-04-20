@@ -1,5 +1,7 @@
 {
   "slug": "08-hair-salon",
+  "cat": "residential",
+  "type": "P1-interior",
   "complete": true,
   "project": {
     "name": "美发美容店 Cut & Hue · v1",

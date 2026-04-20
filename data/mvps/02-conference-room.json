@@ -1,5 +1,7 @@
 {
   "slug": "02-conference-room",
+  "cat": "workplace",
+  "type": "P1-interior",
   "complete": true,
   "project": {
     "name": "小型会议室改造 v1",

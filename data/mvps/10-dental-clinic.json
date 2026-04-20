@@ -1,5 +1,7 @@
 {
   "slug": "10-dental-clinic",
+  "cat": "wellness",
+  "type": "P1-interior",
   "complete": true,
   "project": {
     "name": "Smile Lab · 牙科诊所 · v1",

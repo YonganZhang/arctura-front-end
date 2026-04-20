@@ -1,5 +1,7 @@
 {
   "slug": "04-coworking",
+  "cat": "workplace",
+  "type": "P1-interior",
   "complete": true,
   "project": {
     "name": "联合办公空间 Common Ground · v1",

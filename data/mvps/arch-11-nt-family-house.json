@@ -1,5 +1,7 @@
 {
   "slug": "arch-11-nt-family-house",
+  "cat": "residential",
+  "type": "P2-architecture",
   "complete": false,
   "project": {
     "name": "新界獨棟家庭住宅 Trio Haus · v1",

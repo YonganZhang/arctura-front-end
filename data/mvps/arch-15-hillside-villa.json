@@ -1,5 +1,7 @@
 {
   "slug": "arch-15-hillside-villa",
+  "cat": "residential",
+  "type": "P2-architecture",
   "complete": false,
   "project": {
     "name": "南区山地别墅",

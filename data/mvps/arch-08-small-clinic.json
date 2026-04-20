@@ -1,5 +1,7 @@
 {
   "slug": "arch-08-small-clinic",
+  "cat": "wellness",
+  "type": "P2-architecture",
   "complete": false,
   "project": {
     "name": "Meadow 社区小型诊所 (community small clinic) v1",

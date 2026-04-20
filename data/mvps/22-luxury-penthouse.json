@@ -1,5 +1,7 @@
 {
   "slug": "22-luxury-penthouse",
+  "cat": "residential",
+  "type": "P1-interior",
   "complete": false,
   "project": {
     "name": "半山豪华顶层公寓",

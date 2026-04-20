@@ -1,5 +1,7 @@
 {
   "slug": "arch-10-sports-complex",
+  "cat": "civic",
+  "type": "P2-architecture",
   "complete": false,
   "project": {
     "name": "Horizon Sports Complex — 地区级综合体育场 v1",

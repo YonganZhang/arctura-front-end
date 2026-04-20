@@ -1,5 +1,7 @@
 {
   "slug": "05-fitness-studio",
+  "cat": "wellness",
+  "type": "P1-interior",
   "complete": true,
   "project": {
     "name": "精品健身工作室 Lift Studio · v1",

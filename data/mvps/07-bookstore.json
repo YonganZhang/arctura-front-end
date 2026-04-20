@@ -1,5 +1,7 @@
 {
   "slug": "07-bookstore",
+  "cat": "residential",
+  "type": "P1-interior",
   "complete": true,
   "project": {
     "name": "独立书店阅读空间 Page & Co · v1",

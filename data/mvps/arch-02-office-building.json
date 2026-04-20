@@ -1,5 +1,7 @@
 {
   "slug": "arch-02-office-building",
+  "cat": "workplace",
+  "type": "P2-architecture",
   "complete": false,
   "project": {
     "name": "arch-02-office-building",

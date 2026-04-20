@@ -1,5 +1,7 @@
 {
   "slug": "11-bistro-restaurant",
+  "cat": "hospitality",
+  "type": "P1-interior",
   "complete": true,
   "project": {
     "name": "法式 Bistro 餐厅 Petit Coin · v1",

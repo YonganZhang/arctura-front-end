@@ -340,6 +340,8 @@ def build_mvp_record(mvp_dir: Path, mvp_type: str, agg: dict) -> dict:
 
     full_data = {
         "slug": slug,
+        "cat": index_entry["cat"],
+        "type": mvp_type,
         "complete": complete,
         "project": {
             "name": index_entry["name"],

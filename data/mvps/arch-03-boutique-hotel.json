@@ -1,5 +1,7 @@
 {
   "slug": "arch-03-boutique-hotel",
+  "cat": "hospitality",
+  "type": "P2-architecture",
   "complete": false,
   "project": {
     "name": "精品酒店 Stay Boutique · v1",
