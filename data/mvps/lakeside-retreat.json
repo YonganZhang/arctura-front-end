@@ -95,7 +95,32 @@
     }
   },
   "variants": {
-    "list": []
+    "list": [
+      {
+        "id": "v1-nordic-cabin",
+        "name": "V1 北欧木屋",
+        "name_zh": "V1 北欧木屋",
+        "desc": "",
+        "thumb": "/assets/mvps/lakeside-retreat/variants/v1-nordic-cabin/thumb.webp",
+        "hero": "/assets/mvps/lakeside-retreat/variants/v1-nordic-cabin/hero.webp"
+      },
+      {
+        "id": "v2-neo-chinese",
+        "name": "V2 新中式庭院",
+        "name_zh": "V2 新中式庭院",
+        "desc": "",
+        "thumb": "/assets/mvps/lakeside-retreat/variants/v2-neo-chinese/thumb.webp",
+        "hero": "/assets/mvps/lakeside-retreat/variants/v2-neo-chinese/hero.webp"
+      },
+      {
+        "id": "v3-mediterranean",
+        "name": "V3 地中海",
+        "name_zh": "V3 地中海",
+        "desc": "",
+        "thumb": "/assets/mvps/lakeside-retreat/variants/v3-mediterranean/thumb.webp",
+        "hero": "/assets/mvps/lakeside-retreat/variants/v3-mediterranean/hero.webp"
+      }
+    ]
   },
   "timeline": [],
   "decks": [],
@@ -106,5 +131,20 @@
       "sub": "All artifacts",
       "size": "TBD"
     }
-  ]
+  ],
+  "editable": {
+    "area_m2": 40,
+    "insulation_mm": 60,
+    "glazing_uvalue": 2.0,
+    "lighting_cct": 3000,
+    "lighting_density_w_m2": 11,
+    "wwr": 0.25,
+    "region": "HK"
+  },
+  "derived": {
+    "eui_kwh_m2_yr": 0,
+    "cost_total": 0,
+    "cost_per_m2": 0,
+    "co2_t_per_yr": 0
+  }
 }

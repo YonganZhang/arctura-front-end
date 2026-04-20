@@ -1,0 +1,384 @@
+{
+  "id": "v3-scandinavian",
+  "parent_slug": "19-industrial-living-room",
+  "name": "v3-scandinavian",
+  "project": {
+    "name": "北欧暖木住宅客厅 Scandinavian Warm Living · v1",
+    "zh": "北欧暖木住宅客厅 Scandinavian Warm Living · v1",
+    "area": 60,
+    "location": "Hong Kong",
+    "budgetHKD": 330000,
+    "style": "scandinavian, hygge, warm-wood, natural-textile, soft-curves",
+    "palette": [
+      {
+        "name": "cream_white",
+        "hex": "#F5EBDC"
+      },
+      {
+        "name": "ash_wood",
+        "hex": "#D9C4A7"
+      },
+      {
+        "name": "sage_green",
+        "hex": "#8FAE8B"
+      },
+      {
+        "name": "soft_blue",
+        "hex": "#A8C4D4"
+      },
+      {
+        "name": "linen_beige",
+        "hex": "#E8DFD0"
+      },
+      {
+        "name": "terracotta_accent",
+        "hex": "#C97D5C"
+      }
+    ]
+  },
+  "renders": [
+    {
+      "id": "01",
+      "file": "/assets/mvps/19-industrial-living-room/variants/v3-scandinavian/renders/01_hero_corner.webp",
+      "title": "01 Hero Corner",
+      "tag": "01_hero_corner"
+    },
+    {
+      "id": "02",
+      "file": "/assets/mvps/19-industrial-living-room/variants/v3-scandinavian/renders/02_reception.webp",
+      "title": "02 Reception",
+      "tag": "02_reception"
+    },
+    {
+      "id": "03",
+      "file": "/assets/mvps/19-industrial-living-room/variants/v3-scandinavian/renders/03_main_zone.webp",
+      "title": "03 Main Zone",
+      "tag": "03_main_zone"
+    },
+    {
+      "id": "04",
+      "file": "/assets/mvps/19-industrial-living-room/variants/v3-scandinavian/renders/04_feature_zone.webp",
+      "title": "04 Feature Zone",
+      "tag": "04_feature_zone"
+    },
+    {
+      "id": "05",
+      "file": "/assets/mvps/19-industrial-living-room/variants/v3-scandinavian/renders/05_lounge_zone.webp",
+      "title": "05 Lounge Zone",
+      "tag": "05_lounge_zone"
+    },
+    {
+      "id": "06",
+      "file": "/assets/mvps/19-industrial-living-room/variants/v3-scandinavian/renders/06_back_corner.webp",
+      "title": "06 Back Corner",
+      "tag": "06_back_corner"
+    },
+    {
+      "id": "07",
+      "file": "/assets/mvps/19-industrial-living-room/variants/v3-scandinavian/renders/07_top_ortho.webp",
+      "title": "07 Top Ortho",
+      "tag": "07_top_ortho"
+    },
+    {
+      "id": "08",
+      "file": "/assets/mvps/19-industrial-living-room/variants/v3-scandinavian/renders/08_birds_eye_3d.webp",
+      "title": "08 Birds Eye 3D",
+      "tag": "08_birds_eye_3d"
+    }
+  ],
+  "floorplan": "/assets/mvps/19-industrial-living-room/variants/v3-scandinavian/floorplan.webp",
+  "moodboard": "/assets/mvps/19-industrial-living-room/variants/v3-scandinavian/moodboard.webp",
+  "hero_img": "/assets/mvps/19-industrial-living-room/variants/v3-scandinavian/hero.webp",
+  "thumb_img": "/assets/mvps/19-industrial-living-room/variants/v3-scandinavian/thumb.webp",
+  "zones": [
+    {
+      "id": "入口玄关",
+      "name": "入口玄关",
+      "zh": "入口玄关",
+      "area": 4,
+      "notes": "",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "主沙发区",
+      "name": "主沙发区",
+      "zh": "主沙发区",
+      "area": 18,
+      "notes": "",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "电视墙",
+      "name": "电视墙",
+      "zh": "电视墙",
+      "area": 6,
+      "notes": "",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "餐厅区",
+      "name": "餐厅区",
+      "zh": "餐厅区",
+      "area": 12,
+      "notes": "",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "开放厨房吧台",
+      "name": "开放厨房吧台",
+      "zh": "开放厨房吧台",
+      "area": 8,
+      "notes": "",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "阅读角",
+      "name": "阅读角",
+      "zh": "阅读角",
+      "area": 6,
+      "notes": "",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "室内绿植",
+      "name": "室内绿植",
+      "zh": "室内绿植",
+      "area": 3,
+      "notes": "",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "窗台休闲",
+      "name": "窗台休闲",
+      "zh": "窗台休闲",
+      "area": 3,
+      "notes": "",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    }
+  ],
+  "pricing": {
+    "HK": {
+      "label": "Hong Kong",
+      "currency": "HK$",
+      "perM2": 0,
+      "rows": [
+        {
+          "cat": "1",
+          "desc": "slab",
+          "sub": "F1 Floor Slab — RC slab (120mm) incl. formwork + rebar",
+          "qty": "60.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "2",
+          "desc": "wall",
+          "sub": "F1 Exterior Walls — Common brick wall (200mm) incl. render (U≤1.2)",
+          "qty": "102.4",
+          "amt": "m2"
+        },
+        {
+          "cat": "3",
+          "desc": "wall",
+          "sub": "F1 Interior Partitions — Gypsum board partition (double-sided)",
+          "qty": "61.4",
+          "amt": "m2"
+        },
+        {
+          "cat": "4",
+          "desc": "window",
+          "sub": "F1 Windows — Aluminum frame + double clear glazing (U≤3.5)",
+          "qty": "30.7",
+          "amt": "m2"
+        },
+        {
+          "cat": "5",
+          "desc": "door",
+          "sub": "F1 Doors — Solid wood door (900mm) + frame + hardware",
+          "qty": "7.0",
+          "amt": "ea"
+        },
+        {
+          "cat": "6",
+          "desc": "finish",
+          "sub": "F1_entry Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "4.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "7",
+          "desc": "finish",
+          "sub": "F1_zone Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "18.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "8",
+          "desc": "finish",
+          "sub": "F1_zone_2 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "6.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "9",
+          "desc": "finish",
+          "sub": "F1_dining Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "12.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "10",
+          "desc": "finish",
+          "sub": "F1_kitchen Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "8.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "11",
+          "desc": "finish",
+          "sub": "F1_zone_3 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "6.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "12",
+          "desc": "finish",
+          "sub": "F1_zone_4 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "3.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "13",
+          "desc": "finish",
+          "sub": "F1_zone_5 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "3.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "14",
+          "desc": "roof",
+          "sub": "Roof — RC roof + 60mm XPS + membrane (U≤0.50)",
+          "qty": "60.0",
+          "amt": "m2"
+        }
+      ],
+      "total": 0
+    }
+  },
+  "energy": {
+    "eui": 0,
+    "limit": 150,
+    "annual": 0,
+    "engine": "EnergyPlus"
+  },
+  "compliance": {
+    "HK": {
+      "code": "HK_BEEO_BEC_2021",
+      "checks": [
+        {
+          "name": "Energy Energy Use Intensity (EUI)",
+          "value": "110.4",
+          "limit": "150",
+          "unit": "kWh/m2*yr",
+          "status": "pass",
+          "note": "74% of limit"
+        },
+        {
+          "name": "Envelope Exterior Wall U-value",
+          "value": "0.555",
+          "limit": "1.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Roof U-value",
+          "value": "0.498",
+          "limit": "0.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Window U-value",
+          "value": "2.0",
+          "limit": "5.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Window SHGC",
+          "value": "0.6",
+          "limit": "0.6",
+          "unit": "—",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope OTTV (Overall Thermal Transfer Value)",
+          "value": "needs facade analysis",
+          "limit": "25.0",
+          "unit": "W/m2",
+          "status": "pass",
+          "note": "OTTV requires detailed facade WWR + orientation data — not yet calculated."
+        },
+        {
+          "name": "Lighting Lighting Power Density",
+          "value": "6.0",
+          "limit": "10.0",
+          "unit": "W/m2",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Ventilation Fresh Air (ACH)",
+          "value": "0.5",
+          "limit": "0.5",
+          "unit": "ACH",
+          "status": "pass",
+          "note": ""
+        }
+      ],
+      "verdict": "—"
+    }
+  },
+  "editable": {
+    "area_m2": 60,
+    "insulation_mm": 60,
+    "glazing_uvalue": 2.0,
+    "lighting_cct": 3000,
+    "lighting_density_w_m2": 6,
+    "wwr": 0.25,
+    "region": "HK"
+  },
+  "derived": {
+    "eui_kwh_m2_yr": 0,
+    "cost_total": 0,
+    "cost_per_m2": 0,
+    "co2_t_per_yr": 0
+  }
+}

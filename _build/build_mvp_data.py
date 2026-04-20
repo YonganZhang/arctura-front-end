@@ -29,6 +29,64 @@ OUT_DATA = FE_ROOT / "data"
 OUT_MVPS = OUT_DATA / "mvps"
 
 
+# 默认的可编辑字段（chat 能改这些，驱动 derived 重算）
+# 工程合理值，不是每个 MVP 的真实 pipeline 输出
+def default_editable(mvp_cat: str, area_m2: float) -> dict:
+    # lighting density 按场景粗略设定（W/m²）
+    light_by_cat = {
+        "hospitality": 11,
+        "workplace": 9,
+        "residential": 6,
+        "civic": 8,
+        "wellness": 10,
+    }
+    return {
+        "area_m2": round(float(area_m2)) if area_m2 else 40,
+        "insulation_mm": 60,        # XPS 墙体保温
+        "glazing_uvalue": 2.0,      # W/m²K · 双玻默认
+        "lighting_cct": 3000,       # K · 2700=warm / 3000=neutral / 4000=cool
+        "lighting_density_w_m2": light_by_cat.get(mvp_cat, 8),
+        "wwr": 0.25,                # window-to-wall ratio
+        "region": "HK",             # 合规地区：HK / CN / US / JP
+    }
+
+
+def scan_variants(mvp_dir: Path, slug: str) -> list[dict]:
+    """扫 variants/v*-*/ 子目录，返回 variants.list 条目（所有 v1/v2/v3 全列，v1 默认选）"""
+    variants_dir = mvp_dir / "variants"
+    if not variants_dir.is_dir():
+        return []
+    out = []
+    for v in sorted(variants_dir.iterdir()):
+        if not v.is_dir():
+            continue
+        name = v.name
+        # 跳过非方案目录（_build_comparison_grid.py 等工具）
+        if name.startswith("_") or name.startswith("."):
+            continue
+        # 必须是 v<digit>-<slug> 的形式（过滤掉 __pycache__ / 其他子目录）
+        if not (len(name) >= 3 and name[0] == "v" and name[1].isdigit()):
+            continue
+        # 读 variant 的 brief 描述
+        vbrief = safe_read_json(v / "brief.json")
+        # project 字段通常是"禅意茶室 · 日式侘寂"这种 · 取 " · " 后面的风格部分
+        project_zh = vbrief.get("project", "")
+        project_en = vbrief.get("project_en", "")
+        style_zh = project_zh.split("·")[-1].strip() if "·" in project_zh else project_zh
+        style_en = project_en.split("·")[-1].strip() if "·" in project_en else project_en
+        label = style_en or style_zh or name.split("-", 1)[-1].replace("-", " ").title()
+        desc = (vbrief.get("space", {}) or {}).get("description", "") or ""
+        out.append({
+            "id": name,
+            "name": label,
+            "name_zh": style_zh if "·" in project_zh else "",
+            "desc": desc[:120] + ("…" if len(desc) > 120 else ""),
+            "thumb": f"/assets/mvps/{slug}/variants/{name}/thumb.webp",
+            "hero": f"/assets/mvps/{slug}/variants/{name}/hero.webp",
+        })
+    return out
+
+
 def safe_read_json(p: Path) -> dict:
     try:
         return json.loads(p.read_text(encoding="utf-8"))
@@ -174,16 +232,43 @@ def build_mvp_record(mvp_dir: Path, mvp_type: str, agg: dict) -> dict:
     boq_md = safe_read_text(mvp_dir / "energy" / "boq-HK.md")
     compliance_md = safe_read_text(mvp_dir / "energy" / "compliance-HK.md")
 
+    # Multi-variant MVP 在顶层可能没 brief/room/metrics/boq · fallback 到第一个 variant
+    variants_dir = mvp_dir / "variants"
+    if not brief and variants_dir.is_dir():
+        for v in sorted(variants_dir.iterdir()):
+            if v.is_dir() and len(v.name) >= 3 and v.name[0] == "v" and v.name[1].isdigit():
+                brief = brief or safe_read_json(v / "brief.json")
+                room = room or safe_read_json(v / "room.json")
+                building = building or safe_read_json(v / "building.json")
+                metrics = metrics or safe_read_json(v / "case-study" / "metrics.json")
+                boq_md = boq_md or safe_read_text(v / "energy" / "boq-HK.md")
+                compliance_md = compliance_md or safe_read_text(v / "energy" / "compliance-HK.md")
+                if brief:
+                    break
+
     boq_rows, boq_total, currency = parse_boq_md(boq_md)
     compliance_checks = parse_compliance_md(compliance_md)
     renders = list_renders(mvp_dir, slug)
 
-    # 聚合优先，fallback 到 metrics
-    eui = agg.get("eui_kwh_m2_yr") or metrics.get("energy", {}).get("eui_kwh_m2_yr") or 0
-    total_energy = agg.get("total_energy_kwh") or metrics.get("energy", {}).get("total_kwh_yr") or 0
-    area = agg.get("floor_area_m2") or metrics.get("area_sqm_scene") or brief.get("space", {}).get("area_sqm") or 0
-    grand_total = agg.get("boq_grand_total") or metrics.get("boq", {}).get("grand_total") or boq_total or 0
-    cost_per_m2 = agg.get("boq_cost_per_m2") or metrics.get("boq", {}).get("unit_cost_per_sqm") or (grand_total / area if area else 0)
+    # 聚合优先，fallback 到 metrics（metrics.json schema 有两个版本：nested energy.X vs flat X，都 fallback）
+    eui = (agg.get("eui_kwh_m2_yr") or
+           (metrics.get("energy", {}) or {}).get("eui_kwh_m2_yr") or
+           metrics.get("eui_kwh_m2_yr") or 0)
+    total_energy = (agg.get("total_energy_kwh") or
+                    (metrics.get("energy", {}) or {}).get("total_kwh_yr") or
+                    metrics.get("annual_energy_kwh") or 0)
+    area = (agg.get("floor_area_m2") or
+            metrics.get("area_sqm_scene") or
+            metrics.get("area_sqm") or
+            (brief.get("space", {}) or {}).get("area_sqm") or 0)
+    grand_total = (agg.get("boq_grand_total") or
+                   (metrics.get("boq", {}) or {}).get("grand_total") or
+                   metrics.get("boq_hkd") or
+                   boq_total or 0)
+    cost_per_m2 = (agg.get("boq_cost_per_m2") or
+                   (metrics.get("boq", {}) or {}).get("unit_cost_per_sqm") or
+                   metrics.get("cost_per_m2_hkd") or
+                   (grand_total / area if area else 0))
 
     # 完整度判定
     complete = bool(
@@ -212,7 +297,9 @@ def build_mvp_record(mvp_dir: Path, mvp_type: str, agg: dict) -> dict:
         "eui": round(float(eui), 1) if eui else None,
         "cost_per_m2": round(float(cost_per_m2)) if cost_per_m2 else None,
         "currency": currency,
-        "compliance": agg.get("compliance_verdict") or metrics.get("compliance", {}).get("status") or "—",
+        "compliance": (agg.get("compliance_verdict") or
+                       (metrics.get("compliance", {}) or {}).get("status") or
+                       metrics.get("compliance_status") or "—"),
         "thumb": f"/assets/mvps/{slug}/thumb.webp",
         "hero": f"/assets/mvps/{slug}/hero.webp",
         "complete": complete,
@@ -282,12 +369,21 @@ def build_mvp_record(mvp_dir: Path, mvp_type: str, agg: dict) -> dict:
         "compliance": {
             "HK": {"code": agg.get("code", "HK_BEEO_BEC_2021"), "checks": compliance_checks, "verdict": index_entry["compliance"]},
         },
-        "variants": {"list": []},
+        "variants": {"list": scan_variants(mvp_dir, slug)},
         "timeline": [],
         "decks": [],
         "downloads": [
             {"name": f"{slug}-bundle.zip", "ext": "zip", "sub": "All artifacts", "size": "TBD"},
         ],
+        # chat 可以编辑这些字段，前端派生字段（eui/cost/compliance）相应重算
+        "editable": default_editable(index_entry["cat"], area),
+        # 派生字段 · chat 改 editable 后会 recompute 覆盖这些
+        "derived": {
+            "eui_kwh_m2_yr": round(float(eui), 1) if eui else 0,
+            "cost_total": round(float(grand_total)) if grand_total else 0,
+            "cost_per_m2": round(float(cost_per_m2)) if cost_per_m2 else 0,
+            "co2_t_per_yr": round(float(eui) * float(area) * 0.59 / 1000, 2) if (area and eui) else 0,
+        },
     }
 
     return index_entry, full_data

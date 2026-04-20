@@ -40,7 +40,32 @@
     }
   },
   "variants": {
-    "list": []
+    "list": [
+      {
+        "id": "v1-industrial-raw",
+        "name": "V1 工業 Raw",
+        "name_zh": "V1 工業 Raw",
+        "desc": "",
+        "thumb": "/assets/mvps/community-fitness/variants/v1-industrial-raw/thumb.webp",
+        "hero": "/assets/mvps/community-fitness/variants/v1-industrial-raw/hero.webp"
+      },
+      {
+        "id": "v2-sport-vitality",
+        "name": "V2 運動活力",
+        "name_zh": "V2 運動活力",
+        "desc": "",
+        "thumb": "/assets/mvps/community-fitness/variants/v2-sport-vitality/thumb.webp",
+        "hero": "/assets/mvps/community-fitness/variants/v2-sport-vitality/hero.webp"
+      },
+      {
+        "id": "v3-luxury-club",
+        "name": "V3 高端會所",
+        "name_zh": "V3 高端會所",
+        "desc": "",
+        "thumb": "/assets/mvps/community-fitness/variants/v3-luxury-club/thumb.webp",
+        "hero": "/assets/mvps/community-fitness/variants/v3-luxury-club/hero.webp"
+      }
+    ]
   },
   "timeline": [],
   "decks": [],
@@ -51,5 +76,20 @@
       "sub": "All artifacts",
       "size": "TBD"
     }
-  ]
+  ],
+  "editable": {
+    "area_m2": 40,
+    "insulation_mm": 60,
+    "glazing_uvalue": 2.0,
+    "lighting_cct": 3000,
+    "lighting_density_w_m2": 10,
+    "wwr": 0.25,
+    "region": "HK"
+  },
+  "derived": {
+    "eui_kwh_m2_yr": 0,
+    "cost_total": 0,
+    "cost_per_m2": 0,
+    "co2_t_per_yr": 0
+  }
 }

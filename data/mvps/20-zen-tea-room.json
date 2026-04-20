@@ -2,45 +2,330 @@
   "slug": "20-zen-tea-room",
   "complete": false,
   "project": {
-    "name": "20-zen-tea-room",
+    "name": "Zen Tea Room · Neo-Chinese",
     "zh": "",
-    "area": 0,
+    "area": 40,
     "location": "Hong Kong",
-    "budgetHKD": 0,
-    "style": "",
-    "palette": []
+    "budgetHKD": 360000,
+    "style": "新中式, 红木, 水墨, 铜器, 文人雅趣, 禅意",
+    "palette": [
+      {
+        "name": "primary",
+        "hex": "#2C1810"
+      },
+      {
+        "name": "secondary",
+        "hex": "#8B4513"
+      },
+      {
+        "name": "accent",
+        "hex": "#B8860B"
+      },
+      {
+        "name": "wall",
+        "hex": "#F5F0E8"
+      },
+      {
+        "name": "floor",
+        "hex": "#5C3317"
+      },
+      {
+        "name": "highlight",
+        "hex": "#CD853F"
+      }
+    ]
   },
   "renders": [],
   "floorplan": null,
   "moodboard": null,
   "hero_img": "/assets/mvps/20-zen-tea-room/hero.webp",
   "thumb_img": "/assets/mvps/20-zen-tea-room/thumb.webp",
-  "zones": [],
+  "zones": [
+    {
+      "id": "品茶区",
+      "name": "品茶区",
+      "zh": "",
+      "area": 16,
+      "notes": "",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "水墨展示区",
+      "name": "水墨展示区",
+      "zh": "",
+      "area": 6,
+      "notes": "",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "茶叶展示柜",
+      "name": "茶叶展示柜",
+      "zh": "",
+      "area": 4,
+      "notes": "",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "煮水区",
+      "name": "煮水区",
+      "zh": "",
+      "area": 4,
+      "notes": "",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "禅意庭院角",
+      "name": "禅意庭院角",
+      "zh": "",
+      "area": 4,
+      "notes": "",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "入口玄关",
+      "name": "入口玄关",
+      "zh": "",
+      "area": 3,
+      "notes": "",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "过道",
+      "name": "过道",
+      "zh": "",
+      "area": 3,
+      "notes": "",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    }
+  ],
   "furniture": [],
   "pricing": {
     "HK": {
       "label": "Hong Kong",
       "currency": "HK$",
-      "perM2": 0,
-      "rows": [],
-      "total": 0
+      "perM2": 13510,
+      "rows": [
+        {
+          "cat": "1",
+          "desc": "slab",
+          "sub": "F1 Floor Slab — RC slab (120mm) incl. formwork + rebar",
+          "qty": "40.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "2",
+          "desc": "wall",
+          "sub": "F1 Exterior Walls — Common brick wall (200mm) incl. render (U≤1.2)",
+          "qty": "78.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "3",
+          "desc": "wall",
+          "sub": "F1 Interior Partitions — Gypsum board partition (double-sided)",
+          "qty": "50.4",
+          "amt": "m2"
+        },
+        {
+          "cat": "4",
+          "desc": "window",
+          "sub": "F1 Windows — Thermal-break aluminum + Low-E double glazing (U≤2.2)",
+          "qty": "23.4",
+          "amt": "m2"
+        },
+        {
+          "cat": "5",
+          "desc": "door",
+          "sub": "F1 Doors — Solid wood door (900mm) + frame + hardware",
+          "qty": "6.0",
+          "amt": "ea"
+        },
+        {
+          "cat": "6",
+          "desc": "finish",
+          "sub": "F1_zone Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "16.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "7",
+          "desc": "finish",
+          "sub": "F1_zone_2 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "6.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "8",
+          "desc": "finish",
+          "sub": "F1_zone_3 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "4.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "9",
+          "desc": "finish",
+          "sub": "F1_zone_4 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "4.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "10",
+          "desc": "finish",
+          "sub": "F1_zone_5 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "4.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "11",
+          "desc": "finish",
+          "sub": "F1_entry Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "3.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "12",
+          "desc": "finish",
+          "sub": "F1_zone_6 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "3.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "13",
+          "desc": "roof",
+          "sub": "Roof — RC roof + 60mm XPS + membrane (U≤0.50)",
+          "qty": "40.0",
+          "amt": "m2"
+        }
+      ],
+      "total": 540392
     }
   },
   "energy": {
-    "eui": 0,
+    "eui": 84.0,
     "limit": 150,
-    "annual": 0,
+    "annual": 3358,
     "engine": "EnergyPlus"
   },
   "compliance": {
     "HK": {
       "code": "HK_BEEO_BEC_2021",
-      "checks": [],
-      "verdict": "—"
+      "checks": [
+        {
+          "name": "Energy Energy Use Intensity (EUI)",
+          "value": "84.0",
+          "limit": "150",
+          "unit": "kWh/m2*yr",
+          "status": "pass",
+          "note": "56% of limit"
+        },
+        {
+          "name": "Envelope Exterior Wall U-value",
+          "value": "0.555",
+          "limit": "1.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Roof U-value",
+          "value": "0.498",
+          "limit": "0.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Window U-value",
+          "value": "2.0",
+          "limit": "5.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Window SHGC",
+          "value": "0.4",
+          "limit": "0.6",
+          "unit": "—",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope OTTV (Overall Thermal Transfer Value)",
+          "value": "needs facade analysis",
+          "limit": "25.0",
+          "unit": "W/m2",
+          "status": "pass",
+          "note": "OTTV requires detailed facade WWR + orientation data — not yet calculated."
+        },
+        {
+          "name": "Lighting Lighting Power Density",
+          "value": "8.0",
+          "limit": "10.0",
+          "unit": "W/m2",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Ventilation Fresh Air (ACH)",
+          "value": "0.7",
+          "limit": "0.5",
+          "unit": "ACH",
+          "status": "pass",
+          "note": ""
+        }
+      ],
+      "verdict": "8/8 passed"
     }
   },
   "variants": {
-    "list": []
+    "list": [
+      {
+        "id": "v1-new-chinese",
+        "name": "Neo-Chinese",
+        "name_zh": "新中式",
+        "desc": "新中式禅意茶室，红木+水墨+铜器元素，4人品茶空间，营造文人雅趣氛围",
+        "thumb": "/assets/mvps/20-zen-tea-room/variants/v1-new-chinese/thumb.webp",
+        "hero": "/assets/mvps/20-zen-tea-room/variants/v1-new-chinese/hero.webp"
+      },
+      {
+        "id": "v2-wabi-sabi",
+        "name": "Japanese Wabi-Sabi",
+        "name_zh": "日式侘寂",
+        "desc": "日式侘寂风格茶室，原木+白墙+陶器元素，4人品茶空间，追求素朴自然的不完美之美",
+        "thumb": "/assets/mvps/20-zen-tea-room/variants/v2-wabi-sabi/thumb.webp",
+        "hero": "/assets/mvps/20-zen-tea-room/variants/v2-wabi-sabi/hero.webp"
+      },
+      {
+        "id": "v3-modern-minimal",
+        "name": "Modern Minimal",
+        "name_zh": "现代极简",
+        "desc": "现代极简风格茶室，灰白+不锈钢+玻璃元素，4人品茶空间，科技感与禅意的融合",
+        "thumb": "/assets/mvps/20-zen-tea-room/variants/v3-modern-minimal/thumb.webp",
+        "hero": "/assets/mvps/20-zen-tea-room/variants/v3-modern-minimal/hero.webp"
+      }
+    ]
   },
   "timeline": [],
   "decks": [],
@@ -51,5 +336,20 @@
       "sub": "All artifacts",
       "size": "TBD"
     }
-  ]
+  ],
+  "editable": {
+    "area_m2": 40,
+    "insulation_mm": 60,
+    "glazing_uvalue": 2.0,
+    "lighting_cct": 3000,
+    "lighting_density_w_m2": 11,
+    "wwr": 0.25,
+    "region": "HK"
+  },
+  "derived": {
+    "eui_kwh_m2_yr": 84.0,
+    "cost_total": 540392,
+    "cost_per_m2": 13510,
+    "co2_t_per_yr": 1.98
+  }
 }

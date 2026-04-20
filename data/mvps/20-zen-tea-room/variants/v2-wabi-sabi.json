@@ -1,0 +1,342 @@
+{
+  "id": "v2-wabi-sabi",
+  "parent_slug": "20-zen-tea-room",
+  "name": "Japanese Wabi-Sabi",
+  "project": {
+    "name": "Zen Tea Room · Japanese Wabi-Sabi",
+    "zh": "禅意茶室 · 日式侘寂",
+    "area": 40,
+    "location": "HK",
+    "budgetHKD": 280000,
+    "style": "侘寂, 原木, 白墙, 陶器, 不完美美学, 素朴",
+    "palette": [
+      {
+        "name": "primary",
+        "hex": "#E8DFD0"
+      },
+      {
+        "name": "secondary",
+        "hex": "#C4B7A6"
+      },
+      {
+        "name": "accent",
+        "hex": "#6E5A4C"
+      },
+      {
+        "name": "wall",
+        "hex": "#F2EDE6"
+      },
+      {
+        "name": "floor",
+        "hex": "#B8A08A"
+      },
+      {
+        "name": "highlight",
+        "hex": "#8B7D6B"
+      }
+    ]
+  },
+  "renders": [
+    {
+      "id": "01",
+      "file": "/assets/mvps/20-zen-tea-room/variants/v2-wabi-sabi/renders/01_hero_corner.webp",
+      "title": "01 Hero Corner",
+      "tag": "01_hero_corner"
+    },
+    {
+      "id": "03",
+      "file": "/assets/mvps/20-zen-tea-room/variants/v2-wabi-sabi/renders/03_main_zone.webp",
+      "title": "03 Main Zone",
+      "tag": "03_main_zone"
+    },
+    {
+      "id": "04",
+      "file": "/assets/mvps/20-zen-tea-room/variants/v2-wabi-sabi/renders/04_feature_zone.webp",
+      "title": "04 Feature Zone",
+      "tag": "04_feature_zone"
+    },
+    {
+      "id": "08",
+      "file": "/assets/mvps/20-zen-tea-room/variants/v2-wabi-sabi/renders/08_birds_eye_3d.webp",
+      "title": "08 Birds Eye 3D",
+      "tag": "08_birds_eye_3d"
+    }
+  ],
+  "floorplan": "/assets/mvps/20-zen-tea-room/variants/v2-wabi-sabi/floorplan.webp",
+  "moodboard": "/assets/mvps/20-zen-tea-room/variants/v2-wabi-sabi/moodboard.webp",
+  "hero_img": "/assets/mvps/20-zen-tea-room/variants/v2-wabi-sabi/hero.webp",
+  "thumb_img": "/assets/mvps/20-zen-tea-room/variants/v2-wabi-sabi/thumb.webp",
+  "zones": [
+    {
+      "id": "tea_ceremony_zone",
+      "name": "Tea Ceremony Zone",
+      "zh": "品茶区",
+      "area": 16,
+      "notes": "原木矮桌(1.8x0.9m)+4个蒲团+铁壶+手工粗陶杯",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "tokonoma_alcove",
+      "name": "Tokonoma Alcove",
+      "zh": "壁龛展示",
+      "area": 6,
+      "notes": "壁龛+单支花器+手工陶艺+季节挂轴",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "tea_utensil_storage",
+      "name": "Tea Utensil Storage",
+      "zh": "茶器收纳",
+      "area": 4,
+      "notes": "原木开放格架+粗陶茶罐+竹制茶具",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "mizuya_(prep_area)",
+      "name": "Mizuya (Prep Area)",
+      "zh": "水屋",
+      "area": 4,
+      "notes": "原木台面+铁壶+竹勺+清水盆",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "dry_garden",
+      "name": "Dry Garden",
+      "zh": "枯山水庭",
+      "area": 4,
+      "notes": "白砂+黑石+苔藓球+竹篱",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "entrance_doma",
+      "name": "Entrance Doma",
+      "zh": "入口土间",
+      "area": 3,
+      "notes": "竹帘+脱鞋台+原木伞架",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "corridors",
+      "name": "Corridors",
+      "zh": "过道",
+      "area": 3,
+      "notes": "1.0m宽通道",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    }
+  ],
+  "pricing": {
+    "HK": {
+      "label": "Hong Kong",
+      "currency": "HK$",
+      "perM2": 13830,
+      "rows": [
+        {
+          "cat": "1",
+          "desc": "slab",
+          "sub": "F1 Floor Slab — RC slab (120mm) incl. formwork + rebar",
+          "qty": "40.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "2",
+          "desc": "wall",
+          "sub": "F1 Exterior Walls — Common brick wall (200mm) incl. render (U≤1.2)",
+          "qty": "78.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "3",
+          "desc": "wall",
+          "sub": "F1 Interior Partitions — Gypsum board partition (double-sided)",
+          "qty": "50.4",
+          "amt": "m2"
+        },
+        {
+          "cat": "4",
+          "desc": "window",
+          "sub": "F1 Windows — Thermal-break aluminum + Low-E double glazing (U≤2.2)",
+          "qty": "23.4",
+          "amt": "m2"
+        },
+        {
+          "cat": "5",
+          "desc": "door",
+          "sub": "F1 Doors — Solid wood door (900mm) + frame + hardware",
+          "qty": "7.0",
+          "amt": "ea"
+        },
+        {
+          "cat": "6",
+          "desc": "finish",
+          "sub": "F1_zone Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "16.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "7",
+          "desc": "finish",
+          "sub": "F1_zone_2 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "6.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "8",
+          "desc": "finish",
+          "sub": "F1_zone_3 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "4.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "9",
+          "desc": "finish",
+          "sub": "F1_zone_4 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "4.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "10",
+          "desc": "finish",
+          "sub": "F1_zone_5 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "4.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "11",
+          "desc": "finish",
+          "sub": "F1_zone_6 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "3.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "12",
+          "desc": "finish",
+          "sub": "F1_zone_7 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "3.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "13",
+          "desc": "roof",
+          "sub": "Roof — RC roof + 60mm XPS + membrane (U≤0.50)",
+          "qty": "40.0",
+          "amt": "m2"
+        }
+      ],
+      "total": 553202
+    }
+  },
+  "energy": {
+    "eui": 84.0,
+    "limit": 150,
+    "annual": 3358,
+    "engine": "EnergyPlus"
+  },
+  "compliance": {
+    "HK": {
+      "code": "HK_BEEO_BEC_2021",
+      "checks": [
+        {
+          "name": "Energy Energy Use Intensity (EUI)",
+          "value": "84.0",
+          "limit": "150",
+          "unit": "kWh/m2*yr",
+          "status": "pass",
+          "note": "56% of limit"
+        },
+        {
+          "name": "Envelope Exterior Wall U-value",
+          "value": "0.555",
+          "limit": "1.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Roof U-value",
+          "value": "0.498",
+          "limit": "0.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Window U-value",
+          "value": "2.0",
+          "limit": "5.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Window SHGC",
+          "value": "0.4",
+          "limit": "0.6",
+          "unit": "—",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope OTTV (Overall Thermal Transfer Value)",
+          "value": "needs facade analysis",
+          "limit": "25.0",
+          "unit": "W/m2",
+          "status": "pass",
+          "note": "OTTV requires detailed facade WWR + orientation data — not yet calculated."
+        },
+        {
+          "name": "Lighting Lighting Power Density",
+          "value": "8.0",
+          "limit": "10.0",
+          "unit": "W/m2",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Ventilation Fresh Air (ACH)",
+          "value": "0.7",
+          "limit": "0.5",
+          "unit": "ACH",
+          "status": "pass",
+          "note": ""
+        }
+      ],
+      "verdict": "—"
+    }
+  },
+  "editable": {
+    "area_m2": 40,
+    "insulation_mm": 60,
+    "glazing_uvalue": 2.0,
+    "lighting_cct": 3000,
+    "lighting_density_w_m2": 11,
+    "wwr": 0.25,
+    "region": "HK"
+  },
+  "derived": {
+    "eui_kwh_m2_yr": 84.0,
+    "cost_total": 553202,
+    "cost_per_m2": 13830,
+    "co2_t_per_yr": 1.98
+  }
+}

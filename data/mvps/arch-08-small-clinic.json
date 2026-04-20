@@ -442,5 +442,20 @@
       "sub": "All artifacts",
       "size": "TBD"
     }
-  ]
+  ],
+  "editable": {
+    "area_m2": 200,
+    "insulation_mm": 60,
+    "glazing_uvalue": 2.0,
+    "lighting_cct": 3000,
+    "lighting_density_w_m2": 10,
+    "wwr": 0.25,
+    "region": "HK"
+  },
+  "derived": {
+    "eui_kwh_m2_yr": 195.7,
+    "cost_total": 2182757,
+    "cost_per_m2": 6290,
+    "co2_t_per_yr": 23.09
+  }
 }

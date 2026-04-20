@@ -209,7 +209,32 @@
     }
   },
   "variants": {
-    "list": []
+    "list": [
+      {
+        "id": "v1-modern",
+        "name": "v1",
+        "name_zh": "v1",
+        "desc": "",
+        "thumb": "/assets/mvps/19-industrial-living-room/variants/v1-modern/thumb.webp",
+        "hero": "/assets/mvps/19-industrial-living-room/variants/v1-modern/hero.webp"
+      },
+      {
+        "id": "v2-industrial",
+        "name": "v1",
+        "name_zh": "v1",
+        "desc": "",
+        "thumb": "/assets/mvps/19-industrial-living-room/variants/v2-industrial/thumb.webp",
+        "hero": "/assets/mvps/19-industrial-living-room/variants/v2-industrial/hero.webp"
+      },
+      {
+        "id": "v3-scandinavian",
+        "name": "v1",
+        "name_zh": "v1",
+        "desc": "",
+        "thumb": "/assets/mvps/19-industrial-living-room/variants/v3-scandinavian/thumb.webp",
+        "hero": "/assets/mvps/19-industrial-living-room/variants/v3-scandinavian/hero.webp"
+      }
+    ]
   },
   "timeline": [],
   "decks": [],
@@ -220,5 +245,20 @@
       "sub": "All artifacts",
       "size": "TBD"
     }
-  ]
+  ],
+  "editable": {
+    "area_m2": 60,
+    "insulation_mm": 60,
+    "glazing_uvalue": 2.0,
+    "lighting_cct": 3000,
+    "lighting_density_w_m2": 6,
+    "wwr": 0.25,
+    "region": "HK"
+  },
+  "derived": {
+    "eui_kwh_m2_yr": 0,
+    "cost_total": 0,
+    "cost_per_m2": 0,
+    "co2_t_per_yr": 0
+  }
 }

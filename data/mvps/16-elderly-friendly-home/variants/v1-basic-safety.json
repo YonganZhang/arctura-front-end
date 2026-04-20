@@ -1,0 +1,82 @@
+{
+  "id": "v1-basic-safety",
+  "parent_slug": "16-elderly-friendly-home",
+  "name": "v1-basic-safety",
+  "project": {
+    "name": "v1-basic-safety",
+    "zh": "",
+    "area": 0,
+    "location": "Hong Kong",
+    "budgetHKD": 0,
+    "style": "",
+    "palette": []
+  },
+  "renders": [
+    {
+      "id": "bedroom-bathroom",
+      "file": "/assets/mvps/16-elderly-friendly-home/variants/v1-basic-safety/renders/bedroom-bathroom.webp",
+      "title": "Bedroom Bathroom",
+      "tag": "bedroom-bathroom"
+    },
+    {
+      "id": "kitchen-dining",
+      "file": "/assets/mvps/16-elderly-friendly-home/variants/v1-basic-safety/renders/kitchen-dining.webp",
+      "title": "Kitchen Dining",
+      "tag": "kitchen-dining"
+    },
+    {
+      "id": "living-overview",
+      "file": "/assets/mvps/16-elderly-friendly-home/variants/v1-basic-safety/renders/living-overview.webp",
+      "title": "Living Overview",
+      "tag": "living-overview"
+    },
+    {
+      "id": "top-down",
+      "file": "/assets/mvps/16-elderly-friendly-home/variants/v1-basic-safety/renders/top-down.webp",
+      "title": "Top Down",
+      "tag": "top-down"
+    }
+  ],
+  "floorplan": null,
+  "moodboard": null,
+  "hero_img": "/assets/mvps/16-elderly-friendly-home/variants/v1-basic-safety/hero.webp",
+  "thumb_img": "/assets/mvps/16-elderly-friendly-home/variants/v1-basic-safety/thumb.webp",
+  "zones": [],
+  "pricing": {
+    "HK": {
+      "label": "Hong Kong",
+      "currency": "HK$",
+      "perM2": 0,
+      "rows": [],
+      "total": 0
+    }
+  },
+  "energy": {
+    "eui": 0,
+    "limit": 150,
+    "annual": 0,
+    "engine": "EnergyPlus"
+  },
+  "compliance": {
+    "HK": {
+      "code": "HK_BEEO_BEC_2021",
+      "checks": [],
+      "verdict": "—"
+    }
+  },
+  "editable": {
+    "area_m2": 40,
+    "insulation_mm": 60,
+    "glazing_uvalue": 2.0,
+    "lighting_cct": 3000,
+    "lighting_density_w_m2": 6,
+    "wwr": 0.25,
+    "region": "HK"
+  },
+  "derived": {
+    "eui_kwh_m2_yr": 0,
+    "cost_total": 0,
+    "cost_per_m2": 0,
+    "co2_t_per_yr": 0
+  }
+}

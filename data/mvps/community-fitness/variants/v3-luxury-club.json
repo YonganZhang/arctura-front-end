@@ -1,0 +1,358 @@
+{
+  "id": "v3-luxury-club",
+  "parent_slug": "community-fitness",
+  "name": "v3-luxury-club",
+  "project": {
+    "name": "社區健身中心 · V3 高端會所",
+    "zh": "社區健身中心 · V3 高端會所",
+    "area": 0,
+    "location": "Hong Kong",
+    "budgetHKD": 6000000,
+    "style": "luxury-club, dark-wood, gold-copper, marble, premium, sophisticated",
+    "palette": [
+      {
+        "name": "dark_wood",
+        "hex": "#3B2F2F"
+      },
+      {
+        "name": "gold_copper",
+        "hex": "#B87333"
+      },
+      {
+        "name": "marble_white",
+        "hex": "#F0ECE3"
+      },
+      {
+        "name": "charcoal",
+        "hex": "#2C2C2C"
+      },
+      {
+        "name": "warm_gray",
+        "hex": "#6B6B6B"
+      }
+    ]
+  },
+  "renders": [
+    {
+      "id": "birds-eye",
+      "file": "/assets/mvps/community-fitness/variants/v3-luxury-club/renders/birds-eye.webp",
+      "title": "Birds Eye",
+      "tag": "birds-eye"
+    },
+    {
+      "id": "front-elevation",
+      "file": "/assets/mvps/community-fitness/variants/v3-luxury-club/renders/front-elevation.webp",
+      "title": "Front Elevation",
+      "tag": "front-elevation"
+    },
+    {
+      "id": "interior-living",
+      "file": "/assets/mvps/community-fitness/variants/v3-luxury-club/renders/interior-living.webp",
+      "title": "Interior Living",
+      "tag": "interior-living"
+    },
+    {
+      "id": "street-corner",
+      "file": "/assets/mvps/community-fitness/variants/v3-luxury-club/renders/street-corner.webp",
+      "title": "Street Corner",
+      "tag": "street-corner"
+    }
+  ],
+  "floorplan": null,
+  "moodboard": "/assets/mvps/community-fitness/variants/v3-luxury-club/moodboard.webp",
+  "hero_img": "/assets/mvps/community-fitness/variants/v3-luxury-club/hero.webp",
+  "thumb_img": "/assets/mvps/community-fitness/variants/v3-luxury-club/thumb.webp",
+  "zones": [],
+  "pricing": {
+    "HK": {
+      "label": "Hong Kong",
+      "currency": "HK$",
+      "perM2": 0,
+      "rows": [
+        {
+          "cat": "1",
+          "desc": "slab",
+          "sub": "F1 Floor Slab — RC slab (120mm) incl. formwork + rebar",
+          "qty": "400.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "2",
+          "desc": "slab",
+          "sub": "F2 Floor Slab — RC slab (120mm) incl. formwork + rebar",
+          "qty": "400.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "3",
+          "desc": "wall",
+          "sub": "F1 Exterior Walls — Common brick wall (200mm) incl. render (U≤1.2)",
+          "qty": "320.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "4",
+          "desc": "wall",
+          "sub": "F1 Interior Partitions — Gypsum board partition (double-sided)",
+          "qty": "76.8",
+          "amt": "m2"
+        },
+        {
+          "cat": "5",
+          "desc": "wall",
+          "sub": "F2 Exterior Walls — Common brick wall (200mm) incl. render (U≤1.2)",
+          "qty": "320.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "6",
+          "desc": "wall",
+          "sub": "F2 Interior Partitions — Gypsum board partition (double-sided)",
+          "qty": "76.8",
+          "amt": "m2"
+        },
+        {
+          "cat": "7",
+          "desc": "window",
+          "sub": "F1 Windows — Aluminum frame + double clear glazing (U≤3.5)",
+          "qty": "96.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "8",
+          "desc": "window",
+          "sub": "F2 Windows — Aluminum frame + double clear glazing (U≤3.5)",
+          "qty": "96.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "9",
+          "desc": "door",
+          "sub": "F1 Doors — Solid wood door (900mm) + frame + hardware",
+          "qty": "7.0",
+          "amt": "ea"
+        },
+        {
+          "cat": "10",
+          "desc": "door",
+          "sub": "F2 Doors — Solid wood door (900mm) + frame + hardware",
+          "qty": "6.0",
+          "amt": "ea"
+        },
+        {
+          "cat": "11",
+          "desc": "finish",
+          "sub": "F1_reception Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "30.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "12",
+          "desc": "finish",
+          "sub": "F1_zone Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "120.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "13",
+          "desc": "finish",
+          "sub": "F1_zone_2 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "100.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "14",
+          "desc": "finish",
+          "sub": "F1_zone_3 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "40.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "15",
+          "desc": "finish",
+          "sub": "F1_zone_4 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "40.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "16",
+          "desc": "finish",
+          "sub": "F1_zone_5 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "20.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "17",
+          "desc": "finish",
+          "sub": "F1_zone_6 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "15.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "18",
+          "desc": "finish",
+          "sub": "F1_corridor Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "35.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "19",
+          "desc": "finish",
+          "sub": "F2_zone Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "120.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "20",
+          "desc": "finish",
+          "sub": "F2_zone_2 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "80.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "21",
+          "desc": "finish",
+          "sub": "F2_zone_3 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "30.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "22",
+          "desc": "finish",
+          "sub": "F2_lounge Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "40.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "23",
+          "desc": "finish",
+          "sub": "F2_zone_4 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "20.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "24",
+          "desc": "finish",
+          "sub": "F2_zone_5 Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "20.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "25",
+          "desc": "finish",
+          "sub": "F2_corridor Floor Finish — Ceramic tile floor (supply + install)",
+          "qty": "30.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "26",
+          "desc": "roof",
+          "sub": "Roof — RC roof + 60mm XPS + membrane (U≤0.50)",
+          "qty": "400.0",
+          "amt": "m2"
+        },
+        {
+          "cat": "27",
+          "desc": "stair",
+          "sub": "Stairs (1 flights) — RC stair flight (one floor) + railing",
+          "qty": "1.0",
+          "amt": "flight"
+        }
+      ],
+      "total": 0
+    }
+  },
+  "energy": {
+    "eui": 111.7,
+    "limit": 150,
+    "annual": 82622,
+    "engine": "EnergyPlus"
+  },
+  "compliance": {
+    "HK": {
+      "code": "HK_BEEO_BEC_2021",
+      "checks": [
+        {
+          "name": "Energy Energy Use Intensity (EUI)",
+          "value": "111.7",
+          "limit": "150",
+          "unit": "kWh/m2*yr",
+          "status": "pass",
+          "note": "74% of limit"
+        },
+        {
+          "name": "Envelope Exterior Wall U-value",
+          "value": "0.555",
+          "limit": "1.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Roof U-value",
+          "value": "0.498",
+          "limit": "0.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Window U-value",
+          "value": "2.0",
+          "limit": "5.8",
+          "unit": "W/m2K",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope Window SHGC",
+          "value": "0.6",
+          "limit": "0.6",
+          "unit": "—",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Envelope OTTV (Overall Thermal Transfer Value)",
+          "value": "needs facade analysis",
+          "limit": "25.0",
+          "unit": "W/m2",
+          "status": "pass",
+          "note": "OTTV requires detailed facade WWR + orientation data — not yet calculated."
+        },
+        {
+          "name": "Lighting Lighting Power Density",
+          "value": "8.0",
+          "limit": "10.0",
+          "unit": "W/m2",
+          "status": "pass",
+          "note": ""
+        },
+        {
+          "name": "Ventilation Fresh Air (ACH)",
+          "value": "0.7",
+          "limit": "0.5",
+          "unit": "ACH",
+          "status": "pass",
+          "note": ""
+        }
+      ],
+      "verdict": "—"
+    }
+  },
+  "editable": {
+    "area_m2": 40,
+    "insulation_mm": 60,
+    "glazing_uvalue": 2.0,
+    "lighting_cct": 3000,
+    "lighting_density_w_m2": 10,
+    "wwr": 0.25,
+    "region": "HK"
+  },
+  "derived": {
+    "eui_kwh_m2_yr": 111.7,
+    "cost_total": 0,
+    "cost_per_m2": 0,
+    "co2_t_per_yr": 0
+  }
+}
