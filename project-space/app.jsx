@@ -798,18 +798,21 @@ function Decks() {
 
 // ───────── Timeline ─────────
 function Timeline() {
-  const { canUndo, canReset, dispatch } = useProject();
+  const { canUndo, canReset, dispatch, history } = useProject();
   const items = D.timeline || [];
   return (
     <section>
       <div className="view-head">
         <div>
           <h1 className="view-title">Timeline</h1>
-          <div className="view-sub">修改历史 · every change, every diff, every minute</div>
+          <div className="view-sub">
+            修改历史 · {history.length} undoable step{history.length !== 1 ? "s" : ""}
+            <span style={{color:"var(--text-3)", marginLeft:8, fontSize:11}}>(刷新页面 → 回到原始)</span>
+          </div>
         </div>
         <div style={{display:"flex", gap:8}}>
           <button className="d3-btn" disabled={!canUndo}
-                  onClick={()=>dispatch({type:"REWIND", index: Math.max(0, (items.length - 2))})}
+                  onClick={()=>dispatch({type:"REWIND", index: history.length - 1})}
                   title="Undo last change">↶ Undo</button>
           <button className="d3-btn" disabled={!canReset}
                   onClick={()=>dispatch({type:"RESET"})}
