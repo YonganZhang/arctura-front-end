@@ -432,10 +432,53 @@ function Floorplan() {
 }
 
 // ───────── 3D Viewer · 真 3D 模型（GLB · model-viewer）· 无模型时退化到多视角图 ─────────
+
+// Node 名分类正则（build_models.py 拷的 Blender GLB · 节点名有语义）
+const FLOOR_RX = /^(Floor|FloorMat|Ground|Site_Ground|Slab_F\d|Slab_Existing|Slab_New|Deck)/i;
+// 墙 · 包含 Wall_Roof_N_parapet（屋顶女儿墙也算围护）
+const ENVELOPE_RX = /(^Wall|Partition|Ceiling|Roof|Beam.*Roof|Slab_Roof|Eave)/i;
+
+function applyEnvelopeVisibility(mv, hideEnvelope) {
+  if (!mv) return false;
+  // model-viewer 内部 Three.js Scene 挂在 Symbol(scene) 上
+  const sym = Object.getOwnPropertySymbols(mv).find(s => s.toString() === "Symbol(scene)");
+  if (!sym) return false;
+  const scene = mv[sym];
+  if (!scene || typeof scene.traverse !== "function") return false;
+  scene.traverse(obj => {
+    const name = obj.name || "";
+    if (FLOOR_RX.test(name)) {
+      obj.visible = true;
+      return;
+    }
+    if (ENVELOPE_RX.test(name)) {
+      obj.visible = !hideEnvelope;
+    }
+  });
+  return true;
+}
+
 function Viewer3D() {
   useProject();
   const modelGlb = D.model_glb;
   const renders = D.renders || [];
+  const mvRef = useRef(null);
+  const [hideEnvelope, setHideEnvelope] = useState(false);
+  const [modelLoaded, setModelLoaded] = useState(false);
+
+  // model 加载完成 OR toggle 变化 → apply
+  useEffect(() => {
+    const mv = mvRef.current;
+    if (!mv) return;
+    const onLoad = () => {
+      setModelLoaded(true);
+      applyEnvelopeVisibility(mv, hideEnvelope);
+    };
+    mv.addEventListener("load", onLoad);
+    // 如果模型已加载（切换 tab 回来）· 直接 apply
+    if (modelLoaded) applyEnvelopeVisibility(mv, hideEnvelope);
+    return () => mv.removeEventListener("load", onLoad);
+  }, [hideEnvelope, modelGlb, modelLoaded]);
 
   // 优先：有真 3D 模型 · 用 <model-viewer> 加载（drag/zoom/AR 内置）
   if (modelGlb) {
@@ -452,9 +495,30 @@ function Viewer3D() {
               {area ? <> · {area} m²</> : null}
             </div>
           </div>
+          <div style={{display:"flex", gap:8, alignItems:"center"}}>
+            <button
+              onClick={() => setHideEnvelope(v => !v)}
+              style={{
+                padding: "6px 14px",
+                background: hideEnvelope ? "var(--text-1)" : "var(--bg-1)",
+                color: hideEnvelope ? "var(--bg-0)" : "var(--text-1)",
+                border: "1px solid " + (hideEnvelope ? "var(--text-1)" : "var(--line)"),
+                borderRadius: 4,
+                fontSize: 12,
+                fontFamily: "var(--f-mono)",
+                letterSpacing: "0.05em",
+                cursor: "pointer",
+                transition: "all 0.15s",
+              }}
+              title={hideEnvelope ? "显示墙壁 + 天花板" : "隐藏墙壁 + 天花板（地板保留）"}
+            >
+              {hideEnvelope ? "🏠 显示围护" : "🔲 仅家具"}
+            </button>
+          </div>
         </div>
         <div style={{background:"linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 100%)", border:"1px solid var(--line)", borderRadius:6, overflow:"hidden"}}>
           <model-viewer
+            ref={mvRef}
             src={modelGlb}
             alt="3D model"
             camera-controls
@@ -468,6 +532,7 @@ function Viewer3D() {
         </div>
         <div style={{marginTop:12, padding:"10px 14px", background:"var(--bg-1)", border:"1px solid var(--line)", borderRadius:4, fontSize:12, color:"var(--text-3)", fontFamily:"var(--f-mono)"}}>
           ← drag · scroll · ⌘-click = pan · GLB {modelGlb.split("/").pop()}
+          {hideEnvelope && <span style={{marginLeft:12, color:"var(--accent)"}}>· envelope hidden（地板保留）</span>}
         </div>
       </section>
     );
