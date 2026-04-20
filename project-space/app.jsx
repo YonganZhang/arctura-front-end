@@ -38,8 +38,12 @@ function projectReducer(state, action) {
       const target = state.history[i];
       return { ...state, current: target, history: state.history.slice(0, i) };
     }
-    case "RESET":
-      return { ...state, current: state.original, history: [] };
+    case "RESET": {
+      // Reset 回 original · 清除 active_variant_id（若有）· 清 history
+      const fresh = { ...state.original };
+      if ("active_variant_id" in fresh) delete fresh.active_variant_id;
+      return { ...state, current: fresh, history: [] };
+    }
     default:
       return state;
   }
@@ -1173,7 +1177,15 @@ function Chat({ onNavigate }) {
               )}
               {m.rejected && m.rejected.length > 0 && (
                 <div className="msg-diff" style={{background:"rgba(216,87,42,0.1)", color:"#b54e2c"}}>
-                  <i>✗</i>{m.rejected.map(r => r.reason).join(" · ")}
+                  <i>✗</i>{m.rejected.map(r => {
+                    const reason = r.reason || "";
+                    // 友好化常见技术错误
+                    if (reason.startsWith("Unknown editable field")) return "AI 引用了一个不存在的字段（已忽略这一步）";
+                    if (reason.includes("out of range")) return `超出合法范围：${reason.replace(/.*out of range\s*/, "")}`;
+                    if (reason.includes("variant_id") && reason.includes("not found")) return "AI 选了一个不存在的 variant（已忽略）";
+                    if (reason.includes("no variants available")) return "这个 MVP 只有一套方案，无法切换";
+                    return reason;
+                  }).join(" · ")}
                 </div>
               )}
               {m.model && (

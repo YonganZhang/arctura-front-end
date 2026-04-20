@@ -12,7 +12,32 @@
     "style": "awaiting-variant-axis",
     "palette": []
   },
-  "renders": [],
+  "renders": [
+    {
+      "id": "birds-eye",
+      "file": "/assets/mvps/community-fitness/variants/v1-industrial-raw/renders/birds-eye.webp",
+      "title": "Birds Eye",
+      "tag": "birds-eye"
+    },
+    {
+      "id": "front-elevation",
+      "file": "/assets/mvps/community-fitness/variants/v1-industrial-raw/renders/front-elevation.webp",
+      "title": "Front Elevation",
+      "tag": "front-elevation"
+    },
+    {
+      "id": "interior-living",
+      "file": "/assets/mvps/community-fitness/variants/v1-industrial-raw/renders/interior-living.webp",
+      "title": "Interior Living",
+      "tag": "interior-living"
+    },
+    {
+      "id": "street-corner",
+      "file": "/assets/mvps/community-fitness/variants/v1-industrial-raw/renders/street-corner.webp",
+      "title": "Street Corner",
+      "tag": "street-corner"
+    }
+  ],
   "floorplan": null,
   "moodboard": null,
   "hero_img": "/assets/mvps/community-fitness/hero.webp",

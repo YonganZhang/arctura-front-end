@@ -186,6 +186,33 @@ def list_renders(mvp_dir: Path, slug: str) -> list[dict]:
         for pat in arch_patterns:
             sources.extend(sorted(mvp_dir.glob(pat)))
 
+    # 多变体 MVP（顶层无 renders）· 用第一个 variant 的 renders 当 baseline
+    # 路径指向 Arctura-Front-end/assets/mvps/<slug>/variants/<vid>/renders/*.webp
+    if not sources:
+        variants_dir = mvp_dir / "variants"
+        if variants_dir.is_dir():
+            for v in sorted(variants_dir.iterdir()):
+                if not v.is_dir():
+                    continue
+                if not (len(v.name) >= 3 and v.name[0] == "v" and v.name[1].isdigit()):
+                    continue
+                v_rdir = v / "renders"
+                if v_rdir.is_dir():
+                    v_pngs = sorted(v_rdir.glob("*.png"))
+                    if v_pngs:
+                        # 指向 variant WebP 路径
+                        out = []
+                        for p in v_pngs:
+                            name = p.stem
+                            out.append({
+                                "id": name.split("_", 1)[0] if "_" in name else name,
+                                "file": f"/assets/mvps/{slug}/variants/{v.name}/renders/{name}.webp",
+                                "title": name.replace("_", " ").replace("-", " ").title(),
+                                "tag": name,
+                            })
+                        return out
+                break  # 只看第一个 variant
+
     out = []
     for p in sources:
         name = p.stem

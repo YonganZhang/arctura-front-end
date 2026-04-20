@@ -37,7 +37,32 @@
       }
     ]
   },
-  "renders": [],
+  "renders": [
+    {
+      "id": "01",
+      "file": "/assets/mvps/20-zen-tea-room/variants/v1-new-chinese/renders/01_hero_corner.webp",
+      "title": "01 Hero Corner",
+      "tag": "01_hero_corner"
+    },
+    {
+      "id": "03",
+      "file": "/assets/mvps/20-zen-tea-room/variants/v1-new-chinese/renders/03_main_zone.webp",
+      "title": "03 Main Zone",
+      "tag": "03_main_zone"
+    },
+    {
+      "id": "04",
+      "file": "/assets/mvps/20-zen-tea-room/variants/v1-new-chinese/renders/04_feature_zone.webp",
+      "title": "04 Feature Zone",
+      "tag": "04_feature_zone"
+    },
+    {
+      "id": "08",
+      "file": "/assets/mvps/20-zen-tea-room/variants/v1-new-chinese/renders/08_birds_eye_3d.webp",
+      "title": "08 Birds Eye 3D",
+      "tag": "08_birds_eye_3d"
+    }
+  ],
   "floorplan": null,
   "moodboard": null,
   "hero_img": "/assets/mvps/20-zen-tea-room/hero.webp",

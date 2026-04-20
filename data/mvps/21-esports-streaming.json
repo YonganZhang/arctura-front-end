@@ -12,7 +12,32 @@
     "style": "esports, streaming, dual-streamer, LED-lighting, acoustic",
     "palette": []
   },
-  "renders": [],
+  "renders": [
+    {
+      "id": "01",
+      "file": "/assets/mvps/21-esports-streaming/variants/v1-cyberpunk/renders/01_hero_corner.webp",
+      "title": "01 Hero Corner",
+      "tag": "01_hero_corner"
+    },
+    {
+      "id": "03",
+      "file": "/assets/mvps/21-esports-streaming/variants/v1-cyberpunk/renders/03_main_zone.webp",
+      "title": "03 Main Zone",
+      "tag": "03_main_zone"
+    },
+    {
+      "id": "04",
+      "file": "/assets/mvps/21-esports-streaming/variants/v1-cyberpunk/renders/04_feature_zone.webp",
+      "title": "04 Feature Zone",
+      "tag": "04_feature_zone"
+    },
+    {
+      "id": "08",
+      "file": "/assets/mvps/21-esports-streaming/variants/v1-cyberpunk/renders/08_birds_eye_3d.webp",
+      "title": "08 Birds Eye 3D",
+      "tag": "08_birds_eye_3d"
+    }
+  ],
   "floorplan": null,
   "moodboard": null,
   "hero_img": "/assets/mvps/21-esports-streaming/hero.webp",
