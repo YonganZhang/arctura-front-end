@@ -453,15 +453,28 @@ export class SceneRenderer {
 
   _applyTransparency() {
     const t = this.transparency;
-    // 墙
+    // 最暴力 · 隐藏 = 直接从场景图 remove · 显示 = 重新 add
+    // visible=false 在某些 browser / Three.js 版本下可能不生效 · remove 100% 保底
     this.wallObjs.forEach((group, wallId) => {
       const dir = this._wallDirMap.get(wallId);
-      const transp = (dir === "N" && t.wall_N) || (dir === "S" && t.wall_S) ||
-                     (dir === "E" && t.wall_E) || (dir === "W" && t.wall_W);
-      this._setMeshOpacity(group, transp ? 0.15 : 1.0);
+      const hide = (dir === "N" && t.wall_N) || (dir === "S" && t.wall_S) ||
+                   (dir === "E" && t.wall_E) || (dir === "W" && t.wall_W);
+      this._toggleInScene(group, !hide);
     });
     // 天花板
-    if (this.ceilingObj) this._setMeshOpacity(this.ceilingObj, t.ceiling ? 0.15 : 1.0);
+    if (this.ceilingObj) this._toggleInScene(this.ceilingObj, !t.ceiling);
+  }
+
+  // 真隐藏 · shouldShow=false 把 obj 从 world 移除 · true 重新添加
+  // 同时设 visible（双保险 · 有的 Three.js 行为 visible 也需要）
+  _toggleInScene(obj, shouldShow) {
+    if (!obj) return;
+    obj.visible = shouldShow;
+    if (shouldShow) {
+      if (obj.parent !== this.world) this.world.add(obj);
+    } else {
+      if (obj.parent === this.world) this.world.remove(obj);
+    }
   }
 
   _setMeshOpacity(root, opacity) {
