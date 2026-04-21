@@ -289,20 +289,18 @@ section.compact { padding: 80px 0; }
   overflow: hidden;
   box-sizing: border-box;
 }
-/* Canvas 居中 · 方形 1:1 · 尺寸 = min(95vh, 95vw) 保证不被边框裁 + 尽量大 */
+/* Canvas 铺满整个 section · object-fit: cover 让画面尽量大（对齐 cleanspaceus）
+   用 object-position: center 60% 保留底部 · 顶部/两侧可少量裁（通常是空白区） */
 .scroll-3d-sticky.big {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: block;
 }
 .scroll-3d-sticky.big #hero-canvas {
-  position: static;
-  aspect-ratio: 1 / 1;
-  width: auto;
-  height: min(95vh, 95vw);
-  max-width: 95vw;
-  max-height: 95vh;
-  object-fit: contain;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
   display: block;
 }
 
