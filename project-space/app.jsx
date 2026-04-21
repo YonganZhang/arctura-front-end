@@ -346,7 +346,156 @@ function Overview({ setActive }) {
   );
 }
 
-// ───────── Floorplan (drag-able + hover info) ─────────
+// ───────── FloorplanScene · Phase 2.0 · 从 scene 投影生成 · drag 写回 ops ─────────
+function FloorplanScene() {
+  const { dispatch } = useProject();
+  const scene = D.scene;
+  const svgRef = useRef(null);
+  const [dragging, setDragging] = useState(null); // { id, start: [mx, my], origPos: [x,y,z] }
+
+  if (!scene || !scene.bounds) return null;
+  const { bounds } = scene;
+  // 视口：米→像素 · 最多 600px 宽
+  const scale = Math.min(600 / bounds.w, 450 / bounds.d);
+  const vw = bounds.w * scale;
+  const vh = bounds.d * scale;
+  // scene 坐标系：x 向右，y 向内；svg：x 向右，y 向下
+  const m2px_x = (mx) => (mx + bounds.w / 2) * scale;
+  const m2px_y = (my) => (bounds.d / 2 - my) * scale;   // y 翻转
+  const px2m_x = (px) => px / scale - bounds.w / 2;
+  const px2m_y = (px) => bounds.d / 2 - px / scale;
+
+  const onPointerDown = (ev, obj) => {
+    ev.preventDefault();
+    const rect = svgRef.current.getBoundingClientRect();
+    setDragging({
+      id: obj.id,
+      start: [ev.clientX - rect.left, ev.clientY - rect.top],
+      origPos: [...obj.pos],
+    });
+    // 本地立即反馈（先只改 UI · 松手时真持久化）
+    ev.target.setPointerCapture?.(ev.pointerId);
+  };
+  const onPointerMove = (ev) => {
+    if (!dragging) return;
+    const rect = svgRef.current.getBoundingClientRect();
+    const px = ev.clientX - rect.left;
+    const py = ev.clientY - rect.top;
+    const newX = px2m_x(px);
+    const newY = px2m_y(py);
+    // 立即更新 scene（local state · 渲染流畅）· 最终 ops 只写一次
+    const obj = (scene.objects || []).find(o => o.id === dragging.id);
+    if (obj) {
+      obj.pos = [newX, newY, dragging.origPos[2]];
+      // 触发重绘
+      dispatch({ type: "APPLY_EDIT", newState: { ...D, scene: { ...scene, objects: [...scene.objects] } } });
+    }
+  };
+  const onPointerUp = async (ev) => {
+    if (!dragging) return;
+    const obj = (scene.objects || []).find(o => o.id === dragging.id);
+    setDragging(null);
+    if (!obj) return;
+    // POST ops 以持久化（同时让后端验证 / 重算 derived）
+    try {
+      const r = await fetch("/api/scene/ops", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          slug: D.slug,
+          scene: D.scene,
+          ops: [{ op: "move_object", id: obj.id, pos: obj.pos }],
+        }),
+      });
+      if (r.ok) {
+        const data = await r.json();
+        if (data.newScene) {
+          dispatch({ type: "APPLY_EDIT", newState: { ...D, scene: data.newScene } });
+          showToast(`✓ ${obj.label_zh || obj.id} 已移动`);
+        }
+      }
+    } catch (e) {
+      console.warn("[floorplan] persist failed:", e);
+    }
+  };
+
+  // 颜色：从 scene.materials 取 base_color · 没有则灰
+  const colorFor = (mat_id) => scene.materials?.[mat_id]?.base_color || "#999";
+
+  const objectsSorted = [...(scene.objects || [])].sort((a, b) => a.pos[2] - b.pos[2]); // 低到高
+
+  return (
+    <section>
+      <div className="view-head">
+        <div>
+          <h1 className="view-title">Floorplan</h1>
+          <div className="view-sub">
+            平面图（从 scene 投影 · 可拖拽 · 写回后端）· {bounds.w}m × {bounds.d}m · {scene.objects?.length || 0} 物件
+          </div>
+        </div>
+      </div>
+      <div style={{ background: "var(--bg-1)", border: "1px solid var(--line)", borderRadius: 6, padding: 20, display: "flex", gap: 20 }}>
+        <svg ref={svgRef} width={vw} height={vh}
+             style={{ background: "#fafaf7", cursor: dragging ? "grabbing" : "default" }}
+             onPointerMove={onPointerMove}
+             onPointerUp={onPointerUp}
+             onPointerLeave={onPointerUp}>
+          {/* 网格 */}
+          {Array.from({ length: Math.floor(bounds.w) + 1 }).map((_, i) => (
+            <line key={"vx"+i} x1={i*scale} y1={0} x2={i*scale} y2={vh} stroke="#ececea" strokeWidth={1} />
+          ))}
+          {Array.from({ length: Math.floor(bounds.d) + 1 }).map((_, i) => (
+            <line key={"hy"+i} x1={0} y1={i*scale} x2={vw} y2={i*scale} stroke="#ececea" strokeWidth={1} />
+          ))}
+
+          {/* 墙 */}
+          {(scene.walls || []).map(w => {
+            const x1 = m2px_x(w.start[0]), y1 = m2px_y(w.start[1]);
+            const x2 = m2px_x(w.end[0]),   y2 = m2px_y(w.end[1]);
+            return (
+              <line key={w.id} x1={x1} y1={y1} x2={x2} y2={y2}
+                    stroke={colorFor(w.material_id)} strokeWidth={6}
+                    strokeLinecap="round" opacity={0.9} />
+            );
+          })}
+
+          {/* 物件（top-down box · 按 pos.z 排序 · 低在下高在上）*/}
+          {objectsSorted.map(o => {
+            const w = o.size[0] * scale, d = o.size[1] * scale;
+            const cx = m2px_x(o.pos[0]), cy = m2px_y(o.pos[1]);
+            const rotDeg = o.rotation ? o.rotation[2] : 0;
+            return (
+              <g key={o.id} transform={`translate(${cx},${cy}) rotate(${-rotDeg})`}
+                 style={{ cursor: "grab" }}>
+                <rect x={-w/2} y={-d/2} width={w} height={d}
+                      fill={colorFor(o.material_id)} stroke="#333" strokeWidth={0.5}
+                      opacity={0.75}
+                      onPointerDown={(e) => onPointerDown(e, o)} />
+                {w > 30 && (
+                  <text x={0} y={3} fontSize={8} textAnchor="middle"
+                        fill="#222" pointerEvents="none" fontFamily="monospace">
+                    {o.label_zh || o.type}
+                  </text>
+                )}
+              </g>
+            );
+          })}
+        </svg>
+
+        <div style={{ flex: 1, minWidth: 200, padding: "8px 12px", background: "var(--bg-0)", borderRadius: 4, fontSize: 12, color: "var(--text-2)", lineHeight: 1.6 }}>
+          <div style={{ fontFamily: "var(--f-mono)", fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 6, color: "var(--text-3)" }}>Scene Stats</div>
+          <div>墙: <b>{scene.walls?.length || 0}</b></div>
+          <div>物件: <b>{scene.objects?.length || 0}</b></div>
+          <div>灯: <b>{scene.lights?.length || 0}</b></div>
+          <div>材质: <b>{Object.keys(scene.materials || {}).length}</b></div>
+          <div style={{ marginTop: 10, fontSize: 11, color: "var(--text-3)" }}>拖物件即时改 scene · 松手后写回后端</div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ───────── Floorplan (legacy · drag-able + hover info · 无 scene 时 fallback) ─────────
 function Floorplan() {
   useProject();
   const wrapRef = useRef(null);
@@ -1610,8 +1759,8 @@ function App() {
   const views = {
     overview: <Overview setActive={setActive} />,
     renders: <Renders />,
-    floorplan: <Floorplan />,
-    // Phase 2.0 pilot flag：data.scene 存在则用新 Three.js renderer · 否则旧 model-viewer
+    // Phase 2.0 pilot flag：scene 存在则用 FloorplanScene（真数据 + 写回 ops）· 否则旧
+    floorplan: D.scene ? <FloorplanScene /> : <Floorplan />,
     "3d": D.scene ? <Viewer3DScene /> : <Viewer3D />,
     boq: <BOQ />,
     energy: <Energy />,
