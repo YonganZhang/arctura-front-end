@@ -129,7 +129,70 @@ section.compact { padding: 80px 0; }
 .nav-cta:hover .nav-cta-arrow { transform: translate(2px, -2px); }
 
 /* ========== HERO ========== */
-.hero { padding: 72px 0 96px; position: relative; }
+.hero { padding: 72px 0 96px; position: relative; min-height: 680px; }
+
+/* ========== Hero 滚动动画背景 · 130 帧 WebP canvas scrub ========== */
+.hero-3d-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: 6px;
+  background: linear-gradient(180deg, var(--bg) 0%, var(--paper) 100%);
+}
+.hero-3d-bg canvas {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+/* Scrim · 让 copy 在 3D 上可读 */
+.hero-3d-scrim {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, var(--bg) 0%, rgba(247,244,238,0.75) 35%, rgba(247,244,238,0.35) 60%, transparent 75%),
+    linear-gradient(180deg, rgba(247,244,238,0.15) 0%, transparent 30%, transparent 70%, rgba(247,244,238,0.4) 100%);
+  pointer-events: none;
+}
+/* 滚动进度条 · 顶部细条 */
+.hero-3d-progress {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: rgba(26,25,22,0.05);
+  pointer-events: none;
+  z-index: 3;
+}
+.hero-3d-bar {
+  height: 100%;
+  width: 0%;
+  background: var(--ink);
+  transition: width 0.12s linear;
+}
+/* hero-grid 在 3D 上层 · 相对定位拿 z-index */
+.hero .hero-grid { position: relative; z-index: 2; }
+
+/* Demo panel 隐藏（由 3D 背景替代视觉角色）· 保留 DOM 以防后续恢复 */
+.hero .demo { display: none; }
+
+/* hero-grid 单列 · copy 占左半 · 右半让 3D 透出来 */
+.hero .hero-grid {
+  grid-template-columns: minmax(0, 1fr);
+}
+.hero .hero-copy {
+  max-width: 620px;
+}
+
+@media (max-width: 900px) {
+  .hero { min-height: 560px; }
+  .hero-3d-scrim {
+    background:
+      linear-gradient(180deg, rgba(247,244,238,0.85) 0%, rgba(247,244,238,0.55) 40%, rgba(247,244,238,0.35) 100%);
+  }
+}
+
 .hero-grid {
   display: grid;
   grid-template-columns: 1fr 0.9fr;

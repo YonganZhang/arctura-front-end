@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=4">
+<link rel="stylesheet" href="styles.css?v=5">
 
 <script>
 const TWEAKS = /*EDITMODE-BEGIN*/{
@@ -45,6 +45,13 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
 
 <!-- ============ HERO ============ -->
 <section class="hero wrap" data-screen-label="01 Hero">
+  <!-- 滚动驱动动画背景 · 130 帧 WebP 序列 · 从平面图 → 3D -->
+  <div class="hero-3d-bg" aria-hidden="true">
+    <canvas id="hero-canvas" width="1920" height="1920"></canvas>
+    <div class="hero-3d-scrim"></div>
+    <div class="hero-3d-progress"><div class="hero-3d-bar" id="hero-3d-bar"></div></div>
+  </div>
+
   <div class="hero-grid">
     <div class="hero-copy">
       <div class="hero-eyebrow">
@@ -1279,6 +1286,7 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
   </div>
 </div>
 
-<script src="app.js?v=3"></script>
+<script src="hero-scrub.js?v=1"></script>
+<script src="app.js?v=4"></script>
 </body>
 </html>
