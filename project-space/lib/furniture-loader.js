@@ -13,9 +13,41 @@ const _loader = new GLTFLoader();
 let _library = null;          // cached from /data/furniture-library.json
 let _libraryPromise = null;
 
+// Phase 3.I · PBR 木纹贴图 · 有则用 · 无则静默 fallback（base_color 不变）
+const _texLoader = new THREE.TextureLoader();
+let _woodAlbedoTex = null, _woodNormalTex = null;
+let _woodTexTried = false;
+async function tryLoadWoodTextures() {
+  if (_woodTexTried) return;
+  _woodTexTried = true;
+  const tryOne = (url) => new Promise(resolve => {
+    _texLoader.load(url, tex => {
+      tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+      tex.repeat.set(2, 2);
+      resolve(tex);
+    }, undefined, () => resolve(null));
+  });
+  const [albedo, normal] = await Promise.all([
+    tryOne("/assets/textures/wood_albedo.jpg"),
+    tryOne("/assets/textures/wood_normal.jpg"),
+  ]);
+  _woodAlbedoTex = albedo; _woodNormalTex = normal;
+}
+// 判断一个 base_color 是不是"木色"（肉眼看起来是棕 / 橙色系）
+function isWoodColor(hex) {
+  if (!hex || typeof hex !== "string") return false;
+  const m = hex.match(/^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i);
+  if (!m) return false;
+  const r = parseInt(m[1], 16), g = parseInt(m[2], 16), b = parseInt(m[3], 16);
+  // 棕色族：R > G > B 且 R 在 0.3~0.8 区间
+  return r > g && g > b && r >= 80 && r <= 220 && (r - b) > 30;
+}
+
 export async function loadLibrary() {
   if (_library) return _library;
   if (_libraryPromise) return _libraryPromise;
+  // Phase 3.I · 并发尝试加载 PBR 贴图（失败不阻塞库加载）
+  tryLoadWoodTextures();
   _libraryPromise = fetch("/data/furniture-library.json")
     .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`library fetch ${r.status}`))))
     .then((lib) => { _library = lib; return lib; })
@@ -51,11 +83,17 @@ const MAT_CACHE = new Map();
 function getMat(color, roughness = 0.6, metallic = 0) {
   const key = `${color}|${roughness}|${metallic}`;
   if (!MAT_CACHE.has(key)) {
-    MAT_CACHE.set(key, new THREE.MeshStandardMaterial({
+    const mat = new THREE.MeshStandardMaterial({
       color: new THREE.Color(color),
       roughness,
       metalness: metallic,
-    }));
+    });
+    // Phase 3.I · 木色自动叠 normalMap（如 texture 加载成功）
+    if (isWoodColor(color) && _woodNormalTex) {
+      mat.normalMap = _woodNormalTex;
+      mat.normalScale = new THREE.Vector2(0.6, 0.6);
+    }
+    MAT_CACHE.set(key, mat);
   }
   return MAT_CACHE.get(key).clone();
 }
