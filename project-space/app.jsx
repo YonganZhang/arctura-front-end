@@ -58,6 +58,9 @@ function projectReducer(state, action) {
 }
 
 const ProjectCtx = createContext({ current: null, dispatch: () => {}, history: [], canUndo: false, canReset: false });
+// Phase 3.H · Floorplan↔3D 共享 selection · { kind, id } 跨 tab 传递
+const SelectionCtx = createContext({ selection: null, setSelection: () => {} });
+function useSelection() { return useContext(SelectionCtx); }
 
 // 组件调这个钩子就自动订阅 state 变化（触发 re-render）+ 获得 dispatch
 function useProject() {
@@ -357,10 +360,10 @@ const TYPE_EMOJI = {
 
 function FloorplanScene() {
   const { dispatch } = useProject();
+  const { selection, setSelection } = useSelection();   // Phase 3.H · 共享 · 切到 3D tab 后选中仍在
   const scene = D.scene;
   const svgRef = useRef(null);
   const [dragging, setDragging] = useState(null); // { id, start: [mx, my], origPos: [x,y,z] }
-  const [selection, setSelection] = useState(null); // Phase 3.D · card · click 不拖动时触发
   const [furnitureTypes, setFurnitureTypes] = useState([]);
   const dragStartRef = useRef(null);
 
@@ -508,7 +511,15 @@ function FloorplanScene() {
               <g key={o.id} transform={`translate(${cx},${cy}) rotate(${-rotDeg})`}
                  style={{ cursor: "grab" }}>
                 <rect x={-w/2} y={-d/2} width={w} height={d}
-                      fill={colorFor(o.material_id)} stroke="#333" strokeWidth={0.5}
+                      fill={colorFor(o.material_id)}
+                      stroke={
+                        selection && (selection.id === o.id || selection.id === o.assembly_id)
+                          ? "#44aa44" : "#333"
+                      }
+                      strokeWidth={
+                        selection && (selection.id === o.id || selection.id === o.assembly_id)
+                          ? 2 : 0.5
+                      }
                       opacity={0.75}
                       onPointerDown={(e) => onPointerDown(e, o)} />
                 {/* Phase 3.F.G · emoji icon · 优先取 assembly 的 type · 否则 object 的 type */}
@@ -1955,6 +1966,7 @@ function btnStyle(kind, disabled) {
 // 只在 data.scene 存在时启用 · 否则降级到旧 Viewer3D
 function Viewer3DScene() {
   useProject();
+  const { selection, setSelection } = useSelection();   // Phase 3.H · 跨 tab 共享
   const canvasRef = useRef(null);
   const rendererRef = useRef(null);
   const lastSceneRef = useRef(null);
@@ -1962,7 +1974,6 @@ function Viewer3DScene() {
   const currentScene = D.scene;
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [selection, setSelection] = useState(null);   // {kind, id} or null · Phase 3.C/D
   const [hover, setHover] = useState(null);           // Phase 3.F.B · hover tooltip
   const [furnitureTypes, setFurnitureTypes] = useState([]);
   const [transp, setTransp] = useState({              // Phase 3.E · UI state
@@ -2067,6 +2078,26 @@ function Viewer3DScene() {
       .catch((e) => { if (!cancelled) { setError(String(e.message || e)); setLoading(false); } });
     return () => { cancelled = true; };
   }, [currentScene]);
+
+  // Phase 3.H · 共享 selection 变化（比如从 Floorplan 点的）· 同步 renderer 高亮 + camera tween 聚焦
+  useEffect(() => {
+    if (!rendererRef.current || !currentScene) return;
+    rendererRef.current.setSelection(selection?.id || null);
+    if (selection?.id) {
+      // 找目标 pos
+      const asm = (currentScene.assemblies || []).find(a => a.id === selection.id);
+      const obj = asm || (currentScene.objects || []).find(o => o.id === selection.id);
+      if (obj?.pos) {
+        const [x, y, z] = obj.pos;
+        // 相机聚焦 · 离 assembly 2m 前斜上 · target 就是物体
+        rendererRef.current._tweenCameraTo({
+          pos: [x + 2, Math.max(z + 1.2, 1.5), -(y) + 2],   // world Y-up swap
+          target: [x, Math.max(z + 0.3, 0.5), -y],
+          duration: 700,
+        });
+      }
+    }
+  }, [selection?.id]);
 
   const area = D.project?.area || 0;
   const variantId = D.active_variant_id;
@@ -2296,8 +2327,20 @@ function Root() {
 
   return (
     <ProjectCtx.Provider value={ctxValue}>
-      <App />
+      <SelectionProvider>
+        <App />
+      </SelectionProvider>
     </ProjectCtx.Provider>
+  );
+}
+
+// Phase 3.H · SelectionProvider · 跨 tab 共享点选
+function SelectionProvider({ children }) {
+  const [selection, setSelection] = useState(null);
+  return (
+    <SelectionCtx.Provider value={{ selection, setSelection }}>
+      {children}
+    </SelectionCtx.Provider>
   );
 }
 
