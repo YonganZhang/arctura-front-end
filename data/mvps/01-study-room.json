@@ -359,6 +359,42 @@
         "height": 2.8,
         "thickness": 0.1,
         "material_id": "wall"
+      },
+      {
+        "id": "wall_auto_S",
+        "name": "AutoWall_S",
+        "start": [
+          -2.5,
+          -2.0,
+          0
+        ],
+        "end": [
+          2.5,
+          -2.0,
+          0
+        ],
+        "height": 2.8,
+        "thickness": 0.1,
+        "material_id": "wall",
+        "_auto": true
+      },
+      {
+        "id": "wall_auto_E",
+        "name": "AutoWall_E",
+        "start": [
+          2.5,
+          -2.0,
+          0
+        ],
+        "end": [
+          2.5,
+          2.0,
+          0
+        ],
+        "height": 2.8,
+        "thickness": 0.1,
+        "material_id": "wall",
+        "_auto": true
       }
     ],
     "objects": [
@@ -380,78 +416,6 @@
         "label_zh": "书墙"
       },
       {
-        "id": "obj_shelf0",
-        "type": "custom",
-        "pos": [
-          0.0,
-          1.55,
-          0.5
-        ],
-        "size": [
-          4.3,
-          0.5,
-          0.04
-        ],
-        "material_id": "lightwood",
-        "label_en": "Shelf0",
-        "label_zh": "搁板 1",
-        "mesh_type_legacy": "cube"
-      },
-      {
-        "id": "obj_shelf1",
-        "type": "custom",
-        "pos": [
-          0.0,
-          1.55,
-          1.05
-        ],
-        "size": [
-          4.3,
-          0.5,
-          0.04
-        ],
-        "material_id": "lightwood",
-        "label_en": "Shelf1",
-        "label_zh": "搁板 2",
-        "mesh_type_legacy": "cube"
-      },
-      {
-        "id": "obj_shelf2",
-        "type": "custom",
-        "pos": [
-          0.0,
-          1.55,
-          1.6
-        ],
-        "size": [
-          4.3,
-          0.5,
-          0.04
-        ],
-        "material_id": "lightwood",
-        "label_en": "Shelf2",
-        "label_zh": "搁板 3",
-        "mesh_type_legacy": "cube"
-      },
-      {
-        "id": "obj_shelf3",
-        "type": "custom",
-        "pos": [
-          0.0,
-          1.55,
-          2.15
-        ],
-        "size": [
-          4.3,
-          0.5,
-          0.04
-        ],
-        "material_id": "lightwood",
-        "label_en": "Shelf3",
-        "label_zh": "搁板 4",
-        "mesh_type_legacy": "cube"
-      },
-      {
         "id": "obj_desk",
         "type": "desk_standard",
         "pos": [
@@ -467,42 +431,6 @@
         "material_id": "lightwood",
         "label_en": "Desk",
         "label_zh": "书桌"
-      },
-      {
-        "id": "obj_desklegl",
-        "type": "custom",
-        "pos": [
-          -2.35,
-          -0.5,
-          0.375
-        ],
-        "size": [
-          0.05,
-          0.7,
-          0.75
-        ],
-        "material_id": "metal",
-        "label_en": "DeskLegL",
-        "label_zh": "桌腿（左）",
-        "mesh_type_legacy": "cube"
-      },
-      {
-        "id": "obj_desklegr",
-        "type": "custom",
-        "pos": [
-          -0.45,
-          -0.5,
-          0.375
-        ],
-        "size": [
-          0.05,
-          0.7,
-          0.75
-        ],
-        "material_id": "metal",
-        "label_en": "DeskLegR",
-        "label_zh": "桌腿（右）",
-        "mesh_type_legacy": "cube"
       },
       {
         "id": "obj_chair",
@@ -522,24 +450,6 @@
         "label_zh": "办公椅"
       },
       {
-        "id": "obj_chairback",
-        "type": "custom",
-        "pos": [
-          -1.4,
-          -1.25,
-          0.75
-        ],
-        "size": [
-          0.5,
-          0.06,
-          0.6
-        ],
-        "material_id": "charcoal",
-        "label_en": "ChairBack",
-        "label_zh": "椅背",
-        "mesh_type_legacy": "cube"
-      },
-      {
         "id": "obj_armchair",
         "type": "chair_lounge",
         "pos": [
@@ -557,24 +467,6 @@
         "label_zh": "休闲椅"
       },
       {
-        "id": "obj_armback",
-        "type": "custom",
-        "pos": [
-          1.5,
-          -1.55,
-          0.8
-        ],
-        "size": [
-          0.9,
-          0.1,
-          0.9
-        ],
-        "material_id": "fabric",
-        "label_en": "ArmBack",
-        "label_zh": "休闲椅靠背",
-        "mesh_type_legacy": "cube"
-      },
-      {
         "id": "obj_lamppole",
         "type": "lamp_floor",
         "pos": [
@@ -590,24 +482,6 @@
         "material_id": "metal",
         "label_en": "LampPole",
         "label_zh": "落地灯"
-      },
-      {
-        "id": "obj_lampshade",
-        "type": "custom",
-        "pos": [
-          2.3,
-          -1.5,
-          1.75
-        ],
-        "size": [
-          0.36,
-          0.36,
-          0.3
-        ],
-        "material_id": "shade",
-        "label_en": "LampShade",
-        "label_zh": "灯罩",
-        "mesh_type_legacy": "cone"
       },
       {
         "id": "obj_rug",
@@ -817,6 +691,15 @@
         1.2
       ],
       "fov": 50
+    },
+    "ceiling": {
+      "material_id": "wall",
+      "thickness": 0.05,
+      "height": 2.8,
+      "_auto": true
+    },
+    "_postprocess": {
+      "auto_walls": 2
     }
   }
 }

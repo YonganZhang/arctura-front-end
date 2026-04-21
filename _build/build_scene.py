@@ -85,6 +85,22 @@ TYPE_PATTERNS: list[tuple[str, str]] = [
     (r"^Lamp", "lamp_floor"),
 ]
 
+# 防穿模：当父 object 被识别为 procedural 家具时 · 跳过它的"零件" sub-meshes
+# 因为 procedural builder 已经把零件画齐了 · 再叠原始 plate 就会穿模
+# key = 父名正则（匹配到时视为 procedural）· value = 要跳过的子名正则列表
+PROCEDURAL_CHILDREN: list[tuple[str, list[str]]] = [
+    (r"^Chair(?!Back)", [r"^ChairBack", r"^ChairLeg", r"^ChairSeat"]),
+    (r"^ArmChair$", [r"^ArmBack", r"^ArmSeat", r"^ArmRest"]),
+    (r"^Desk(?!Leg)", [r"^DeskLeg"]),
+    (r"^LampPole", [r"^LampShade", r"^LampBase"]),
+    (r"^FloorLamp", [r"^FloorLampBase", r"^FloorLampPost", r"^FloorLampShade"]),
+    (r"^Bookshelf", [r"^Shelf\d+", r"^BookshelfSide", r"^BookshelfBack"]),
+    (r"^Sofa", [r"^SofaArm", r"^SofaCushion", r"^SofaBack", r"^SofaLeg"]),
+    (r"^Bed(?!side)", [r"^BedFrame", r"^BedLeg", r"^BedHeadboard", r"^Mattress"]),
+    (r"^Cabinet", [r"^CabinetDoor", r"^CabinetHandle", r"^CabinetDrawer"]),
+    (r"^Table(?!Leg)", [r"^TableLeg", r"^TableBase"]),
+]
+
 # 中文 label 映射（pilot 01-study-room 的 name → 中文）
 CH_LABELS: dict[str, str] = {
     "Floor": "地板", "BackWall": "后墙", "LeftWall": "左墙", "RightWall": "右墙",
@@ -277,6 +293,167 @@ def object_from_blender(o: dict, material_id_by_idx: dict) -> dict:
     return entry
 
 
+# ───────── 防穿模 · post-process ─────────
+
+def identify_procedural_parents(blender_objects: list[dict]) -> set[int]:
+    """找出所有"父 object"（能走 procedural builder · 非 custom）"""
+    parent_ids = set()
+    names = {o["id"]: o.get("name", "") for o in blender_objects}
+    for o in blender_objects:
+        name = o.get("name", "")
+        t = infer_type(name)
+        if t != "custom":
+            parent_ids.add(o["id"])
+    return parent_ids
+
+
+def find_child_ids_to_skip(blender_objects: list[dict]) -> set[int]:
+    """对每个 procedural 父 · 标记需要 skip 的零件 id"""
+    skip = set()
+    # 先找所有匹配父正则的 object
+    name_to_id = {o.get("name", ""): o["id"] for o in blender_objects}
+    for parent_rx, child_rxs in PROCEDURAL_CHILDREN:
+        parent_re = re.compile(parent_rx)
+        child_res = [re.compile(r) for r in child_rxs]
+        # 有父吗？
+        has_parent = any(parent_re.match(n) for n in name_to_id.keys() if n)
+        if not has_parent:
+            continue
+        # 标记所有匹配子正则的 object
+        for o in blender_objects:
+            n = o.get("name", "")
+            if any(rx.match(n) for rx in child_res):
+                skip.add(o["id"])
+    return skip
+
+
+def auto_complete_shell(scene: dict, blender_objects: list[dict], material_id_by_idx: dict) -> None:
+    """
+    如果墙 < 4 OR 无 ceiling · 按 bounds 合成
+    复用已有的墙材质 / 地板材质（fallback default）
+    mutates scene · 加的项有 _auto=True 标记
+    """
+    bounds = scene.get("bounds")
+    if not bounds:
+        return
+
+    # 材质选择：优先已有 wall material_id · 否则用 default
+    wall_material_id = "default"
+    if scene.get("walls"):
+        wall_material_id = scene["walls"][0].get("material_id", "default")
+    else:
+        # 找 Blender 里任何名为 Wall 的 material
+        for i, mat_id in material_id_by_idx.items():
+            if "wall" in mat_id.lower():
+                wall_material_id = mat_id
+                break
+
+    ceiling_material_id = "default"
+    for i, mat_id in material_id_by_idx.items():
+        if any(k in mat_id.lower() for k in ("ceiling", "wall", "plaster")):
+            ceiling_material_id = mat_id
+            break
+
+    w, d, h = bounds["w"], bounds["d"], bounds["h"]
+    hw, hd = w / 2, d / 2
+
+    # 生成 4 面外墙（方向顺时针：N, E, S, W）· 只加缺的
+    # 判断方位：已有墙的 start/end 中点大致在房间哪一侧
+    existing_sides = set()
+    for wall in scene.get("walls", []):
+        mx = (wall["start"][0] + wall["end"][0]) / 2
+        my = (wall["start"][1] + wall["end"][1]) / 2
+        # 最靠近哪条边？
+        d_n = abs(my - hd)
+        d_s = abs(my - (-hd))
+        d_e = abs(mx - hw)
+        d_w = abs(mx - (-hw))
+        closest = min(d_n, d_s, d_e, d_w)
+        if closest == d_n: existing_sides.add("N")
+        elif closest == d_s: existing_sides.add("S")
+        elif closest == d_e: existing_sides.add("E")
+        elif closest == d_w: existing_sides.add("W")
+
+    WALL_DEFS = {
+        "N": {"start": [-hw, hd, 0], "end": [hw, hd, 0]},
+        "S": {"start": [-hw, -hd, 0], "end": [hw, -hd, 0]},
+        "E": {"start": [hw, -hd, 0], "end": [hw, hd, 0]},
+        "W": {"start": [-hw, -hd, 0], "end": [-hw, hd, 0]},
+    }
+
+    added_walls = 0
+    for side in ("N", "S", "E", "W"):
+        if side in existing_sides:
+            continue
+        w_def = WALL_DEFS[side]
+        scene.setdefault("walls", []).append({
+            "id": f"wall_auto_{side}",
+            "name": f"AutoWall_{side}",
+            "start": w_def["start"],
+            "end": w_def["end"],
+            "height": h,
+            "thickness": 0.1,
+            "material_id": wall_material_id,
+            "_auto": True,
+        })
+        added_walls += 1
+
+    # 天花板：无则合成
+    if "ceiling" not in scene:
+        scene["ceiling"] = {
+            "material_id": ceiling_material_id,
+            "thickness": 0.05,
+            "height": h,
+            "_auto": True,
+        }
+
+    # 地板：无则合成
+    if "floor" not in scene:
+        floor_material_id = "default"
+        for i, mat_id in material_id_by_idx.items():
+            if any(k in mat_id.lower() for k in ("floor", "wood", "tile")):
+                floor_material_id = mat_id
+                break
+        scene["floor"] = {
+            "material_id": floor_material_id,
+            "thickness": 0.02,
+            "_auto": True,
+        }
+
+
+def clamp_objects_to_bounds(scene: dict) -> int:
+    """把任何超出 bounds 的 object 拉回来 · 返回修正数"""
+    bounds = scene.get("bounds", {})
+    if not bounds:
+        return 0
+    w, d, h = bounds["w"], bounds["d"], bounds["h"]
+    wall_margin = 0.08  # 离墙至少 8cm
+    fixed = 0
+    for o in scene.get("objects", []):
+        pos = o.get("pos", [0, 0, 0])
+        size = o.get("size", [0.1, 0.1, 0.1])
+        # x · 沿宽度 · [-w/2, w/2] 内减 wall_margin
+        hx = size[0] / 2
+        min_x = -w / 2 + wall_margin + hx
+        max_x =  w / 2 - wall_margin - hx
+        new_x = max(min_x, min(max_x, pos[0]))
+        # y · 沿深度
+        hy = size[1] / 2
+        min_y = -d / 2 + wall_margin + hy
+        max_y =  d / 2 - wall_margin - hy
+        new_y = max(min_y, min(max_y, pos[1]))
+        # z · 不能小于 0（地板下）· 也不能顶天花板
+        hz = size[2] / 2
+        center_z = pos[2]
+        # 只 clamp 明显越界的 · 对 pos.z ≈ 0 的（底贴地）放过
+        if center_z + hz > h - 0.02:
+            center_z = h - 0.02 - hz
+        if abs(new_x - pos[0]) > 0.001 or abs(new_y - pos[1]) > 0.001 or abs(center_z - pos[2]) > 0.001:
+            o["pos"] = [round(new_x, 3), round(new_y, 3), round(center_z, 3)]
+            fixed += 1
+    return fixed
+
+
 # ───────── 主转换 ─────────
 
 def build_scene_from_room(room: dict, brief: dict) -> dict:
@@ -306,7 +483,11 @@ def build_scene_from_room(room: dict, brief: dict) -> dict:
     ceiling_entry: Optional[dict] = None
     floor_raw: Optional[dict] = None
 
-    for o in room.get("objects", []):
+    all_blender_objects = room.get("objects", [])
+    # 防穿模：标记需要 skip 的零件 id（父 object 走 procedural · 零件已被 builder 画齐）
+    skip_child_ids = find_child_ids_to_skip(all_blender_objects)
+
+    for o in all_blender_objects:
         name = o.get("name", "")
         if FLOOR_RX.match(name):
             floor_raw = o
@@ -330,6 +511,9 @@ def build_scene_from_room(room: dict, brief: dict) -> dict:
                 w["material_id"] = material_id_by_idx.get(o.get("material", 0), "default")
                 walls.append(w)
         else:
+            # 防穿模 · 标记为"父 procedural 家具的零件"时跳过
+            if o.get("id") in skip_child_ids:
+                continue
             objects.append(object_from_blender(o, material_id_by_idx))
 
     # 3. Bounds
@@ -390,6 +574,18 @@ def build_scene_from_room(room: dict, brief: dict) -> dict:
         scene["ceiling"] = ceiling_entry
     if camera_default:
         scene["camera_default"] = camera_default
+
+    # ───────── 防穿模 · Post-process · 永远保证 scene 视觉完整 ─────────
+    # 1. 补齐墙 / 天花板 / 地板（如果源 Blender 数据缺）
+    auto_complete_shell(scene, all_blender_objects, material_id_by_idx)
+    # 2. clamp 越界 object · 避免穿墙 / 穿天花
+    n_clamped = clamp_objects_to_bounds(scene)
+    if n_clamped:
+        scene.setdefault("_postprocess", {})["clamped"] = n_clamped
+    auto_walls = sum(1 for w in scene.get("walls", []) if w.get("_auto"))
+    if auto_walls:
+        scene.setdefault("_postprocess", {})["auto_walls"] = auto_walls
+
     return scene
 
 

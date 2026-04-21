@@ -35,7 +35,12 @@
     },
 
     "camera_default": { "$ref": "#/$defs/camera" },
-    "env":            { "$ref": "#/$defs/env" }
+    "env":            { "$ref": "#/$defs/env" },
+    "_postprocess":   {
+      "type": "object",
+      "description": "Build 时 post-process 标记 · 仅 debug 用",
+      "additionalProperties": true
+    }
   },
 
   "$defs": {
@@ -74,7 +79,8 @@
         "openings": {
           "type": "array",
           "items": { "$ref": "#/$defs/opening" }
-        }
+        },
+        "_auto": { "type": "boolean", "description": "build 时 auto-complete 补的 · 非源数据" }
       }
     },
 
@@ -104,7 +110,8 @@
       "properties": {
         "material_id": { "type": "string" },
         "thickness":   { "type": "number", "exclusiveMinimum": 0 },
-        "height":      { "type": "number", "minimum": 0, "description": "ceiling 用 · 离地 z 值" }
+        "height":      { "type": "number", "minimum": 0, "description": "ceiling 用 · 离地 z 值" },
+        "_auto":       { "type": "boolean" }
       }
     },
 

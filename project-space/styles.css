@@ -3,6 +3,7 @@
    ───────────────────────────────────────────── */
 :root {
   --bg: #0F0E0C;
+  --bg-0: #0A0907;          /* alias · 修 app.jsx 误用 --bg-0 */
   --bg-1: #15130F;
   --bg-2: #1C1A15;
   --bg-3: #24211B;
@@ -11,6 +12,7 @@
   --paper-2: #EFEAE0;
   --ink: #1A1916;
   --text: #E8E4DB;
+  --text-1: #E8E4DB;         /* alias · 修 app.jsx 误用 --text-1 */
   --text-2: rgba(232, 228, 219, 0.72);
   --text-3: rgba(232, 228, 219, 0.48);
   --text-4: rgba(232, 228, 219, 0.28);
@@ -777,3 +779,18 @@ img { display: block; max-width: 100%; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--line-2); border-radius: 10px; border: 2px solid var(--bg); }
 ::-webkit-scrollbar-thumb:hover { background: var(--line-3); }
+
+/* ─── Native form controls (select / option) on dark theme ─── */
+/* 之前 bug：app.jsx 内联样式用了未定义的 var · 下拉菜单 option 浏览器默认白底
+   → 与亮色 color 相撞 → 白字白底不可读。
+   统一强制 dark color-scheme + 显式给 option 上色，覆盖 OS 默认。*/
+select {
+  background: var(--bg-1);
+  color: var(--text);
+  color-scheme: dark;
+}
+select option {
+  background: var(--bg-1);
+  color: var(--text);
+}
+select:focus { outline: 1px solid var(--line-2); }
