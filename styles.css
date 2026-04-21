@@ -273,12 +273,13 @@ section.compact { padding: 80px 0; }
 }
 
 /* ========== 自动播 3D 动画 section · 大图铺满 · 仿 cleanspaceus ========== */
-/* 参考 cleanspaceus · section ≈ 100vh · canvas 用 min(100vw,100vh) 做大方块 */
+/* section 120vh · 给 1:1 源图在 16:9 viewport 里多留 20% 高度 · 减少 cover 裁切 */
 .section-scroll-3d {
   position: relative;
-  height: 100vh;
-  min-height: 720px;
+  height: 120vh;
+  min-height: 820px;
   background: linear-gradient(180deg, var(--bg) 0%, var(--paper) 50%, var(--bg) 100%);
+  overflow: hidden;
 }
 .section-scroll-3d.big { background: linear-gradient(180deg, var(--bg) 0%, var(--paper) 50%, var(--bg) 100%); }
 
@@ -286,8 +287,8 @@ section.compact { padding: 80px 0; }
   position: relative;
   top: 0;
   width: 100%;
-  height: 100vh;
-  min-height: 720px;
+  height: 100%;
+  min-height: 820px;
   overflow: hidden;
   box-sizing: border-box;
   display: block;

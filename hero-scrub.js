@@ -53,9 +53,10 @@
     }
   }
 
-  // 手动 cover-style 绘制 · 模仿 CSS object-fit: cover · 但对 canvas 生效
-  // 把 1920×1920 源图按"占满容器 + 裁切多余"规则画满 canvas
-  function drawCover(img) {
+  // 手动 cover-style 绘制 · 模仿 CSS object-fit: cover
+  // 源图 1920×1920 · 容器 16:9 → 裁上下 · 默认从顶部开始裁（保留建筑底部 / 地基）
+  // positionY: 0 = 只保留顶部（裁底部）· 0.5 = 居中 · 1 = 只保留底部（裁顶部）
+  function drawCover(img, positionY = 0.5) {
     const cw = canvas.width, ch = canvas.height;
     if (!cw || !ch || !img.naturalWidth) return;
     const sw = img.naturalWidth, sh = img.naturalHeight;
@@ -63,17 +64,16 @@
     const cAspect = cw / ch;
     let sx, sy, sWidth, sHeight;
     if (sAspect > cAspect) {
-      // 源图更宽 · 左右裁切
       sHeight = sh;
       sWidth = sh * cAspect;
       sx = (sw - sWidth) / 2;
       sy = 0;
     } else {
-      // 源图更高（或相等）· 上下裁切 · 源是 1:1 · 容器 16:9 → 裁上下
       sWidth = sw;
       sHeight = sw / cAspect;
       sx = 0;
-      sy = (sh - sHeight) / 2;
+      // positionY · 0=顶部 / 0.5=居中 / 1=底部
+      sy = (sh - sHeight) * Math.max(0, Math.min(1, positionY));
     }
     ctx.clearRect(0, 0, cw, ch);
     ctx.drawImage(img, sx, sy, sWidth, sHeight, 0, 0, cw, ch);
