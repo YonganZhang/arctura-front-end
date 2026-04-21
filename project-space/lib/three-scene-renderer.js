@@ -466,10 +466,10 @@ export class SceneRenderer {
 
   _setMeshOpacity(root, opacity) {
     const transparent = opacity < 1.0;
-    // 显式"透明"按钮时 opacity ≤ 0.3 视同"隐藏" · 直接 mesh.visible = false
-    // 避免 Three.js 透明渲染的排序 / depth 问题导致肉眼看不出透明
-    // camera-aware 自动模式用 0.25 (≤0.3) 也走 hide · 简洁一致
     const hide = opacity <= 0.3;
+    // 关键修 · 直接把整个 Group/Mesh 的 visible 设 false · 整个子树不渲染
+    // 之前只改内部 mesh · 在嵌套 rotated group 或多层 Group 情况下可能漏
+    root.visible = !hide;
     const setOne = (m) => {
       m.transparent = transparent;
       m.opacity = opacity;
