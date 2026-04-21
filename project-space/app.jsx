@@ -1768,7 +1768,9 @@ function FurnitureCard({ scene, selection, onClose, onSaved, furnitureTypes }) {
     return ops;
   };
 
-  const nonEmpty = (s) => s && String(s).trim().length > 0;
+  // FIX · 对 label/zone 用 "changed" 比较 · 允许清空（nonEmpty 导致无法删）
+  const labelChanged = draft.label_zh !== (entity.label_zh || "");
+  const zoneChanged  = draft.zone !== (entity.zone || "");
 
   const onSave = async () => {
     setSaving(true); setErr(null);
@@ -1781,8 +1783,8 @@ function FurnitureCard({ scene, selection, onClose, onSaved, furnitureTypes }) {
           ? newScene.assemblies.find(a => a.id === entity.id)
           : newScene.objects.find(o => o.id === entity.id);
         if (target) {
-          if (nonEmpty(draft.label_zh)) target.label_zh = draft.label_zh;
-          if (nonEmpty(draft.zone))     target.zone     = draft.zone;
+          if (labelChanged) target.label_zh = draft.label_zh;
+          if (zoneChanged)  target.zone     = draft.zone;
           dispatch({ type: "APPLY_EDIT", newState: { ...D, scene: newScene } });
           showToast("✓ 已保存");
           onSaved?.(newScene);
@@ -1807,8 +1809,8 @@ function FurnitureCard({ scene, selection, onClose, onSaved, furnitureTypes }) {
           ? newScene.assemblies.find(a => a.id === entity.id)
           : newScene.objects.find(o => o.id === entity.id);
         if (target) {
-          if (nonEmpty(draft.label_zh)) target.label_zh = draft.label_zh;
-          if (nonEmpty(draft.zone))     target.zone     = draft.zone;
+          if (labelChanged) target.label_zh = draft.label_zh;
+          if (zoneChanged)  target.zone     = draft.zone;
         }
         dispatch({ type: "APPLY_EDIT", newState: { ...D, scene: newScene } });
         showToast(`✓ 已保存 · ${ops.length} 项改动`);
@@ -1867,10 +1869,9 @@ function FurnitureCard({ scene, selection, onClose, onSaved, furnitureTypes }) {
       <input style={inputStyle} type="text" value={draft.label_zh}
              onChange={e => setField("label_zh", e.target.value)} />
 
-      <label style={labelStyle}>Type · 家具类型</label>
-      <select style={inputStyle} value={draft.type}
-              onChange={e => setField("type", e.target.value)}
-              disabled={isAssembly /* assembly 不改 type · 改需要重建 */}>
+      <label style={labelStyle}>Type · 家具类型{(isAssembly || true) && <span style={{ color: "var(--text-3)", marginLeft: 6 }}>（只读 · 改 type 需 remove + add）</span>}</label>
+      <select style={{ ...inputStyle, opacity: 0.6 }} value={draft.type}
+              disabled>
         {(furnitureTypes || []).concat([draft.type]).filter((v, i, a) => a.indexOf(v) === i).map(t =>
           <option key={t} value={t}>{t}</option>
         )}

@@ -251,7 +251,7 @@ export class SceneRenderer {
     const state = { cancel: false };
     this._cameraTween = state;
     const step = () => {
-      if (state.cancel) return;
+      if (state.cancel || !this._isRunning) return;   // FIX · dispose 时停止
       const t = Math.min(1, (performance.now() - t0) / duration);
       // ease-in-out
       const k = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
@@ -268,6 +268,7 @@ export class SceneRenderer {
   // 开场环绕 · 2s 以 target 为中心转一圈（OrbitControls 禁用防冲突）
   playIntroAnimation(duration = 2000) {
     if (!this.currentScene?.bounds) return;
+    if (this._introState) this._introState.cancel = true;
     const { w, d, h } = this.currentScene.bounds;
     const radius = Math.max(w, d) * 1.1;
     const tgt = new THREE.Vector3(0, h * 0.5, 0);
@@ -275,7 +276,13 @@ export class SceneRenderer {
     this.controls.enabled = false;
     const t0 = performance.now();
     const yHeight = h * 0.8;
+    const state = { cancel: false };
+    this._introState = state;
     const step = () => {
+      if (state.cancel || !this._isRunning) {         // FIX · dispose 时停止
+        this.controls.enabled = originalEnabled;
+        return;
+      }
       const t = Math.min(1, (performance.now() - t0) / duration);
       const angle = t * Math.PI * 2;
       this.camera.position.set(
@@ -289,6 +296,7 @@ export class SceneRenderer {
       else {
         this.controls.enabled = originalEnabled;
         this.controls.update();
+        this._introState = null;
       }
     };
     requestAnimationFrame(step);
@@ -324,17 +332,19 @@ export class SceneRenderer {
 
     this.lightObjs.forEach((light) => {
       const kind = light.userData.light?.type;
-      const baseIntensity = light.userData.light?.intensity ?? 1;
+      // FIX · 缓存 baseIntensity 到 userData · 保证多次 setDaylight 调用幂等
+      if (light.userData.baseIntensity == null) {
+        light.userData.baseIntensity = light.userData.light?.intensity ?? light.intensity ?? 1;
+      }
+      const base = light.userData.baseIntensity;
       if (kind === "sun" || kind === "directional") {
-        light.intensity = baseIntensity * sunMul;
+        light.intensity = base * sunMul;
       } else if (kind === "point" || kind === "pendant" || kind === "spot" || kind === "area") {
-        light.intensity = baseIntensity * bulbMul;
+        light.intensity = base * bulbMul;
       }
     });
-    // 调 ambient · threeScene 顶层 ambient 是 AmbientLight
-    this.threeScene.traverse((o) => {
-      if (o.isAmbientLight) o.intensity = ambBase;
-    });
+    // 调 ambient · 直接用缓存的实例
+    if (this._ambient) this._ambient.intensity = ambBase;
 
     // 背景色（若 HDRI 失败由 fallback 设；HDRI 成功也轻微染色）
     this.threeScene.background = new THREE.Color(isDay ? "#D7E8F2" : "#0A0B12");
@@ -508,6 +518,23 @@ export class SceneRenderer {
     this.currentScene = scene;
     if (mode === "procedural" || mode === "raw") this.renderMode = mode;
 
+    // FIX Phase 3.J: rebuild 前先释放旧资源（避免悬空 selection / 材质泄漏）
+    this._selection = null;
+    if (this._cameraTween) this._cameraTween.cancel = true;
+    if (this._introState) this._introState.cancel = true;
+    // dispose 旧 geometry / material 防内存泄漏
+    this.world.traverse((o) => {
+      if (o.geometry) o.geometry.dispose?.();
+      if (o.material) {
+        if (Array.isArray(o.material)) o.material.forEach(m => m.dispose?.());
+        else o.material.dispose?.();
+      }
+    });
+    if (this.threeScene.environment && typeof this.threeScene.environment.dispose === "function") {
+      this.threeScene.environment.dispose();
+      this.threeScene.environment = null;
+    }
+
     // 清空 world
     while (this.world.children.length) this.world.remove(this.world.children[0]);
     this.wallObjs.clear();
@@ -517,12 +544,19 @@ export class SceneRenderer {
     this._wallDirMap.clear();
     this.floorObj = null;
     this.ceilingObj = null;
+    this.materials.forEach(m => m.dispose?.());
     this.materials.clear();
     // 构建 wall 方位映射（N/S/E/W）· 供透明 toggle 用
     this._classifyWalls(scene);
 
-    // 环境光 ambient 兜底
-    this.threeScene.add(new THREE.AmbientLight(0xffffff, 0.3));
+    // 环境光 ambient 兜底 · 复用实例 · 避免多次 build 累积
+    if (!this._ambient) {
+      this._ambient = new THREE.AmbientLight(0xffffff, 0.3);
+      this.threeScene.add(this._ambient);
+    } else {
+      this._ambient.intensity = 0.3;
+      if (this._ambient.parent !== this.threeScene) this.threeScene.add(this._ambient);
+    }
 
     // HDRI（可选）
     if (scene.env?.hdri) {
@@ -587,12 +621,21 @@ export class SceneRenderer {
       this.camera.updateProjectionMatrix();
     }
 
+    // FIX Phase 3.J: 保留 rebuild 前的透明状态 · 否则 scene 改了透明就丢了
+    this._applyTransparency();
+
     this._resize();
+  }
+
+  // 同 _getMaterial 但返回 clone · 让 opacity 调整不污染其他 mesh
+  _getOwnMaterial(id) {
+    const matData = this.currentScene?.materials?.[id] || { base_color: "#CCCCCC" };
+    return makeStandardMaterial(matData);
   }
 
   _buildFloor(floor, bounds) {
     const geom = new THREE.BoxGeometry(bounds.w, bounds.d, floor.thickness || 0.02);
-    const mesh = new THREE.Mesh(geom, this._getMaterial(floor.material_id));
+    const mesh = new THREE.Mesh(geom, this._getOwnMaterial(floor.material_id));
     mesh.position.set(0, 0, -(floor.thickness || 0.02) / 2);
     mesh.receiveShadow = true;
     mesh.userData.role = "floor";
@@ -604,7 +647,7 @@ export class SceneRenderer {
     const thickness = ceiling.thickness || 0.05;
     const height = ceiling.height ?? (bounds.h || 2.8);
     const geom = new THREE.BoxGeometry(bounds.w, bounds.d, thickness);
-    const mesh = new THREE.Mesh(geom, this._getMaterial(ceiling.material_id));
+    const mesh = new THREE.Mesh(geom, this._getOwnMaterial(ceiling.material_id));
     mesh.position.set(0, 0, height + thickness / 2);
     mesh.userData.role = "ceiling";
     this.world.add(mesh);
@@ -621,9 +664,9 @@ export class SceneRenderer {
     const midX = (wall.start[0] + wall.end[0]) / 2;
     const midY = (wall.start[1] + wall.end[1]) / 2;
 
-    // 主墙体
+    // 主墙体 · 每面墙用独立 material 克隆 · 避免 opacity 共享污染
     const geom = new THREE.BoxGeometry(length, thickness, height);
-    const wallMesh = new THREE.Mesh(geom, this._getMaterial(wall.material_id));
+    const wallMesh = new THREE.Mesh(geom, this._getOwnMaterial(wall.material_id));
     wallMesh.castShadow = true;
     wallMesh.receiveShadow = true;
     // 局部：x=length, y=thickness, z=height
