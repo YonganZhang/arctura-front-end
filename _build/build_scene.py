@@ -215,10 +215,17 @@ def compute_object_size(o: dict) -> list[float]:
     mp = o.get("mesh_params", {})
     mesh_size = mp.get("size", 2.0)
 
-    if mesh_type in ("cube", "plane"):
+    if mesh_type == "cube":
         return [round(scale[0] * mesh_size, 3),
                 round(scale[1] * mesh_size, 3),
                 round(scale[2] * mesh_size, 3)]
+    if mesh_type == "plane":
+        # plane 是 z 厚度 = 0 的薄片 · scale[2] 通常是无意义的（用户做 rug / floor 时习惯保持 1）
+        # 若当 cube 算 z = scale[2] × 2 → 成 2m 厚"铁板" · 穿模地板 / 桌面
+        # 强制 z = 2cm 薄 · 保证 Blender 的"平面"语义
+        return [round(scale[0] * mesh_size, 3),
+                round(scale[1] * mesh_size, 3),
+                0.02]
     if mesh_type == "cylinder":
         r = mp.get("radius", 1) * max(scale[0], scale[1])
         depth = mp.get("depth", 2) * scale[2]

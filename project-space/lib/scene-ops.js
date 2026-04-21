@@ -197,7 +197,9 @@ function opAddObject(scene, op) {
     return { ok: false, reason: "add_object requires pos [x,y,z]" };
   }
   scene.objects = scene.objects || [];
+  scene.assemblies = scene.assemblies || [];
   const id = nextObjectId(scene, op.type);
+  const asmId = nextAssemblyId(scene, op.type);
   const entry = {
     id,
     type: op.type,
@@ -206,11 +208,38 @@ function opAddObject(scene, op) {
     material_id: op.material_id || "default",
     label_en: op.label_en || op.type,
     label_zh: op.label_zh || op.type,
+    assembly_id: asmId,      // 反向 ref · 架构不变式："每个 object 归属一个 assembly"
   };
   if (op.rotation) entry.rotation = op.rotation;
   if (op.zone) entry.zone = op.zone;
   scene.objects.push(entry);
+  // Phase 3.L · 自动建 single_object assembly · 保证 procedural renderer 看得见
+  const asmEntry = {
+    id: asmId,
+    type: op.type,
+    pos: [...entry.pos],
+    rotation: entry.rotation || [0, 0, 0],
+    size: [...entry.size],
+    part_ids: [id],
+    primary_part_id: id,
+    material_id_primary: entry.material_id,
+    label_en: entry.label_en,
+    label_zh: entry.label_zh,
+    _generated_by: "manual",
+  };
+  if (op.zone) asmEntry.zone = op.zone;
+  scene.assemblies.push(asmEntry);
   return { ok: true, before: null, after: clone(entry) };
+}
+
+function nextAssemblyId(scene, type) {
+  const prefix = `asm_${type}`;
+  const existing = (scene.assemblies || [])
+    .map(a => a.id || "")
+    .filter(id => id.startsWith(prefix + "_"));
+  let n = existing.length + 1;
+  while (existing.some(id => id === `${prefix}_${n}`)) n++;
+  return `${prefix}_${n}`;
 }
 
 // ───────── Assembly ops · Phase 3 ─────────

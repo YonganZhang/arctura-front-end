@@ -1632,15 +1632,29 @@ function Chat({ onNavigate }) {
                 </div>
               )}
               {m.rejected && m.rejected.length > 0 && (
-                <div className="msg-diff" style={{background:"rgba(216,87,42,0.1)", color:"#b54e2c"}}>
-                  <i>✗</i>{m.rejected.map(r => {
+                <div style={{
+                  marginTop: 6, padding: "8px 10px",
+                  background: "rgba(216, 87, 42, 0.12)",
+                  borderLeft: "3px solid #d8572a",
+                  borderRadius: 3,
+                  fontSize: 11, color: "#e88a6a",
+                  lineHeight: 1.5,
+                }}>
+                  <div style={{ fontWeight: 600, marginBottom: 3, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.1em" }}>
+                    ⚠️ {m.rejected.length} 项改动未应用
+                  </div>
+                  {m.rejected.map((r, ri) => {
                     const reason = r.reason || "";
-                    if (reason.startsWith("Unknown editable field")) return "AI 引用了一个不存在的字段（已忽略这一步）";
-                    if (reason.includes("out of range")) return `超出合法范围：${reason.replace(/.*out of range\s*/, "")}`;
-                    if (reason.includes("variant_id") && reason.includes("not found")) return "AI 选了一个不存在的 variant（已忽略）";
-                    if (reason.includes("no variants available")) return "这个 MVP 只有一套方案，无法切换";
-                    return reason;
-                  }).join(" · ")}
+                    const name = r.call?.name || "unknown";
+                    let friendly = reason;
+                    if (reason.startsWith("Unknown editable field")) friendly = "AI 引用了不存在的字段";
+                    else if (reason.includes("out of range")) friendly = `超出合法范围：${reason.replace(/.*out of range\s*/, "")}`;
+                    else if (reason.includes("variant_id") && reason.includes("not found")) friendly = "AI 选了不存在的 variant";
+                    else if (reason.includes("no variants available")) friendly = "该 MVP 只有一套方案";
+                    else if (reason.includes("not found")) friendly = `目标不存在：${reason.replace(/.*not found:\s*/, "")}`;
+                    else if (reason.includes("unknown op")) friendly = "AI 用了未知操作";
+                    return <div key={ri} style={{ marginTop: 2 }}>• <code style={{ color: "#f88" }}>{name}</code>：{friendly}</div>;
+                  })}
                 </div>
               )}
               {m.affectedTabs && m.affectedTabs.length > 0 && (
@@ -1983,24 +1997,23 @@ function Viewer3DScene() {
   });
   const [daylight, setDaylight] = useState("day");    // Phase 3.G · "day" | "night"
 
+  // Phase 3.E fix: side effect 提到 useEffect · 避免 React StrictMode 双调用 setState updater 导致混乱
+  useEffect(() => {
+    if (rendererRef.current) rendererRef.current.setTransparency(transp);
+  }, [transp]);
+
   // Keep latest scene in ref（hover callback 里读）
   useEffect(() => { currentSceneRef.current = currentScene; }, [currentScene]);
 
   const toggleT = (key) => {
-    setTransp(prev => {
-      const next = { ...prev, [key]: !prev[key] };
-      rendererRef.current?.setTransparency(next);
-      return next;
-    });
+    setTransp(prev => ({ ...prev, [key]: !prev[key] }));
   };
   const toggleAll = () => {
     setTransp(prev => {
       const anyOn = prev.wall_N || prev.wall_S || prev.wall_E || prev.wall_W || prev.ceiling;
-      const next = { ...prev,
+      return { ...prev,
         wall_N: !anyOn, wall_S: !anyOn, wall_E: !anyOn, wall_W: !anyOn, ceiling: !anyOn,
       };
-      rendererRef.current?.setTransparency(next);
-      return next;
     });
   };
 

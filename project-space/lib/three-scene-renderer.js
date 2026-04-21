@@ -466,11 +466,18 @@ export class SceneRenderer {
 
   _setMeshOpacity(root, opacity) {
     const transparent = opacity < 1.0;
+    const setOne = (m) => {
+      m.transparent = transparent;
+      m.opacity = opacity;
+      // 关键：透明时关 depthWrite · 否则 Three.js 按 depth buffer 判定可见性 · 视觉上仍然像不透明
+      m.depthWrite = !transparent;
+      m.needsUpdate = true;
+    };
     root.traverse((o) => {
       if (!o.isMesh || !o.material) return;
       const mat = o.material;
-      if (Array.isArray(mat)) mat.forEach(m => { m.transparent = transparent; m.opacity = opacity; m.needsUpdate = true; });
-      else { mat.transparent = transparent; mat.opacity = opacity; mat.needsUpdate = true; }
+      if (Array.isArray(mat)) mat.forEach(setOne);
+      else setOne(mat);
     });
   }
 
@@ -592,10 +599,20 @@ export class SceneRenderer {
     }
     // 建 objects / assemblies · 两种 mode：
     //   · "procedural"：有 assemblies 则按 assembly 画（整把椅子一次） · parts 不显示 · 零件零件零叠
+    //     · 防御性 fallback：若某 object 没归属 assembly（LLM / API 新加没补上 · 等 bug）
+    //       仍按 raw 方式画出来 · 避免用户看到"我让 AI 加的东西消失了"
     //   · "raw"：按 objects[] 画（源 Blender 布局 · debug / 对比用）
     if (this.renderMode === "procedural" && (scene.assemblies || []).length > 0) {
+      const assignedIds = new Set();
       for (const asm of scene.assemblies) {
         await this._buildAssembly(asm);
+        for (const pid of asm.part_ids || []) assignedIds.add(pid);
+      }
+      // Orphan objects（没归属 assembly 的）按 raw 路径补画
+      for (const o of scene.objects || []) {
+        if (!assignedIds.has(o.id)) {
+          await this._buildObject(o);
+        }
       }
     } else {
       for (const o of scene.objects || []) {
@@ -925,10 +942,18 @@ export class SceneRenderer {
         this._removeObject(op.id || this._matchedObjectId(op, scene));
         break;
       case "add_object": {
-        // 找到新加的（最后一个 matching type）
+        // Phase 3.L · add_object 现在会同时 push 一个 single_object assembly
+        // procedural 模式：画 assembly 即可
+        // raw 模式：画 object
         const objs = scene.objects || [];
-        const added = objs[objs.length - 1];
-        if (added) await this._buildObject(added);
+        const asms = scene.assemblies || [];
+        const addedObj = objs[objs.length - 1];
+        const addedAsm = asms[asms.length - 1];
+        if (this.renderMode === "procedural" && addedAsm && addedObj?.assembly_id === addedAsm.id) {
+          await this._buildAssembly(addedAsm);
+        } else if (addedObj) {
+          await this._buildObject(addedObj);
+        }
         break;
       }
       // ── Phase 3 assembly ops · procedural 模式路径 ──

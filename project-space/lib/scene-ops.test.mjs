@@ -94,7 +94,7 @@ test("remove_object: desk removed", () => {
   assert.equal(r.newScene.objects.find(o => o.id === "obj_desk"), undefined);
 });
 
-test("add_object: new chair gets unique id", () => {
+test("add_object: new chair gets unique id + auto assembly (Phase 3.L invariant)", () => {
   const r = applyOps(baseScene(), [
     { op: "add_object", type: "chair_standard", pos: [1.5, -1.0, 0.45] },
   ]);
@@ -102,6 +102,26 @@ test("add_object: new chair gets unique id", () => {
   const added = r.newScene.objects.find(o => o.id?.startsWith("obj_chair_standard"));
   assert.ok(added);
   assert.deepEqual(added.pos, [1.5, -1.0, 0.45]);
+  // 关键不变式：每个 object 有 assembly_id + scene.assemblies 有对应 entry
+  assert.ok(added.assembly_id, "new object should have assembly_id");
+  const asm = (r.newScene.assemblies || []).find(a => a.id === added.assembly_id);
+  assert.ok(asm, "corresponding assembly should exist");
+  assert.deepEqual(asm.part_ids, [added.id], "assembly.part_ids should reference object");
+  assert.equal(asm.primary_part_id, added.id);
+  assert.equal(asm._generated_by, "manual");
+});
+
+test("add_object then remove_assembly: cascade removes auto-created assembly + object", () => {
+  const scene = baseScene();
+  // 先 add
+  const r1 = applyOps(scene, [{ op: "add_object", type: "chair_standard", pos: [0, 0, 0] }]);
+  const newAsmId = r1.newScene.assemblies[r1.newScene.assemblies.length - 1].id;
+  const newObjId = r1.newScene.objects[r1.newScene.objects.length - 1].id;
+  // 再 remove assembly
+  const r2 = applyOps(r1.newScene, [{ op: "remove_assembly", id: newAsmId }]);
+  assert.equal(r2.applied.length, 1);
+  assert.equal(r2.newScene.objects.find(o => o.id === newObjId), undefined, "object removed too");
+  assert.equal(r2.newScene.assemblies.find(a => a.id === newAsmId), undefined, "assembly removed");
 });
 
 test("add_object: missing type → rejected", () => {
