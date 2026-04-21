@@ -2018,16 +2018,19 @@ function Viewer3DScene() {
   // Keep latest scene in ref（hover callback 里读）
   useEffect(() => { currentSceneRef.current = currentScene; }, [currentScene]);
 
+  // Hybrid · 同时更新 React state + 立即调 renderer · 不赌 useEffect 调度时序
   const toggleT = (key) => {
-    setTransp(prev => ({ ...prev, [key]: !prev[key] }));
+    const next = { ...transp, [key]: !transp[key] };
+    setTransp(next);
+    rendererRef.current?.setTransparency(next);
   };
   const toggleAll = () => {
-    setTransp(prev => {
-      const anyOn = prev.wall_N || prev.wall_S || prev.wall_E || prev.wall_W || prev.ceiling;
-      return { ...prev,
-        wall_N: !anyOn, wall_S: !anyOn, wall_E: !anyOn, wall_W: !anyOn, ceiling: !anyOn,
-      };
-    });
+    const anyOn = transp.wall_N || transp.wall_S || transp.wall_E || transp.wall_W || transp.ceiling;
+    const next = { ...transp,
+      wall_N: !anyOn, wall_S: !anyOn, wall_E: !anyOn, wall_W: !anyOn, ceiling: !anyOn,
+    };
+    setTransp(next);
+    rendererRef.current?.setTransparency(next);
   };
 
   // 家具库 · 用于 FurnitureCard 的 type 下拉
