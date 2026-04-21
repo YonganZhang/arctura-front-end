@@ -96,6 +96,15 @@ export class SceneRenderer {
     this.currentScene = null;
     this.renderMode = "procedural";    // "procedural" | "raw"
 
+    // 选中 / raycaster（Phase 3.C）
+    this.raycaster = new THREE.Raycaster();
+    this._pointerNDC = new THREE.Vector2();
+    this._selection = null;            // { kind: "assembly"|"object", id, mesh, originalEmissive, originalIntensity }
+    this.onSelect = null;              // 外部回调 · (hit | null) => void
+    this.onHover = null;               // 外部回调 · (hit | null) => void · Phase 3.F (hover tooltip)
+    // Click 事件（单击 · 非拖拽）
+    this._setupPointerEvents();
+
     this._isRunning = false;
     this._resizeObserver = null;
 
@@ -108,6 +117,110 @@ export class SceneRenderer {
     this._resizeObserver.observe(this.canvas);
     this._resize();
   }
+
+  // Phase 3.C · click raycaster · 区分 click vs drag
+  _setupPointerEvents() {
+    let down = null;
+    this._onPointerDown = (e) => {
+      down = { x: e.clientX, y: e.clientY, t: Date.now() };
+    };
+    this._onPointerUp = (e) => {
+      if (!down) return;
+      const dx = e.clientX - down.x, dy = e.clientY - down.y;
+      const dt = Date.now() - down.t;
+      const dist = Math.hypot(dx, dy);
+      down = null;
+      // 单击（没有拖超过 5px + 300ms 内松开）
+      if (dist > 5 || dt > 600) return;
+      const hit = this._raycastAt(e.clientX, e.clientY);
+      if (this.onSelect) this.onSelect(hit);
+      this.setSelection(hit?.id || null);
+    };
+    // Hover tooltip（Phase 3.F · 节流 120ms）
+    let _hoverT = 0;
+    this._onPointerMove = (e) => {
+      const now = Date.now();
+      if (now - _hoverT < 120) return;
+      _hoverT = now;
+      if (!this.onHover) return;
+      const hit = this._raycastAt(e.clientX, e.clientY);
+      this.onHover(hit, { x: e.clientX, y: e.clientY });
+    };
+    this.canvas.addEventListener("pointerdown", this._onPointerDown);
+    this.canvas.addEventListener("pointerup", this._onPointerUp);
+    this.canvas.addEventListener("pointerleave", () => { down = null; });
+    this.canvas.addEventListener("pointermove", this._onPointerMove);
+  }
+
+  _raycastAt(clientX, clientY) {
+    const rect = this.canvas.getBoundingClientRect();
+    this._pointerNDC.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+    this._pointerNDC.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+    this.raycaster.setFromCamera(this._pointerNDC, this.camera);
+
+    // 目标集合：procedural 模式下优先 assembly meshes · raw 模式下 object meshes
+    const targets = [];
+    if (this.renderMode === "procedural" && this.assemblyObjs.size > 0) {
+      this.assemblyObjs.forEach((mesh) => targets.push(mesh));
+    } else {
+      this.objectObjs.forEach((mesh) => targets.push(mesh));
+    }
+    const hits = this.raycaster.intersectObjects(targets, true);
+    if (hits.length === 0) return null;
+
+    // 向上找到 named 根（assembly or object）
+    let node = hits[0].object;
+    while (node && !node.userData?.assembly && !node.userData?.object) {
+      node = node.parent;
+    }
+    if (!node) return null;
+    if (node.userData.assembly) return { kind: "assembly", id: node.userData.assembly.id, mesh: node };
+    if (node.userData.object)   return { kind: "object",   id: node.userData.object.id, mesh: node };
+    return null;
+  }
+
+  // Selection highlight · emissive 覆盖（restore on clear）
+  setSelection(id) {
+    if (this._selection?.id === id) return;  // 已选
+    this._clearSelection();
+    if (!id) return;
+    const mesh = this.assemblyObjs.get(id) || this.objectObjs.get(id);
+    if (!mesh) return;
+    const saves = [];
+    mesh.traverse((o) => {
+      if (!o.isMesh || !o.material) return;
+      const mat = o.material;
+      // 原值快照
+      const origEmissive = mat.emissive ? mat.emissive.clone() : new THREE.Color(0, 0, 0);
+      const origIntensity = mat.emissiveIntensity ?? 1.0;
+      saves.push({ node: o, origEmissive, origIntensity });
+      // 叠 #4a4 emissive · 不改原颜色
+      if (!mat.emissive) mat.emissive = new THREE.Color(0, 0, 0);
+      mat.emissive = new THREE.Color(0x44aa44);
+      mat.emissiveIntensity = 0.6;
+      mat.needsUpdate = true;
+    });
+    const kind = mesh.userData?.assembly ? "assembly" : "object";
+    this._selection = { kind, id, mesh, saves };
+  }
+
+  clearSelection() { this._clearSelection(); }
+
+  _clearSelection() {
+    const sel = this._selection;
+    if (!sel) return;
+    for (const s of sel.saves || []) {
+      const mat = s.node.material;
+      if (!mat) continue;
+      mat.emissive = s.origEmissive;
+      mat.emissiveIntensity = s.origIntensity;
+      mat.needsUpdate = true;
+    }
+    this._selection = null;
+  }
+
+  // 供外部查询当前选中
+  getSelection() { return this._selection ? { kind: this._selection.kind, id: this._selection.id } : null; }
 
   _resize() {
     const rect = this.canvas.getBoundingClientRect();
@@ -133,6 +246,11 @@ export class SceneRenderer {
     this._isRunning = false;
     if (this._rafId) cancelAnimationFrame(this._rafId);
     if (this._resizeObserver) this._resizeObserver.disconnect();
+    if (this._onPointerDown) {
+      this.canvas.removeEventListener("pointerdown", this._onPointerDown);
+      this.canvas.removeEventListener("pointerup", this._onPointerUp);
+      this.canvas.removeEventListener("pointermove", this._onPointerMove);
+    }
     this.controls.dispose();
     this.world.traverse((o) => {
       if (o.geometry) o.geometry.dispose();
