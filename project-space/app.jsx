@@ -352,6 +352,16 @@ function FloorplanScene() {
   const scene = D.scene;
   const svgRef = useRef(null);
   const [dragging, setDragging] = useState(null); // { id, start: [mx, my], origPos: [x,y,z] }
+  const [selection, setSelection] = useState(null); // Phase 3.D · card · click 不拖动时触发
+  const [furnitureTypes, setFurnitureTypes] = useState([]);
+  const dragStartRef = useRef(null);
+
+  useEffect(() => {
+    fetch("/data/furniture-library.json")
+      .then(r => r.ok ? r.json() : null)
+      .then(lib => { if (lib?.items) setFurnitureTypes(Object.keys(lib.items)); })
+      .catch(() => {});
+  }, []);
 
   if (!scene || !scene.bounds) return null;
   const { bounds } = scene;
@@ -368,10 +378,12 @@ function FloorplanScene() {
   const onPointerDown = (ev, obj) => {
     ev.preventDefault();
     const rect = svgRef.current.getBoundingClientRect();
+    dragStartRef.current = { cx: ev.clientX, cy: ev.clientY, t: Date.now(), id: obj.id };
     setDragging({
       id: obj.id,
       start: [ev.clientX - rect.left, ev.clientY - rect.top],
       origPos: [...obj.pos],
+      moved: false,
     });
     // 本地立即反馈（先只改 UI · 松手时真持久化）
     ev.target.setPointerCapture?.(ev.pointerId);
@@ -383,6 +395,10 @@ function FloorplanScene() {
     const py = ev.clientY - rect.top;
     const newX = px2m_x(px);
     const newY = px2m_y(py);
+    // 阈值：移动 > 3px 才算真拖拽
+    const start = dragStartRef.current;
+    if (start && Math.hypot(ev.clientX - start.cx, ev.clientY - start.cy) < 3) return;
+    setDragging(d => d ? { ...d, moved: true } : d);
     // 立即更新 scene（local state · 渲染流畅）· 最终 ops 只写一次
     const obj = (scene.objects || []).find(o => o.id === dragging.id);
     if (obj) {
@@ -394,8 +410,15 @@ function FloorplanScene() {
   const onPointerUp = async (ev) => {
     if (!dragging) return;
     const obj = (scene.objects || []).find(o => o.id === dragging.id);
+    const wasMoved = dragging.moved;
     setDragging(null);
     if (!obj) return;
+    // click 不是拖 · 弹卡片（Phase 3.D）· 优先 assembly（如果有 assembly_id）
+    if (!wasMoved) {
+      if (obj.assembly_id) setSelection({ kind: "assembly", id: obj.assembly_id });
+      else setSelection({ kind: "object", id: obj.id });
+      return;
+    }
     // POST ops 以持久化（同时让后端验证 / 重算 derived）
     try {
       const r = await fetch("/api/scene/ops", {
@@ -434,7 +457,16 @@ function FloorplanScene() {
           </div>
         </div>
       </div>
-      <div style={{ background: "var(--bg-1)", border: "1px solid var(--line)", borderRadius: 6, padding: 20, display: "flex", gap: 20 }}>
+      <div style={{ background: "var(--bg-1)", border: "1px solid var(--line)", borderRadius: 6, padding: 20, display: "flex", gap: 20, position: "relative" }}>
+        {selection && (
+          <FurnitureCard
+            scene={scene}
+            selection={selection}
+            furnitureTypes={furnitureTypes}
+            onClose={() => setSelection(null)}
+            onSaved={() => {}}
+          />
+        )}
         <svg ref={svgRef} width={vw} height={vh}
              style={{ background: "#fafaf7", cursor: dragging ? "grabbing" : "default" }}
              onPointerMove={onPointerMove}
@@ -1643,6 +1675,248 @@ function Chat({ onNavigate }) {
   );
 }
 
+// ───────── FurnitureCard · Phase 3.D · 点选家具后浮卡片 · 直接改底层 scene ─────────
+// 接 3D raycaster / Floorplan click · 字段改完"保存" → POST /api/scene/ops → dispatch APPLY_EDIT
+// 设计：编辑期只改本地 draft · 保存一次性 diff 出 ops（不是每字改都发 API）
+function FurnitureCard({ scene, selection, onClose, onSaved, furnitureTypes }) {
+  const { dispatch } = useProject();
+  if (!selection?.id || !scene) return null;
+  const isAssembly = selection.kind === "assembly";
+  const entity = isAssembly
+    ? (scene.assemblies || []).find(a => a.id === selection.id)
+    : (scene.objects || []).find(o => o.id === selection.id);
+  if (!entity) return null;
+
+  const materialsArr = Object.entries(scene.materials || {});
+
+  // draft 本地 state · 只在 保存 时 flush
+  const [draft, setDraft] = useState(null);
+  useEffect(() => {
+    setDraft({
+      label_zh: entity.label_zh || "",
+      type: entity.type || "",
+      pos: [...(entity.pos || [0, 0, 0])],
+      size: [...(entity.size || [0.5, 0.5, 0.5])],
+      rotation_z: entity.rotation?.[2] || 0,
+      material_id: isAssembly ? (entity.material_id_primary || "default") : (entity.material_id || "default"),
+      zone: entity.zone || "",
+    });
+  }, [selection.id, selection.kind]);
+  const [saving, setSaving] = useState(false);
+  const [err, setErr] = useState(null);
+  if (!draft) return null;
+
+  const setField = (k, v) => setDraft(d => ({ ...d, [k]: v }));
+  const setPos = (i, v) => setDraft(d => ({ ...d, pos: d.pos.map((x, j) => j === i ? parseFloat(v) || 0 : x) }));
+  const setSize = (i, v) => setDraft(d => ({ ...d, size: d.size.map((x, j) => j === i ? Math.max(0.01, parseFloat(v) || 0.01) : x) }));
+
+  const buildOps = () => {
+    const ops = [];
+    // move
+    const posChanged = draft.pos.some((v, i) => Math.abs(v - (entity.pos?.[i] || 0)) > 0.001);
+    if (posChanged) {
+      if (isAssembly) ops.push({ op: "move_assembly", id: entity.id, pos: draft.pos });
+      else            ops.push({ op: "move_object",   id: entity.id, pos: draft.pos });
+    }
+    // rotate
+    const rotChanged = Math.abs(draft.rotation_z - (entity.rotation?.[2] || 0)) > 0.001;
+    if (rotChanged) {
+      const rot = [0, 0, draft.rotation_z];
+      if (isAssembly) ops.push({ op: "rotate_assembly", id: entity.id, rotation: rot });
+      else            ops.push({ op: "rotate_object",   id: entity.id, rotation: rot });
+    }
+    // resize（只对 object · assembly 的 size 由 parts 派生）
+    if (!isAssembly) {
+      const sizeChanged = draft.size.some((v, i) => Math.abs(v - (entity.size?.[i] || 0)) > 0.001);
+      if (sizeChanged) ops.push({ op: "resize_object", id: entity.id, size: draft.size });
+    }
+    // material
+    const curMat = isAssembly ? entity.material_id_primary : entity.material_id;
+    if (draft.material_id !== curMat) {
+      const target = isAssembly ? entity.primary_part_id : entity.id;
+      ops.push({ op: "change_material", target, material_id: draft.material_id });
+    }
+    return ops;
+  };
+
+  const nonEmpty = (s) => s && String(s).trim().length > 0;
+
+  const onSave = async () => {
+    setSaving(true); setErr(null);
+    try {
+      const ops = buildOps();
+      if (ops.length === 0) {
+        // label / zone 单独处理（目前 ops schema 没 set_label · 直接本地 mutate 然后 dispatch 刷新）
+        const newScene = JSON.parse(JSON.stringify(scene));
+        const target = isAssembly
+          ? newScene.assemblies.find(a => a.id === entity.id)
+          : newScene.objects.find(o => o.id === entity.id);
+        if (target) {
+          if (nonEmpty(draft.label_zh)) target.label_zh = draft.label_zh;
+          if (nonEmpty(draft.zone))     target.zone     = draft.zone;
+          dispatch({ type: "APPLY_EDIT", newState: { ...D, scene: newScene } });
+          showToast("✓ 已保存");
+          onSaved?.(newScene);
+          onClose?.();
+        }
+        return;
+      }
+      const r = await fetch("/api/scene/ops", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ slug: D.slug, scene, ops }),
+      });
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      const data = await r.json();
+      if (data.rejected?.length) {
+        setErr(`部分改动未应用：${data.rejected.map(x => x.reason).join(", ")}`);
+      }
+      if (data.newScene) {
+        // 同时把 label / zone 本地改上（不走 ops · 见上）
+        const newScene = JSON.parse(JSON.stringify(data.newScene));
+        const target = isAssembly
+          ? newScene.assemblies.find(a => a.id === entity.id)
+          : newScene.objects.find(o => o.id === entity.id);
+        if (target) {
+          if (nonEmpty(draft.label_zh)) target.label_zh = draft.label_zh;
+          if (nonEmpty(draft.zone))     target.zone     = draft.zone;
+        }
+        dispatch({ type: "APPLY_EDIT", newState: { ...D, scene: newScene } });
+        showToast(`✓ 已保存 · ${ops.length} 项改动`);
+        onSaved?.(newScene);
+        onClose?.();
+      }
+    } catch (e) {
+      setErr(String(e.message || e));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const onDelete = async () => {
+    if (!confirm(`删除 ${entity.label_zh || entity.id}？此操作连同内部零件一起删除`)) return;
+    setSaving(true);
+    try {
+      const op = isAssembly
+        ? { op: "remove_assembly", id: entity.id }
+        : { op: "remove_object", id: entity.id };
+      const r = await fetch("/api/scene/ops", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ slug: D.slug, scene, ops: [op] }),
+      });
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      const data = await r.json();
+      if (data.newScene) {
+        dispatch({ type: "APPLY_EDIT", newState: { ...D, scene: data.newScene } });
+        showToast(`✓ 已删除 ${entity.label_zh || entity.id}`);
+        onSaved?.(data.newScene);
+        onClose?.();
+      }
+    } catch (e) {
+      setErr(String(e.message || e));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div style={{
+      position: "absolute", top: 12, right: 12, width: 290, maxHeight: "calc(100% - 24px)",
+      background: "var(--bg-1)", border: "1px solid var(--line-2)", borderRadius: 6,
+      padding: 14, fontSize: 12, color: "var(--text)", overflowY: "auto",
+      boxShadow: "0 8px 32px rgba(0,0,0,0.5)", zIndex: 50,
+    }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+        <div style={{ fontFamily: "var(--f-mono)", fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--text-3)" }}>
+          {isAssembly ? "Assembly" : "Object"} · {entity.id}
+        </div>
+        <button onClick={onClose} style={btnStyle("ghost")}>✕</button>
+      </div>
+
+      <label style={labelStyle}>标签（中文）</label>
+      <input style={inputStyle} type="text" value={draft.label_zh}
+             onChange={e => setField("label_zh", e.target.value)} />
+
+      <label style={labelStyle}>Type · 家具类型</label>
+      <select style={inputStyle} value={draft.type}
+              onChange={e => setField("type", e.target.value)}
+              disabled={isAssembly /* assembly 不改 type · 改需要重建 */}>
+        {(furnitureTypes || []).concat([draft.type]).filter((v, i, a) => a.indexOf(v) === i).map(t =>
+          <option key={t} value={t}>{t}</option>
+        )}
+      </select>
+
+      <label style={labelStyle}>Position (米)</label>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 6 }}>
+        {["x", "y", "z"].map((axis, i) => (
+          <div key={axis}>
+            <div style={{ fontSize: 9, color: "var(--text-3)" }}>{axis}</div>
+            <input style={inputStyle} type="number" step="0.1"
+                   value={draft.pos[i]}
+                   onChange={e => setPos(i, e.target.value)} />
+          </div>
+        ))}
+      </div>
+
+      {!isAssembly && (<>
+        <label style={labelStyle}>Size · W × D × H (米)</label>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 6 }}>
+          {["w", "d", "h"].map((axis, i) => (
+            <div key={axis}>
+              <div style={{ fontSize: 9, color: "var(--text-3)" }}>{axis}</div>
+              <input style={inputStyle} type="number" step="0.1" min="0.05"
+                     value={draft.size[i]}
+                     onChange={e => setSize(i, e.target.value)} />
+            </div>
+          ))}
+        </div>
+      </>)}
+
+      <label style={labelStyle}>Rotation Z (度)</label>
+      <input style={inputStyle} type="number" step="15" min="-360" max="360"
+             value={draft.rotation_z}
+             onChange={e => setField("rotation_z", parseFloat(e.target.value) || 0)} />
+
+      <label style={labelStyle}>Material</label>
+      <select style={inputStyle} value={draft.material_id}
+              onChange={e => setField("material_id", e.target.value)}>
+        {materialsArr.map(([id, m]) => (
+          <option key={id} value={id}>
+            {id}{m.label ? ` · ${m.label}` : ""}
+          </option>
+        ))}
+      </select>
+      {scene.materials?.[draft.material_id]?.base_color && (
+        <div style={{ display: "inline-block", width: 28, height: 14, marginTop: 4, borderRadius: 2,
+                      background: scene.materials[draft.material_id].base_color, border: "1px solid var(--line)" }} />
+      )}
+
+      <label style={labelStyle}>Zone</label>
+      <input style={inputStyle} type="text" value={draft.zone}
+             onChange={e => setField("zone", e.target.value)} />
+
+      {err && <div style={{ color: "#f88", marginTop: 8, fontSize: 11 }}>⚠️ {err}</div>}
+
+      <div style={{ display: "flex", gap: 6, marginTop: 14 }}>
+        <button onClick={onSave} disabled={saving} style={btnStyle("primary", saving)}>保存</button>
+        <button onClick={onDelete} disabled={saving} style={btnStyle("danger", saving)}>删除</button>
+        <button onClick={onClose} disabled={saving} style={btnStyle("ghost")}>取消</button>
+      </div>
+    </div>
+  );
+}
+
+const labelStyle = { display: "block", fontSize: 10, color: "var(--text-3)", fontFamily: "var(--f-mono)", textTransform: "uppercase", letterSpacing: "0.08em", marginTop: 10, marginBottom: 4 };
+const inputStyle = { width: "100%", boxSizing: "border-box", padding: "5px 8px", background: "var(--bg)", color: "var(--text)", border: "1px solid var(--line-2)", borderRadius: 3, fontSize: 12, fontFamily: "var(--f-sans)" };
+function btnStyle(kind, disabled) {
+  const base = { flex: 1, padding: "6px 10px", borderRadius: 3, fontSize: 12, fontFamily: "var(--f-sans)",
+                 cursor: disabled ? "not-allowed" : "pointer", opacity: disabled ? 0.5 : 1, border: "1px solid var(--line-2)" };
+  if (kind === "primary") return { ...base, background: "var(--accent)", color: "#0C0D10", borderColor: "var(--accent)" };
+  if (kind === "danger")  return { ...base, background: "rgba(220, 70, 70, 0.15)", color: "#f88", borderColor: "rgba(220, 70, 70, 0.4)" };
+  return { ...base, background: "transparent", color: "var(--text-2)" };
+}
+
 // ───────── App ─────────
 // Viewer3DScene · Phase 2.0 · Three.js 程序化 · 吃 scene JSON
 // 只在 data.scene 存在时启用 · 否则降级到旧 Viewer3D
@@ -1654,6 +1928,16 @@ function Viewer3DScene() {
   const currentScene = D.scene;
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selection, setSelection] = useState(null);   // {kind, id} or null · Phase 3.C/D
+  const [furnitureTypes, setFurnitureTypes] = useState([]);
+
+  // 家具库 · 用于 FurnitureCard 的 type 下拉
+  useEffect(() => {
+    fetch("/data/furniture-library.json")
+      .then(r => r.ok ? r.json() : null)
+      .then(lib => { if (lib?.items) setFurnitureTypes(Object.keys(lib.items)); })
+      .catch(() => {});
+  }, []);
 
   // 初始化 renderer（只一次）· 销毁在 unmount
   // Three.js module 是 async 加载 · 如果还没好就 poll（最多 5s）
@@ -1666,6 +1950,8 @@ function Viewer3DScene() {
       if (typeof window.SceneRenderer === "function") {
         r = new window.SceneRenderer(canvasRef.current);
         rendererRef.current = r;
+        // Phase 3.C/D · click 回调 · 设 React 选中 · FurnitureCard 显示
+        r.onSelect = (hit) => setSelection(hit);
         // 触发 scene effect（可能已经有 scene 等着）
         lastSceneRef.current = null;
         if (currentScene) {
@@ -1746,9 +2032,18 @@ function Viewer3DScene() {
             textAlign: "center", fontSize: 13,
           }}>❌ {error}</div>
         )}
+        {selection && currentScene && (
+          <FurnitureCard
+            scene={currentScene}
+            selection={selection}
+            furnitureTypes={furnitureTypes}
+            onClose={() => { setSelection(null); rendererRef.current?.clearSelection(); }}
+            onSaved={() => { /* scene will re-render via dispatch */ }}
+          />
+        )}
       </div>
       <div style={{ marginTop: 12, padding: "10px 14px", background: "var(--bg-1)", border: "1px solid var(--line)", borderRadius: 4, fontSize: 12, color: "var(--text-3)", fontFamily: "var(--f-mono)" }}>
-        ← drag · scroll · ⌘-click = pan · scene-driven（可在 chat 里真改）
+        ← drag · scroll · ⌘-click = pan · <b>点击家具弹卡片编辑</b>
       </div>
     </section>
   );
