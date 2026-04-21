@@ -21,6 +21,18 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
 </head>
 <body data-screen-label="Arctura Labs Homepage">
 
+<!-- ============ LOADING SPLASH · 入场过场 · 仿 cleanspaceus ============ -->
+<div class="loading-splash" id="loading-splash" aria-hidden="true">
+  <div class="loading-inner">
+    <svg class="loading-mark" viewBox="0 0 64 64" width="64" height="64" fill="none">
+      <circle cx="32" cy="32" r="28" stroke="currentColor" stroke-width="1.4"/>
+      <path class="loading-ring" d="M 32 4 A 28 28 0 1 1 4 32" stroke="currentColor" stroke-width="1.4" fill="none" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/>
+      <text x="32" y="38" text-anchor="middle" font-family="Fraunces, serif" font-size="18" fill="currentColor" font-style="italic">A</text>
+    </svg>
+    <div class="loading-wordmark">Arctura Labs</div>
+  </div>
+</div>
+
 <!-- ============ NAV ============ -->
 <nav class="nav">
   <div class="nav-inner">
@@ -52,15 +64,53 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
       <div class="eyebrow"><span class="dot"></span> A live view · from concept to commit</div>
       <h2 class="scroll-3d-title">From a flat <em>plan</em> to a fully built <em>scene</em>.</h2>
     </div>
-    <!-- 底部浮层 · 进度条 + 循环标签 -->
-    <div class="scroll-3d-overlay-bottom">
-      <div class="scroll-3d-progress-rail"><div id="hero-3d-bar"></div></div>
-      <div class="scroll-3d-progress-label">
-        <span>Flat plan</span>
-        <span class="scroll-3d-hint">auto-playing · loops</span>
-        <span>Built scene</span>
-      </div>
-    </div>
+<!-- 底部浮层已去除（用户反馈遮挡动画）· 自动播无需文字说明 -->
+  </div>
+</section>
+
+<!-- ============ Designed to Deliver Certainty · 视频 + 标题 · 仿 cleanspaceus ============ -->
+<section class="section-deliver certainty" data-screen-label="01.1 Certainty">
+  <div class="deliver-video-wrap">
+    <video class="deliver-video" autoplay muted loop playsinline
+           src="/assets/hero/cleanspace_home_certainty_mobile_v2.mp4"></video>
+  </div>
+  <div class="wrap deliver-content">
+    <h2 class="deliver-title">
+      Designed to Deliver <em>Certainty</em>
+    </h2>
+    <p class="deliver-sub">
+      Every project ships with a fixed-cost BOQ, a validated energy profile, and a compliance matrix signed against the target jurisdiction. No surprises between the concept render and the bid-ready package.
+    </p>
+    <a href="#pricing" class="btn-primary">
+      See the guarantee
+      <svg width="14" height="14" viewBox="0 0 12 12" fill="none">
+        <path d="M3 9L9 3M9 3H4.5M9 3V7.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+      </svg>
+    </a>
+  </div>
+</section>
+
+<!-- ============ Designed to Deliver Continuity · 视频 + 标题 · 仿 cleanspaceus ============ -->
+<section class="section-deliver continuity" data-screen-label="01.2 Continuity">
+  <div class="wrap deliver-content">
+    <h2 class="deliver-title">
+      Designed to Deliver <em>Continuity</em>
+    </h2>
+    <p class="deliver-sub">
+      The brief stays live from first sentence to last signoff. Change a dimension, a material, a code region — every downstream deliverable regenerates in place. Same team. Same source. No handoff loss.
+    </p>
+    <a href="#pipeline" class="btn-primary">
+      See the pipeline
+      <svg width="14" height="14" viewBox="0 0 12 12" fill="none">
+        <path d="M3 9L9 3M9 3H4.5M9 3V7.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+      </svg>
+    </a>
+  </div>
+  <div class="deliver-video-wrap floating">
+    <video class="deliver-video" autoplay muted loop playsinline>
+      <source src="/assets/hero/cleanfit_loop_v2_compressed.webm" type="video/webm"/>
+      <source src="/assets/hero/cleanfit_loop_v2_compressed.mp4" type="video/mp4"/>
+    </video>
   </div>
 </section>
 

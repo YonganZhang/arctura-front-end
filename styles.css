@@ -131,6 +131,110 @@ section.compact { padding: 80px 0; }
 /* ========== HERO ========== */
 .hero { padding: 72px 0 96px; position: relative; }
 
+/* ========== Loading splash · 入场过场 · 仿 cleanspaceus ========== */
+.loading-splash {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ink);
+  color: var(--paper);
+  animation: splashFadeOut 0.5s ease 1.3s forwards;
+}
+.loading-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  opacity: 0;
+  animation: splashIn 0.5s ease 0.1s forwards;
+}
+.loading-mark {
+  color: var(--paper);
+}
+.loading-mark .loading-ring {
+  animation: ringDraw 1.2s ease-out forwards;
+}
+.loading-wordmark {
+  font-family: var(--f-display);
+  font-size: 18px;
+  letter-spacing: 0.1em;
+  font-weight: 300;
+  opacity: 0;
+  animation: fadeUp 0.6s ease 0.4s forwards;
+}
+@keyframes splashIn { to { opacity: 1; } }
+@keyframes splashFadeOut {
+  to { opacity: 0; visibility: hidden; pointer-events: none; }
+}
+@keyframes ringDraw { to { stroke-dashoffset: 0; } }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ========== Designed to Deliver · Certainty / Continuity · 仿 cleanspaceus ========== */
+.section-deliver {
+  position: relative;
+  padding: 120px 0;
+  overflow: hidden;
+  background: var(--bg);
+}
+.section-deliver.certainty { background: var(--paper); }
+.section-deliver.continuity { background: var(--bg); }
+
+.deliver-video-wrap {
+  position: relative;
+  width: 100%;
+  max-width: var(--maxw);
+  margin: 0 auto 48px;
+  border-radius: 6px;
+  overflow: hidden;
+  aspect-ratio: 16/9;
+  background: var(--bg-dark);
+}
+.section-deliver.continuity .deliver-video-wrap.floating {
+  margin: 48px auto 0;
+}
+.deliver-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.deliver-content {
+  text-align: center;
+  max-width: 760px;
+  padding: 0 24px;
+}
+.deliver-title {
+  font-family: var(--f-display);
+  font-size: clamp(36px, 4vw, 60px);
+  font-weight: 300;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  margin: 0 0 20px;
+}
+.deliver-title em {
+  font-style: italic;
+  color: var(--accent);
+  font-weight: 400;
+}
+.deliver-sub {
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+  margin: 0 0 28px;
+}
+
+@media (max-width: 900px) {
+  .section-deliver { padding: 72px 0; }
+  .deliver-video-wrap { margin-bottom: 32px; aspect-ratio: 4/3; }
+}
+
 /* ========== 自动播 3D 动画 section · 大图铺满 · 仿 cleanspaceus ========== */
 /* 现在是自动循环播放 · 不再需要 300vh · 改 110vh 让画面大一点 */
 .section-scroll-3d {
@@ -148,13 +252,13 @@ section.compact { padding: 80px 0; }
   overflow: hidden;
   box-sizing: border-box;
 }
-/* Canvas 铺满 · object-fit cover 让大画面充满视口 */
+/* Canvas 填满 · object-fit contain 保证 1:1 全画面不裁 · 居中 */
 .scroll-3d-sticky.big #hero-canvas {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   object-position: center;
   display: block;
 }
