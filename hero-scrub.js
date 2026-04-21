@@ -1,13 +1,13 @@
-// hero-scrub.js — 滚动驱动 canvas 动画（section 独立版 · sticky 期间 scrub 完 130 帧）
+// hero-scrub.js — 自动播放 canvas 动画（130 帧循环 · 不再依赖 scroll）
 (function () {
   const FRAMES = 130;
+  const FPS = 28;               // 约 4.6 秒一次循环
   const FRAME_URL = (i) => `/assets/hero/cleanspace-seq/${String(i).padStart(3, "0")}.webp`;
 
   const canvas = document.getElementById("hero-canvas");
   if (!canvas) return;
   const ctx = canvas.getContext("2d");
   const bar = document.getElementById("hero-3d-bar");
-  // section 是 300vh 高 · sticky 子元素 100vh · 进度 = 滚过 section 顶 / (section.height - 100vh)
   const section = document.querySelector(".section-scroll-3d");
   if (!section) return;
 
@@ -24,27 +24,18 @@
         firstReady = true;
         draw(0);
       }
-      // 不断触发 onScroll · 帮助首屏加载完逐步能绘到当前帧
-      if (loadedCount % 10 === 0 || loadedCount === FRAMES) onScroll();
+      // 首帧加载后立刻画一次
+      if (loadedCount === 1 || loadedCount % 10 === 0 || loadedCount === FRAMES) {
+        draw(currentFrame);
+      }
     };
     img.src = FRAME_URL(i + 1);
     imgs[i] = img;
   }
 
-  // 滚动进度 0..1 · section 顶到 viewport 顶时 = 0 · section 底剩 100vh 时 = 1
-  // section 高 300vh · sticky 子 100vh · 有效 scrub 范围 = 200vh
-  function progress() {
-    const rect = section.getBoundingClientRect();
-    const vh = window.innerHeight || 800;
-    const total = Math.max(1, rect.height - vh);
-    const y = -rect.top;
-    return Math.max(0, Math.min(1, y / total));
-  }
-
   function draw(frameIdx) {
     const img = imgs[frameIdx];
     if (!img || !img.complete || img.naturalWidth === 0) {
-      // 未加载好 · 找最近的已加载的帧
       let nearest = -1, delta = Infinity;
       for (let i = 0; i < FRAMES; i++) {
         if (imgs[i]?.complete && imgs[i].naturalWidth > 0) {
@@ -60,25 +51,42 @@
     }
   }
 
-  let rafId = null;
-  let currentFrame = -1;
-  function onScroll() {
-    if (rafId) return;
-    rafId = requestAnimationFrame(() => {
-      rafId = null;
-      const p = progress();
-      const frame = Math.round(p * (FRAMES - 1));
-      if (frame !== currentFrame) {
-        currentFrame = frame;
-        draw(frame);
-        if (bar) bar.style.width = (p * 100).toFixed(1) + "%";
+  // 自动播 · 倒过来：从最后一帧 → 第一帧（用户理解为 "图纸 → 3D 房子"）· 循环
+  // 注：如果方向反了（看起来是从 3D 变成图纸）· 把 DIRECTION 改成 +1
+  const DIRECTION = -1;          // -1 = 130→1 · +1 = 1→130
+  const START = DIRECTION === -1 ? FRAMES - 1 : 0;
+  const END = DIRECTION === -1 ? 0 : FRAMES - 1;
+
+  let currentFrame = START;
+  let playing = true;
+  let lastTick = 0;
+  const frameInterval = 1000 / FPS;
+
+  function tick(now) {
+    if (!playing) { requestAnimationFrame(tick); return; }
+    if (now - lastTick >= frameInterval) {
+      lastTick = now;
+      draw(currentFrame);
+      if (bar) {
+        // 进度条：按播放方向计算 0→100%
+        const p = DIRECTION === -1 ? (FRAMES - 1 - currentFrame) / (FRAMES - 1) : currentFrame / (FRAMES - 1);
+        bar.style.width = (p * 100).toFixed(1) + "%";
       }
-    });
+      currentFrame += DIRECTION;
+      // 循环重置
+      if (DIRECTION === -1 && currentFrame < 0) currentFrame = FRAMES - 1;
+      if (DIRECTION === 1 && currentFrame >= FRAMES) currentFrame = 0;
+    }
+    requestAnimationFrame(tick);
   }
 
-  window.addEventListener("scroll", onScroll, { passive: true });
-  window.addEventListener("resize", onScroll, { passive: true });
-  document.addEventListener("DOMContentLoaded", onScroll);
-  // 初始绘制
-  onScroll();
+  // 在视口外暂停 · 省 CPU
+  if ("IntersectionObserver" in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => { playing = e.isIntersecting; });
+    }, { threshold: 0.01 });
+    io.observe(section);
+  }
+
+  requestAnimationFrame(tick);
 })();
