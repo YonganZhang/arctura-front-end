@@ -286,18 +286,16 @@ section.compact { padding: 80px 0; }
 .section-scroll-3d.big { background: linear-gradient(180deg, var(--bg) 0%, var(--paper) 50%, var(--bg) 100%); }
 
 .scroll-3d-sticky.big {
-  position: relative;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  min-height: 820px;
+  position: absolute;
+  inset: 0;
   overflow: hidden;
   box-sizing: border-box;
-  display: block;
 }
-/* Canvas 铺满 sticky 容器 · 实际绘制靠 JS drawCover（object-fit 对 canvas 不可靠）*/
+/* Canvas 绝对定位铺满 section · 从 0 到底 · JS drawCover 做 cover 裁切 */
 .scroll-3d-sticky.big #hero-canvas {
   display: block;
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
 }
