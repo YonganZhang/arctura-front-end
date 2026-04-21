@@ -2003,6 +2003,9 @@ function Viewer3DScene() {
   useEffect(() => {
     if (rendererRef.current && rendererReady) {
       rendererRef.current.setTransparency(transp);
+      console.log("[transparency sync]", transp, "walls tracked:", rendererRef.current.wallObjs?.size);
+    } else {
+      console.log("[transparency skip]", { hasRenderer: !!rendererRef.current, ready: rendererReady });
     }
   }, [transp, rendererReady]);
   // 同理 daylight
@@ -2046,6 +2049,7 @@ function Viewer3DScene() {
       if (typeof window.SceneRenderer === "function") {
         r = new window.SceneRenderer(canvasRef.current);
         rendererRef.current = r;
+        window._renderer = r;                   // devtools debug · 允许 console 内检查
         // Phase 3.C/D · click 回调 · 设 React 选中 · FurnitureCard 显示
         r.onSelect = (hit) => setSelection(hit);
         // Phase 3.F.B · hover tooltip

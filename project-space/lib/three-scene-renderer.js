@@ -466,15 +466,20 @@ export class SceneRenderer {
 
   _setMeshOpacity(root, opacity) {
     const transparent = opacity < 1.0;
+    // 显式"透明"按钮时 opacity ≤ 0.3 视同"隐藏" · 直接 mesh.visible = false
+    // 避免 Three.js 透明渲染的排序 / depth 问题导致肉眼看不出透明
+    // camera-aware 自动模式用 0.25 (≤0.3) 也走 hide · 简洁一致
+    const hide = opacity <= 0.3;
     const setOne = (m) => {
       m.transparent = transparent;
       m.opacity = opacity;
-      // 关键：透明时关 depthWrite · 否则 Three.js 按 depth buffer 判定可见性 · 视觉上仍然像不透明
       m.depthWrite = !transparent;
       m.needsUpdate = true;
     };
     root.traverse((o) => {
-      if (!o.isMesh || !o.material) return;
+      if (!o.isMesh) return;
+      o.visible = !hide;
+      if (!o.material) return;
       const mat = o.material;
       if (Array.isArray(mat)) mat.forEach(setOne);
       else setOne(mat);
