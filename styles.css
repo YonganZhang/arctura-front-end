@@ -129,68 +129,111 @@ section.compact { padding: 80px 0; }
 .nav-cta:hover .nav-cta-arrow { transform: translate(2px, -2px); }
 
 /* ========== HERO ========== */
-.hero { padding: 72px 0 96px; position: relative; min-height: 680px; }
+.hero { padding: 72px 0 96px; position: relative; }
 
-/* ========== Hero 滚动动画背景 · 130 帧 WebP canvas scrub ========== */
-.hero-3d-bg {
-  position: absolute;
-  inset: 0;
+/* ========== 滚动驱动 3D 动画 section · 独立板块 · 仿 cleanspaceus ========== */
+/* 高度撑到 300vh · sticky 内容在视口停留 · 用户滚动期间 130 帧 scrub 完 */
+.section-scroll-3d {
+  position: relative;
+  height: 300vh;
+  background: var(--bg);
+}
+.scroll-3d-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
   overflow: hidden;
-  z-index: 0;
-  pointer-events: none;
-  border-radius: 6px;
-  background: linear-gradient(180deg, var(--bg) 0%, var(--paper) 100%);
+  display: grid;
+  grid-template-columns: minmax(420px, 0.85fr) 1.15fr;
+  gap: 60px;
+  align-items: center;
+  padding: 0 max(24px, calc((100% - var(--maxw)) / 2));
 }
-.hero-3d-bg canvas {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
+.scroll-3d-copy {
+  z-index: 2;
+  max-width: 520px;
 }
-/* Scrim · 让 copy 在 3D 上可读 */
-.hero-3d-scrim {
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(90deg, var(--bg) 0%, rgba(247,244,238,0.75) 35%, rgba(247,244,238,0.35) 60%, transparent 75%),
-    linear-gradient(180deg, rgba(247,244,238,0.15) 0%, transparent 30%, transparent 70%, rgba(247,244,238,0.4) 100%);
-  pointer-events: none;
+.scroll-3d-copy .eyebrow { margin-bottom: 14px; }
+.scroll-3d-copy h2 {
+  font-family: var(--f-display);
+  font-size: clamp(36px, 4.4vw, 64px);
+  font-weight: 300;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  margin: 0 0 20px;
 }
-/* 滚动进度条 · 顶部细条 */
-.hero-3d-progress {
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 2px;
-  background: rgba(26,25,22,0.05);
-  pointer-events: none;
-  z-index: 3;
+.scroll-3d-copy h2 em {
+  font-style: italic;
+  color: var(--accent);
 }
-.hero-3d-bar {
+.scroll-3d-copy p {
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+  margin: 0 0 28px;
+}
+.scroll-3d-progress-rail {
+  height: 3px;
+  background: var(--line);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.scroll-3d-progress-rail > div {
   height: 100%;
   width: 0%;
   background: var(--ink);
   transition: width 0.12s linear;
 }
-/* hero-grid 在 3D 上层 · 相对定位拿 z-index */
-.hero .hero-grid { position: relative; z-index: 2; }
-
-/* Demo panel 隐藏（由 3D 背景替代视觉角色）· 保留 DOM 以防后续恢复 */
-.hero .demo { display: none; }
-
-/* hero-grid 单列 · copy 占左半 · 右半让 3D 透出来 */
-.hero .hero-grid {
-  grid-template-columns: minmax(0, 1fr);
+.scroll-3d-progress-label {
+  display: flex; justify-content: space-between;
+  font-family: var(--f-mono);
+  font-size: 10px; letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin-top: 10px;
 }
-.hero .hero-copy {
-  max-width: 620px;
+.scroll-3d-canvas-wrap {
+  position: relative;
+  width: 100%;
+  height: 85vh;
+  max-height: 780px;
+  background: linear-gradient(180deg, var(--paper) 0%, var(--bg) 100%);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  overflow: hidden;
+}
+#hero-canvas {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+.scroll-3d-tag {
+  position: absolute;
+  top: 16px; left: 16px;
+  font-family: var(--f-mono);
+  font-size: 10px; letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  background: rgba(253,251,245,0.85);
+  backdrop-filter: blur(6px);
+  padding: 6px 10px;
+  border-radius: 3px;
+  pointer-events: none;
 }
 
 @media (max-width: 900px) {
-  .hero { min-height: 560px; }
-  .hero-3d-scrim {
-    background:
-      linear-gradient(180deg, rgba(247,244,238,0.85) 0%, rgba(247,244,238,0.55) 40%, rgba(247,244,238,0.35) 100%);
+  .section-scroll-3d { height: 240vh; }
+  .scroll-3d-sticky {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 60px 24px;
+    align-items: start;
   }
+  .scroll-3d-canvas-wrap { height: 55vh; }
+  .scroll-3d-copy { max-width: 100%; order: 2; }
+  .scroll-3d-canvas-wrap { order: 1; }
 }
 
 .hero-grid {

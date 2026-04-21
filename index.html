@@ -45,13 +45,6 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
 
 <!-- ============ HERO ============ -->
 <section class="hero wrap" data-screen-label="01 Hero">
-  <!-- 滚动驱动动画背景 · 130 帧 WebP 序列 · 从平面图 → 3D -->
-  <div class="hero-3d-bg" aria-hidden="true">
-    <canvas id="hero-canvas" width="1920" height="1920"></canvas>
-    <div class="hero-3d-scrim"></div>
-    <div class="hero-3d-progress"><div class="hero-3d-bar" id="hero-3d-bar"></div></div>
-  </div>
-
   <div class="hero-grid">
     <div class="hero-copy">
       <div class="hero-eyebrow">
@@ -256,6 +249,28 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
         <div class="metric-val">56<span class="metric-unit">min</span></div>
         <div class="metric-lbl">Brief → full package<br/><span>from one sentence to bid-ready</span></div>
       </div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap"><div class="hr"></div></div>
+
+<!-- ============ 滚动 3D 动画 section · plan → 3D ============ -->
+<section class="section-scroll-3d" data-screen-label="01.6 Plan to 3D">
+  <div class="scroll-3d-sticky">
+    <div class="scroll-3d-copy">
+      <div class="eyebrow"><span class="dot"></span> A live view · from concept to commit</div>
+      <h2>From a flat <em>plan</em><br/>to a fully built <em>scene</em>.</h2>
+      <p>Scroll to watch a brief unfold — the floor plan extrudes, walls enclose, light and materials settle. The same pipeline that renders this animation renders every room in the catalog.</p>
+      <div class="scroll-3d-progress-rail"><div id="hero-3d-bar"></div></div>
+      <div class="scroll-3d-progress-label">
+        <span>Plan · frame 001</span>
+        <span>3D · frame 130</span>
+      </div>
+    </div>
+    <div class="scroll-3d-canvas-wrap">
+      <canvas id="hero-canvas" width="1920" height="1920"></canvas>
+      <div class="scroll-3d-tag">live render · pre-computed 130 frames</div>
     </div>
   </div>
 </section>

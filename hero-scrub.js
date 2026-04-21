@@ -1,5 +1,4 @@
-// hero-scrub.js — 滚动驱动 hero canvas 动画
-// 130 帧 WebP 序列 · scroll 位置映射到 frame index · drawImage 到 canvas
+// hero-scrub.js — 滚动驱动 canvas 动画（section 独立版 · sticky 期间 scrub 完 130 帧）
 (function () {
   const FRAMES = 130;
   const FRAME_URL = (i) => `/assets/hero/cleanspace-seq/${String(i).padStart(3, "0")}.webp`;
@@ -8,8 +7,9 @@
   if (!canvas) return;
   const ctx = canvas.getContext("2d");
   const bar = document.getElementById("hero-3d-bar");
-  const hero = document.querySelector(".hero");
-  if (!hero) return;
+  // section 是 300vh 高 · sticky 子元素 100vh · 进度 = 滚过 section 顶 / (section.height - 100vh)
+  const section = document.querySelector(".section-scroll-3d");
+  if (!section) return;
 
   // 预加载 · 所有 130 帧并行 · img cache
   // 注：onload 必须在 src 之前设 · 否则缓存的图会错过 onload 触发
@@ -31,13 +31,13 @@
     imgs[i] = img;
   }
 
-  // 滚动进度 0..1 · 以 hero 整体经过视口为参考
-  //   hero 顶部 在 viewport 顶部 = 0
-  //   hero 底部 离开 viewport 顶部 = 1
+  // 滚动进度 0..1 · section 顶到 viewport 顶时 = 0 · section 底剩 100vh 时 = 1
+  // section 高 300vh · sticky 子 100vh · 有效 scrub 范围 = 200vh
   function progress() {
-    const rect = hero.getBoundingClientRect();
-    const total = Math.max(1, rect.height);
-    const y = -rect.top; // 滚过多少 hero
+    const rect = section.getBoundingClientRect();
+    const vh = window.innerHeight || 800;
+    const total = Math.max(1, rect.height - vh);
+    const y = -rect.top;
     return Math.max(0, Math.min(1, y / total));
   }
 
