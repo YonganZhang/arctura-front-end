@@ -38,6 +38,38 @@ export function findObject(scene, query) {
   return null;
 }
 
+// Assembly fuzzy match · Phase 3 · default target for chat / card edits
+export function findAssembly(scene, query) {
+  if (!query) return null;
+  const q = String(query).trim().toLowerCase();
+  const assemblies = scene.assemblies || [];
+  const byId = assemblies.find(a => a.id?.toLowerCase() === q);
+  if (byId) return byId;
+  const byLabel = assemblies.find(
+    a => a.label_zh === query || a.label_en?.toLowerCase() === q
+  );
+  if (byLabel) return byLabel;
+  const byLabelContains = assemblies.find(
+    a => (a.label_zh || "").includes(query) || (a.label_en || "").toLowerCase().includes(q)
+  );
+  if (byLabelContains) return byLabelContains;
+  const byType = assemblies.find(a => (a.type || "").toLowerCase().includes(q));
+  if (byType) return byType;
+  return null;
+}
+
+// 给 object 找所属 assembly（back-ref via object.assembly_id · 或者遍历 part_ids）
+export function findAssemblyByObjectId(scene, objectId) {
+  if (!objectId || !scene.assemblies) return null;
+  // 1. object 自带 assembly_id
+  const obj = (scene.objects || []).find(o => o.id === objectId);
+  if (obj?.assembly_id) {
+    return scene.assemblies.find(a => a.id === obj.assembly_id) || null;
+  }
+  // 2. fallback 遍历 part_ids
+  return scene.assemblies.find(a => (a.part_ids || []).includes(objectId)) || null;
+}
+
 export function findWall(scene, query) {
   if (!query) return null;
   const q = String(query).trim().toLowerCase();
@@ -179,6 +211,68 @@ function opAddObject(scene, op) {
   if (op.zone) entry.zone = op.zone;
   scene.objects.push(entry);
   return { ok: true, before: null, after: clone(entry) };
+}
+
+// ───────── Assembly ops · Phase 3 ─────────
+// 作用于"逻辑家具"级别：一把椅子 = assembly；内部 parts 跟随
+// move / rotate 需要同步更新 parts 的 pos / rotation（delta 传递给每个 part）
+
+function _assemblyFind(scene, idOrQuery) {
+  return findAssembly(scene, idOrQuery);
+}
+
+function opMoveAssembly(scene, op) {
+  const asm = _assemblyFind(scene, op.id || op.id_or_name);
+  if (!asm) return { ok: false, reason: `assembly not found: ${op.id || op.id_or_name}` };
+  let newPos;
+  let delta;
+  if (Array.isArray(op.pos) && op.pos.length === 3) {
+    newPos = op.pos.map(v => Math.round(v * 1000) / 1000);
+    delta = newPos.map((v, i) => v - asm.pos[i]);
+  } else if (Array.isArray(op.delta) && op.delta.length === 3) {
+    delta = op.delta;
+    newPos = asm.pos.map((v, i) => Math.round((v + delta[i]) * 1000) / 1000);
+  } else {
+    return { ok: false, reason: "need pos or delta [x,y,z]" };
+  }
+  const before = { pos: [...asm.pos], parts: (asm.part_ids || []).map(pid => {
+    const p = (scene.objects || []).find(o => o.id === pid);
+    return p ? { id: pid, pos: [...p.pos] } : null;
+  }).filter(Boolean) };
+
+  asm.pos = newPos;
+  // 同步所有 parts 的 pos（加 delta）
+  for (const pid of asm.part_ids || []) {
+    const p = (scene.objects || []).find(o => o.id === pid);
+    if (p) p.pos = p.pos.map((v, i) => Math.round((v + delta[i]) * 1000) / 1000);
+  }
+  return { ok: true, before, after: { pos: asm.pos, delta, parts_moved: (asm.part_ids || []).length } };
+}
+
+function opRotateAssembly(scene, op) {
+  const asm = _assemblyFind(scene, op.id || op.id_or_name);
+  if (!asm) return { ok: false, reason: `assembly not found: ${op.id || op.id_or_name}` };
+  if (!Array.isArray(op.rotation) || op.rotation.length !== 3) {
+    return { ok: false, reason: "rotation must be [rx, ry, rz] degrees" };
+  }
+  const newRot = op.rotation.map(v => Math.round(v * 1000) / 1000);
+  const before = { rotation: asm.rotation ? [...asm.rotation] : [0, 0, 0] };
+  asm.rotation = newRot;
+  // 注：parts 的 rotation 不联动（procedural 模式下 parts 已 hidden · 不影响；raw 模式以 parts 自己 rotation 为准）
+  return { ok: true, before, after: { rotation: newRot } };
+}
+
+function opRemoveAssembly(scene, op) {
+  const asm = _assemblyFind(scene, op.id || op.id_or_name);
+  if (!asm) return { ok: false, reason: `assembly not found: ${op.id || op.id_or_name}` };
+  const before = { assembly: clone(asm), parts: (asm.part_ids || []).map(pid => {
+    const p = (scene.objects || []).find(o => o.id === pid);
+    return p ? clone(p) : null;
+  }).filter(Boolean) };
+  const partIdSet = new Set(asm.part_ids || []);
+  scene.objects = (scene.objects || []).filter(o => !partIdSet.has(o.id));
+  scene.assemblies = (scene.assemblies || []).filter(a => a.id !== asm.id);
+  return { ok: true, before, after: null };
 }
 
 function opMoveWall(scene, op) {
@@ -364,6 +458,11 @@ const OPS = {
   resize_object: opResizeObject,
   remove_object: opRemoveObject,
   add_object: opAddObject,
+  // Phase 3 · assembly 级 ops（作用于"逻辑家具" · parts 跟随）
+  move_assembly: opMoveAssembly,
+  rotate_assembly: opRotateAssembly,
+  remove_assembly: opRemoveAssembly,
+  // wall / opening / light / material
   move_wall: opMoveWall,
   resize_wall: opResizeWall,
   add_opening: opAddOpening,

@@ -85,20 +85,26 @@ TYPE_PATTERNS: list[tuple[str, str]] = [
     (r"^Lamp", "lamp_floor"),
 ]
 
-# 防穿模：当父 object 被识别为 procedural 家具时 · 跳过它的"零件" sub-meshes
-# 因为 procedural builder 已经把零件画齐了 · 再叠原始 plate 就会穿模
-# key = 父名正则（匹配到时视为 procedural）· value = 要跳过的子名正则列表
-PROCEDURAL_CHILDREN: list[tuple[str, list[str]]] = [
-    (r"^Chair(?!Back)", [r"^ChairBack", r"^ChairLeg", r"^ChairSeat"]),
-    (r"^ArmChair$", [r"^ArmBack", r"^ArmSeat", r"^ArmRest"]),
-    (r"^Desk(?!Leg)", [r"^DeskLeg"]),
-    (r"^LampPole", [r"^LampShade", r"^LampBase"]),
-    (r"^FloorLamp", [r"^FloorLampBase", r"^FloorLampPost", r"^FloorLampShade"]),
-    (r"^Bookshelf", [r"^Shelf\d+", r"^BookshelfSide", r"^BookshelfBack"]),
-    (r"^Sofa", [r"^SofaArm", r"^SofaCushion", r"^SofaBack", r"^SofaLeg"]),
-    (r"^Bed(?!side)", [r"^BedFrame", r"^BedLeg", r"^BedHeadboard", r"^Mattress"]),
-    (r"^Cabinet", [r"^CabinetDoor", r"^CabinetHandle", r"^CabinetDrawer"]),
-    (r"^Table(?!Leg)", [r"^TableLeg", r"^TableBase"]),
+# Assembly 识别表（Phase 3 升级 · 替代 PROCEDURAL_CHILDREN 硬跳过）
+# 父 name 正则 · 匹配到就是一个 assembly 主 part；子 name 正则列表 · 匹配的 object 归入同 assembly
+# 跟 Phase 2 差异：**parts 不再被跳过**，全部保留在 scene.objects；另外建 assemblies[] 把 primary + children 组成"逻辑家具"
+ASSEMBLY_PATTERNS: list[dict] = [
+    {"parent": r"^Chair(?!Back)",     "type": "chair_standard", "children": [r"^ChairBack", r"^ChairLeg", r"^ChairSeat"]},
+    {"parent": r"^ArmChair$",         "type": "chair_lounge",   "children": [r"^ArmBack", r"^ArmSeat", r"^ArmRest"]},
+    {"parent": r"^Desk(?!Leg)",       "type": "desk_standard",  "children": [r"^DeskLeg"]},
+    {"parent": r"^LampPole",          "type": "lamp_floor",     "children": [r"^LampShade", r"^LampBase"]},
+    {"parent": r"^FloorLamp(?!Base|Post|Shade)$", "type": "lamp_floor",
+                                       "children": [r"^FloorLampBase", r"^FloorLampPost", r"^FloorLampShade"]},
+    {"parent": r"^Bookshelf",         "type": "shelf_open",     "children": [r"^Shelf\d+", r"^BookshelfSide", r"^BookshelfBack"]},
+    {"parent": r"^Sofa(?!Arm|Back|Cushion|Leg)", "type": "sofa_2seat",
+                                       "children": [r"^SofaArm", r"^SofaCushion", r"^SofaBack", r"^SofaLeg"]},
+    {"parent": r"^Bed(?!side|Frame|Leg|Headboard)", "type": "bed_queen",
+                                       "children": [r"^BedFrame", r"^BedLeg", r"^BedHeadboard", r"^Mattress"]},
+    {"parent": r"^(Cabinet|Closet|Wardrobe)(?!Door|Handle|Drawer)", "type": "closet_tall",
+                                       "children": [r"^CabinetDoor", r"^CabinetHandle", r"^CabinetDrawer",
+                                                    r"^ClosetDoor", r"^ClosetHandle"]},
+    {"parent": r"^Table(?!Leg|Base|Coffee|Dining)", "type": "table_dining",
+                                       "children": [r"^TableLeg", r"^TableBase"]},
 ]
 
 # 中文 label 映射（pilot 01-study-room 的 name → 中文）
@@ -293,38 +299,174 @@ def object_from_blender(o: dict, material_id_by_idx: dict) -> dict:
     return entry
 
 
-# ───────── 防穿模 · post-process ─────────
+# ───────── Assembly 识别 · Phase 3 (替代 find_child_ids_to_skip 硬跳过) ─────────
 
-def identify_procedural_parents(blender_objects: list[dict]) -> set[int]:
-    """找出所有"父 object"（能走 procedural builder · 非 custom）"""
-    parent_ids = set()
-    names = {o["id"]: o.get("name", "") for o in blender_objects}
-    for o in blender_objects:
-        name = o.get("name", "")
-        t = infer_type(name)
-        if t != "custom":
-            parent_ids.add(o["id"])
-    return parent_ids
+def _make_asm_id(index: int, type_: str) -> str:
+    """生成 assembly id · 保证唯一且可读"""
+    return f"asm_{type_}_{index}"
 
 
-def find_child_ids_to_skip(blender_objects: list[dict]) -> set[int]:
-    """对每个 procedural 父 · 标记需要 skip 的零件 id"""
-    skip = set()
-    # 先找所有匹配父正则的 object
-    name_to_id = {o.get("name", ""): o["id"] for o in blender_objects}
-    for parent_rx, child_rxs in PROCEDURAL_CHILDREN:
-        parent_re = re.compile(parent_rx)
-        child_res = [re.compile(r) for r in child_rxs]
-        # 有父吗？
-        has_parent = any(parent_re.match(n) for n in name_to_id.keys() if n)
-        if not has_parent:
+def _obj_id_from_name(name: str) -> str:
+    """复刻 object_from_blender 的 id 规则 · 用于回指"""
+    return f"obj_{re.sub(r'[^a-zA-Z0-9_]', '_', name.lower())}"
+
+
+def _bbox_from_parts(parts: list[dict]) -> tuple[list[float], list[float]]:
+    """算聚合包围盒 · 返回 (center_pos, size)"""
+    if not parts:
+        return [0, 0, 0], [0.1, 0.1, 0.1]
+    xs, ys, zs = [], [], []
+    for p in parts:
+        px, py, pz = p["pos"]
+        hw, hd, hh = p["size"][0] / 2, p["size"][1] / 2, p["size"][2] / 2
+        xs += [px - hw, px + hw]; ys += [py - hd, py + hd]; zs += [pz - hh, pz + hh]
+    min_x, max_x = min(xs), max(xs); min_y, max_y = min(ys), max(ys); min_z, max_z = min(zs), max(zs)
+    center = [round((min_x+max_x)/2, 3), round((min_y+max_y)/2, 3), round((min_z+max_z)/2, 3)]
+    size = [round(max(max_x-min_x, 0.05), 3), round(max(max_y-min_y, 0.05), 3), round(max(max_z-min_z, 0.05), 3)]
+    return center, size
+
+
+def build_assemblies(scene_objects: list[dict], blender_objects: list[dict]) -> list[dict]:
+    """
+    从 scene.objects（已 flatten）+ 原 Blender 命名信息 生成 assemblies[]。
+
+    策略：
+    1. 命名匹配优先：ASSEMBLY_PATTERNS 里的 parent name → 主 part；children name → 加入同 asm
+    2. 空间近邻 fallback：名字不匹配的父家具（已有 non-custom type）· 找 1m 内未归属的 custom/零件 object · 按类型合理拉入
+    3. 剩下没归属的 object（独立体：Rug, Laptop, Monitor 等）· 每个自成 assembly（single_object）· 方便 AI 操作
+    返回 assemblies 列表 · 同时 mutate scene_objects 给每个 object 打 assembly_id
+    """
+    # 建立 object.id → scene object 的反查（scene_objects 是 build 后的形态 · 含 id/pos/size/type）
+    obj_by_id = {o["id"]: o for o in scene_objects}
+
+    # 建立 Blender name → scene object 反查（scene.id 是从 name 派生的 obj_<lower>）
+    # Blender id 不稳定地 survive 到 scene · 改用 name 作 key
+    name_to_obj: dict[str, dict] = {}
+    for bo in blender_objects:
+        name = bo.get("name", "")
+        if not name:
             continue
-        # 标记所有匹配子正则的 object
-        for o in blender_objects:
-            n = o.get("name", "")
-            if any(rx.match(n) for rx in child_res):
-                skip.add(o["id"])
-    return skip
+        scene_obj_id = _obj_id_from_name(name)
+        so = obj_by_id.get(scene_obj_id)
+        if so:
+            name_to_obj[name] = so
+
+    assemblies: list[dict] = []
+    assigned_ids: set[str] = set()
+    asm_idx = 1
+
+    # ── Pass 1：命名匹配 ──
+    for pat in ASSEMBLY_PATTERNS:
+        parent_re = re.compile(pat["parent"])
+        child_res = [re.compile(c) for c in pat["children"]]
+        # 找所有父 match
+        parent_names = [n for n in name_to_obj.keys() if parent_re.match(n)]
+        for pname in parent_names:
+            primary = name_to_obj[pname]
+            if primary["id"] in assigned_ids:
+                continue
+            # 找对应的 children
+            part_ids = [primary["id"]]
+            for cname, cobj in name_to_obj.items():
+                if cname == pname or cobj["id"] in assigned_ids:
+                    continue
+                if any(rx.match(cname) for rx in child_res):
+                    part_ids.append(cobj["id"])
+            # 聚合 bbox
+            parts_resolved = [obj_by_id[pid] for pid in part_ids if pid in obj_by_id]
+            center, size = _bbox_from_parts(parts_resolved)
+            asm_id = _make_asm_id(asm_idx, pat["type"]); asm_idx += 1
+            entry = {
+                "id": asm_id,
+                "type": pat["type"],
+                "pos": [primary["pos"][0], primary["pos"][1], 0],  # 底贴地（procedural 以 z=0 为原点）
+                "rotation": primary.get("rotation", [0, 0, 0]),
+                "size": size,
+                "part_ids": part_ids,
+                "primary_part_id": primary["id"],
+                "material_id_primary": primary.get("material_id", "default"),
+                "label_en": primary.get("label_en", pname),
+                "label_zh": primary.get("label_zh", pname),
+                "_generated_by": "naming_regex",
+            }
+            if primary.get("zone"):
+                entry["zone"] = primary["zone"]
+            assemblies.append(entry)
+            for pid in part_ids:
+                assigned_ids.add(pid)
+
+    # ── Pass 2：空间 fallback ·未命中的 non-custom 父自成 assembly（每个 non-custom object 至少是一个 assembly）──
+    # 对每个 non-custom 且未归属的 object · 单独成一个 assembly
+    for o in scene_objects:
+        if o["id"] in assigned_ids:
+            continue
+        if o.get("type") in (None, "custom"):
+            continue
+        # 尝试空间近邻：找 1m 内的 custom object 拉入
+        part_ids = [o["id"]]
+        for other in scene_objects:
+            if other["id"] in assigned_ids or other["id"] == o["id"]:
+                continue
+            if other.get("type") not in (None, "custom"):
+                continue  # 只拉 custom 零件
+            d = math.hypot(other["pos"][0] - o["pos"][0], other["pos"][1] - o["pos"][1])
+            if d <= 1.0:  # 1m 阈值
+                # 简单名字启发 · custom 物体名要跟父类有语义相关（或直接包含父的 type 关键字）
+                pname = o.get("label_en", "")
+                cname = other.get("label_en", "")
+                # 粗略：只要距离近又都在地面区域（不拉 laptop 之类会误伤）
+                if cname and pname and (cname.lower().startswith(pname.lower()) or pname.lower() in cname.lower()):
+                    part_ids.append(other["id"])
+        parts_resolved = [obj_by_id[pid] for pid in part_ids]
+        center, size = _bbox_from_parts(parts_resolved)
+        asm_id = _make_asm_id(asm_idx, o.get("type", "custom")); asm_idx += 1
+        entry = {
+            "id": asm_id,
+            "type": o.get("type", "custom"),
+            "pos": [o["pos"][0], o["pos"][1], 0],
+            "rotation": o.get("rotation", [0, 0, 0]),
+            "size": size,
+            "part_ids": part_ids,
+            "primary_part_id": o["id"],
+            "material_id_primary": o.get("material_id", "default"),
+            "_generated_by": "spatial_fallback" if len(part_ids) > 1 else "single_object",
+        }
+        if o.get("zone"):    entry["zone"] = o["zone"]
+        if o.get("label_en"): entry["label_en"] = o["label_en"]
+        if o.get("label_zh"): entry["label_zh"] = o["label_zh"]
+        assemblies.append(entry)
+        for pid in part_ids:
+            assigned_ids.add(pid)
+
+    # ── Pass 3：独立 custom objects（Rug / Laptop / Monitor 等）自成 single_object assembly ──
+    for o in scene_objects:
+        if o["id"] in assigned_ids:
+            continue
+        asm_id = _make_asm_id(asm_idx, o.get("type", "custom")); asm_idx += 1
+        entry = {
+            "id": asm_id,
+            "type": o.get("type", "custom"),
+            "pos": [o["pos"][0], o["pos"][1], o["pos"][2]],  # custom 保留源 z · 避免 Rug 被拍扁
+            "rotation": o.get("rotation", [0, 0, 0]),
+            "size": list(o["size"]),
+            "part_ids": [o["id"]],
+            "primary_part_id": o["id"],
+            "material_id_primary": o.get("material_id", "default"),
+            "_generated_by": "single_object",
+        }
+        if o.get("zone"):    entry["zone"] = o["zone"]
+        if o.get("label_en"): entry["label_en"] = o["label_en"]
+        if o.get("label_zh"): entry["label_zh"] = o["label_zh"]
+        assemblies.append(entry)
+        assigned_ids.add(o["id"])
+
+    # 最后 · 把 assembly_id 写回每个 scene object
+    for asm in assemblies:
+        for pid in asm["part_ids"]:
+            if pid in obj_by_id:
+                obj_by_id[pid]["assembly_id"] = asm["id"]
+
+    return assemblies
 
 
 def auto_complete_shell(scene: dict, blender_objects: list[dict], material_id_by_idx: dict) -> None:
@@ -484,8 +626,7 @@ def build_scene_from_room(room: dict, brief: dict) -> dict:
     floor_raw: Optional[dict] = None
 
     all_blender_objects = room.get("objects", [])
-    # 防穿模：标记需要 skip 的零件 id（父 object 走 procedural · 零件已被 builder 画齐）
-    skip_child_ids = find_child_ids_to_skip(all_blender_objects)
+    # Phase 3: 不再跳零件 · 全部保留在 scene.objects · assembly 层负责聚合渲染
 
     for o in all_blender_objects:
         name = o.get("name", "")
@@ -511,9 +652,6 @@ def build_scene_from_room(room: dict, brief: dict) -> dict:
                 w["material_id"] = material_id_by_idx.get(o.get("material", 0), "default")
                 walls.append(w)
         else:
-            # 防穿模 · 标记为"父 procedural 家具的零件"时跳过
-            if o.get("id") in skip_child_ids:
-                continue
             objects.append(object_from_blender(o, material_id_by_idx))
 
     # 3. Bounds
@@ -575,7 +713,7 @@ def build_scene_from_room(room: dict, brief: dict) -> dict:
     if camera_default:
         scene["camera_default"] = camera_default
 
-    # ───────── 防穿模 · Post-process · 永远保证 scene 视觉完整 ─────────
+    # ───────── Post-process · 永远保证 scene 视觉完整 + 逻辑正确 ─────────
     # 1. 补齐墙 / 天花板 / 地板（如果源 Blender 数据缺）
     auto_complete_shell(scene, all_blender_objects, material_id_by_idx)
     # 2. clamp 越界 object · 避免穿墙 / 穿天花
@@ -585,6 +723,10 @@ def build_scene_from_room(room: dict, brief: dict) -> dict:
     auto_walls = sum(1 for w in scene.get("walls", []) if w.get("_auto"))
     if auto_walls:
         scene.setdefault("_postprocess", {})["auto_walls"] = auto_walls
+
+    # 3. Phase 3 · 建 assemblies 层（每 object 归属 assembly · 删 / 移 作用于 assembly）
+    scene["assemblies"] = build_assemblies(scene.get("objects", []), all_blender_objects)
+    scene.setdefault("_postprocess", {})["assembly_count"] = len(scene["assemblies"])
 
     return scene
 

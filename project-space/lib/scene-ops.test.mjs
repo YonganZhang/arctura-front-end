@@ -1,7 +1,7 @@
 // node --test project-space/lib/scene-ops.test.mjs
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { applyOps, findObject, findWall, computeDerived, listOps } from "./scene-ops.js";
+import { applyOps, findObject, findWall, findAssembly, findAssemblyByObjectId, computeDerived, listOps } from "./scene-ops.js";
 
 const baseScene = () => ({
   schema_version: "1.0",
@@ -260,8 +260,131 @@ test("derived: remove_object decrements object_count", () => {
   assert.equal(r.derived.object_count, 2);
 });
 
-test("listOps: 13 ops exposed", () => {
-  assert.equal(listOps().length, 13);
+test("listOps: 16 ops exposed (13 base + 3 assembly · Phase 3)", () => {
+  const ops = listOps();
+  assert.equal(ops.length, 16);
+  assert.ok(ops.includes("move_assembly"));
+  assert.ok(ops.includes("remove_assembly"));
+  assert.ok(ops.includes("rotate_assembly"));
+});
+
+// ───────── Assembly ops (Phase 3) ─────────
+
+const sceneWithAssembly = () => ({
+  schema_version: "1.0",
+  unit: "m",
+  bounds: { w: 5, d: 4, h: 2.8 },
+  walls: [],
+  objects: [
+    { id: "obj_chair",     type: "chair_standard", pos: [-1.4, -1.0, 0.45], size: [0.5, 0.5, 0.05],
+      material_id: "charcoal", label_zh: "办公椅", assembly_id: "asm_chair_1" },
+    { id: "obj_chairback", type: "custom",         pos: [-1.4, -1.25, 0.75], size: [0.5, 0.06, 0.6],
+      material_id: "charcoal", label_zh: "椅背",   assembly_id: "asm_chair_1" },
+    { id: "obj_laptop",    type: "custom",         pos: [-1.4, -0.5, 0.78], size: [0.3, 0.2, 0.02],
+      material_id: "screen", label_zh: "笔记本",  assembly_id: "asm_single_2" },
+  ],
+  assemblies: [
+    { id: "asm_chair_1", type: "chair_standard", pos: [-1.4, -1.0, 0],
+      part_ids: ["obj_chair", "obj_chairback"], primary_part_id: "obj_chair",
+      size: [0.5, 0.55, 0.85], material_id_primary: "charcoal",
+      label_zh: "办公椅", _generated_by: "naming_regex" },
+    { id: "asm_single_2", type: "custom", pos: [-1.4, -0.5, 0.78],
+      part_ids: ["obj_laptop"], primary_part_id: "obj_laptop",
+      size: [0.3, 0.2, 0.02], material_id_primary: "screen",
+      label_zh: "笔记本", _generated_by: "single_object" },
+  ],
+  lights: [],
+  materials: { charcoal: { base_color: "#2C3539" }, screen: { base_color: "#0D1017" } },
+});
+
+test("findAssembly: by id / zh label / type", () => {
+  const s = sceneWithAssembly();
+  assert.equal(findAssembly(s, "asm_chair_1")?.id, "asm_chair_1");
+  assert.equal(findAssembly(s, "办公椅")?.id, "asm_chair_1");
+  assert.equal(findAssembly(s, "chair_standard")?.id, "asm_chair_1");
+  assert.equal(findAssembly(s, "ghost"), null);
+});
+
+test("findAssemblyByObjectId: back-ref resolution", () => {
+  const s = sceneWithAssembly();
+  assert.equal(findAssemblyByObjectId(s, "obj_chairback")?.id, "asm_chair_1");
+  assert.equal(findAssemblyByObjectId(s, "obj_laptop")?.id, "asm_single_2");
+  assert.equal(findAssemblyByObjectId(s, "obj_ghost"), null);
+});
+
+test("move_assembly: pos → parts follow with delta", () => {
+  const r = applyOps(sceneWithAssembly(), [
+    { op: "move_assembly", id: "asm_chair_1", pos: [0, 0, 0] },
+  ]);
+  assert.equal(r.applied.length, 1);
+  const ns = r.newScene;
+  const asm = ns.assemblies.find(a => a.id === "asm_chair_1");
+  assert.deepEqual(asm.pos, [0, 0, 0]);
+  // parts should have moved by delta [+1.4, +1.0, -0]
+  const chair = ns.objects.find(o => o.id === "obj_chair");
+  const back  = ns.objects.find(o => o.id === "obj_chairback");
+  assert.deepEqual(chair.pos, [0, 0, 0.45]);
+  assert.deepEqual(back.pos, [0, -0.25, 0.75]);
+  // Other assembly's parts untouched
+  const lap = ns.objects.find(o => o.id === "obj_laptop");
+  assert.deepEqual(lap.pos, [-1.4, -0.5, 0.78]);
+});
+
+test("move_assembly: delta variant", () => {
+  const r = applyOps(sceneWithAssembly(), [
+    { op: "move_assembly", id: "asm_chair_1", delta: [0.5, 0, 0] },
+  ]);
+  assert.equal(r.applied.length, 1);
+  const asm = r.newScene.assemblies.find(a => a.id === "asm_chair_1");
+  assert.equal(asm.pos[0], -0.9);
+  const chair = r.newScene.objects.find(o => o.id === "obj_chair");
+  assert.equal(chair.pos[0], -0.9);
+});
+
+test("move_assembly: fuzzy id by zh label", () => {
+  const r = applyOps(sceneWithAssembly(), [
+    { op: "move_assembly", id: "办公椅", pos: [1, 1, 0] },
+  ]);
+  assert.equal(r.applied.length, 1);
+});
+
+test("move_assembly: missing → rejected, no mutation", () => {
+  const s = sceneWithAssembly();
+  const before = JSON.stringify(s);
+  const r = applyOps(s, [{ op: "move_assembly", id: "ghost", pos: [0, 0, 0] }]);
+  assert.equal(r.rejected.length, 1);
+  assert.equal(JSON.stringify(s), before, "original scene untouched");
+});
+
+test("remove_assembly: cascades delete to all parts", () => {
+  const r = applyOps(sceneWithAssembly(), [
+    { op: "remove_assembly", id: "asm_chair_1" },
+  ]);
+  assert.equal(r.applied.length, 1);
+  const ns = r.newScene;
+  assert.equal(ns.assemblies.length, 1);
+  assert.equal(ns.assemblies[0].id, "asm_single_2");
+  // Both parts gone
+  assert.equal(ns.objects.find(o => o.id === "obj_chair"), undefined);
+  assert.equal(ns.objects.find(o => o.id === "obj_chairback"), undefined);
+  assert.equal(ns.objects.length, 1);  // only laptop remains
+});
+
+test("rotate_assembly: updates rotation (parts unchanged · procedural handles render)", () => {
+  const r = applyOps(sceneWithAssembly(), [
+    { op: "rotate_assembly", id: "asm_chair_1", rotation: [0, 0, 90] },
+  ]);
+  assert.equal(r.applied.length, 1);
+  const asm = r.newScene.assemblies.find(a => a.id === "asm_chair_1");
+  assert.deepEqual(asm.rotation, [0, 0, 90]);
+});
+
+test("assembly ops: derived counts untouched (assemblies not in derived)", () => {
+  const r = applyOps(sceneWithAssembly(), [
+    { op: "remove_assembly", id: "asm_single_2" },
+  ]);
+  // laptop got removed as part of assembly · object_count drops
+  assert.equal(r.derived.object_count, 2);
 });
 
 // ───────── invariant: original scene not mutated ─────────
