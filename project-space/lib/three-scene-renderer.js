@@ -86,13 +86,15 @@ export class SceneRenderer {
 
     // entity maps（id → THREE.Object3D）· 方便增量更新
     this.wallObjs = new Map();
-    this.objectObjs = new Map();
+    this.objectObjs = new Map();       // raw Blender mesh（raw 模式 或 未归属 parts）
+    this.assemblyObjs = new Map();     // procedural assembly 的整体 mesh
     this.lightObjs = new Map();
     this.floorObj = null;
     this.ceilingObj = null;
 
     // 当前 scene 数据（快照 · 给 applyOps 查用）
     this.currentScene = null;
+    this.renderMode = "procedural";    // "procedural" | "raw"
 
     this._isRunning = false;
     this._resizeObserver = null;
@@ -154,13 +156,15 @@ export class SceneRenderer {
 
   // ───────── 构建 ─────────
 
-  async build(scene) {
+  async build(scene, mode) {
     this.currentScene = scene;
+    if (mode === "procedural" || mode === "raw") this.renderMode = mode;
 
     // 清空 world
     while (this.world.children.length) this.world.remove(this.world.children[0]);
     this.wallObjs.clear();
     this.objectObjs.clear();
+    this.assemblyObjs.clear();
     this.lightObjs.clear();
     this.floorObj = null;
     this.ceilingObj = null;
@@ -201,9 +205,17 @@ export class SceneRenderer {
     for (const w of scene.walls || []) {
       this._buildWall(w);
     }
-    // 建 objects（GLB / primitive）
-    for (const o of scene.objects || []) {
-      await this._buildObject(o);
+    // 建 objects / assemblies · 两种 mode：
+    //   · "procedural"：有 assemblies 则按 assembly 画（整把椅子一次） · parts 不显示 · 零件零件零叠
+    //   · "raw"：按 objects[] 画（源 Blender 布局 · debug / 对比用）
+    if (this.renderMode === "procedural" && (scene.assemblies || []).length > 0) {
+      for (const asm of scene.assemblies) {
+        await this._buildAssembly(asm);
+      }
+    } else {
+      for (const o of scene.objects || []) {
+        await this._buildObject(o);
+      }
     }
     // 建 lights
     for (const l of scene.lights || []) {
@@ -349,6 +361,52 @@ export class SceneRenderer {
     this.objectObjs.set(obj.id, mesh);
   }
 
+  // Phase 3 · procedural 模式主路径
+  // Assembly = 一把椅子 / 一张桌子 · 用 assembly.type 调 procedural builder 画整体一次
+  // Parts 不单独渲染 · 避免原 Blender mesh 叠加导致穿模
+  async _buildAssembly(asm) {
+    const mesh = await loadFurniture(
+      asm.type,
+      asm.size || [0.5, 0.5, 0.5],
+      this.currentScene.materials,
+      asm.material_id_primary,
+    );
+
+    if (mesh.userData.glbType) {
+      const [w, d, h] = asm.size || [0.5, 0.5, 0.5];
+      mesh.scale.set(w, d, h);
+      mesh.position.set(asm.pos[0], asm.pos[1], asm.pos[2]);
+    } else if (mesh.userData.procedural) {
+      const anchor = mesh.userData.anchor || "bottom";
+      const z = anchor === "top"
+        ? (this.currentScene.bounds?.h || 2.8) - 0.001
+        : 0;
+      mesh.position.set(asm.pos[0], asm.pos[1], z);
+    } else {
+      // fallback box（custom 类型）· asm.pos 保留源 z（如 Rug 在 z=0.005）
+      mesh.position.set(asm.pos[0], asm.pos[1], asm.pos[2]);
+    }
+
+    if (asm.rotation) {
+      mesh.rotation.z = THREE.MathUtils.degToRad(asm.rotation[2] || 0);
+    }
+
+    mesh.name = asm.id;
+    mesh.userData.assembly = asm;
+    this.world.add(mesh);
+    this.assemblyObjs.set(asm.id, mesh);
+  }
+
+  // Phase 3 · 模式切换 · 触发重建
+  async setRenderMode(mode) {
+    if (mode !== "procedural" && mode !== "raw") return;
+    if (mode === this.renderMode) return;
+    this.renderMode = mode;
+    if (this.currentScene) {
+      await this.build(this.currentScene, mode);
+    }
+  }
+
   _buildLight(l) {
     let light = null;
     const cctColor = l.color ? new THREE.Color(l.color[0], l.color[1], l.color[2]) : new THREE.Color(0xffffff);
@@ -479,6 +537,39 @@ export class SceneRenderer {
         if (added) await this._buildObject(added);
         break;
       }
+      // ── Phase 3 assembly ops · procedural 模式路径 ──
+      case "move_assembly": {
+        const asm = this._findAssembly(op.id || op.id_or_name, scene);
+        if (!asm) return;
+        const mesh = this.assemblyObjs.get(asm.id);
+        if (mesh) {
+          // Assembly 的 z 由 procedural anchor 决定 · 只改 x,y 跟 pos · 保持原 anchor z
+          const currZ = mesh.position.z;
+          mesh.position.set(asm.pos[0], asm.pos[1], currZ);
+        }
+        break;
+      }
+      case "rotate_assembly": {
+        const asm = this._findAssembly(op.id || op.id_or_name, scene);
+        if (!asm) return;
+        const mesh = this.assemblyObjs.get(asm.id);
+        if (mesh && asm.rotation) {
+          mesh.rotation.z = THREE.MathUtils.degToRad(asm.rotation[2] || 0);
+        }
+        break;
+      }
+      case "remove_assembly": {
+        const asmId = op.id || op.id_or_name;
+        // 可能是 fuzzy id · 找到实际 id
+        const before = (this.assemblyObjs.get(asmId) ? asmId : null) ||
+                       Array.from(this.assemblyObjs.keys()).find(k => {
+                         const m = this.assemblyObjs.get(k);
+                         return m?.userData?.assembly?.label_zh === asmId ||
+                                m?.userData?.assembly?.type === asmId;
+                       });
+        if (before) this._removeAssembly(before);
+        break;
+      }
       case "move_wall":
       case "resize_wall":
       case "add_opening":
@@ -581,6 +672,20 @@ export class SceneRenderer {
     this.lightObjs.delete(id);
   }
 
+  _removeAssembly(id) {
+    const mesh = this.assemblyObjs.get(id);
+    if (!mesh) return;
+    this.world.remove(mesh);
+    mesh.traverse((o) => {
+      if (o.geometry) o.geometry.dispose();
+      if (o.material) {
+        if (Array.isArray(o.material)) o.material.forEach((m) => m.dispose());
+        else o.material.dispose();
+      }
+    });
+    this.assemblyObjs.delete(id);
+  }
+
   _matchedObjectId(op, scene) {
     // 从 scene 里推断 op 操作的是哪个 id（scene 已经是 after-op 的 newScene · remove_object 情况下已消失）
     // 对 remove_object：op.id 就是被删 id，直接用
@@ -602,6 +707,19 @@ export class SceneRenderer {
           (o.label_en || "").toLowerCase().includes(q)
       ) ||
       objects.find((o) => (o.type || "").toLowerCase().includes(q)) ||
+      null
+    );
+  }
+
+  _findAssembly(query, scene) {
+    if (!query) return null;
+    const q = String(query).trim().toLowerCase();
+    const asms = scene?.assemblies || [];
+    return (
+      asms.find((a) => a.id?.toLowerCase() === q) ||
+      asms.find((a) => a.label_zh === query || a.label_en?.toLowerCase() === q) ||
+      asms.find((a) => (a.label_zh || "").includes(query) || (a.label_en || "").toLowerCase().includes(q)) ||
+      asms.find((a) => (a.type || "").toLowerCase().includes(q)) ||
       null
     );
   }
