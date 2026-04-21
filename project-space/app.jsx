@@ -2087,15 +2087,16 @@ function Viewer3DScene() {
           setHover({ x: pos.x, y: pos.y, label: entity.label_zh || entity.id,
                      type: entity.type, size: entity.size });
         };
-        // 触发 scene effect（可能已经有 scene 等着）
-        lastSceneRef.current = null;
         if (currentScene) {
           setLoading(true);
+          // CRITICAL FIX · 立即设 lastSceneRef · 防止下面的 Scene effect 也 fire build（导致双 build race）
+          // 否则：init build 正在跑（async · lastSceneRef 还 null）· scene effect 检查 null ≠ currentScene · 再 build
+          // 两个 build 并发 · wallObjs Map 指向 first build 的 orphan group · 用户点透明按钮 remove 了孤儿 · 场景里真墙没动
+          lastSceneRef.current = currentScene;
           r.build(currentScene)
             .then(() => {
               if (disposed) return;
               setLoading(false);
-              lastSceneRef.current = currentScene;
               setRendererReady(true);    // Phase 3.M · trigger transp/daylight sync
               // Phase 3.F.A · 开场环绕 · 只在首次 build 触发
               setTimeout(() => r && !disposed && r.playIntroAnimation(2000), 300);
