@@ -11,6 +11,14 @@
   const section = document.querySelector(".section-scroll-3d");
   if (!section) return;
 
+  // 播放方向 · DIRECTION -1 = 130→1（图纸→3D 建筑）
+  const DIRECTION = -1;
+  const START = DIRECTION === -1 ? FRAMES - 1 : 0;
+  let currentFrame = START;
+  let playing = true;
+  let lastTick = 0;
+  const frameInterval = 1000 / FPS;
+
   // 预加载 · 所有 130 帧并行 · img cache
   // 注：onload 必须在 src 之前设 · 否则缓存的图会错过 onload 触发
   const imgs = new Array(FRAMES);
@@ -33,9 +41,48 @@
     imgs[i] = img;
   }
 
+  // 窗口 resize 后 · canvas intrinsic 尺寸与布局对齐 · 保证 drawImage 铺满
+  function syncCanvasSize() {
+    const rect = canvas.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    const w = Math.max(1, Math.floor(rect.width * dpr));
+    const h = Math.max(1, Math.floor(rect.height * dpr));
+    if (canvas.width !== w || canvas.height !== h) {
+      canvas.width = w;
+      canvas.height = h;
+    }
+  }
+
+  // 手动 cover-style 绘制 · 模仿 CSS object-fit: cover · 但对 canvas 生效
+  // 把 1920×1920 源图按"占满容器 + 裁切多余"规则画满 canvas
+  function drawCover(img) {
+    const cw = canvas.width, ch = canvas.height;
+    if (!cw || !ch || !img.naturalWidth) return;
+    const sw = img.naturalWidth, sh = img.naturalHeight;
+    const sAspect = sw / sh;
+    const cAspect = cw / ch;
+    let sx, sy, sWidth, sHeight;
+    if (sAspect > cAspect) {
+      // 源图更宽 · 左右裁切
+      sHeight = sh;
+      sWidth = sh * cAspect;
+      sx = (sw - sWidth) / 2;
+      sy = 0;
+    } else {
+      // 源图更高（或相等）· 上下裁切 · 源是 1:1 · 容器 16:9 → 裁上下
+      sWidth = sw;
+      sHeight = sw / cAspect;
+      sx = 0;
+      sy = (sh - sHeight) / 2;
+    }
+    ctx.clearRect(0, 0, cw, ch);
+    ctx.drawImage(img, sx, sy, sWidth, sHeight, 0, 0, cw, ch);
+  }
+
   function draw(frameIdx) {
     const img = imgs[frameIdx];
-    if (!img || !img.complete || img.naturalWidth === 0) {
+    let target = img;
+    if (!target || !target.complete || target.naturalWidth === 0) {
       let nearest = -1, delta = Infinity;
       for (let i = 0; i < FRAMES; i++) {
         if (imgs[i]?.complete && imgs[i].naturalWidth > 0) {
@@ -44,24 +91,19 @@
         }
       }
       if (nearest < 0) return;
-      ctx.drawImage(imgs[nearest], 0, 0, canvas.width, canvas.height);
-    } else {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      target = imgs[nearest];
     }
+    drawCover(target);
   }
 
-  // 自动播 · 从最后一帧 → 第一帧（图纸 → 3D 建筑）· 循环
-  // cleanspaceus 的 130 帧序列：frame 130 = 图纸/flat · frame 1 = 3D 建筑
-  const DIRECTION = -1;          // -1 = 130→1（图纸→3D）· +1 = 1→130（3D→图纸）
-  const START = DIRECTION === -1 ? FRAMES - 1 : 0;
-  const END = DIRECTION === -1 ? 0 : FRAMES - 1;
+  // 初次 + resize 时同步 canvas size
+  syncCanvasSize();
+  window.addEventListener("resize", () => {
+    syncCanvasSize();
+    draw(currentFrame >= 0 ? currentFrame : 0);
+  }, { passive: true });
 
-  let currentFrame = START;
-  let playing = true;
-  let lastTick = 0;
-  const frameInterval = 1000 / FPS;
-
+  // （DIRECTION / currentFrame / playing 等已在顶部声明）
   function tick(now) {
     if (!playing) { requestAnimationFrame(tick); return; }
     if (now - lastTick >= frameInterval) {

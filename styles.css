@@ -285,23 +285,18 @@ section.compact { padding: 80px 0; }
 .scroll-3d-sticky.big {
   position: relative;
   top: 0;
-  height: 100%;
+  width: 100%;
+  height: 100vh;
+  min-height: 720px;
   overflow: hidden;
   box-sizing: border-box;
-}
-/* Canvas 铺满整个 section · object-fit: cover 让画面尽量大（对齐 cleanspaceus）
-   用 object-position: center 60% 保留底部 · 顶部/两侧可少量裁（通常是空白区） */
-.scroll-3d-sticky.big {
   display: block;
 }
+/* Canvas 铺满 sticky 容器 · 实际绘制靠 JS drawCover（object-fit 对 canvas 不可靠）*/
 .scroll-3d-sticky.big #hero-canvas {
-  position: absolute;
-  inset: 0;
+  display: block;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: center;
-  display: block;
 }
 
 /* 顶部浮层：eyebrow + title · 半透明背景保证可读（压得更轻让 canvas 更突出）*/
