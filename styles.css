@@ -236,11 +236,11 @@ section.compact { padding: 80px 0; }
 }
 
 /* ========== 自动播 3D 动画 section · 大图铺满 · 仿 cleanspaceus ========== */
-/* 现在是自动循环播放 · 不再需要 300vh · 改 110vh 让画面大一点 */
+/* 自动循环 · section 150vh 给足垂直空间 · 1920×1920 源图能 contain 到 ~1080×1080 */
 .section-scroll-3d {
   position: relative;
-  height: 110vh;
-  min-height: 720px;
+  height: 150vh;
+  min-height: 880px;
   background: linear-gradient(180deg, var(--bg) 0%, var(--paper) 50%, var(--bg) 100%);
 }
 .section-scroll-3d.big { background: linear-gradient(180deg, var(--bg) 0%, var(--paper) 50%, var(--bg) 100%); }

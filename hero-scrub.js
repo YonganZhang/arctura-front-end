@@ -51,9 +51,9 @@
     }
   }
 
-  // 自动播 · 从第一帧 → 最后一帧（图纸 → 3D 建筑）· 循环
-  // 注：如果方向反了（看起来是从 3D 变成图纸）· 把 DIRECTION 改成 -1
-  const DIRECTION = 1;           // +1 = 1→130（图纸→3D）· -1 = 130→1（3D→图纸）
+  // 自动播 · 从最后一帧 → 第一帧（图纸 → 3D 建筑）· 循环
+  // cleanspaceus 的 130 帧序列：frame 130 = 图纸/flat · frame 1 = 3D 建筑
+  const DIRECTION = -1;          // -1 = 130→1（图纸→3D）· +1 = 1→130（3D→图纸）
   const START = DIRECTION === -1 ? FRAMES - 1 : 0;
   const END = DIRECTION === -1 ? 0 : FRAMES - 1;
 
