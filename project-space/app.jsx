@@ -347,6 +347,14 @@ function Overview({ setActive }) {
 }
 
 // ───────── FloorplanScene · Phase 2.0 · 从 scene 投影生成 · drag 写回 ops ─────────
+// Phase 3.F.G · 家具 type → emoji（对应 furniture-library.json 的 type key）
+const TYPE_EMOJI = {
+  chair_standard: "🪑", chair_lounge: "🛋", sofa_2seat: "🛋", sofa_3seat: "🛋",
+  desk_standard: "🖥", table_coffee: "🍵", table_dining: "🍽",
+  bed_queen: "🛏", shelf_open: "📚", closet_tall: "🚪",
+  lamp_floor: "💡", lamp_pendant: "💡",
+};
+
 function FloorplanScene() {
   const { dispatch } = useProject();
   const scene = D.scene;
@@ -503,8 +511,18 @@ function FloorplanScene() {
                       fill={colorFor(o.material_id)} stroke="#333" strokeWidth={0.5}
                       opacity={0.75}
                       onPointerDown={(e) => onPointerDown(e, o)} />
-                {w > 30 && (
-                  <text x={0} y={3} fontSize={8} textAnchor="middle"
+                {/* Phase 3.F.G · emoji icon · 优先取 assembly 的 type · 否则 object 的 type */}
+                {(() => {
+                  const emoji = TYPE_EMOJI[o.type] ||
+                    TYPE_EMOJI[(scene.assemblies || []).find(a => a.id === o.assembly_id)?.type];
+                  if (emoji && w > 20 && d > 20) {
+                    return <text x={0} y={-2} fontSize={Math.min(w, d) * 0.5} textAnchor="middle"
+                                 pointerEvents="none" style={{ userSelect: "none" }}>{emoji}</text>;
+                  }
+                  return null;
+                })()}
+                {w > 36 && d > 16 && (
+                  <text x={0} y={d/2 - 3} fontSize={7} textAnchor="middle"
                         fill="#222" pointerEvents="none" fontFamily="monospace">
                     {o.label_zh || o.type}
                   </text>
@@ -1940,15 +1958,20 @@ function Viewer3DScene() {
   const canvasRef = useRef(null);
   const rendererRef = useRef(null);
   const lastSceneRef = useRef(null);
+  const currentSceneRef = useRef(null);
   const currentScene = D.scene;
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selection, setSelection] = useState(null);   // {kind, id} or null · Phase 3.C/D
+  const [hover, setHover] = useState(null);           // Phase 3.F.B · hover tooltip
   const [furnitureTypes, setFurnitureTypes] = useState([]);
   const [transp, setTransp] = useState({              // Phase 3.E · UI state
     wall_N: false, wall_S: false, wall_E: false, wall_W: false,
     ceiling: false, autoCamera: false,
   });
+
+  // Keep latest scene in ref（hover callback 里读）
+  useEffect(() => { currentSceneRef.current = currentScene; }, [currentScene]);
 
   const toggleT = (key) => {
     setTransp(prev => {
@@ -1989,12 +2012,28 @@ function Viewer3DScene() {
         rendererRef.current = r;
         // Phase 3.C/D · click 回调 · 设 React 选中 · FurnitureCard 显示
         r.onSelect = (hit) => setSelection(hit);
+        // Phase 3.F.B · hover tooltip
+        r.onHover = (hit, pos) => {
+          if (!hit) { setHover(null); return; }
+          const entity = hit.kind === "assembly"
+            ? (currentSceneRef.current?.assemblies || []).find(a => a.id === hit.id)
+            : (currentSceneRef.current?.objects || []).find(o => o.id === hit.id);
+          if (!entity) { setHover(null); return; }
+          setHover({ x: pos.x, y: pos.y, label: entity.label_zh || entity.id,
+                     type: entity.type, size: entity.size });
+        };
         // 触发 scene effect（可能已经有 scene 等着）
         lastSceneRef.current = null;
         if (currentScene) {
           setLoading(true);
           r.build(currentScene)
-            .then(() => { if (!disposed) setLoading(false); lastSceneRef.current = currentScene; })
+            .then(() => {
+              if (disposed) return;
+              setLoading(false);
+              lastSceneRef.current = currentScene;
+              // Phase 3.F.A · 开场环绕 · 只在首次 build 触发
+              setTimeout(() => r && !disposed && r.playIntroAnimation(2000), 300);
+            })
             .catch((e) => { if (!disposed) { setError(String(e.message || e)); setLoading(false); } });
         }
       } else if (tries < 50) {  // 50 × 100ms = 5s
@@ -2070,6 +2109,37 @@ function Viewer3DScene() {
                       label="全透" onClick={toggleAll} />
           <TogglePill on={transp.autoCamera} label="自动" onClick={() => toggleT("autoCamera")} hint="相机感知" />
         </div>
+
+        {/* Phase 3.F.D · camera preset buttons */}
+        <div style={{
+          position: "absolute", bottom: 12, left: 12, zIndex: 40,
+          display: "flex", gap: 4,
+          padding: 6, background: "rgba(12, 13, 16, 0.6)",
+          borderRadius: 4, backdropFilter: "blur(4px)",
+        }}>
+          <TogglePill on={false} label="俯视" onClick={() => rendererRef.current?.gotoPreset("top")} />
+          <TogglePill on={false} label="前视" onClick={() => rendererRef.current?.gotoPreset("front")} />
+          <TogglePill on={false} label="人眼" onClick={() => rendererRef.current?.gotoPreset("eye")} hint="1.6m walkthrough" />
+          <span style={{ width: 1, background: "var(--line-2)", margin: "0 4px" }} />
+          <TogglePill on={false} label="↻ 环绕" onClick={() => rendererRef.current?.playIntroAnimation(2000)} hint="再播一次开场动画" />
+        </div>
+
+        {/* Phase 3.F.B · hover tooltip */}
+        {hover && (
+          <div style={{
+            position: "fixed", left: hover.x + 16, top: hover.y + 16,
+            padding: "6px 10px", background: "rgba(12, 13, 16, 0.92)",
+            border: "1px solid var(--line-2)", borderRadius: 4,
+            fontSize: 11, color: "var(--text)", pointerEvents: "none",
+            zIndex: 60, whiteSpace: "nowrap",
+            fontFamily: "var(--f-sans)",
+          }}>
+            <b>{hover.label}</b>
+            <div style={{ color: "var(--text-3)", fontSize: 10, fontFamily: "var(--f-mono)", marginTop: 2 }}>
+              {hover.type}{hover.size ? ` · ${hover.size[0]}×${hover.size[1]}×${hover.size[2]}m` : ""}
+            </div>
+          </div>
+        )}
         {loading && (
           <div style={{
             position: "absolute", inset: 0, display: "flex",

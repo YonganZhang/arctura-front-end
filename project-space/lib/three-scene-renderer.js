@@ -232,6 +232,83 @@ export class SceneRenderer {
   // 供外部查询当前选中
   getSelection() { return this._selection ? { kind: this._selection.kind, id: this._selection.id } : null; }
 
+  // ───────── Phase 3.F · Camera Tween + 开场环绕 + 预设视角 ─────────
+
+  // 通用 tween: 从当前 camera pos/target tween 到目标 · 2 维同步插值
+  _tweenCameraTo({ pos, target, fov, duration = 800, onDone }) {
+    if (this._cameraTween) this._cameraTween.cancel = true;
+    const start = {
+      pos: this.camera.position.clone(),
+      target: this.controls.target.clone(),
+      fov: this.camera.fov,
+    };
+    const end = {
+      pos: pos ? new THREE.Vector3(...pos) : start.pos,
+      target: target ? new THREE.Vector3(...target) : start.target,
+      fov: fov != null ? fov : start.fov,
+    };
+    const t0 = performance.now();
+    const state = { cancel: false };
+    this._cameraTween = state;
+    const step = () => {
+      if (state.cancel) return;
+      const t = Math.min(1, (performance.now() - t0) / duration);
+      // ease-in-out
+      const k = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+      this.camera.position.lerpVectors(start.pos, end.pos, k);
+      this.controls.target.lerpVectors(start.target, end.target, k);
+      this.camera.fov = start.fov + (end.fov - start.fov) * k;
+      this.camera.updateProjectionMatrix();
+      if (t < 1) requestAnimationFrame(step);
+      else { this._cameraTween = null; if (onDone) onDone(); }
+    };
+    requestAnimationFrame(step);
+  }
+
+  // 开场环绕 · 2s 以 target 为中心转一圈（OrbitControls 禁用防冲突）
+  playIntroAnimation(duration = 2000) {
+    if (!this.currentScene?.bounds) return;
+    const { w, d, h } = this.currentScene.bounds;
+    const radius = Math.max(w, d) * 1.1;
+    const tgt = new THREE.Vector3(0, h * 0.5, 0);
+    const originalEnabled = this.controls.enabled;
+    this.controls.enabled = false;
+    const t0 = performance.now();
+    const yHeight = h * 0.8;
+    const step = () => {
+      const t = Math.min(1, (performance.now() - t0) / duration);
+      const angle = t * Math.PI * 2;
+      this.camera.position.set(
+        Math.cos(angle) * radius,
+        yHeight,
+        Math.sin(angle) * radius,
+      );
+      this.controls.target.copy(tgt);
+      this.camera.lookAt(tgt);
+      if (t < 1) requestAnimationFrame(step);
+      else {
+        this.controls.enabled = originalEnabled;
+        this.controls.update();
+      }
+    };
+    requestAnimationFrame(step);
+  }
+
+  // 预设视角 · "top" | "front" | "eye"
+  gotoPreset(preset) {
+    if (!this.currentScene?.bounds) return;
+    const { w, d, h } = this.currentScene.bounds;
+    const tgt = [0, h * 0.5, 0];   // 房间中心（Three.js Y-up · 世界 group 已转 · Y = height）
+    if (preset === "top") {
+      this._tweenCameraTo({ pos: [0, Math.max(w, d) * 1.5, 0.01], target: tgt, fov: 60 });
+    } else if (preset === "front") {
+      this._tweenCameraTo({ pos: [0, h * 0.6, Math.max(w, d) * 1.2], target: tgt, fov: 50 });
+    } else if (preset === "eye") {
+      // 站在房间一角 · 人眼高度 1.6m · 看向中心
+      this._tweenCameraTo({ pos: [w * 0.35, 1.6, d * 0.35], target: [0, 1.2, 0], fov: 60 });
+    }
+  }
+
   _resize() {
     const rect = this.canvas.getBoundingClientRect();
     const w = Math.max(1, rect.width);
