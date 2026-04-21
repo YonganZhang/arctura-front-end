@@ -453,16 +453,19 @@ export class SceneRenderer {
 
   _applyTransparency() {
     const t = this.transparency;
-    // 最暴力 · 隐藏 = 直接从场景图 remove · 显示 = 重新 add
-    // visible=false 在某些 browser / Three.js 版本下可能不生效 · remove 100% 保底
+    const hidden = [];
     this.wallObjs.forEach((group, wallId) => {
       const dir = this._wallDirMap.get(wallId);
       const hide = (dir === "N" && t.wall_N) || (dir === "S" && t.wall_S) ||
                    (dir === "E" && t.wall_E) || (dir === "W" && t.wall_W);
       this._toggleInScene(group, !hide);
+      if (hide) hidden.push(`${wallId}(${dir})`);
     });
-    // 天花板
-    if (this.ceilingObj) this._toggleInScene(this.ceilingObj, !t.ceiling);
+    if (this.ceilingObj) {
+      this._toggleInScene(this.ceilingObj, !t.ceiling);
+      if (t.ceiling) hidden.push("ceiling");
+    }
+    console.log(`[_applyTransparency] hidden=[${hidden.join(",")}] · world.children=${this.world.children.length}`);
   }
 
   // 真隐藏 · shouldShow=false 把 obj 从 world 移除 · true 重新添加
