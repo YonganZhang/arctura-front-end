@@ -153,7 +153,8 @@ export default async function handler(req) {
     return jsonResponse({ error: "Invalid JSON body" }, 400);
   }
 
-  const { slug, userMessage, currentState, model, chatHistory = [] } = body;
+  const { slug, userMessage, model, chatHistory = [] } = body;
+  let currentState = body.currentState;
   if (!slug || !userMessage || !currentState || !model) {
     return jsonResponse({ error: "Required: slug, userMessage, currentState, model" }, 400);
   }
