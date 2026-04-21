@@ -1495,13 +1495,124 @@ function Chat({ onNavigate }) {
 }
 
 // ───────── App ─────────
+// Viewer3DScene · Phase 2.0 · Three.js 程序化 · 吃 scene JSON
+// 只在 data.scene 存在时启用 · 否则降级到旧 Viewer3D
+function Viewer3DScene() {
+  useProject();
+  const canvasRef = useRef(null);
+  const rendererRef = useRef(null);
+  const lastSceneRef = useRef(null);
+  const currentScene = D.scene;
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // 初始化 renderer（只一次）· 销毁在 unmount
+  // Three.js module 是 async 加载 · 如果还没好就 poll（最多 5s）
+  useEffect(() => {
+    if (!canvasRef.current) return;
+    let disposed = false;
+    let r = null;
+    const initWhenReady = (tries = 0) => {
+      if (disposed) return;
+      if (typeof window.SceneRenderer === "function") {
+        r = new window.SceneRenderer(canvasRef.current);
+        rendererRef.current = r;
+        // 触发 scene effect（可能已经有 scene 等着）
+        lastSceneRef.current = null;
+        if (currentScene) {
+          setLoading(true);
+          r.build(currentScene)
+            .then(() => { if (!disposed) setLoading(false); lastSceneRef.current = currentScene; })
+            .catch((e) => { if (!disposed) { setError(String(e.message || e)); setLoading(false); } });
+        }
+      } else if (tries < 50) {  // 50 × 100ms = 5s
+        setTimeout(() => initWhenReady(tries + 1), 100);
+      } else {
+        setError("Three.js 未加载 · 请刷新");
+      }
+    };
+    initWhenReady();
+    return () => {
+      disposed = true;
+      if (r) r.dispose();
+      rendererRef.current = null;
+      lastSceneRef.current = null;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // scene 变化就 rebuild（简单策略 · 后续可做 applyDelta 增量）
+  useEffect(() => {
+    if (!rendererRef.current || !currentScene) return;
+    if (currentScene === lastSceneRef.current) return;
+    lastSceneRef.current = currentScene;
+    let cancelled = false;
+    setLoading(true);
+    setError(null);
+    rendererRef.current
+      .build(currentScene)
+      .then(() => { if (!cancelled) setLoading(false); })
+      .catch((e) => { if (!cancelled) { setError(String(e.message || e)); setLoading(false); } });
+    return () => { cancelled = true; };
+  }, [currentScene]);
+
+  const area = D.project?.area || 0;
+  const variantId = D.active_variant_id;
+
+  return (
+    <section>
+      <div className="view-head">
+        <div>
+          <h1 className="view-title">3D Viewer</h1>
+          <div className="view-sub">
+            程序化渲染 · Three.js · 从 scene 数据动态组装
+            {variantId && <> · <b>variant: {variantId}</b></>}
+            {area ? <> · {area} m²</> : null}
+            {D.scene && <> · {D.scene.walls?.length || 0} 墙 / {D.scene.objects?.length || 0} 物件 / {D.scene.lights?.length || 0} 灯</>}
+          </div>
+        </div>
+      </div>
+      <div style={{
+        position: "relative",
+        background: "linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 100%)",
+        border: "1px solid var(--line)",
+        borderRadius: 6,
+        overflow: "hidden",
+        minHeight: 560,
+      }}>
+        <canvas ref={canvasRef} style={{ width: "100%", height: 560, display: "block" }} />
+        {loading && (
+          <div style={{
+            position: "absolute", inset: 0, display: "flex",
+            alignItems: "center", justifyContent: "center",
+            background: "rgba(12, 13, 16, 0.7)", color: "white",
+            fontFamily: "var(--f-mono)", fontSize: 12, letterSpacing: "0.1em",
+          }}>⏳ 构建 3D 场景中…</div>
+        )}
+        {error && (
+          <div style={{
+            position: "absolute", inset: 0, display: "flex",
+            alignItems: "center", justifyContent: "center", padding: 30,
+            background: "rgba(200, 30, 30, 0.85)", color: "white",
+            textAlign: "center", fontSize: 13,
+          }}>❌ {error}</div>
+        )}
+      </div>
+      <div style={{ marginTop: 12, padding: "10px 14px", background: "var(--bg-1)", border: "1px solid var(--line)", borderRadius: 4, fontSize: 12, color: "var(--text-3)", fontFamily: "var(--f-mono)" }}>
+        ← drag · scroll · ⌘-click = pan · scene-driven（可在 chat 里真改）
+      </div>
+    </section>
+  );
+}
+
 function App() {
   const [active, setActive] = useState("overview");
   const views = {
     overview: <Overview setActive={setActive} />,
     renders: <Renders />,
     floorplan: <Floorplan />,
-    "3d": <Viewer3D />,
+    // Phase 2.0 pilot flag：data.scene 存在则用新 Three.js renderer · 否则旧 model-viewer
+    "3d": D.scene ? <Viewer3DScene /> : <Viewer3D />,
     boq: <BOQ />,
     energy: <Energy />,
     compliance: <Compliance />,
