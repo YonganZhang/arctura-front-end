@@ -1,0 +1,196 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://arctura-front-end.vercel.app/schemas/scene.schema.json",
+  "title": "Arctura Scene",
+  "description": "3D 场景声明式表达 · 从 room.json 转换而来 · 驱动 Three.js viewer + 2D Floorplan + BOQ · 单一数据源",
+  "type": "object",
+  "required": ["schema_version", "unit", "bounds", "materials"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "unit": { "const": "m", "description": "所有坐标 / 尺寸 / 长度单位 · 米" },
+
+    "bounds": {
+      "type": "object",
+      "description": "房间整体包围盒 · 供 viewer 初始相机 + floorplan 缩放用",
+      "required": ["w", "d", "h"],
+      "additionalProperties": false,
+      "properties": {
+        "w": { "type": "number", "exclusiveMinimum": 0, "description": "x 方向宽（米）" },
+        "d": { "type": "number", "exclusiveMinimum": 0, "description": "y 方向深（米）" },
+        "h": { "type": "number", "exclusiveMinimum": 0, "description": "z 方向高（米）" }
+      }
+    },
+
+    "walls":   { "type": "array", "items": { "$ref": "#/$defs/wall" } },
+    "floor":   { "$ref": "#/$defs/slab" },
+    "ceiling": { "$ref": "#/$defs/slab" },
+    "objects": { "type": "array", "items": { "$ref": "#/$defs/object" } },
+    "lights":  { "type": "array", "items": { "$ref": "#/$defs/light" } },
+
+    "materials": {
+      "type": "object",
+      "description": "材质注册表 · key 是 material_id · object / wall / slab 通过 material_id 引用",
+      "additionalProperties": { "$ref": "#/$defs/material" }
+    },
+
+    "camera_default": { "$ref": "#/$defs/camera" },
+    "env":            { "$ref": "#/$defs/env" }
+  },
+
+  "$defs": {
+    "vec3": {
+      "type": "array",
+      "items": { "type": "number" },
+      "minItems": 3,
+      "maxItems": 3
+    },
+
+    "color_rgb": {
+      "type": "array",
+      "items": { "type": "number", "minimum": 0, "maximum": 1 },
+      "minItems": 3,
+      "maxItems": 3,
+      "description": "linear RGB · 0-1"
+    },
+
+    "hex_color": {
+      "type": "string",
+      "pattern": "^#[0-9a-fA-F]{6}$"
+    },
+
+    "wall": {
+      "type": "object",
+      "required": ["id", "start", "end", "height", "thickness", "material_id"],
+      "additionalProperties": false,
+      "properties": {
+        "id":          { "type": "string", "pattern": "^wall_[a-zA-Z0-9_]+$" },
+        "name":        { "type": "string", "description": "原始 Blender 节点名 · 可选" },
+        "start":       { "$ref": "#/$defs/vec3", "description": "墙底边起点 [x, y, z=0]" },
+        "end":         { "$ref": "#/$defs/vec3", "description": "墙底边终点 [x, y, z=0]" },
+        "height":      { "type": "number", "exclusiveMinimum": 0 },
+        "thickness":   { "type": "number", "exclusiveMinimum": 0 },
+        "material_id": { "type": "string" },
+        "openings": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/opening" }
+        }
+      }
+    },
+
+    "opening": {
+      "type": "object",
+      "required": ["id", "type", "pos_along", "width", "height"],
+      "additionalProperties": false,
+      "properties": {
+        "id":        { "type": "string", "pattern": "^(win|door)_[a-zA-Z0-9_]+$" },
+        "type":      { "enum": ["window", "door"] },
+        "pos_along": {
+          "type": "number",
+          "minimum": 0,
+          "description": "沿墙起点→终点的距离（米） · opening 中心 X 坐标"
+        },
+        "width":     { "type": "number", "exclusiveMinimum": 0 },
+        "height":    { "type": "number", "exclusiveMinimum": 0 },
+        "sill":      { "type": "number", "minimum": 0, "description": "底缘离地高度 · 门 = 0" }
+      }
+    },
+
+    "slab": {
+      "type": "object",
+      "description": "地板 / 天花",
+      "required": ["material_id"],
+      "additionalProperties": false,
+      "properties": {
+        "material_id": { "type": "string" },
+        "thickness":   { "type": "number", "exclusiveMinimum": 0 },
+        "height":      { "type": "number", "minimum": 0, "description": "ceiling 用 · 离地 z 值" }
+      }
+    },
+
+    "object": {
+      "type": "object",
+      "description": "家具 / 设备 / 装饰物 · 挂载点在 pos · size 为包围盒（米）",
+      "required": ["id", "type", "pos", "size", "material_id"],
+      "additionalProperties": false,
+      "properties": {
+        "id":          { "type": "string", "pattern": "^obj_[a-zA-Z0-9_]+$" },
+        "type":        {
+          "type": "string",
+          "description": "家具库 type key · 未知 type 降级为 primitive box"
+        },
+        "pos":         { "$ref": "#/$defs/vec3", "description": "中心 [x, y, z]（米）" },
+        "rotation":    { "$ref": "#/$defs/vec3", "description": "欧拉角度 [rx, ry, rz]（度 · XYZ 顺序）", "default": [0, 0, 0] },
+        "size":        { "$ref": "#/$defs/vec3", "description": "包围盒 [w, d, h]（米）" },
+        "material_id": { "type": "string" },
+        "zone":        { "type": "string", "description": "所属 functional zone · 可选" },
+        "label_en":    { "type": "string" },
+        "label_zh":    { "type": "string" },
+        "mesh_type_legacy": {
+          "enum": ["cube", "cylinder", "cone", "plane"],
+          "description": "room.json 的 mesh_type · 当 type 识别失败且无 GLB 时用这个兜底"
+        }
+      }
+    },
+
+    "light": {
+      "type": "object",
+      "required": ["id", "type"],
+      "additionalProperties": false,
+      "properties": {
+        "id":        { "type": "string", "pattern": "^light_[a-zA-Z0-9_]+$|^(sun|pendant|area|point)_[a-zA-Z0-9_]+$" },
+        "type":      { "enum": ["sun", "directional", "pendant", "point", "area", "spot"] },
+        "pos":       { "$ref": "#/$defs/vec3" },
+        "dir":       { "$ref": "#/$defs/vec3", "description": "方向向量 · 仅 sun / directional / spot" },
+        "target":    { "$ref": "#/$defs/vec3", "description": "spot 朝向的点 · 可选" },
+        "cct":       { "type": "integer", "minimum": 1000, "maximum": 20000, "description": "色温 · K" },
+        "power":     { "type": "number", "minimum": 0, "description": "W · 近似亮度" },
+        "intensity": { "type": "number", "minimum": 0, "description": "Three.js intensity · 若未给 power 则直接用" },
+        "color":     { "$ref": "#/$defs/color_rgb", "description": "linear RGB 0-1 · 会与 cct 合并，优先 cct" },
+        "size":      { "type": "number", "exclusiveMinimum": 0, "description": "area light 宽 · 否则忽略" },
+        "size_y":    { "type": "number", "exclusiveMinimum": 0, "description": "area light 高 · 可选（缺省=size 方形）" },
+        "shape":     { "enum": ["RECTANGLE", "DISK"], "description": "area light 形状 · 可选" }
+      }
+    },
+
+    "material": {
+      "type": "object",
+      "description": "PBR 材质定义 · Three.js MeshStandardMaterial 参数",
+      "required": ["base_color"],
+      "additionalProperties": false,
+      "properties": {
+        "base_color": { "$ref": "#/$defs/hex_color" },
+        "roughness":  { "type": "number", "minimum": 0, "maximum": 1, "default": 0.7 },
+        "metallic":   { "type": "number", "minimum": 0, "maximum": 1, "default": 0.0 },
+        "emissive":   { "$ref": "#/$defs/hex_color" },
+        "emissive_intensity": { "type": "number", "minimum": 0 },
+        "opacity":    { "type": "number", "minimum": 0, "maximum": 1, "default": 1.0 },
+        "albedo_map": { "type": "string", "description": "贴图 URL · 可选" },
+        "normal_map": { "type": "string", "description": "法线贴图 URL · 可选" },
+        "roughness_map": { "type": "string" },
+        "label":      { "type": "string", "description": "UI 展示名 · 可选" }
+      }
+    },
+
+    "camera": {
+      "type": "object",
+      "required": ["pos", "lookAt"],
+      "additionalProperties": false,
+      "properties": {
+        "pos":    { "$ref": "#/$defs/vec3" },
+        "lookAt": { "$ref": "#/$defs/vec3" },
+        "fov":    { "type": "number", "exclusiveMinimum": 0, "maximum": 180, "default": 50 }
+      }
+    },
+
+    "env": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "hdri":             { "type": "string", "description": "HDRI URL · 可选 · 缺省用 neutral 环境贴图" },
+        "hdri_intensity":   { "type": "number", "minimum": 0, "default": 1.0 },
+        "background_color": { "$ref": "#/$defs/hex_color", "default": "#0C0D10" }
+      }
+    }
+  }
+}
