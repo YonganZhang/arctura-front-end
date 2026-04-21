@@ -102,6 +102,16 @@ export class SceneRenderer {
     this._selection = null;            // { kind: "assembly"|"object", id, mesh, originalEmissive, originalIntensity }
     this.onSelect = null;              // 外部回调 · (hit | null) => void
     this.onHover = null;               // 外部回调 · (hit | null) => void · Phase 3.F (hover tooltip)
+
+    // Transparency toggle（Phase 3.E）· 每面墙 / 天花板独立 · autoCamera 根据相机位自动淡化
+    this.transparency = {
+      wall_N: false, wall_S: false, wall_E: false, wall_W: false,
+      ceiling: false,
+      autoCamera: false,
+    };
+    this._wallDirMap = new Map();     // wall.id → "N" | "S" | "E" | "W"
+    this._lastAutoTransp = 0;         // 节流 · RAF 里每 200ms 重算一次
+
     // Click 事件（单击 · 非拖拽）
     this._setupPointerEvents();
 
@@ -236,6 +246,7 @@ export class SceneRenderer {
     const tick = () => {
       if (!this._isRunning) return;
       this.controls.update();
+      this._tickAutoTransparency();   // Phase 3.E.F
       this.renderer.render(this.threeScene, this.camera);
       this._rafId = requestAnimationFrame(tick);
     };
@@ -272,6 +283,97 @@ export class SceneRenderer {
     return this.materials.get(id);
   }
 
+  // Phase 3.E · 识别每面墙的方位（N/S/E/W）· 基于 bounds 和墙中点
+  _classifyWalls(scene) {
+    const bounds = scene?.bounds;
+    if (!bounds) return;
+    const hw = bounds.w / 2, hd = bounds.d / 2;
+    for (const w of scene.walls || []) {
+      // 优先解 id 后缀（wall_auto_N / wall_N 等）
+      const m = (w.id || "").match(/_([NSEW])$/i);
+      if (m) { this._wallDirMap.set(w.id, m[1].toUpperCase()); continue; }
+      // 否则按中点离 bounds 四边的最短距离判定
+      const mx = (w.start[0] + w.end[0]) / 2;
+      const my = (w.start[1] + w.end[1]) / 2;
+      const dN = Math.abs(my - hd);
+      const dS = Math.abs(my + hd);
+      const dE = Math.abs(mx - hw);
+      const dW = Math.abs(mx + hw);
+      const min = Math.min(dN, dS, dE, dW);
+      const dir = min === dN ? "N" : min === dS ? "S" : min === dE ? "E" : "W";
+      this._wallDirMap.set(w.id, dir);
+    }
+  }
+
+  // Phase 3.E · 更新 transparency state · 立刻生效
+  setTransparency(partial) {
+    Object.assign(this.transparency, partial || {});
+    this._applyTransparency();
+  }
+
+  getTransparency() { return { ...this.transparency }; }
+
+  _applyTransparency() {
+    const t = this.transparency;
+    // 墙
+    this.wallObjs.forEach((group, wallId) => {
+      const dir = this._wallDirMap.get(wallId);
+      const transp = (dir === "N" && t.wall_N) || (dir === "S" && t.wall_S) ||
+                     (dir === "E" && t.wall_E) || (dir === "W" && t.wall_W);
+      this._setMeshOpacity(group, transp ? 0.15 : 1.0);
+    });
+    // 天花板
+    if (this.ceilingObj) this._setMeshOpacity(this.ceilingObj, t.ceiling ? 0.15 : 1.0);
+  }
+
+  _setMeshOpacity(root, opacity) {
+    const transparent = opacity < 1.0;
+    root.traverse((o) => {
+      if (!o.isMesh || !o.material) return;
+      const mat = o.material;
+      if (Array.isArray(mat)) mat.forEach(m => { m.transparent = transparent; m.opacity = opacity; m.needsUpdate = true; });
+      else { mat.transparent = transparent; mat.opacity = opacity; mat.needsUpdate = true; }
+    });
+  }
+
+  // Phase 3.E.F · camera-aware 自动墙透明 · 相机前方墙保持 · 相机背后 / 很近的墙淡化
+  // 在 RAF loop 里调 · 节流 200ms · 只当 autoCamera=true 生效
+  _tickAutoTransparency() {
+    const t = this.transparency;
+    if (!t.autoCamera) return;
+    const now = performance.now();
+    if (now - this._lastAutoTransp < 200) return;
+    this._lastAutoTransp = now;
+
+    const camPos = this.camera.position.clone();
+    const camDir = new THREE.Vector3();
+    this.camera.getWorldDirection(camDir);   // 相机前方向
+    const camDirHoriz = new THREE.Vector3(camDir.x, camDir.z, 0); // world rotated · 实际水平面是 xz
+    // 注：world 有 -90° x 轴旋转 → 相机 z = world 的 -y方向。简化：用 Three.js world 系算相机到墙的水平夹角
+    // 方法：对每面墙 · 取其法线（垂直于 start→end + z 轴）· 计算 相机到墙中心的水平向量 vs 法线 夹角
+
+    this.wallObjs.forEach((group, wallId) => {
+      if (t[`wall_${this._wallDirMap.get(wallId)}`]) return; // 手动强制透明优先 · 不覆盖
+      const wall = group.userData.wall;
+      if (!wall) return;
+      // 墙中点 world 坐标（在 world group 里 Z-up → Three.js Y-up 转换：世界中 scene pos [x,y,z] → Three pos [x, z, -y]）
+      const wx = (wall.start[0] + wall.end[0]) / 2;
+      const wy = (wall.start[1] + wall.end[1]) / 2;
+      const wz_world = wall.height / 2;
+      const wallWorldPos = new THREE.Vector3(wx, wz_world, -wy);
+      // 相机到墙向量
+      const toWall = wallWorldPos.clone().sub(camPos);
+      const dist = toWall.length();
+      toWall.normalize();
+      // 如果相机背对墙（dot < 0）· 或距离 < 0.8m · 或距离 > 30m 看不见 · 都透
+      const dot = camDir.dot(toWall);
+      const tooClose = dist < 1.2;
+      const behind = dot < 0.15;   // 相机基本不看向这面墙
+      const fade = tooClose || behind;
+      this._setMeshOpacity(group, fade ? 0.25 : 1.0);
+    });
+  }
+
   // ───────── 构建 ─────────
 
   async build(scene, mode) {
@@ -284,9 +386,12 @@ export class SceneRenderer {
     this.objectObjs.clear();
     this.assemblyObjs.clear();
     this.lightObjs.clear();
+    this._wallDirMap.clear();
     this.floorObj = null;
     this.ceilingObj = null;
     this.materials.clear();
+    // 构建 wall 方位映射（N/S/E/W）· 供透明 toggle 用
+    this._classifyWalls(scene);
 
     // 环境光 ambient 兜底
     this.threeScene.add(new THREE.AmbientLight(0xffffff, 0.3));

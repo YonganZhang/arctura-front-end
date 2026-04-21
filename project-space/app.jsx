@@ -1907,6 +1907,21 @@ function FurnitureCard({ scene, selection, onClose, onSaved, furnitureTypes }) {
   );
 }
 
+// Phase 3.E · 小 toggle pill（用于透明按钮等）
+function TogglePill({ on, label, onClick, hint }) {
+  return (
+    <button onClick={onClick} title={hint || label}
+      style={{
+        padding: "4px 8px", borderRadius: 3, fontSize: 11, fontFamily: "var(--f-mono)",
+        cursor: "pointer",
+        background: on ? "var(--accent)" : "rgba(255,255,255,0.04)",
+        color: on ? "#0C0D10" : "var(--text-2)",
+        border: `1px solid ${on ? "var(--accent)" : "var(--line-2)"}`,
+        transition: "background 120ms, color 120ms",
+      }}>{label}</button>
+  );
+}
+
 const labelStyle = { display: "block", fontSize: 10, color: "var(--text-3)", fontFamily: "var(--f-mono)", textTransform: "uppercase", letterSpacing: "0.08em", marginTop: 10, marginBottom: 4 };
 const inputStyle = { width: "100%", boxSizing: "border-box", padding: "5px 8px", background: "var(--bg)", color: "var(--text)", border: "1px solid var(--line-2)", borderRadius: 3, fontSize: 12, fontFamily: "var(--f-sans)" };
 function btnStyle(kind, disabled) {
@@ -1930,6 +1945,28 @@ function Viewer3DScene() {
   const [error, setError] = useState(null);
   const [selection, setSelection] = useState(null);   // {kind, id} or null · Phase 3.C/D
   const [furnitureTypes, setFurnitureTypes] = useState([]);
+  const [transp, setTransp] = useState({              // Phase 3.E · UI state
+    wall_N: false, wall_S: false, wall_E: false, wall_W: false,
+    ceiling: false, autoCamera: false,
+  });
+
+  const toggleT = (key) => {
+    setTransp(prev => {
+      const next = { ...prev, [key]: !prev[key] };
+      rendererRef.current?.setTransparency(next);
+      return next;
+    });
+  };
+  const toggleAll = () => {
+    setTransp(prev => {
+      const anyOn = prev.wall_N || prev.wall_S || prev.wall_E || prev.wall_W || prev.ceiling;
+      const next = { ...prev,
+        wall_N: !anyOn, wall_S: !anyOn, wall_E: !anyOn, wall_W: !anyOn, ceiling: !anyOn,
+      };
+      rendererRef.current?.setTransparency(next);
+      return next;
+    });
+  };
 
   // 家具库 · 用于 FurnitureCard 的 type 下拉
   useEffect(() => {
@@ -2016,6 +2053,23 @@ function Viewer3DScene() {
         minHeight: 560,
       }}>
         <canvas ref={canvasRef} style={{ width: "100%", height: 560, display: "block" }} />
+        {/* Phase 3.E · transparency toggle bar */}
+        <div style={{
+          position: "absolute", top: 12, left: 12, zIndex: 40,
+          display: "flex", gap: 4, flexWrap: "wrap", maxWidth: "calc(100% - 310px)",
+          padding: 6, background: "rgba(12, 13, 16, 0.6)",
+          borderRadius: 4, backdropFilter: "blur(4px)",
+        }}>
+          <TogglePill on={transp.wall_N}    label="北墙" onClick={() => toggleT("wall_N")} />
+          <TogglePill on={transp.wall_S}    label="南墙" onClick={() => toggleT("wall_S")} />
+          <TogglePill on={transp.wall_E}    label="东墙" onClick={() => toggleT("wall_E")} />
+          <TogglePill on={transp.wall_W}    label="西墙" onClick={() => toggleT("wall_W")} />
+          <TogglePill on={transp.ceiling}   label="天花"  onClick={() => toggleT("ceiling")} />
+          <span style={{ width: 1, background: "var(--line-2)", margin: "0 4px" }} />
+          <TogglePill on={transp.wall_N && transp.wall_S && transp.wall_E && transp.wall_W && transp.ceiling}
+                      label="全透" onClick={toggleAll} />
+          <TogglePill on={transp.autoCamera} label="自动" onClick={() => toggleT("autoCamera")} hint="相机感知" />
+        </div>
         {loading && (
           <div style={{
             position: "absolute", inset: 0, display: "flex",
