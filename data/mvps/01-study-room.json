@@ -316,5 +316,503 @@
     "cost_total": 253658,
     "cost_per_m2": 12683,
     "co2_t_per_yr": 0.49
+  },
+  "scene": {
+    "schema_version": "1.0",
+    "unit": "m",
+    "bounds": {
+      "w": 5.0,
+      "d": 4.0,
+      "h": 2.8
+    },
+    "walls": [
+      {
+        "id": "wall_Back",
+        "name": "BackWall",
+        "start": [
+          -2.5,
+          2.0,
+          0
+        ],
+        "end": [
+          2.5,
+          2.0,
+          0
+        ],
+        "height": 2.8,
+        "thickness": 0.1,
+        "material_id": "wall"
+      },
+      {
+        "id": "wall_Left",
+        "name": "LeftWall",
+        "start": [
+          -2.5,
+          -2.0,
+          0
+        ],
+        "end": [
+          -2.5,
+          2.0,
+          0
+        ],
+        "height": 2.8,
+        "thickness": 0.1,
+        "material_id": "wall"
+      }
+    ],
+    "objects": [
+      {
+        "id": "obj_bookshelf",
+        "type": "shelf_open",
+        "pos": [
+          0.0,
+          1.65,
+          1.2
+        ],
+        "size": [
+          4.4,
+          0.35,
+          2.4
+        ],
+        "material_id": "lightwood",
+        "label_en": "Bookshelf",
+        "label_zh": "书墙"
+      },
+      {
+        "id": "obj_shelf0",
+        "type": "shelf_open",
+        "pos": [
+          0.0,
+          1.55,
+          0.5
+        ],
+        "size": [
+          4.3,
+          0.5,
+          0.04
+        ],
+        "material_id": "lightwood",
+        "label_en": "Shelf0",
+        "label_zh": "搁板 1"
+      },
+      {
+        "id": "obj_shelf1",
+        "type": "shelf_open",
+        "pos": [
+          0.0,
+          1.55,
+          1.05
+        ],
+        "size": [
+          4.3,
+          0.5,
+          0.04
+        ],
+        "material_id": "lightwood",
+        "label_en": "Shelf1",
+        "label_zh": "搁板 2"
+      },
+      {
+        "id": "obj_shelf2",
+        "type": "shelf_open",
+        "pos": [
+          0.0,
+          1.55,
+          1.6
+        ],
+        "size": [
+          4.3,
+          0.5,
+          0.04
+        ],
+        "material_id": "lightwood",
+        "label_en": "Shelf2",
+        "label_zh": "搁板 3"
+      },
+      {
+        "id": "obj_shelf3",
+        "type": "shelf_open",
+        "pos": [
+          0.0,
+          1.55,
+          2.15
+        ],
+        "size": [
+          4.3,
+          0.5,
+          0.04
+        ],
+        "material_id": "lightwood",
+        "label_en": "Shelf3",
+        "label_zh": "搁板 4"
+      },
+      {
+        "id": "obj_desk",
+        "type": "desk_standard",
+        "pos": [
+          -1.4,
+          -0.5,
+          0.75
+        ],
+        "size": [
+          2.0,
+          0.7,
+          0.04
+        ],
+        "material_id": "lightwood",
+        "label_en": "Desk",
+        "label_zh": "书桌"
+      },
+      {
+        "id": "obj_desklegl",
+        "type": "custom",
+        "pos": [
+          -2.35,
+          -0.5,
+          0.375
+        ],
+        "size": [
+          0.05,
+          0.7,
+          0.75
+        ],
+        "material_id": "metal",
+        "label_en": "DeskLegL",
+        "label_zh": "桌腿（左）",
+        "mesh_type_legacy": "cube"
+      },
+      {
+        "id": "obj_desklegr",
+        "type": "custom",
+        "pos": [
+          -0.45,
+          -0.5,
+          0.375
+        ],
+        "size": [
+          0.05,
+          0.7,
+          0.75
+        ],
+        "material_id": "metal",
+        "label_en": "DeskLegR",
+        "label_zh": "桌腿（右）",
+        "mesh_type_legacy": "cube"
+      },
+      {
+        "id": "obj_chair",
+        "type": "chair_standard",
+        "pos": [
+          -1.4,
+          -1.0,
+          0.45
+        ],
+        "size": [
+          0.5,
+          0.5,
+          0.05
+        ],
+        "material_id": "charcoal",
+        "label_en": "Chair",
+        "label_zh": "办公椅"
+      },
+      {
+        "id": "obj_chairback",
+        "type": "custom",
+        "pos": [
+          -1.4,
+          -1.25,
+          0.75
+        ],
+        "size": [
+          0.5,
+          0.06,
+          0.6
+        ],
+        "material_id": "charcoal",
+        "label_en": "ChairBack",
+        "label_zh": "椅背",
+        "mesh_type_legacy": "cube"
+      },
+      {
+        "id": "obj_armchair",
+        "type": "chair_lounge",
+        "pos": [
+          1.5,
+          -1.2,
+          0.35
+        ],
+        "size": [
+          0.9,
+          0.8,
+          0.7
+        ],
+        "material_id": "fabric",
+        "label_en": "ArmChair",
+        "label_zh": "休闲椅"
+      },
+      {
+        "id": "obj_armback",
+        "type": "custom",
+        "pos": [
+          1.5,
+          -1.55,
+          0.8
+        ],
+        "size": [
+          0.9,
+          0.1,
+          0.9
+        ],
+        "material_id": "fabric",
+        "label_en": "ArmBack",
+        "label_zh": "休闲椅靠背",
+        "mesh_type_legacy": "cube"
+      },
+      {
+        "id": "obj_lamppole",
+        "type": "lamp_floor",
+        "pos": [
+          2.3,
+          -1.5,
+          0.85
+        ],
+        "size": [
+          0.04,
+          0.04,
+          1.7
+        ],
+        "material_id": "metal",
+        "label_en": "LampPole",
+        "label_zh": "落地灯"
+      },
+      {
+        "id": "obj_lampshade",
+        "type": "custom",
+        "pos": [
+          2.3,
+          -1.5,
+          1.75
+        ],
+        "size": [
+          0.36,
+          0.36,
+          0.3
+        ],
+        "material_id": "shade",
+        "label_en": "LampShade",
+        "label_zh": "灯罩",
+        "mesh_type_legacy": "cone"
+      },
+      {
+        "id": "obj_rug",
+        "type": "custom",
+        "pos": [
+          1.3,
+          -1.0,
+          0.005
+        ],
+        "size": [
+          1.8,
+          1.6,
+          2.0
+        ],
+        "material_id": "rug",
+        "label_en": "Rug",
+        "label_zh": "地毯",
+        "mesh_type_legacy": "plane"
+      },
+      {
+        "id": "obj_cabinet",
+        "type": "closet_tall",
+        "pos": [
+          2.0,
+          1.55,
+          0.5
+        ],
+        "size": [
+          0.7,
+          0.4,
+          1.0
+        ],
+        "material_id": "charcoal",
+        "label_en": "Cabinet",
+        "label_zh": "收纳柜"
+      },
+      {
+        "id": "obj_laptop",
+        "type": "custom",
+        "pos": [
+          -1.4,
+          -0.5,
+          0.78
+        ],
+        "size": [
+          0.3,
+          0.2,
+          0.02
+        ],
+        "material_id": "screen",
+        "label_en": "Laptop",
+        "label_zh": "笔记本",
+        "mesh_type_legacy": "cube"
+      },
+      {
+        "id": "obj_monitor",
+        "type": "custom",
+        "pos": [
+          -1.0,
+          -0.3,
+          1.05
+        ],
+        "size": [
+          0.5,
+          0.04,
+          0.3
+        ],
+        "material_id": "screen",
+        "label_en": "Monitor",
+        "label_zh": "显示器",
+        "mesh_type_legacy": "cube"
+      }
+    ],
+    "lights": [
+      {
+        "id": "sun_1",
+        "type": "sun",
+        "dir": [
+          0.321,
+          0.557,
+          -0.766
+        ],
+        "power": 3.0,
+        "intensity": 3.0,
+        "color": [
+          1.0,
+          0.95,
+          0.85
+        ]
+      },
+      {
+        "id": "area_2",
+        "type": "area",
+        "pos": [
+          0.0,
+          -1.5,
+          2.6
+        ],
+        "power": 100.0,
+        "intensity": 5.0,
+        "color": [
+          1.0,
+          0.95,
+          0.85
+        ],
+        "size": 1.0,
+        "size_y": 1.0,
+        "shape": "RECTANGLE"
+      },
+      {
+        "id": "point_3",
+        "type": "point",
+        "pos": [
+          2.3,
+          -1.5,
+          1.7
+        ],
+        "power": 60.0,
+        "intensity": 30.0,
+        "color": [
+          1.0,
+          0.8,
+          0.5
+        ]
+      }
+    ],
+    "materials": {
+      "woodfloor": {
+        "base_color": "#C4AD90",
+        "roughness": 0.55,
+        "metallic": 0.0,
+        "label": "WoodFloor"
+      },
+      "wall": {
+        "base_color": "#F6F1EA",
+        "roughness": 0.9,
+        "metallic": 0.0,
+        "label": "Wall"
+      },
+      "lightwood": {
+        "base_color": "#E1CEB3",
+        "roughness": 0.6,
+        "metallic": 0.0,
+        "label": "LightWood"
+      },
+      "charcoal": {
+        "base_color": "#767C81",
+        "roughness": 0.6,
+        "metallic": 0.05,
+        "label": "Charcoal"
+      },
+      "rug": {
+        "base_color": "#EAE1D3",
+        "roughness": 0.95,
+        "metallic": 0.0,
+        "label": "Rug"
+      },
+      "fabric": {
+        "base_color": "#E5DAC8",
+        "roughness": 0.98,
+        "metallic": 0.0,
+        "label": "Fabric"
+      },
+      "metal": {
+        "base_color": "#A0A0A6",
+        "roughness": 0.3,
+        "metallic": 0.95,
+        "label": "Metal"
+      },
+      "shade": {
+        "base_color": "#F9EDD3",
+        "roughness": 0.7,
+        "metallic": 0.0,
+        "label": "Shade"
+      },
+      "screen": {
+        "base_color": "#3F596C",
+        "roughness": 0.3,
+        "metallic": 0.2,
+        "label": "Screen"
+      },
+      "default": {
+        "base_color": "#CCCCCC",
+        "roughness": 0.8,
+        "metallic": 0.0,
+        "label": "Default"
+      }
+    },
+    "env": {
+      "hdri": "/assets/hdri/interior_neutral_2k.hdr",
+      "hdri_intensity": 1.0,
+      "background_color": "#0C0D10"
+    },
+    "floor": {
+      "material_id": "woodfloor",
+      "thickness": 0.02
+    },
+    "camera_default": {
+      "pos": [
+        3.8,
+        -3.2,
+        1.7
+      ],
+      "lookAt": [
+        0.0,
+        0.0,
+        1.2
+      ],
+      "fov": 50
+    }
   }
 }

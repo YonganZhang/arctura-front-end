@@ -127,7 +127,7 @@
         "label_en":    { "type": "string" },
         "label_zh":    { "type": "string" },
         "mesh_type_legacy": {
-          "enum": ["cube", "cylinder", "cone", "plane"],
+          "enum": ["cube", "cylinder", "cone", "plane", "sphere", "torus"],
           "description": "room.json 的 mesh_type · 当 type 识别失败且无 GLB 时用这个兜底"
         }
       }
