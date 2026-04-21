@@ -2020,17 +2020,39 @@ function Viewer3DScene() {
 
   // Hybrid · 同时更新 React state + 立即调 renderer · 不赌 useEffect 调度时序
   const toggleT = (key) => {
+    console.log(`[toggle] ${key} · prev=${transp[key]}`);
     const next = { ...transp, [key]: !transp[key] };
     setTransp(next);
-    rendererRef.current?.setTransparency(next);
+    if (rendererRef.current) {
+      rendererRef.current.setTransparency(next);
+      const states = Array.from(rendererRef.current.wallObjs.entries()).map(([id, g]) => {
+        let vis = true;
+        g.traverse(o => { if (o.isMesh) vis = o.visible; });
+        return `${id}:${vis ? 'V' : 'H'}`;
+      }).join(' ');
+      console.log(`[after setTransparency] ${states}`);
+    } else {
+      console.warn("[toggle] rendererRef null!");
+    }
   };
   const toggleAll = () => {
+    console.log(`[toggleAll] clicked`);
     const anyOn = transp.wall_N || transp.wall_S || transp.wall_E || transp.wall_W || transp.ceiling;
     const next = { ...transp,
       wall_N: !anyOn, wall_S: !anyOn, wall_E: !anyOn, wall_W: !anyOn, ceiling: !anyOn,
     };
     setTransp(next);
-    rendererRef.current?.setTransparency(next);
+    if (rendererRef.current) {
+      rendererRef.current.setTransparency(next);
+      const states = Array.from(rendererRef.current.wallObjs.entries()).map(([id, g]) => {
+        let vis = true;
+        g.traverse(o => { if (o.isMesh) vis = o.visible; });
+        return `${id}:${vis ? 'V' : 'H'}`;
+      }).join(' ');
+      console.log(`[after toggleAll] next=${JSON.stringify(next)} · walls=${states}`);
+    } else {
+      console.warn("[toggleAll] rendererRef null!");
+    }
   };
 
   // 家具库 · 用于 FurnitureCard 的 type 下拉
