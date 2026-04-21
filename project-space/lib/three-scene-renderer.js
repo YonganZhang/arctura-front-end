@@ -319,23 +319,29 @@ export class SceneRenderer {
 
   async _buildObject(obj) {
     const mesh = await loadFurniture(obj.type, obj.size, this.currentScene.materials, obj.material_id);
-    // 如果是 GLB 模型 · 按 default_size 和实际 size 缩放
+
+    // 3 路径坐标 / scale 策略：
+    //   · GLB:        按 obj.size 全 scale（假设 GLB 是 1×1×1）+ 用 obj.pos
+    //   · procedural: 按 default_size 已建好 · 不 scale；z 按 anchor 定（bottom→0 / top→bounds.h）
+    //   · fallback box: 按 obj.size 已建好 + 用 obj.pos
     if (mesh.userData.glbType) {
-      const lib = (await import("./furniture-loader.js")).loadLibrary ? null : null;
-      // 简化：按 size 直接 scale · 假设 GLB 是单位尺寸（1×1×1）· Phase E 再统一
       const [w, d, h] = obj.size;
       mesh.scale.set(w, d, h);
+      mesh.position.set(obj.pos[0], obj.pos[1], obj.pos[2]);
+    } else if (mesh.userData.procedural) {
+      const anchor = mesh.userData.anchor || "bottom";
+      const z = anchor === "top"
+        ? (this.currentScene.bounds?.h || 2.8) - 0.001
+        : 0;
+      mesh.position.set(obj.pos[0], obj.pos[1], z);
+    } else {
+      // fallback box 已经 z=h/2 偏移（底贴地），x/y 用 obj.pos
+      mesh.position.set(obj.pos[0], obj.pos[1], obj.pos[2]);
     }
-    mesh.position.set(obj.pos[0], obj.pos[1], obj.pos[2]);
+
     if (obj.rotation) {
-      mesh.rotation.set(
-        THREE.MathUtils.degToRad(obj.rotation[0]),
-        THREE.MathUtils.degToRad(obj.rotation[1]),
-        THREE.MathUtils.degToRad(obj.rotation[2])
-      );
+      mesh.rotation.z = THREE.MathUtils.degToRad(obj.rotation[2]);
     }
-    // Fallback box uses material_id from scene · already colored
-    // For GLB models, optionally override material tint via material_id (Phase E)
 
     mesh.name = obj.id;
     mesh.userData.object = obj;

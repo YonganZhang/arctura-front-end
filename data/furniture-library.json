@@ -1,0 +1,138 @@
+{
+  "schema_version": "1.0",
+  "description": "Arctura furniture primitive library · key = type · renderer reads glb 或 fallback builder · 零代码扩展",
+  "items": {
+    "chair_standard": {
+      "glb": "/assets/furniture/chair_standard.glb",
+      "builder": "chair_standard",
+      "default_size": [0.5, 0.5, 0.9],
+      "default_color": "#2C3539",
+      "anchor": "bottom",
+      "tags": ["chair", "seating", "office", "dining"],
+      "label_en": "Standard Chair",
+      "label_zh": "标准椅",
+      "source": "internal-procedural"
+    },
+    "chair_lounge": {
+      "glb": "/assets/furniture/chair_lounge.glb",
+      "builder": "chair_lounge",
+      "default_size": [0.8, 0.8, 0.75],
+      "default_color": "#C7B79E",
+      "anchor": "bottom",
+      "tags": ["chair", "seating", "reading", "lounge"],
+      "label_en": "Lounge Chair",
+      "label_zh": "休闲椅",
+      "source": "internal-procedural"
+    },
+    "sofa_2seat": {
+      "glb": "/assets/furniture/sofa_2seat.glb",
+      "builder": "sofa",
+      "default_size": [1.6, 0.9, 0.85],
+      "default_color": "#A49074",
+      "anchor": "bottom",
+      "tags": ["seating", "living", "2-seat"],
+      "label_en": "2-Seat Sofa",
+      "label_zh": "双人沙发",
+      "source": "internal-procedural"
+    },
+    "sofa_3seat": {
+      "glb": "/assets/furniture/sofa_3seat.glb",
+      "builder": "sofa",
+      "default_size": [2.2, 0.9, 0.85],
+      "default_color": "#A49074",
+      "anchor": "bottom",
+      "tags": ["seating", "living", "3-seat"],
+      "label_en": "3-Seat Sofa",
+      "label_zh": "三人沙发",
+      "source": "internal-procedural"
+    },
+    "desk_standard": {
+      "glb": "/assets/furniture/desk_standard.glb",
+      "builder": "desk",
+      "default_size": [1.4, 0.7, 0.75],
+      "default_color": "#8B6F47",
+      "anchor": "bottom",
+      "tags": ["desk", "workspace", "office", "study"],
+      "label_en": "Standard Desk",
+      "label_zh": "书桌",
+      "source": "internal-procedural"
+    },
+    "table_coffee": {
+      "glb": "/assets/furniture/table_coffee.glb",
+      "builder": "table",
+      "default_size": [1.0, 0.6, 0.42],
+      "default_color": "#5A3E2B",
+      "anchor": "bottom",
+      "tags": ["table", "living", "coffee"],
+      "label_en": "Coffee Table",
+      "label_zh": "茶几",
+      "source": "internal-procedural"
+    },
+    "table_dining": {
+      "glb": "/assets/furniture/table_dining.glb",
+      "builder": "table",
+      "default_size": [1.6, 0.9, 0.75],
+      "default_color": "#8B6F47",
+      "anchor": "bottom",
+      "tags": ["table", "dining"],
+      "label_en": "Dining Table",
+      "label_zh": "餐桌",
+      "source": "internal-procedural"
+    },
+    "bed_queen": {
+      "glb": "/assets/furniture/bed_queen.glb",
+      "builder": "bed",
+      "default_size": [1.6, 2.0, 0.6],
+      "default_color": "#E8DCC8",
+      "anchor": "bottom",
+      "tags": ["bed", "bedroom"],
+      "label_en": "Queen Bed",
+      "label_zh": "双人床",
+      "source": "internal-procedural"
+    },
+    "shelf_open": {
+      "glb": "/assets/furniture/shelf_open.glb",
+      "builder": "shelf",
+      "default_size": [1.8, 0.35, 1.8],
+      "default_color": "#B69A6F",
+      "anchor": "bottom",
+      "tags": ["shelf", "storage", "book"],
+      "label_en": "Open Shelf",
+      "label_zh": "开放书架",
+      "source": "internal-procedural"
+    },
+    "closet_tall": {
+      "glb": "/assets/furniture/closet_tall.glb",
+      "builder": "closet",
+      "default_size": [1.2, 0.6, 2.2],
+      "default_color": "#5A3E2B",
+      "anchor": "bottom",
+      "tags": ["closet", "storage", "bedroom"],
+      "label_en": "Tall Closet",
+      "label_zh": "立柜",
+      "source": "internal-procedural"
+    },
+    "lamp_floor": {
+      "glb": "/assets/furniture/lamp_floor.glb",
+      "builder": "lamp_floor",
+      "default_size": [0.4, 0.4, 1.7],
+      "default_color": "#3B3B3B",
+      "anchor": "bottom",
+      "tags": ["lamp", "light", "floor"],
+      "label_en": "Floor Lamp",
+      "label_zh": "落地灯",
+      "source": "internal-procedural"
+    },
+    "lamp_pendant": {
+      "glb": "/assets/furniture/lamp_pendant.glb",
+      "builder": "lamp_pendant",
+      "default_size": [0.35, 0.35, 0.4],
+      "default_color": "#E8D099",
+      "anchor": "top",
+      "tags": ["lamp", "light", "ceiling"],
+      "label_en": "Pendant Lamp",
+      "label_zh": "吊灯",
+      "source": "internal-procedural"
+    }
+  }
+}

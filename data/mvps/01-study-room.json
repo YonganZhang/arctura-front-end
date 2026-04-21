@@ -381,7 +381,7 @@
       },
       {
         "id": "obj_shelf0",
-        "type": "shelf_open",
+        "type": "custom",
         "pos": [
           0.0,
           1.55,
@@ -394,11 +394,12 @@
         ],
         "material_id": "lightwood",
         "label_en": "Shelf0",
-        "label_zh": "搁板 1"
+        "label_zh": "搁板 1",
+        "mesh_type_legacy": "cube"
       },
       {
         "id": "obj_shelf1",
-        "type": "shelf_open",
+        "type": "custom",
         "pos": [
           0.0,
           1.55,
@@ -411,11 +412,12 @@
         ],
         "material_id": "lightwood",
         "label_en": "Shelf1",
-        "label_zh": "搁板 2"
+        "label_zh": "搁板 2",
+        "mesh_type_legacy": "cube"
       },
       {
         "id": "obj_shelf2",
-        "type": "shelf_open",
+        "type": "custom",
         "pos": [
           0.0,
           1.55,
@@ -428,11 +430,12 @@
         ],
         "material_id": "lightwood",
         "label_en": "Shelf2",
-        "label_zh": "搁板 3"
+        "label_zh": "搁板 3",
+        "mesh_type_legacy": "cube"
       },
       {
         "id": "obj_shelf3",
-        "type": "shelf_open",
+        "type": "custom",
         "pos": [
           0.0,
           1.55,
@@ -445,7 +448,8 @@
         ],
         "material_id": "lightwood",
         "label_en": "Shelf3",
-        "label_zh": "搁板 4"
+        "label_zh": "搁板 4",
+        "mesh_type_legacy": "cube"
       },
       {
         "id": "obj_desk",

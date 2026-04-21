@@ -57,7 +57,7 @@ CEILING_RX = re.compile(r"^Ceiling\d*$|^Slab_Roof$|^Roof(_.*)?$|^Eave|^Parapet")
 # 顺序重要：先匹配具体，再通用
 TYPE_PATTERNS: list[tuple[str, str]] = [
     (r"^Bookshelf$", "shelf_open"),
-    (r"^Shelf\d+$", "shelf_open"),        # 子 shelf 也归 shelf_open（renderer 会当成 primitive 处理）
+    (r"^Shelf\d+$", "custom"),            # 子 shelf 是扁薄搁板 · 走 primitive box 保持 Blender z 坐标
     (r"^Shelves?$", "shelf_open"),
     (r"^Rack", "shelf_open"),
     (r"^Desk(?!Leg)(_.*)?$", "desk_standard"),
