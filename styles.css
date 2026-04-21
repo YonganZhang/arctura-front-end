@@ -273,10 +273,12 @@ section.compact { padding: 80px 0; }
 }
 
 /* ========== 自动播 3D 动画 section · 大图铺满 · 仿 cleanspaceus ========== */
-/* section 120vh · 给 1:1 源图在 16:9 viewport 里多留 20% 高度 · 减少 cover 裁切 */
+/* section 高 = max(100vh, 100vw) 但不超 150vh
+   · 让容器接近 1:1 · 匹配 1920×1920 源图 · cover 裁切接近零 · 建筑完整 */
 .section-scroll-3d {
   position: relative;
-  height: 120vh;
+  height: max(100vh, 100vw);
+  max-height: 150vh;
   min-height: 820px;
   background: linear-gradient(180deg, var(--bg) 0%, var(--paper) 50%, var(--bg) 100%);
   overflow: hidden;
