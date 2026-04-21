@@ -20,6 +20,8 @@ export const config = { runtime: "edge" };
 
 import { applyTools } from "../project-space/lib/apply-tools.js";
 import { toolsForPrompt, TOOLS } from "../project-space/lib/schema.js";
+import { applyOps } from "../project-space/lib/scene-ops.js";
+import { isSceneTool, toolToOps, buildScenePromptFragment } from "../project-space/lib/scene-tools.js";
 
 const GATEWAY = "https://api.zhizengzeng.com/v1/chat/completions";
 
@@ -102,7 +104,7 @@ Rules:
 - Always emit at least one tool_call in the JSON block UNLESS the request is purely informational (then no JSON block)
 - If the user asks for something impossible (e.g. a variant that doesn't exist), explain why and don't emit tool_calls
 - Keep the natural-language reply short (1-2 sentences). The JSON block is separate.
-- Never invent new tool names or fields. Use only what's listed above.`;
+- Never invent new tool names or fields. Use only what's listed above.` + buildScenePromptFragment(state.scene, state._availableFurnitureTypes);
 }
 
 function parseLLMReply(raw) {
@@ -154,6 +156,22 @@ export default async function handler(req) {
   const { slug, userMessage, currentState, model, chatHistory = [] } = body;
   if (!slug || !userMessage || !currentState || !model) {
     return jsonResponse({ error: "Required: slug, userMessage, currentState, model" }, 400);
+  }
+
+  // 若 state 有 scene · 拿可用家具 type 注入 prompt（让 LLM 只用库内 type）
+  let availableFurnitureTypes = [];
+  if (currentState.scene) {
+    try {
+      const reqUrl = new URL(req.url);
+      const origin0 = `${reqUrl.protocol}//${reqUrl.host}`;
+      const libResp = await fetch(`${origin0}/data/furniture-library.json`);
+      if (libResp.ok) {
+        const lib = await libResp.json();
+        availableFurnitureTypes = Object.keys(lib.items || {});
+      }
+    } catch {}
+    // 不 mutate 入参 · 挂到 currentState 的浅 copy
+    currentState = { ...currentState, _availableFurnitureTypes: availableFurnitureTypes };
   }
 
   // 构造 LLM messages
@@ -241,11 +259,55 @@ export default async function handler(req) {
   const origin = `${url.protocol}//${url.host}`;
   const variantLoader = await makeVariantLoader(origin);
 
-  // 应用 tool calls
-  const { state: newState, applied, rejected } = await applyTools(currentState, parsed.tool_calls, {
+  // 分离 scene tool calls（13 个新 tool）与 editable tool calls（5 个老 tool）
+  const editableCalls = [];
+  const sceneCalls = [];
+  for (const call of parsed.tool_calls) {
+    if (isSceneTool(call?.name)) sceneCalls.push(call);
+    else editableCalls.push(call);
+  }
+
+  // 先应用 editable tools · applyTools 会替换 currentState
+  let { state: newState, applied, rejected } = await applyTools(currentState, editableCalls, {
     variantLoader,
     autoTimeline: true,
   });
+
+  // 再应用 scene tools
+  if (sceneCalls.length > 0 && newState.scene) {
+    const opPairs = []; // 每 entry: { call, op } · 用对象引用匹配回调
+    for (const call of sceneCalls) {
+      const r = toolToOps(call, newState.scene);
+      if (r.ops.length === 0) {
+        rejected.push({ call, reason: r.reason || "no ops produced" });
+        continue;
+      }
+      for (const op of r.ops) opPairs.push({ call, op });
+    }
+    if (opPairs.length > 0) {
+      const opsOnly = opPairs.map(p => p.op);
+      const sceneResult = applyOps(newState.scene, opsOnly);
+      newState = { ...newState, scene: sceneResult.newScene };
+      for (const a of sceneResult.applied) {
+        const pair = opPairs.find(p => p.op === a.op);
+        applied.push({
+          call: pair?.call || { name: `scene_${a.op.op}` },
+          summary: `scene: ${a.op.op}`,
+        });
+      }
+      for (const r of sceneResult.rejected) {
+        const pair = opPairs.find(p => p.op === r.op);
+        rejected.push({
+          call: pair?.call || { name: `scene_${r.op?.op || "unknown"}` },
+          reason: r.reason,
+        });
+      }
+    }
+  } else if (sceneCalls.length > 0 && !newState.scene) {
+    for (const call of sceneCalls) {
+      rejected.push({ call, reason: "此 MVP 暂无 scene 数据（Phase 2.0 pilot 只在 01-study-room 启用）" });
+    }
+  }
 
   return jsonResponse({
     text: parsed.text || "(processed)",
