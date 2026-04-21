@@ -28,6 +28,10 @@ const CONSOLE_ALLOWLIST = [
   /EXT_texture_webp/,
   // 抽 45 MVP 里未命中的资源可能 404（非 3D 主流程）
   /Failed to load resource.*bundle\.zip/,
+  // Phase 2.0 pilot scene 引用 furniture GLB + HDRI · 故意 404 触发 procedural/box fallback（设计内建）
+  // 浏览器 "Failed to load resource" 通用消息不带 URL · 只能广配 404
+  /Failed to load resource.*404/,
+  /Failed to load resource.*File not found/,
 ];
 
 function shouldIgnoreConsole(text) {
