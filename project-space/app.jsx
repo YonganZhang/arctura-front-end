@@ -1969,6 +1969,7 @@ function Viewer3DScene() {
     wall_N: false, wall_S: false, wall_E: false, wall_W: false,
     ceiling: false, autoCamera: false,
   });
+  const [daylight, setDaylight] = useState("day");    // Phase 3.G · "day" | "night"
 
   // Keep latest scene in ref（hover callback 里读）
   useEffect(() => { currentSceneRef.current = currentScene; }, [currentScene]);
@@ -2110,7 +2111,7 @@ function Viewer3DScene() {
           <TogglePill on={transp.autoCamera} label="自动" onClick={() => toggleT("autoCamera")} hint="相机感知" />
         </div>
 
-        {/* Phase 3.F.D · camera preset buttons */}
+        {/* Phase 3.F.D · camera preset buttons + Phase 3.G · day/night toggle */}
         <div style={{
           position: "absolute", bottom: 12, left: 12, zIndex: 40,
           display: "flex", gap: 4,
@@ -2122,6 +2123,11 @@ function Viewer3DScene() {
           <TogglePill on={false} label="人眼" onClick={() => rendererRef.current?.gotoPreset("eye")} hint="1.6m walkthrough" />
           <span style={{ width: 1, background: "var(--line-2)", margin: "0 4px" }} />
           <TogglePill on={false} label="↻ 环绕" onClick={() => rendererRef.current?.playIntroAnimation(2000)} hint="再播一次开场动画" />
+          <span style={{ width: 1, background: "var(--line-2)", margin: "0 4px" }} />
+          <TogglePill on={daylight === "day"} label="☀️ 白天"
+                      onClick={() => { setDaylight("day"); rendererRef.current?.setDaylight("day"); }} />
+          <TogglePill on={daylight === "night"} label="🌙 夜晚"
+                      onClick={() => { setDaylight("night"); rendererRef.current?.setDaylight("night"); }} />
         </div>
 
         {/* Phase 3.F.B · hover tooltip */}

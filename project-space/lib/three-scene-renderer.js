@@ -294,6 +294,57 @@ export class SceneRenderer {
     requestAnimationFrame(step);
   }
 
+  // Phase 3.G · 白天 / 夜晚切换
+  // mode = "day" | "night"
+  // 白天：太阳强 · pendant 弱 · 背景亮蓝 · 天花 ambient 足
+  // 夜晚：太阳弱 · pendant 强 · 背景深 · ambient 暗 · 整体暖色
+  async setDaylight(mode) {
+    const isDay = mode !== "night";
+    this._daylightMode = mode;
+
+    // HDRI 尝试切换（有则 swap · 没则 fallback 用 background color）
+    const hdriPath = isDay ? "/assets/hdri/interior_day.hdr" : "/assets/hdri/interior_night.hdr";
+    try {
+      const rgbe = new RGBELoader();
+      const tex = await new Promise((resolve, reject) => {
+        rgbe.load(hdriPath, resolve, undefined, reject);
+      });
+      tex.mapping = THREE.EquirectangularReflectionMapping;
+      if (this.threeScene.environment) this.threeScene.environment.dispose?.();
+      this.threeScene.environment = tex;
+    } catch {
+      // fallback · 改背景色即可
+      this.threeScene.background = new THREE.Color(isDay ? "#D7E8F2" : "#0A0B12");
+    }
+
+    // 灯光倍率：白天 sun 强 · pendant 弱 · 夜晚反过来
+    const sunMul = isDay ? 1.2 : 0.15;
+    const bulbMul = isDay ? 0.4 : 1.6;    // pendant/point
+    const ambBase = isDay ? 0.7 : 0.2;
+
+    this.lightObjs.forEach((light) => {
+      const kind = light.userData.light?.type;
+      const baseIntensity = light.userData.light?.intensity ?? 1;
+      if (kind === "sun" || kind === "directional") {
+        light.intensity = baseIntensity * sunMul;
+      } else if (kind === "point" || kind === "pendant" || kind === "spot" || kind === "area") {
+        light.intensity = baseIntensity * bulbMul;
+      }
+    });
+    // 调 ambient · threeScene 顶层 ambient 是 AmbientLight
+    this.threeScene.traverse((o) => {
+      if (o.isAmbientLight) o.intensity = ambBase;
+    });
+
+    // 背景色（若 HDRI 失败由 fallback 设；HDRI 成功也轻微染色）
+    this.threeScene.background = new THREE.Color(isDay ? "#D7E8F2" : "#0A0B12");
+
+    // tone mapping exposure 微调（夜晚略降 · 白天提）
+    this.renderer.toneMappingExposure = isDay ? 1.15 : 0.85;
+  }
+
+  getDaylight() { return this._daylightMode || "day"; }
+
   // 预设视角 · "top" | "front" | "eye"
   gotoPreset(preset) {
     if (!this.currentScene?.bounds) return;
