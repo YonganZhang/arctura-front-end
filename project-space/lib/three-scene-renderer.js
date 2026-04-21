@@ -793,6 +793,12 @@ export class SceneRenderer {
         ? (this.currentScene.bounds?.h || 2.8) - 0.001
         : 0;
       mesh.position.set(asm.pos[0], asm.pos[1], z);
+      // Phase 3.M · FIX 穿墙：按 asm.size scale · 保证物体一定在 aggregate bbox 内
+      // 之前 procedural 不 scale · 1m unit shelf 在 4m 房里飘 + 背板超出 bbox 穿墙
+      const s = asm.size;
+      if (s && s[0] > 0 && s[1] > 0 && s[2] > 0) {
+        mesh.scale.set(s[0], s[1], s[2]);
+      }
     } else {
       // fallback box（custom 类型）· asm.pos 保留源 z（如 Rug 在 z=0.005）
       mesh.position.set(asm.pos[0], asm.pos[1], asm.pos[2]);

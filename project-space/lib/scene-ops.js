@@ -191,10 +191,44 @@ function opRemoveObject(scene, op) {
   return { ok: true, before, after: null };
 }
 
+// Phase 3.M · 两 assembly AABB 碰撞检测 · 返回第一个显著重叠的对象
+function _findCollision(scene, newPos, newSize) {
+  const nBox = {
+    min: [newPos[0] - newSize[0]/2, newPos[1] - newSize[1]/2, newPos[2] - newSize[2]/2],
+    max: [newPos[0] + newSize[0]/2, newPos[1] + newSize[1]/2, newPos[2] + newSize[2]/2],
+  };
+  const newVol = Math.max(0.001, newSize[0] * newSize[1] * newSize[2]);
+  for (const asm of scene.assemblies || []) {
+    if (!asm.pos || !asm.size) continue;
+    const oBox = {
+      min: [asm.pos[0] - asm.size[0]/2, asm.pos[1] - asm.size[1]/2, asm.pos[2] - asm.size[2]/2],
+      max: [asm.pos[0] + asm.size[0]/2, asm.pos[1] + asm.size[1]/2, asm.pos[2] + asm.size[2]/2],
+    };
+    const ox = Math.max(0, Math.min(nBox.max[0], oBox.max[0]) - Math.max(nBox.min[0], oBox.min[0]));
+    const oy = Math.max(0, Math.min(nBox.max[1], oBox.max[1]) - Math.max(nBox.min[1], oBox.min[1]));
+    const oz = Math.max(0, Math.min(nBox.max[2], oBox.max[2]) - Math.max(nBox.min[2], oBox.min[2]));
+    const overlap = ox * oy * oz;
+    // 阈值：重叠 > 新物件体积 30% + 至少 0.01m³（否则 rug 贴地板不算冲突）
+    if (overlap > newVol * 0.3 && overlap > 0.01) {
+      return { asm, overlap_m3: overlap };
+    }
+  }
+  return null;
+}
+
 function opAddObject(scene, op) {
   if (!op.type) return { ok: false, reason: "add_object requires type" };
   if (!Array.isArray(op.pos) || op.pos.length !== 3) {
     return { ok: false, reason: "add_object requires pos [x,y,z]" };
+  }
+  // 防两家具穿模
+  const newSize = op.size || [0.5, 0.5, 0.5];
+  const collision = _findCollision(scene, op.pos, newSize);
+  if (collision) {
+    return {
+      ok: false,
+      reason: `位置冲突：与 ${collision.asm.label_zh || collision.asm.id} 重叠 ${collision.overlap_m3.toFixed(2)}m³ · 换个位置`,
+    };
   }
   scene.objects = scene.objects || [];
   scene.assemblies = scene.assemblies || [];
@@ -263,6 +297,15 @@ function opMoveAssembly(scene, op) {
     newPos = asm.pos.map((v, i) => Math.round((v + delta[i]) * 1000) / 1000);
   } else {
     return { ok: false, reason: "need pos or delta [x,y,z]" };
+  }
+  // Phase 3.M · 碰撞检测（排除自身）
+  const otherAssemblies = { ...scene, assemblies: (scene.assemblies || []).filter(a => a.id !== asm.id) };
+  const collision = _findCollision(otherAssemblies, newPos, asm.size || [0.5, 0.5, 0.5]);
+  if (collision) {
+    return {
+      ok: false,
+      reason: `移动目标位置冲突：与 ${collision.asm.label_zh || collision.asm.id} 重叠 · 换个位置`,
+    };
   }
   const before = { pos: [...asm.pos], parts: (asm.part_ids || []).map(pid => {
     const p = (scene.objects || []).find(o => o.id === pid);

@@ -111,6 +111,33 @@ test("add_object: new chair gets unique id + auto assembly (Phase 3.L invariant)
   assert.equal(asm._generated_by, "manual");
 });
 
+test("add_object: AABB collision with existing assembly → rejected (防两家具穿模)", () => {
+  const scene = sceneWithAssembly();   // has asm_chair_1 at [-1.4, -1.0, 0] size [0.5, 0.55, 0.85]
+  const r = applyOps(scene, [
+    { op: "add_object", type: "chair_standard", pos: [-1.4, -1.0, 0.4], size: [0.5, 0.5, 0.9] },
+  ]);
+  assert.equal(r.applied.length, 0);
+  assert.equal(r.rejected.length, 1);
+  assert.match(r.rejected[0].reason, /位置冲突|重叠/);
+});
+
+test("add_object: far enough → accepted (边界贴但没显著重叠)", () => {
+  const scene = sceneWithAssembly();
+  const r = applyOps(scene, [
+    { op: "add_object", type: "chair_standard", pos: [2.0, -1.5, 0], size: [0.5, 0.5, 0.9] },
+  ]);
+  assert.equal(r.applied.length, 1);
+});
+
+test("move_assembly: collision check handles self-exclusion", () => {
+  const scene = sceneWithAssembly();
+  // 自己不跟自己冲突 · 移到稍微偏移的位置应该 OK
+  const r = applyOps(scene, [
+    { op: "move_assembly", id: "asm_chair_1", pos: [0, 0, 0] },
+  ]);
+  assert.equal(r.applied.length, 1, "moving assembly to free position should succeed");
+});
+
 test("add_object then remove_assembly: cascade removes auto-created assembly + object", () => {
   const scene = baseScene();
   // 先 add

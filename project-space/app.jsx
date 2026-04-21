@@ -1996,11 +1996,21 @@ function Viewer3DScene() {
     ceiling: false, autoCamera: false,
   });
   const [daylight, setDaylight] = useState("day");    // Phase 3.G · "day" | "night"
+  const [rendererReady, setRendererReady] = useState(false);  // Phase 3.M · sync barrier
 
-  // Phase 3.E fix: side effect 提到 useEffect · 避免 React StrictMode 双调用 setState updater 导致混乱
+  // Phase 3.M FIX: sync transp 到 renderer · 当 transp 变化 OR rendererReady 由 false→true 时
+  // 解决 race：用户透明按钮点了但 renderer 还在 async build · 之前的 useEffect 会 skip · 修
   useEffect(() => {
-    if (rendererRef.current) rendererRef.current.setTransparency(transp);
-  }, [transp]);
+    if (rendererRef.current && rendererReady) {
+      rendererRef.current.setTransparency(transp);
+    }
+  }, [transp, rendererReady]);
+  // 同理 daylight
+  useEffect(() => {
+    if (rendererRef.current && rendererReady) {
+      rendererRef.current.setDaylight(daylight);
+    }
+  }, [daylight, rendererReady]);
 
   // Keep latest scene in ref（hover callback 里读）
   useEffect(() => { currentSceneRef.current = currentScene; }, [currentScene]);
@@ -2057,6 +2067,7 @@ function Viewer3DScene() {
               if (disposed) return;
               setLoading(false);
               lastSceneRef.current = currentScene;
+              setRendererReady(true);    // Phase 3.M · trigger transp/daylight sync
               // Phase 3.F.A · 开场环绕 · 只在首次 build 触发
               setTimeout(() => r && !disposed && r.playIntroAnimation(2000), 300);
             })
@@ -2074,6 +2085,7 @@ function Viewer3DScene() {
       if (r) r.dispose();
       rendererRef.current = null;
       lastSceneRef.current = null;
+      setRendererReady(false);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -2088,7 +2100,11 @@ function Viewer3DScene() {
     setError(null);
     rendererRef.current
       .build(currentScene)
-      .then(() => { if (!cancelled) setLoading(false); })
+      .then(() => {
+        if (cancelled) return;
+        setLoading(false);
+        setRendererReady(true);   // re-sync transp/daylight after rebuild
+      })
       .catch((e) => { if (!cancelled) { setError(String(e.message || e)); setLoading(false); } });
     return () => { cancelled = true; };
   }, [currentScene]);
@@ -2169,10 +2185,8 @@ function Viewer3DScene() {
           <span style={{ width: 1, background: "var(--line-2)", margin: "0 4px" }} />
           <TogglePill on={false} label="↻ 环绕" onClick={() => rendererRef.current?.playIntroAnimation(2000)} hint="再播一次开场动画" />
           <span style={{ width: 1, background: "var(--line-2)", margin: "0 4px" }} />
-          <TogglePill on={daylight === "day"} label="☀️ 白天"
-                      onClick={() => { setDaylight("day"); rendererRef.current?.setDaylight("day"); }} />
-          <TogglePill on={daylight === "night"} label="🌙 夜晚"
-                      onClick={() => { setDaylight("night"); rendererRef.current?.setDaylight("night"); }} />
+          <TogglePill on={daylight === "day"} label="☀️ 白天" onClick={() => setDaylight("day")} />
+          <TogglePill on={daylight === "night"} label="🌙 夜晚" onClick={() => setDaylight("night")} />
         </div>
 
         {/* Phase 3.F.B · hover tooltip */}
