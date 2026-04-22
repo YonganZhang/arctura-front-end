@@ -29,11 +29,60 @@
       }
     ]
   },
-  "renders": [],
+  "renders": [
+    {
+      "id": "01",
+      "file": "/assets/mvps/50-principal-office/renders/01_hero_corner.png",
+      "title": "01 Hero Corner",
+      "tag": "01_hero_corner"
+    },
+    {
+      "id": "02",
+      "file": "/assets/mvps/50-principal-office/renders/02_front_view.png",
+      "title": "02 Front View",
+      "tag": "02_front_view"
+    },
+    {
+      "id": "03",
+      "file": "/assets/mvps/50-principal-office/renders/03_back_view.png",
+      "title": "03 Back View",
+      "tag": "03_back_view"
+    },
+    {
+      "id": "04",
+      "file": "/assets/mvps/50-principal-office/renders/04_left_side.png",
+      "title": "04 Left Side",
+      "tag": "04_left_side"
+    },
+    {
+      "id": "05",
+      "file": "/assets/mvps/50-principal-office/renders/05_right_side.png",
+      "title": "05 Right Side",
+      "tag": "05_right_side"
+    },
+    {
+      "id": "06",
+      "file": "/assets/mvps/50-principal-office/renders/06_top_down.png",
+      "title": "06 Top Down",
+      "tag": "06_top_down"
+    },
+    {
+      "id": "07",
+      "file": "/assets/mvps/50-principal-office/renders/07_eye_level.png",
+      "title": "07 Eye Level",
+      "tag": "07_eye_level"
+    },
+    {
+      "id": "08",
+      "file": "/assets/mvps/50-principal-office/renders/08_corner_detail.png",
+      "title": "08 Corner Detail",
+      "tag": "08_corner_detail"
+    }
+  ],
   "floorplan": "/assets/mvps/50-principal-office/floorplan.png",
   "moodboard": "/assets/mvps/50-principal-office/moodboard.png",
-  "hero_img": "/assets/mvps/50-principal-office/moodboard.png",
-  "thumb_img": "/assets/mvps/50-principal-office/floorplan.png",
+  "hero_img": "/assets/mvps/50-principal-office/renders/01_hero_corner.png",
+  "thumb_img": "/assets/mvps/50-principal-office/renders/01_hero_corner.png",
   "zones": [
     {
       "id": "z_desk",
@@ -169,8 +218,8 @@
         "desc": "校长办公室 · 日式禅风 · 基础配置 · 核心家具齐全 · 成本优先",
         "priceHKD": 90000,
         "priceDeltaPct": -25,
-        "thumb": "/assets/mvps/50-principal-office/floorplan.png",
-        "hero": "/assets/mvps/50-principal-office/floorplan.png"
+        "thumb": "/assets/mvps/50-principal-office/renders/01_hero_corner.png",
+        "hero": "/assets/mvps/50-principal-office/renders/01_hero_corner.png"
       },
       {
         "id": "v2-standard",
@@ -179,8 +228,8 @@
         "desc": "校长办公室 · 日式禅风 · 标准配置 · 含接待/陈列区 · 品质均衡",
         "priceHKD": 120000,
         "priceDeltaPct": 0,
-        "thumb": "/assets/mvps/50-principal-office/floorplan.png",
-        "hero": "/assets/mvps/50-principal-office/floorplan.png"
+        "thumb": "/assets/mvps/50-principal-office/renders/01_hero_corner.png",
+        "hero": "/assets/mvps/50-principal-office/renders/01_hero_corner.png"
       },
       {
         "id": "v3-premium",
@@ -189,8 +238,8 @@
         "desc": "校长办公室 · 日式禅风 · 高端定制 · 整面陈列墙 + 软包升级 + 定制灯具",
         "priceHKD": 180000,
         "priceDeltaPct": 50,
-        "thumb": "/assets/mvps/50-principal-office/floorplan.png",
-        "hero": "/assets/mvps/50-principal-office/floorplan.png"
+        "thumb": "/assets/mvps/50-principal-office/renders/01_hero_corner.png",
+        "hero": "/assets/mvps/50-principal-office/renders/01_hero_corner.png"
       }
     ]
   },
