@@ -89,6 +89,8 @@ async function handleGet(req) {
   const limit = Math.min(parseInt(url.searchParams.get("limit") || "20", 10), 100);
   const cursor = parseInt(url.searchParams.get("cursor") || "0", 10);
   const owner = url.searchParams.get("owner"); // 'me' | null
+  // 默认只返 live 项目（主页画廊）· owner=me 时看全部 state · 也可显式 state=all
+  const stateFilter = url.searchParams.get("state") || (owner === "me" ? "all" : "live");
 
   const { anon, setCookie } = ensureAnonCookie(req);
   const headers = setCookie ? { "Set-Cookie": setCookie } : {};
@@ -96,9 +98,11 @@ async function handleGet(req) {
   try {
     const indexKey = (owner === "me") ? `session:${anon}:projects` : "projects:index";
     const total = await kvZcard(indexKey);
-    const slugs = await kvZrevrange(indexKey, cursor, cursor + limit - 1);
+    // 多取一点 · 因为要 filter draft（预估 draft 占 ~30% · 取 2x）
+    const fetchCount = stateFilter === "all" ? limit : Math.min(limit * 3, 300);
+    const slugs = await kvZrevrange(indexKey, cursor, cursor + fetchCount - 1);
 
-    const projects = await Promise.all(slugs.map(async slug => {
+    const rawProjects = await Promise.all(slugs.map(async slug => {
       const p = await kvGetJson(`project:${slug}`);
       if (!p) return null;
       return {
@@ -112,10 +116,18 @@ async function handleGet(req) {
       };
     }));
 
+    const filtered = rawProjects.filter(p => {
+      if (!p) return false;
+      if (stateFilter === "all") return true;
+      if (stateFilter === "live") return p.state === "live";
+      return p.state === stateFilter;
+    }).slice(0, limit);
+
     return json({
-      projects: projects.filter(Boolean),
-      next_cursor: (cursor + limit < total) ? (cursor + limit) : null,
+      projects: filtered,
+      next_cursor: null,  // 简化：前端要更多可加 cursor · 本版默认取 20
       total,
+      state_filter: stateFilter,
       source: "kv",
     }, 200, headers);
   } catch (e) {
