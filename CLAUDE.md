@@ -64,6 +64,7 @@ brief
 - `POST /api/scene/ops` · 直接 op 应用（点击卡片保存走这里 · 13 op）
 - **`GET /api/projects`** 🆕 Phase 6.A · 动态画廊（Upstash KV ZSET · cursor 分页 · fallback static mvps-index.json）
 - **`POST /api/projects`** 🆕 Phase 6.A · 创建 empty project · anon cookie + rate limit（IP 10/h · session 20/day）
+- **`POST /api/brief/chat`** 🆕 Phase 6.B · Brief 对话 SSE · GPT-5.4 · events: start/reply/brief_update/heartbeat/complete/error · state empty→briefing 自动推
 
 ### 环境变量（Vercel prod 已设）
 - `UPSTASH_REDIS_REST_URL` · `UPSTASH_REDIS_REST_TOKEN`（Phase 6.A）
