@@ -8,9 +8,10 @@
     "validate": "python3 _build/validate.py --quiet",
     "test": "npx playwright test _tests/smoke.spec.mjs --reporter=line",
     "test:chat": "npx playwright test _tests/chat.spec.mjs --reporter=line",
-    "test:all": "npx playwright test --reporter=line",
+    "test:all": "npm run test:unit && npm run test && npm run test:chat",
     "test:ui": "npx playwright test --ui",
-    "pre-deploy": "npm run validate && npm test && npm run test:chat"
+    "pre-deploy": "npm run validate && npm test && npm run test:chat",
+    "test:unit": "python3 -m pytest _build/arctura_mvp/tests/ -q"
   },
   "devDependencies": {
     "@playwright/test": "^1.48.0"

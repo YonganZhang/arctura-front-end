@@ -69,6 +69,21 @@ brief
 - **`POST /api/projects/<slug>/save`** 🆕 Phase 6.D · pending_edits 持久化 · KV 版（git commit 待 GITHUB_TOKEN）
 - 前端 **`/new`** 路由 🆕 Phase 6.C · Wizard 3 step（Brief Chat / TierPicker / GenerateProgress）· app.jsx 2800+ 行
 
+### 单一真源（改这里就够 · 不要散写）
+- `_build/arctura_mvp/schemas/brief-rules.json` + `api/_shared/brief-rules.json`（对称副本 · 测试锁定一致）
+- `_build/arctura_mvp/schemas/state-machine.json` + `api/_shared/state-machine.json`
+- `_build/arctura_mvp/store/keys.py` (Python K.xxx) + `api/_shared/kv-keys.js` (JS K.xxx)
+
+### 测试（Phase 6.E 加固 · 2026-04-23）
+- 单元：`npm run test:unit` · pytest 61 test · 0.11s · 覆盖 tiers / state / brief_engine / _core / cross-lang snapshot
+- E2E：`npm test` · Playwright Wizard 4 + Phase6D 4 = 8 test
+- 全量：`npm run test:all`
+
+### MCP Server（Phase 6.E · 骨架就绪）
+- `_build/arctura_mvp/mcp_server.py` · 9 tools · stdio JSON-RPC 2.0
+- 运行：`python3 -m _build.arctura_mvp.mcp_server --stdio` · schema：不带参跑
+- 升级：`pip install mcp` 后改用 SDK · tool 定义复用
+
 ### 环境变量（Vercel prod 已设）
 - `UPSTASH_REDIS_REST_URL` · `UPSTASH_REDIS_REST_TOKEN`（Phase 6.A）
 - `ZHIZENGZENG_API_KEY`（LLM gateway）
