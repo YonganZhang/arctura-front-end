@@ -58,7 +58,7 @@ export class SceneRenderer {
       canvas,
       antialias: true,
       alpha: true,
-      preserveDrawingBuffer: false,
+      preserveDrawingBuffer: true,   // 允许 canvas.toDataURL 截图（Playwright 生成 renders）
     });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
