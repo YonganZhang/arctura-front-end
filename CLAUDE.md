@@ -65,6 +65,9 @@ brief
 - **`GET /api/projects`** 🆕 Phase 6.A · 动态画廊（Upstash KV ZSET · cursor 分页 · fallback static mvps-index.json）
 - **`POST /api/projects`** 🆕 Phase 6.A · 创建 empty project · anon cookie + rate limit（IP 10/h · session 20/day）
 - **`POST /api/brief/chat`** 🆕 Phase 6.B · Brief 对话 SSE · GPT-5.4 · events: start/reply/brief_update/heartbeat/complete/error · state empty→briefing 自动推
+- **`GET/PATCH/DELETE /api/projects/<slug>`** 🆕 Phase 6.C · 单 project 读/改/软删 · optimistic lock + state transition 白名单
+- **`POST /api/projects/<slug>/save`** 🆕 Phase 6.D · pending_edits 持久化 · KV 版（git commit 待 GITHUB_TOKEN）
+- 前端 **`/new`** 路由 🆕 Phase 6.C · Wizard 3 step（Brief Chat / TierPicker / GenerateProgress）· app.jsx 2800+ 行
 
 ### 环境变量（Vercel prod 已设）
 - `UPSTASH_REDIS_REST_URL` · `UPSTASH_REDIS_REST_TOKEN`（Phase 6.A）
