@@ -626,7 +626,7 @@
         "id": "obj_lamppole",
         "type": "lamp_floor",
         "pos": [
-          2.3,
+          2.22,
           -1.5,
           0.85
         ],
@@ -644,7 +644,7 @@
         "id": "obj_lampshade",
         "type": "custom",
         "pos": [
-          2.24,
+          2.16,
           -1.5,
           1.75
         ],
@@ -682,7 +682,7 @@
         "id": "obj_cabinet",
         "type": "closet_tall",
         "pos": [
-          2.0,
+          1.82,
           1.55,
           0.5
         ],
@@ -881,7 +881,8 @@
     "_postprocess": {
       "clamped": 1,
       "auto_walls": 2,
-      "assembly_count": 9
+      "assembly_count": 9,
+      "asm_clamped": 2
     },
     "assemblies": [
       {
@@ -973,7 +974,7 @@
         "id": "asm_lamp_floor_4",
         "type": "lamp_floor",
         "pos": [
-          2.3,
+          2.22,
           -1.5,
           0
         ],
@@ -1032,7 +1033,7 @@
         "id": "asm_closet_tall_6",
         "type": "closet_tall",
         "pos": [
-          2.0,
+          1.82,
           1.55,
           0
         ],

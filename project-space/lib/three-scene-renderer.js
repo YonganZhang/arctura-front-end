@@ -661,6 +661,9 @@ export class SceneRenderer {
 
     // FIX Phase 3.J: 保留 rebuild 前的透明状态 · 否则 scene 改了透明就丢了
     this._applyTransparency();
+    // FIX · 同理保留 daylight 状态 · 否则 scene rebuild 后 bg 回默认暗色 · 灯强度重置
+    // setDaylight 读 _daylightMode · 默认 day（跟 React 初始 state 对齐）
+    await this.setDaylight(this._daylightMode || "day");
 
     this._resize();
   }

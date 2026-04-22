@@ -735,7 +735,69 @@ def build_scene_from_room(room: dict, brief: dict) -> dict:
     scene["assemblies"] = build_assemblies(scene.get("objects", []), all_blender_objects)
     scene.setdefault("_postprocess", {})["assembly_count"] = len(scene["assemblies"])
 
+    # 4. 用家具库 default_size 再做一次 clamp · 解决"收纳柜穿墙" 类 bug
+    # 原因：renderer 按 default_size 渲染 · 但 clamp_objects_to_bounds 按 obj.size clamp · 两者不一致
+    # 若 default_size > obj.size · object 虽然在 bounds 内 · 渲染 mesh 会穿墙
+    n_asm_clamped = clamp_assemblies_to_bounds(scene)
+    if n_asm_clamped:
+        scene.setdefault("_postprocess", {})["asm_clamped"] = n_asm_clamped
+
     return scene
+
+
+_LIBRARY_CACHE: Optional[dict] = None
+
+def _load_furniture_library() -> dict:
+    global _LIBRARY_CACHE
+    if _LIBRARY_CACHE is not None:
+        return _LIBRARY_CACHE
+    lib_path = FE_ROOT / "data" / "furniture-library.json"
+    try:
+        _LIBRARY_CACHE = json.loads(lib_path.read_text(encoding="utf-8")).get("items", {})
+    except Exception:
+        _LIBRARY_CACHE = {}
+    return _LIBRARY_CACHE
+
+
+def clamp_assemblies_to_bounds(scene: dict) -> int:
+    """按家具库 default_size 把 assembly（+ 其 parts）拉回 bounds 内 · 防渲染 mesh 穿墙"""
+    bounds = scene.get("bounds", {})
+    if not bounds:
+        return 0
+    w, d = bounds["w"], bounds["d"]
+    wall_margin = 0.08
+    lib = _load_furniture_library()
+    fixed = 0
+    obj_by_id = {o["id"]: o for o in scene.get("objects", [])}
+    for asm in scene.get("assemblies", []):
+        t = asm.get("type")
+        ds = lib.get(t, {}).get("default_size") or asm.get("size")
+        if not ds or len(ds) < 2:
+            continue
+        hx, hy = ds[0] / 2, ds[1] / 2
+        min_x = -w / 2 + wall_margin + hx
+        max_x = w / 2 - wall_margin - hx
+        min_y = -d / 2 + wall_margin + hy
+        max_y = d / 2 - wall_margin - hy
+        # 如果 min > max（物体比房间大）· 放弃 clamp（无解）· 继续
+        if min_x > max_x or min_y > max_y:
+            continue
+        pos = asm["pos"]
+        new_x = max(min_x, min(max_x, pos[0]))
+        new_y = max(min_y, min(max_y, pos[1]))
+        dx, dy = new_x - pos[0], new_y - pos[1]
+        if abs(dx) < 0.001 and abs(dy) < 0.001:
+            continue
+        # 位移 assembly + 所有 parts
+        asm["pos"][0] = round(new_x, 3)
+        asm["pos"][1] = round(new_y, 3)
+        for pid in asm.get("part_ids", []):
+            p = obj_by_id.get(pid)
+            if p and "pos" in p:
+                p["pos"][0] = round(p["pos"][0] + dx, 3)
+                p["pos"][1] = round(p["pos"][1] + dy, 3)
+        fixed += 1
+    return fixed
 
 
 # ───────── IO + validation ─────────

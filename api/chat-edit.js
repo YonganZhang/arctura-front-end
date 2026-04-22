@@ -101,8 +101,10 @@ Assistant: Switching compliance region to Japan (省エネ法 2025). This is a s
 \`\`\`
 
 Rules:
-- Always emit at least one tool_call in the JSON block UNLESS the request is purely informational (then no JSON block)
-- If the user asks for something impossible (e.g. a variant that doesn't exist), explain why and don't emit tool_calls
+- **CRITICAL**: 每个能操作的请求都必须 emit JSON 代码块 · 哪怕你觉得"已经 tell 用户了"也要带上 · 不 emit = 没生效
+- 多轮对话里 · 每一轮都独立判断当前 user message · 不要因为上一轮成功就省略当前的 tool_calls
+- 如果用户说的东西 scene 里找不到（比如"删宠物" 场景里没宠物）· 才不 emit · 并在 text 里解释
+- 不能做的事（如超出 tool 覆盖范围）· 在 text 里说 · 别硬编 tool name
 - Keep the natural-language reply short (1-2 sentences). The JSON block is separate.
 - Never invent new tool names or fields. Use only what's listed above.` + buildScenePromptFragment(state.scene, state._availableFurnitureTypes);
 }
@@ -253,7 +255,28 @@ export default async function handler(req) {
   const usage = llmResp.usage || null;
 
   // 解析出 tool_calls
-  const parsed = parseLLMReply(rawText);
+  let parsed = parseLLMReply(rawText);
+
+  // FIX · LLM 偶尔说"好的"但忘了发 JSON 块 · 如果 user 消息含明显操作动词且 tool_calls 空 · 再 retry 一次强调格式
+  const ACTION_VERBS = /(删|移|换|加|放|改|升|降|旋转|缩放|remove|delete|move|change|add|place|set|shift|rotate|resize|scale|color|paint|hide|show)/i;
+  if (parsed.tool_calls.length === 0 && ACTION_VERBS.test(userMessage) && attempt === 1) {
+    const retryMessages = [
+      { role: "system", content: systemPrompt },
+      ...userTurns,
+      { role: "user", content: userMessage },
+      { role: "assistant", content: rawText },
+      { role: "user", content: "你上面忘了 emit JSON 代码块 tool_calls · 只说文字没用 · 请**立即**重新回复 · 必须包含 ```json{\"tool_calls\":[...]}``` 代码块 · 否则改动无效。" },
+    ];
+    payload.messages = retryMessages;
+    try {
+      const retryResp = await callLLM(8000);
+      const retryText = retryResp.choices?.[0]?.message?.content || "";
+      const retryParsed = parseLLMReply(retryText);
+      if (retryParsed.tool_calls.length > 0) {
+        parsed = { text: parsed.text + " (自动重试后应用)", tool_calls: retryParsed.tool_calls };
+      }
+    } catch {}
+  }
 
   // Variant loader 通过 request origin 拿 variant JSON
   const url = new URL(req.url);
