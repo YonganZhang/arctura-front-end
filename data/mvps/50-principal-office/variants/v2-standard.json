@@ -1,0 +1,141 @@
+{
+  "id": "v2-standard",
+  "name": "v2",
+  "name_zh": "标准方案",
+  "project": {
+    "name": "校长办公室 · 日式禅风",
+    "zh": "校长办公室 · 日式禅风",
+    "area": 30,
+    "location": "Hong Kong",
+    "budgetHKD": 120000,
+    "style": "japandi, zen, light-oak, natural-linen, minimal, serene",
+    "palette": [
+      {
+        "name": "primary",
+        "hex": "#D7C4A8"
+      },
+      {
+        "name": "secondary",
+        "hex": "#8A7A5C"
+      },
+      {
+        "name": "accent",
+        "hex": "#2A2A2A"
+      },
+      {
+        "name": "wall",
+        "hex": "#F5F1E8"
+      }
+    ]
+  },
+  "pricing": {
+    "HK": {
+      "label": "Hong Kong",
+      "currency": "HKD",
+      "perM2": 4000,
+      "rows": [
+        {
+          "item": "Executive Desk",
+          "zh": "大班办公桌（浅橡木）",
+          "qty": 1,
+          "unit": "HKD 22,000"
+        },
+        {
+          "item": "Principal Chair",
+          "zh": "高背校长椅（米色亚麻）",
+          "qty": 1,
+          "unit": "HKD 7,800"
+        },
+        {
+          "item": "Guest Chairs",
+          "zh": "客椅（浅木框架）",
+          "qty": 2,
+          "unit": "HKD 2,800"
+        },
+        {
+          "item": "Open Bookshelf Wall",
+          "zh": "整面浅木格架",
+          "qty": 1,
+          "unit": "HKD 24,000"
+        },
+        {
+          "item": "Low Cabinet",
+          "zh": "低矮立柜（奖杯陈列）",
+          "qty": 1,
+          "unit": "HKD 7,000"
+        },
+        {
+          "item": "3-Seat Sofa",
+          "zh": "三人沙发（米白亚麻）",
+          "qty": 1,
+          "unit": "HKD 16,000"
+        },
+        {
+          "item": "Coffee Table",
+          "zh": "原木茶几",
+          "qty": 1,
+          "unit": "HKD 3,800"
+        },
+        {
+          "item": "Floor Lamp",
+          "zh": "和纸落地灯",
+          "qty": 1,
+          "unit": "HKD 2,600"
+        },
+        {
+          "item": "Desk Pendant",
+          "zh": "哑光黑铁吊灯",
+          "qty": 1,
+          "unit": "HKD 3,800"
+        },
+        {
+          "item": "Tatami Rug",
+          "zh": "米灰榻榻米地毯",
+          "qty": 1,
+          "unit": "HKD 4,800"
+        }
+      ],
+      "total": "HKD ~120,000"
+    }
+  },
+  "editable": {
+    "area_m2": 30,
+    "insulation_mm": 60,
+    "glazing_uvalue": 2.0,
+    "lighting_cct": 3000,
+    "lighting_density_w_m2": 8,
+    "wwr": 0.3,
+    "region": "HK"
+  },
+  "energy": {
+    "eui": 45.0,
+    "limit": 150,
+    "annual": 1350.0,
+    "engine": "EnergyPlus"
+  },
+  "compliance": {
+    "HK": {
+      "code": "HK_BEEO_BEC_2021",
+      "label": "HK · BEEO 2021",
+      "checks": [
+        {
+          "name": "EUI",
+          "value": "45.0",
+          "limit": "150",
+          "unit": "kWh/m2*yr",
+          "status": "pass",
+          "note": "30% of limit"
+        }
+      ],
+      "verdict": "pass"
+    }
+  },
+  "derived": {
+    "eui_kwh_m2_yr": 45.0,
+    "cost_total": 120000,
+    "cost_per_m2": 4000,
+    "co2_t_per_yr": 0.68
+  },
+  "parent_slug": "50-principal-office",
+  "renders": []
+}
