@@ -161,14 +161,14 @@ async function handlePost(req) {
   const ip = getIp(req);
   const headers = setCookie ? { "Set-Cookie": setCookie } : {};
 
-  // Rate limit: per IP 10/h · per session 20/day
+  // Rate limit: per IP 50/h · per session 100/day（Phase 6 测试期放宽 · 后续可收紧）
   try {
     const ipCount = await kvIncrExpire(`rate:${ip}:create`, 3600);
-    if (ipCount > 10) {
+    if (ipCount > 50) {
       return json({ error: "rate limit · per IP", retry_after_s: 3600, retryable: true }, 429, headers);
     }
     const sCount = await kvIncrExpire(`rate:session:${anon}:create`, 86400);
-    if (sCount > 20) {
+    if (sCount > 100) {
       return json({ error: "rate limit · per session", retry_after_s: 86400, retryable: true }, 429, headers);
     }
   } catch (e) {
