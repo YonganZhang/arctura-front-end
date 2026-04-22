@@ -2,6 +2,8 @@
   "id": "v2-standard",
   "name": "v2",
   "name_zh": "标准方案",
+  "parent_slug": "50-principal-office",
+  "renders": [],
   "project": {
     "name": "校长办公室 · 日式禅风",
     "zh": "校长办公室 · 日式禅风",
@@ -135,7 +137,5 @@
     "cost_total": 120000,
     "cost_per_m2": 4000,
     "co2_t_per_yr": 0.68
-  },
-  "parent_slug": "50-principal-office",
-  "renders": []
+  }
 }

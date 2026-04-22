@@ -138,46 +138,27 @@ def _default_furniture_for_type(t: str) -> list[dict]:
 # ───────── Variants 骨架（3 方案默认）─────────
 
 def _build_variants_skeleton(brief: dict, slug: str) -> dict:
+    """从共享 VARIANT_PRESETS 生成 3 方案骨架（修 2026-04-22 三处硬编码问题）"""
     preset = brief.get("variants_preset")
     if preset:
         return {"list": preset}
 
-    # 默认 3 方案：基础 / 标准 / 高端
+    from variant_presets import VARIANT_PRESETS, desc_for, compute_price
     base_name = brief.get("name", slug)
-    area = brief.get("area", 20)
     base_price = brief.get("budgetHKD", 100000)
     return {
         "list": [
             {
-                "id": "v1-essential",
-                "name": "v1",
-                "name_zh": "基础方案",
-                "desc": f"{base_name} · 基础配置 · 核心家具齐全 · 成本优先",
-                "priceHKD": int(base_price * 0.75),
-                "priceDeltaPct": -25,
+                "id": v["id"],
+                "name": v["name"],
+                "name_zh": v["name_zh"],
+                "desc": desc_for(v, base_name),
+                "priceHKD": compute_price(v, base_price),
+                "priceDeltaPct": v["price_delta_pct"],
                 "thumb": None,
                 "hero": None,
-            },
-            {
-                "id": "v2-standard",
-                "name": "v2",
-                "name_zh": "标准方案",
-                "desc": f"{base_name} · 标准配置 · 含接待/陈列区 · 品质均衡",
-                "priceHKD": int(base_price),
-                "priceDeltaPct": 0,
-                "thumb": None,
-                "hero": None,
-            },
-            {
-                "id": "v3-premium",
-                "name": "v3",
-                "name_zh": "高端方案",
-                "desc": f"{base_name} · 高端定制 · 整面陈列墙 + 软包升级 + 定制灯具",
-                "priceHKD": int(base_price * 1.5),
-                "priceDeltaPct": 50,
-                "thumb": None,
-                "hero": None,
-            },
+            }
+            for v in VARIANT_PRESETS
         ]
     }
 
@@ -441,15 +422,25 @@ def retrofit_existing(slug: str) -> dict:
 
 
 def _cli():
-    ap = argparse.ArgumentParser()
+    ap = argparse.ArgumentParser(description="Arctura MVP 创建统一入口 · 支持 LIGHT/FULL 双模式")
     ap.add_argument("--brief", help="brief.json 路径")
     ap.add_argument("--slug", help="输出 slug（可选 · 不给自动推）")
     ap.add_argument("--retrofit", help="已存在 MVP 补齐模式（传 slug）")
+    ap.add_argument("--mode", choices=["light", "full"], default="light",
+                    help="LIGHT = Three.js+Playwright 截图（默认 · 本机可跑 · 2 分钟）· "
+                         "FULL = Blender+OpenStudio+Marp 全套（需 Blender 已装 · 脚本待实装 · 当前回退到 LIGHT）")
     args = ap.parse_args()
+
+    if args.mode == "full":
+        # FULL 模式未实装 · 但有基础设施（Blender 已装）
+        print("⚠ FULL 模式脚本未实装（_build/render_with_blender.py 待写）")
+        print("  当前降级到 LIGHT 模式 · 不中断 · 未来补脚本后将无缝启用")
+        print("  Blender 位置：~/.local/blender/blender-4.2.3-linux-x64/blender")
+        args.mode = "light"
 
     if args.retrofit:
         mvp = retrofit_existing(args.retrofit)
-        print(f"✓ 补齐 {args.retrofit}")
+        print(f"✓ 补齐 {args.retrofit} · mode={args.mode}")
         print(f"  variants: {len(mvp['variants']['list'])} 方案")
         print(f"  downloads: {len(mvp['downloads'])} 条")
         print(f"  bundle: assets/mvps/{args.retrofit}/bundle.zip")
@@ -457,10 +448,13 @@ def _cli():
     elif args.brief:
         brief = json.loads(Path(args.brief).read_text())
         mvp = create_mvp_from_brief(brief, slug=args.slug)
-        print(f"✓ 新 MVP {mvp['slug']} 已生成")
+        print(f"✓ 新 MVP {mvp['slug']} 已生成 · mode={args.mode}")
         print(f"  JSON: data/mvps/{mvp['slug']}.json")
         print(f"  bundle: assets/mvps/{mvp['slug']}/bundle.zip")
         print(f"  URL: https://arctura-front-end.vercel.app/project/{mvp['slug']}")
+        print(f"  后续（补齐产物 + 截 renders）：")
+        print(f"    python3 _build/materialize_full_mvp.py --slug {mvp['slug']}")
+        print(f"    node _build/capture_renders.mjs --slug {mvp['slug']}")
     else:
         ap.error("需要 --brief 或 --retrofit")
 

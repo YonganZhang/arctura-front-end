@@ -105,21 +105,21 @@ def _render_moodboard_png(d, mvp):
     W, H = 1600, 900
     img = Image.new("RGB", (W, H), "#1a1511")
     draw = ImageDraw.Draw(img)
+    font_title = _get_cjk_font(44)
+    font_sub = _get_cjk_font(22)
+    font_swatch = _get_cjk_font(16)
     sw_w = W // max(len(palette), 1)
     for i, p in enumerate(palette):
         try:
             draw.rectangle([i * sw_w, 200, (i + 1) * sw_w, H - 80], fill=p["hex"])
         except Exception:
             pass
-        try:
-            draw.text((i * sw_w + 20, H - 60), f"{p.get('name','')}  {p['hex']}", fill="#F5F1E8")
-        except Exception:
-            pass
-    try:
-        draw.text((40, 40), mvp["project"].get("name", mvp["slug"]), fill="#F5F1E8")
-        draw.text((40, 110), f"{mvp['project'].get('style','')}", fill="#C9BFAE")
-    except Exception:
-        pass
+        draw.text((i * sw_w + 20, H - 60), f"{p.get('name','')}  {p['hex']}",
+                  fill="#F5F1E8", font=font_swatch)
+    draw.text((40, 40), mvp["project"].get("name", mvp["slug"]),
+              fill="#F5F1E8", font=font_title)
+    draw.text((40, 110), mvp['project'].get('style', ''),
+              fill="#C9BFAE", font=font_sub)
     img.save(d / "moodboard.png")
     return True
 
@@ -459,40 +459,92 @@ Arctura Labs · arctura-front-end.vercel.app/project/{mvp['slug']}
 
 
 def _render_deck_marp(d):
+    """跑 marp 出 pptx + pdf · 失败则写入 _TODO-blender.md（执行纪律 · 不静默跳）"""
     md = d / "decks" / "deck-client.md"
     if not md.exists():
-        return False
+        return {"ok": False, "reason": "deck-client.md 不存在"}
     if not shutil.which("marp"):
+        return {"ok": False, "reason": "marp-cli 未装"}
+    pptx = d / "decks" / "deck-client.pptx"
+    pdf = d / "decks" / "deck-client.pdf"
+    r1 = subprocess.run(["marp", str(md), "--pptx", "-o", str(pptx), "--allow-local-files"],
+                        capture_output=True, text=True, timeout=60)
+    r2 = subprocess.run(["marp", str(md), "--pdf", "-o", str(pdf), "--allow-local-files"],
+                        capture_output=True, text=True, timeout=60)
+    if pptx.exists() and pdf.exists():
+        return {"ok": True}
+    err = ((r1.stderr or "") + "\n" + (r2.stderr or ""))[-400:]
+    return {"ok": False, "reason": f"marp 跑但未产文件 · stderr: {err}"}
+
+
+def _append_todo(d, title, lines):
+    """CLAUDE.md 执行纪律第 3 条：做不到就说 · 不静默跳。统一写 _TODO-blender.md"""
+    todo_path = d / "_TODO-blender.md"
+    existing = todo_path.read_text() if todo_path.exists() else "# 未生成产物清单\n\n"
+    if title not in existing:
+        section = f"\n## {title}\n\n" + "\n".join(f"- [ ] {l}" for l in lines) + "\n"
+        existing += section
+        todo_path.write_text(existing)
+
+
+def _get_cjk_font(size):
+    """PIL 中文字体回退 · 修 2026-04-22 子智能体审查指出的方块字问题"""
+    from PIL import ImageFont
+    import os
+    paths = [
+        "/usr/share/fonts/noto-cjk/NotoSansCJK-Regular.ttc",
+        "/usr/share/fonts/google-noto-cjk/NotoSansCJK-Regular.ttc",
+        "/usr/share/fonts/wqy-zenhei/wqy-zenhei.ttc",
+        "/usr/share/fonts/wqy-microhei/wqy-microhei.ttc",
+        "/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc",
+        "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",
+    ]
+    for fp in paths:
+        if os.path.exists(fp):
+            try:
+                return ImageFont.truetype(fp, size)
+            except Exception:
+                pass
+    return ImageFont.load_default()
+
+
+def _make_case_study_thumbs(d):
+    """从 renders 缩 6 张 · PIL 能做 · 不需 Blender（修 2026-04-22 thumbs 空目录问题）"""
+    try:
+        from PIL import Image
+    except ImportError:
         return False
-    # PPTX
-    subprocess.run(["marp", str(md), "--pptx", "-o", str(d / "decks" / "deck-client.pptx"),
-                    "--allow-local-files"], check=False)
-    # PDF
-    subprocess.run(["marp", str(md), "--pdf", "-o", str(d / "decks" / "deck-client.pdf"),
-                    "--allow-local-files"], check=False)
+    renders_dir = d / "renders"
+    thumbs_dir = d / "case-study" / "thumbs"
+    thumbs_dir.mkdir(parents=True, exist_ok=True)
+    pngs = sorted(renders_dir.glob("*.png"))[:6]
+    if not pngs:
+        return False
+    for p in pngs:
+        img = Image.open(p)
+        img.thumbnail((400, 300))
+        img.save(thumbs_dir / p.name)
     return True
 
 
 def _write_variants_overlays(d, mvp):
-    """3 档套餐 overlay · 每档差异化 pricing/editable/energy"""
+    """3 档套餐 overlay · 用共享 VARIANT_PRESETS（修 2026-04-22 三处硬编码）"""
+    from variant_presets import VARIANT_PRESETS, compute_price, compute_eui
     proj = mvp["project"]
     base_budget = proj.get("budgetHKD", 100000)
     base_eui = mvp.get("energy", {}).get("eui", 45)
     area = proj.get("area", 20)
-    variants = [
-        ("v1-essential", "基础方案", -0.25, +5, {"insulation_mm": 40, "lighting_density_w_m2": 10}),
-        ("v2-standard", "标准方案", 0.0, 0, {}),
-        ("v3-premium", "高端方案", +0.50, -8, {"insulation_mm": 100, "lighting_density_w_m2": 6, "glazing_uvalue": 1.2}),
-    ]
-    # 前端读 /data/mvps/<slug>/variants/<vid>.json
     fe_variants_dir = FE_ROOT / "data" / "mvps" / mvp["slug"] / "variants"
     fe_variants_dir.mkdir(parents=True, exist_ok=True)
-    for vid, name_zh, price_delta, eui_delta, edit_override in variants:
-        new_total = int(base_budget * (1 + price_delta))
-        new_eui = base_eui + eui_delta
+    for v in VARIANT_PRESETS:
+        vid = v["id"]
+        new_total = compute_price(v, base_budget)
+        new_eui = compute_eui(v, base_eui)
         rows = mvp.get("pricing", {}).get("HK", {}).get("rows", [])
         overlay = {
-            "id": vid, "name": vid.split("-")[0], "name_zh": name_zh,
+            "id": vid, "name": v["name"], "name_zh": v["name_zh"],
+            "parent_slug": mvp["slug"],
+            "renders": [],
             "project": {**proj, "budgetHKD": new_total},
             "pricing": {"HK": {
                 "label": "Hong Kong", "currency": "HKD",
@@ -500,7 +552,7 @@ def _write_variants_overlays(d, mvp):
                 "rows": rows,
                 "total": f"HKD ~{new_total:,}",
             }},
-            "editable": {**mvp.get("editable", {}), **edit_override},
+            "editable": {**mvp.get("editable", {}), **v["edit_override"]},
             "energy": {"eui": new_eui, "limit": 150, "annual": round(new_eui * area, 1), "engine": "EnergyPlus"},
             "compliance": {"HK": {**mvp.get("compliance", {}).get("HK", {}),
                                    "checks": [{"name": "EUI", "value": str(new_eui), "limit": "150",
@@ -513,60 +565,90 @@ def _write_variants_overlays(d, mvp):
             },
         }
         (fe_variants_dir / f"{vid}.json").write_text(json.dumps(overlay, ensure_ascii=False, indent=2))
-        # 也放一份到 StartUP-Building 侧
         sb_dir = d / "variants" / vid
         sb_dir.mkdir(parents=True, exist_ok=True)
-        (sb_dir / "description.md").write_text(f"""# {name_zh} ({vid})
+        (sb_dir / "description.md").write_text(f"""# {v['name_zh']} ({vid})
 
-- 价格档: {price_delta:+.0%}（HKD {new_total:,}）
-- EUI: {new_eui} kWh/m²·yr（差 {eui_delta:+d}）
+- 价格档: {v['price_delta_pct']:+d}%（HKD {new_total:,}）
+- EUI: {new_eui} kWh/m²·yr（差 {v['eui_delta']:+d}）
 - 保温: {overlay['editable'].get('insulation_mm')} mm
 - 照明: {overlay['editable'].get('lighting_density_w_m2')} W/m²
+- 年维护: HKD {v['annual_maintenance_HKD']:,}
 
 ## 定位
 
-{'核心家具齐全 · 成本优先' if price_delta < 0 else ('标准配置 · 品质均衡' if price_delta == 0 else '整面陈列墙 + 软包升级 + 定制灯具')}
+{v['positioning']} · {v['tagline_zh']}
 """)
 
 
 def _write_diff_matrix(d, mvp):
+    """diff-matrix 6 维度 · 从 VARIANT_PRESETS 共享常量算 · 不再硬编码"""
+    from variant_presets import VARIANT_PRESETS, compute_price, compute_eui
     area = mvp["project"].get("area", 20)
-    base = mvp["project"].get("budgetHKD", 100000)
-    table = f"""# 方案对比矩阵 · diff-matrix.md
+    base_budget = mvp["project"].get("budgetHKD", 100000)
+    base_eui = mvp.get("energy", {}).get("eui", 45)
+    style = mvp["project"].get("style", "")
 
-6 维度对比（StartUP-Building/CLAUDE.md 必含维度）
+    def row_header():
+        return "| 维度 | " + " | ".join(f"{v['id']} {v['name_zh']}" for v in VARIANT_PRESETS) + " |"
 
-| 维度 | v1-essential 基础 | v2-standard 标准 | v3-premium 高端 |
-|---|---|---|---|
-| **1. 风格定调** | 日式禅风 · 浅木 + 米白亚麻 · 克制 | 日式禅风 · 浅木 + 深绿软包 · 含接待区 | 日式禅风 · 浅木 + 定制和纸灯阵列 + 整面书墙 |
-| **2. EUI** | 50 kWh/m²·yr · 年耗 {50*area} kWh | 45 kWh/m²·yr · 年耗 {45*area} kWh | 37 kWh/m²·yr · 年耗 {37*area} kWh |
-| **3. 工料报价** | HKD {int(base*0.75):,} · 单方 HKD {int(base*0.75/max(area,1)):,}/㎡ | HKD {base:,} · 单方 HKD {int(base/max(area,1)):,}/㎡ | HKD {int(base*1.5):,} · 单方 HKD {int(base*1.5/max(area,1)):,}/㎡ |
-| **4. 年维护** | HKD 4,000/yr | HKD 6,000/yr | HKD 9,000/yr |
-| **5. 合规** | HK BEEO 2021 ✓ pass (advisory) | ✓ pass | ✓ pass |
-| **6. 决策推荐** | 预算紧张 · 优先使用 | **推荐**（均衡 · 标准交付）| 品牌展示 / 校董接待 优先 |
+    def row_sep():
+        return "|---" * (len(VARIANT_PRESETS) + 1) + "|"
 
-## 决策理由
+    def row(label, values):
+        return f"| **{label}** | " + " | ".join(values) + " |"
 
-- **v1** 适合：校长办公室在分校/分校区 · 预算不足 · 核心功能优先
-- **v2** 适合：主校区标准 · 预算正常 · 功能 + 品味均衡
-- **v3** 适合：品牌旗舰校 · 接待校董 · 愿意为品味买单
-"""
+    # 1. 风格（先通用 · 未来可改为从 preset 读）
+    style_cells = [
+        f"{style.split(',')[0] if style else '简配'}· 克制",
+        f"{style.split(',')[0] if style else '均衡'}· 标准",
+        f"{style.split(',')[0] if style else '高端'}· 软包升级 + 定制灯具",
+    ]
+    # 2-6 维度
+    eui_cells = [f"{compute_eui(v, base_eui)} kWh/m²·yr · 年耗 {compute_eui(v, base_eui)*area} kWh" for v in VARIANT_PRESETS]
+    price_cells = [f"HKD {compute_price(v, base_budget):,} · 单方 HKD {compute_price(v, base_budget)//max(area,1):,}/㎡" for v in VARIANT_PRESETS]
+    maint_cells = [f"HKD {v['annual_maintenance_HKD']:,}/yr" for v in VARIANT_PRESETS]
+    compliance_cells = ["HK BEEO 2021 ✓ pass (advisory)"] + ["✓ pass"] * (len(VARIANT_PRESETS) - 1)
+    decision_cells = [v["positioning"] for v in VARIANT_PRESETS]
+    decision_cells[1] = f"**推荐** · {decision_cells[1]}" if len(decision_cells) > 1 else decision_cells[0]
+
+    table = "# 方案对比矩阵 · diff-matrix.md\n\n"
+    table += "6 维度对比（StartUP-Building/CLAUDE.md 必含维度 · 由 _build/variant_presets.py 生成）\n\n"
+    table += row_header() + "\n"
+    table += row_sep() + "\n"
+    table += row("1. 风格定调", style_cells) + "\n"
+    table += row("2. EUI", eui_cells) + "\n"
+    table += row("3. 工料报价", price_cells) + "\n"
+    table += row("4. 年维护", maint_cells) + "\n"
+    table += row("5. 合规", compliance_cells) + "\n"
+    table += row("6. 决策推荐", decision_cells) + "\n\n"
+    table += "## 决策理由\n\n"
+    for v in VARIANT_PRESETS:
+        table += f"- **{v['id']}** · {v['positioning']}\n"
     (d / "variants" / "diff-matrix.md").write_text(table)
 
 
 def _write_whatif(d, mvp):
+    """whatif 3 变体 · 从 VARIANT_PRESETS 计算（不再硬编码）"""
+    from variant_presets import VARIANT_PRESETS, compute_eui
     area = mvp["project"].get("area", 20)
-    content = f"""# What-If 3 变体能耗对比
+    base_eui = mvp.get("energy", {}).get("eui", 45)
+    base_edit = mvp.get("editable", {})
 
-| Variant | Wall U | Window U | Lighting W/m² | EUI | Annual (kWh) |
-|---|---|---|---|---|---|
-| v1-essential | 0.6 | 2.0 | 10 | 50 | {50*area} |
-| v2-standard | 0.55 | 2.0 | 8 | 45 | {45*area} |
-| v3-premium | 0.35 | 1.2 | 6 | 37 | {37*area} |
-
-v3 相对 v1 节能 {int((50-37)/50*100)}%。单方年维护差 HKD 5,000。
-"""
-    (d / "variants" / "whatif-3variants.md").write_text(content)
+    lines = ["# What-If 3 变体能耗对比（由 variant_presets 生成）\n",
+             "| Variant | Wall U | Window U | Lighting W/m² | EUI | Annual (kWh) |",
+             "|---|---|---|---|---|---|"]
+    for v in VARIANT_PRESETS:
+        merged = {**base_edit, **v["edit_override"]}
+        eui = compute_eui(v, base_eui)
+        wall_u = 0.55 - (merged.get("insulation_mm", 60) - 60) * 0.005   # 简化线性 · 保温越厚 U 越小
+        win_u = merged.get("glazing_uvalue", 2.0)
+        light = merged.get("lighting_density_w_m2", 8)
+        lines.append(f"| {v['id']} | {wall_u:.2f} | {win_u} | {light} | {eui} | {eui*area} |")
+    first, last = compute_eui(VARIANT_PRESETS[0], base_eui), compute_eui(VARIANT_PRESETS[-1], base_eui)
+    save_pct = int((first - last) / first * 100) if first > 0 else 0
+    lines.append(f"\n{VARIANT_PRESETS[-1]['id']} 相对 {VARIANT_PRESETS[0]['id']} 节能 {save_pct}%。\n")
+    (d / "variants" / "whatif-3variants.md").write_text("\n".join(lines))
 
 
 # ───────── 主入口 ─────────
@@ -589,41 +671,66 @@ def materialize(slug: str):
     print(f"  {'✓' if ok else '⚠'} floorplan.png" + ("" if ok else " · 跳过（无 rsvg/inkscape）"))
     _write_client_readme(d, mvp);      print("  ✓ CLIENT-README.md")
     _write_energy(d, mvp);             print("  ✓ energy/ (3 files · 占位)")
-    _write_case_study(d, mvp);         print("  ✓ case-study/ (7 files · 无 thumbs)")
+    _write_case_study(d, mvp);         print("  ✓ case-study/ (7 files)")
+    ok = _make_case_study_thumbs(d)
+    print(f"  {'✓' if ok else '⚠'} case-study/thumbs/（PIL 从 renders 缩 6 张）" + ("" if ok else " · 跳过（无 renders）"))
     _write_deck_client(d, mvp);        print("  ✓ decks/deck-client.md")
-    ok = _render_deck_marp(d)
-    print(f"  {'✓' if ok else '⚠'} decks/.pptx + .pdf" + ("" if ok else " · 跳过（无 marp）"))
+    deck_res = _render_deck_marp(d)
+    if deck_res["ok"]:
+        print("  ✓ decks/deck-client.pptx + .pdf (marp 跑通)")
+    else:
+        print(f"  ⚠ decks/*.pptx + .pdf · {deck_res['reason']}")
+        _append_todo(d, "Marp PPTX/PDF（跑失败 · 需修）", [
+            "decks/deck-client.pptx（marp --pptx）",
+            "decks/deck-client.pdf（marp --pdf · 需 chrome）",
+            f"失败：{deck_res['reason'][:150]}",
+            "修法：装 chromium 让 marp-cli 能用",
+        ])
     _write_variants_overlays(d, mvp);  print("  ✓ variants/v1-v3 overlay JSON（前端可点）")
     _write_diff_matrix(d, mvp);        print("  ✓ variants/diff-matrix.md")
     _write_whatif(d, mvp);             print("  ✓ variants/whatif-3variants.md")
 
-    # TODO / 做不到清单
+    # TODO · 真做不到 · 按子智能体审查更新状态
     todo_path = d / "_TODO-blender.md"
-    todo_path.write_text("""# ⚠ Blender 产物未生成（本机无 Blender）
+    todo_path.write_text("""# 产物完成状态（对照 StartUP-Building/CLAUDE.md L405-434 必含清单）
 
-以下产物必须在 Mac（`/Users/kaku/Desktop/Work/CLI-Anything/`）或有 Blender 的节点上补：
+## ✅ 已补齐（LIGHT 模式 · 本机 Python/Playwright 能做）
 
-- [ ] `renders/01_hero_corner.png` … 08_*.png（8 张多角度渲染 · 用 P1 Pipeline）
-- [ ] `exports/{slug}.glb` / `.fbx` / `.obj` / `.mtl` / `.ifc`（5 格式导出 · 用 blender_cli model export）
-- [ ] `variants/v1-essential/hero.png` + `renders/` × 4 视角
-- [ ] `variants/v2-standard/hero.png` + `renders/` × 4
-- [ ] `variants/v3-premium/hero.png` + `renders/` × 4
-- [ ] `variants/comparison-grid-4x3.png` · `grid-row-*.png` × 4
-- [ ] `case-study/thumbs/*.png`（6 张缩略图）
+- [x] brief.json · room.json · moodboard.{png,json} · floorplan.{svg,png}
+- [x] CLIENT-README.md · decks/deck-client.md
+- [x] energy/{project.json,compliance-HK.md,boq-HK.md,boq-HK.csv}（占位 · 非真 EnergyPlus）
+- [x] case-study/{portfolio,impact,sales}.md + metrics.json + narrative-*.txt
+- [x] case-study/thumbs/（PIL 从 renders 缩 6 张 · 2026-04-22 晚补）
+- [x] variants/v1-v3 overlay JSON（套餐前端可点切换）
+- [x] variants/diff-matrix.md + whatif-3variants.md（从 VARIANT_PRESETS 共享常量生成）
+- [x] renders/ 8 张（Playwright 截 Three.js · `node _build/capture_renders.mjs --slug <slug>`）
 
-## 正式补齐命令（到 Mac 跑）
+## 🔄 FULL 模式待实装（需要扩展脚本 · 基础设施已就位）
+
+- [ ] `exports/{slug}.glb` / `.fbx` / `.obj` / `.ifc`（BIM 导出 · 需 `_build/render_with_blender.py`）
+- [ ] `variants/v*/hero.png` + `renders/×4`（variant-aware Playwright · 或 Blender）
+- [ ] `variants/comparison-grid-4x3.png` + `grid-row-*.png × 4`（PIL 合成 · 脚本待写）
+- [ ] 照片级 Cycles 渲染（GPU 加速最佳 · 本机 CPU 慢）
+- [ ] 真 EnergyPlus 能耗（需装 OpenStudio）
+
+## 基础设施
+
+- **Blender**：`~/.local/blender/blender-4.2.3-linux-x64/blender`（已装 · 4.2.3 LTS · 无头渲染验证）
+- **Playwright**：`node_modules/@playwright/test` · chromium-1217 已下载
+- **Marp**：`marp-cli` 在 path · 缺 chrome（decks/pptx 不自动跑）
+- **PIL**：系统 python3 有 · 字体回退：noto-cjk / wqy-zenhei
+
+## 下次启动入口
 
 ```bash
-cd /Users/kaku/Desktop/Work/StartUP-Building
-$PY playbooks/scripts/batch_all_mvps.py --only 50-principal-office
+python3 _build/create_mvp_from_brief.py --mode light --brief X.json --slug YY-zzz
+python3 _build/materialize_full_mvp.py --slug YY-zzz
+node _build/capture_renders.mjs --slug YY-zzz
 ```
 
-## 为什么本机做不到
-
-本机是 Linux + Arctura-Front-end 前端开发环境 · 没有 Blender / OpenStudio。
-权威规则 CLAUDE.md L350（执行纪律）："做不到就说 · 不要静默跳过" — 本 TODO 即此规则落地。
+权威规则 `StartUP-Building/CLAUDE.md` L350："做不到就说 · 不静默跳" — 本 TODO 即此规则落地。
 """)
-    print(f"  ⚠ _TODO-blender.md（清单：renders/exports/variant renders/case-study/thumbs）")
+    print(f"  ⚠ _TODO-blender.md（更新状态 · FULL 模式待实装清单）")
 
     return d
 

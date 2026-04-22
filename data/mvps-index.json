@@ -385,8 +385,8 @@
     "cost_per_m2": 4000,
     "currency": "HKD",
     "compliance": "pass",
-    "thumb": null,
-    "hero": null,
+    "thumb": "/assets/mvps/50-principal-office/renders/01_hero_corner.png",
+    "hero": "/assets/mvps/50-principal-office/renders/01_hero_corner.png",
     "complete": true
   },
   {
