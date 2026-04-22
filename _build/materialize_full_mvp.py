@@ -468,13 +468,21 @@ def _render_deck_marp(d):
     pptx = d / "decks" / "deck-client.pptx"
     pdf = d / "decks" / "deck-client.pdf"
     r1 = subprocess.run(["marp", str(md), "--pptx", "-o", str(pptx), "--allow-local-files"],
-                        capture_output=True, text=True, timeout=60)
+                        capture_output=True, timeout=60)
     r2 = subprocess.run(["marp", str(md), "--pdf", "-o", str(pdf), "--allow-local-files"],
-                        capture_output=True, text=True, timeout=60)
+                        capture_output=True, timeout=60)
     if pptx.exists() and pdf.exists():
         return {"ok": True}
-    err = ((r1.stderr or "") + "\n" + (r2.stderr or ""))[-400:]
-    return {"ok": False, "reason": f"marp 跑但未产文件 · stderr: {err}"}
+    # 过滤 stderr · 只留含 ASCII 错误关键词的行 · 丢 base64 二进制 leak（子智能体建议）
+    def _filter_err(raw):
+        if not raw: return ""
+        text = raw.decode("utf-8", errors="replace")
+        keep = [ln for ln in text.splitlines() if any(k in ln.lower() for k in ["error", "fail", "missing", "cannot", "chrome", "puppeteer", "enoent"])]
+        return "\n".join(keep[-5:]) if keep else "(stderr 全是二进制 · 可能 chrome 路径缺)"
+    err = (_filter_err(r1.stderr) + "\n" + _filter_err(r2.stderr)).strip()[-300:]
+    pptx_ok = "pptx ✓" if pptx.exists() else "pptx ✗"
+    pdf_ok = "pdf ✓" if pdf.exists() else "pdf ✗"
+    return {"ok": False, "reason": f"marp 跑但产物不全（{pptx_ok} / {pdf_ok}） · err: {err}"}
 
 
 def _append_todo(d, title, lines):
@@ -488,19 +496,28 @@ def _append_todo(d, title, lines):
 
 
 def _get_cjk_font(size):
-    """PIL 中文字体回退 · 修 2026-04-22 子智能体审查指出的方块字问题"""
+    """PIL 中文字体 · fc-match 动态查（避免硬编码路径过时 · 修 子智能体审查 B1）"""
     from PIL import ImageFont
-    import os
+    # 1. 用 fc-match 动态查系统里真实存在的 CJK 字体
+    for query in ["Noto Sans CJK SC:style=Regular", "Noto Sans CJK TC:style=Regular",
+                  "WenQuanYi Zen Hei", "Source Han Sans", "sans-serif:lang=zh"]:
+        try:
+            out = subprocess.check_output(["fc-match", "-f", "%{file}", query],
+                                           stderr=subprocess.DEVNULL, timeout=3).decode().strip()
+            if out and Path(out).exists() and any(out.endswith(ext) for ext in [".ttc", ".otf", ".ttf"]):
+                return ImageFont.truetype(out, size)
+        except Exception:
+            continue
+    # 2. 硬编码 fallback（最新 Fedora/CentOS 路径 · 子智能体指出本机 .otf 不是 .ttc）
     paths = [
-        "/usr/share/fonts/noto-cjk/NotoSansCJK-Regular.ttc",
-        "/usr/share/fonts/google-noto-cjk/NotoSansCJK-Regular.ttc",
-        "/usr/share/fonts/wqy-zenhei/wqy-zenhei.ttc",
-        "/usr/share/fonts/wqy-microhei/wqy-microhei.ttc",
-        "/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc",
+        "/usr/share/fonts/google-noto-cjk/NotoSansCJKsc-Regular.otf",
+        "/usr/share/fonts/google-noto-cjk/NotoSansCJKtc-Regular.otf",
         "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",
+        "/usr/share/fonts/noto-cjk/NotoSansCJK-Regular.ttc",
+        "/usr/share/fonts/wqy-zenhei/wqy-zenhei.ttc",
     ]
     for fp in paths:
-        if os.path.exists(fp):
+        if Path(fp).exists():
             try:
                 return ImageFont.truetype(fp, size)
             except Exception:
@@ -517,7 +534,7 @@ def _make_case_study_thumbs(d):
     renders_dir = d / "renders"
     thumbs_dir = d / "case-study" / "thumbs"
     thumbs_dir.mkdir(parents=True, exist_ok=True)
-    pngs = sorted(renders_dir.glob("*.png"))[:6]
+    pngs = sorted(renders_dir.glob("*.png"))
     if not pngs:
         return False
     for p in pngs:
