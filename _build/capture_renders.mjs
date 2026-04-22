@@ -89,41 +89,41 @@ async function main() {
   const cx = box.x + box.width / 2;
   const cy = box.y + box.height / 2;
 
-  for (const v of views) {
-    // 每张从 hero 起始 · 回到默认视角 · 再拖到目标
-    // 简化：直接连续拖（累计到下一个） · 默认 OrbitControls 不会自动回弹
-    // 先回 hero（刷新页面最稳 · 但慢） → 改用 keyboard Home 如果有 · 没有就累计
-    if (v.dx !== 0 || v.dy !== 0) {
-      await page.mouse.move(cx, cy);
-      await page.mouse.down();
-      await page.mouse.move(cx + v.dx, cy + v.dy, { steps: 15 });
-      await page.mouse.up();
-      await page.waitForTimeout(400);
-    }
-    // Zoom (scroll)
-    if (v.zoomDelta) {
-      await page.mouse.move(cx, cy);
-      await page.mouse.wheel(0, v.zoomDelta);
-      await page.waitForTimeout(300);
-    }
+  // 8 个相机位置（直接设 camera.position + lookAt · 不靠拖拽）
+  const cams = [
+    { name: "01_hero_corner", pos: [4.5, -3.8, 1.9], look: [0, 0, 1.2] },
+    { name: "02_front_view", pos: [0, -5.0, 1.6], look: [0, 0, 1.2] },
+    { name: "03_back_view", pos: [0, 4.5, 2.0], look: [0, 0, 1.2] },
+    { name: "04_left_side", pos: [-5.0, 0, 1.6], look: [0, 0, 1.2] },
+    { name: "05_right_side", pos: [5.0, 0, 1.6], look: [0, 0, 1.2] },
+    { name: "06_top_down", pos: [0.1, 0, 6.5], look: [0, 0, 0] },
+    { name: "07_eye_level", pos: [3.0, -3.0, 1.6], look: [0, 0, 1.2] },
+    { name: "08_corner_detail", pos: [2.5, -2.2, 1.3], look: [-0.5, 1.5, 1.0] },
+  ];
+  const view_descs = {
+    "01_hero_corner": "Hero 角落", "02_front_view": "正面",
+    "03_back_view": "背面", "04_left_side": "左侧",
+    "05_right_side": "右侧", "06_top_down": "俯视",
+    "07_eye_level": "人眼视角", "08_corner_detail": "角落细节",
+  };
+
+  for (const v of cams) {
 
     const pngPath = resolve(outDir, `${v.name}.png`);
-    // 不等 stable · 直接 evaluate 取 canvas.toDataURL · 最快
-    const dataUrl = await page.evaluate(() => {
-      const canvases = Array.from(document.querySelectorAll("canvas"));
-      let biggest = null, maxA = 0;
-      for (const c of canvases) {
-        const b = c.getBoundingClientRect();
-        const a = b.width * b.height;
-        if (a > maxA) { maxA = a; biggest = c; }
-      }
-      if (!biggest) return null;
-      return biggest.toDataURL("image/png");
-    });
-    if (!dataUrl) { console.log(`  ⚠ ${v.name} canvas.toDataURL 失败`); continue; }
+    // 直接设 camera 位置 + 调 render · 再 toDataURL
+    const dataUrl = await page.evaluate(({ pos, look }) => {
+      const r = window.__arcturaRenderer;
+      if (!r) return null;
+      r.camera.position.set(pos[0], pos[1], pos[2]);
+      r.camera.lookAt(look[0], look[1], look[2]);
+      r.camera.updateProjectionMatrix();
+      r.renderer.render(r.threeScene, r.camera);
+      return r.renderer.domElement.toDataURL("image/png");
+    }, { pos: v.pos, look: v.look });
+    if (!dataUrl) { console.log(`  ⚠ ${v.name} renderer 不在 window 上`); continue; }
     const b64 = dataUrl.split(",")[1];
     writeFileSync(pngPath, Buffer.from(b64, "base64"));
-    console.log(`  ✓ ${v.name}.png (${v.desc})`);
+    console.log(`  ✓ ${v.name}.png (${view_descs[v.name]})`);
   }
 
   await browser.close();

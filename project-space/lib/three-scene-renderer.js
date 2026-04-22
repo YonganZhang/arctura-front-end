@@ -79,6 +79,9 @@ export class SceneRenderer {
 
     this.controls = new OrbitControls(this.camera, canvas);
     this.controls.enableDamping = true;
+
+    // 暴露实例给 Playwright 脚本 · 用于生成 renders（_build/capture_renders.mjs）
+    window.__arcturaRenderer = this;
     this.controls.target.set(0, 1.2, 0);
 
     // 材质缓存（id → THREE.Material）
