@@ -22,6 +22,7 @@
 !package.json
 !package-lock.json
 !playwright.config.mjs
+!CLAUDE.md
 !.gitignore
 
 # uploads 里的图片噪音（保留 md 文档）
