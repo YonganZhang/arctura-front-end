@@ -265,10 +265,13 @@ export class SceneRenderer {
     requestAnimationFrame(step);
   }
 
-  // 开场环绕 · 2s 以 target 为中心转一圈（OrbitControls 禁用防冲突）
-  playIntroAnimation(duration = 2000) {
+  // 环绕动画 · duration=一圈耗时(ms) · loop=是否永动
+  // 默认：4000ms/圈（比旧版慢一半）· loop=true（一直转 · 用户按按钮才停）
+  playIntroAnimation(options = {}) {
     if (!this.currentScene?.bounds) return;
     if (this._introState) this._introState.cancel = true;
+
+    const { duration = 4000, loop = true } = typeof options === "number" ? { duration: options } : options;
     const { w, d, h } = this.currentScene.bounds;
     const radius = Math.max(w, d) * 1.1;
     const tgt = new THREE.Vector3(0, h * 0.5, 0);
@@ -276,14 +279,17 @@ export class SceneRenderer {
     this.controls.enabled = false;
     const t0 = performance.now();
     const yHeight = h * 0.8;
-    const state = { cancel: false };
+    const state = { cancel: false, loop };
     this._introState = state;
     const step = () => {
-      if (state.cancel || !this._isRunning) {         // FIX · dispose 时停止
+      if (state.cancel || !this._isRunning) {
         this.controls.enabled = originalEnabled;
+        this.controls.update();
+        if (this._introState === state) this._introState = null;
         return;
       }
-      const t = Math.min(1, (performance.now() - t0) / duration);
+      const elapsed = performance.now() - t0;
+      const t = loop ? (elapsed / duration) % 1 : Math.min(1, elapsed / duration);
       const angle = t * Math.PI * 2;
       this.camera.position.set(
         Math.cos(angle) * radius,
@@ -292,8 +298,9 @@ export class SceneRenderer {
       );
       this.controls.target.copy(tgt);
       this.camera.lookAt(tgt);
-      if (t < 1) requestAnimationFrame(step);
-      else {
+      if (loop || t < 1) {
+        requestAnimationFrame(step);
+      } else {
         this.controls.enabled = originalEnabled;
         this.controls.update();
         this._introState = null;
@@ -301,6 +308,15 @@ export class SceneRenderer {
     };
     requestAnimationFrame(step);
   }
+
+  // 显式停止环绕 · UI 按钮用
+  stopIntroAnimation() {
+    if (this._introState) {
+      this._introState.cancel = true;
+      this._introState = null;
+    }
+  }
+  isIntroRunning() { return !!this._introState && !this._introState.cancel; }
 
   // Phase 3.G · 白天 / 夜晚切换
   // mode = "day" | "night"

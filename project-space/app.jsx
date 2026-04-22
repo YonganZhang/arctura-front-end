@@ -1997,6 +1997,7 @@ function Viewer3DScene() {
   });
   const [daylight, setDaylight] = useState("day");    // Phase 3.G · "day" | "night"
   const [rendererReady, setRendererReady] = useState(false);  // Phase 3.M · sync barrier
+  const [orbiting, setOrbiting] = useState(false);    // 环绕动画开关 · 默认 off
 
   // Phase 3.M FIX: sync transp 到 renderer · 当 transp 变化 OR rendererReady 由 false→true 时
   // 解决 race：用户透明按钮点了但 renderer 还在 async build · 之前的 useEffect 会 skip · 修
@@ -2098,8 +2099,7 @@ function Viewer3DScene() {
               if (disposed) return;
               setLoading(false);
               setRendererReady(true);    // Phase 3.M · trigger transp/daylight sync
-              // Phase 3.F.A · 开场环绕 · 只在首次 build 触发
-              setTimeout(() => r && !disposed && r.playIntroAnimation(2000), 300);
+              // 环绕动画改为默认不转 · 用户按"环绕"按钮才启动（连续慢转）
             })
             .catch((e) => { if (!disposed) { setError(String(e.message || e)); setLoading(false); } });
         }
@@ -2209,11 +2209,23 @@ function Viewer3DScene() {
           padding: 6, background: "rgba(12, 13, 16, 0.6)",
           borderRadius: 4, backdropFilter: "blur(4px)",
         }}>
-          <TogglePill on={false} label="俯视" onClick={() => rendererRef.current?.gotoPreset("top")} />
-          <TogglePill on={false} label="前视" onClick={() => rendererRef.current?.gotoPreset("front")} />
-          <TogglePill on={false} label="人眼" onClick={() => rendererRef.current?.gotoPreset("eye")} hint="1.6m walkthrough" />
+          <TogglePill on={false} label="俯视" onClick={() => { rendererRef.current?.stopIntroAnimation(); setOrbiting(false); rendererRef.current?.gotoPreset("top"); }} />
+          <TogglePill on={false} label="前视" onClick={() => { rendererRef.current?.stopIntroAnimation(); setOrbiting(false); rendererRef.current?.gotoPreset("front"); }} />
+          <TogglePill on={false} label="人眼" onClick={() => { rendererRef.current?.stopIntroAnimation(); setOrbiting(false); rendererRef.current?.gotoPreset("eye"); }} hint="1.6m walkthrough" />
           <span style={{ width: 1, background: "var(--line-2)", margin: "0 4px" }} />
-          <TogglePill on={false} label="↻ 环绕" onClick={() => rendererRef.current?.playIntroAnimation(2000)} hint="再播一次开场动画" />
+          <TogglePill on={orbiting} label="↻ 环绕"
+                      onClick={() => {
+                        const r = rendererRef.current;
+                        if (!r) return;
+                        if (orbiting) {
+                          r.stopIntroAnimation();
+                          setOrbiting(false);
+                        } else {
+                          r.playIntroAnimation({ duration: 4000, loop: true });
+                          setOrbiting(true);
+                        }
+                      }}
+                      hint="持续环绕 · 慢速 · 再点停" />
           <span style={{ width: 1, background: "var(--line-2)", margin: "0 4px" }} />
           <TogglePill on={daylight === "day"} label="☀️ 白天" onClick={() => setDaylight("day")} />
           <TogglePill on={daylight === "night"} label="🌙 夜晚" onClick={() => setDaylight("night")} />
