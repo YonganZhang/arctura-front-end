@@ -260,30 +260,31 @@ export default async function handler(req) {
 
   let llmResp;
   let attempt = 0;
+  // Phase 4 优化：timeout 后 retry 几乎必失败（LLM 慢期 6s 不够）· 只在 5xx 时 retry
   const maxAttempts = 2;
   let lastErr;
   while (attempt < maxAttempts) {
     attempt++;
-    const budget = attempt === 1 ? 14000 : 6000;   // Phase 4 · 为自修留时间
+    const budget = attempt === 1 ? 18000 : 5000;   // 给初次更多空间 · 5xx retry 才 5s
     try {
       llmResp = await callLLM(budget);
       break;
     } catch (err) {
       lastErr = err;
       const isTimeout = err.name === "AbortError" || err.message?.includes("abort");
-      const isRetryable = isTimeout || err.status === 502 || err.status === 503 || err.status === 504 || err.status === 429;
+      const is5xx = err.status === 502 || err.status === 503 || err.status === 429;
+      // timeout 不 retry（浪费时间）· 只有 5xx/429 retry
+      const isRetryable = is5xx;
       if (attempt >= maxAttempts || !isRetryable) {
-        // 最终失败 · 返回友好错误
         const status = err.status && err.status >= 400 ? err.status : 504;
-        const msg = isTimeout ? "LLM 响应超时（>20s） · 试试短一点的句子，或换个模型（点上方 Model 下拉）"
+        const msg = isTimeout ? "LLM 响应超时（>18s） · 试试短一点的句子，或换个模型（点上方 Model 下拉 · 换 deepseek-v3-chat 更快）"
                   : err.status ? `Upstream error ${err.status}` : "LLM call failed";
         return jsonResponse({
           error: msg,
           detail: (err.detail || String(err.message || err)).slice(0, 300),
-          retryable: isRetryable,
+          retryable: isTimeout || is5xx,
         }, status);
       }
-      // 重试前不等 · 直接再 fetch（新 timeout budget）
     }
   }
 
@@ -329,7 +330,8 @@ export default async function handler(req) {
     const failures = dry.stepResults.filter(r => !r.dry_run.ok);
     const elapsedMs = Date.now() - requestStart;
     const remainingBudget = 22000 - elapsedMs;   // Edge 25s 上限 · 留 3s margin
-    if (failures.length > 0 && remainingBudget > 7000) {
+    // 初次 LLM 18s budget · elapsedMs 可能接近 18s · remainingBudget 留 6s 可自修 · 否则直接返回
+    if (failures.length > 0 && remainingBudget > 6000) {
       const feedback = failures.map(f => `step ${f.id}: ${f.dry_run.reason}`).join("\n");
       const correctionMessages = [
         { role: "system", content: systemPrompt },
@@ -340,7 +342,8 @@ export default async function handler(req) {
       ];
       payload.messages = correctionMessages;
       try {
-        const retryResp = await callLLM(10000);
+        const correctBudget = Math.min(8000, remainingBudget - 1500);
+        const retryResp = await callLLM(correctBudget);
         const retryText = retryResp.choices?.[0]?.message?.content || "";
         const retryParsed = parseLLMReply(retryText);
         if (retryParsed.plan && retryParsed.plan.steps?.length > 0) {
@@ -367,7 +370,31 @@ export default async function handler(req) {
     });
   }
 
-  // 降级：LLM 没 emit plan（纯信息性回复）· 返回文字
+  // 降级 1：LLM 只 emit tool_calls 没 plan · 包成合成 plan 让前端也能审核
+  if (parsed.tool_calls && parsed.tool_calls.length > 0) {
+    const syntheticSteps = parsed.tool_calls.map((tc, i) => ({
+      id: i + 1,
+      desc: tc.name || "操作",
+      tool_call: tc,
+    }));
+    const dry = await dryRunPlan(currentState, syntheticSteps, variantLoader);
+    const stepsWithDry = syntheticSteps.map(s => {
+      const r = dry.stepResults.find(r => r.id === s.id);
+      return { ...s, dry_run: r?.dry_run || null };
+    });
+    return jsonResponse({
+      text: parsed.text || "(auto-wrapped plan)",
+      plan: { intent: userMessage.slice(0, 40), steps: stepsWithDry, _synthetic: true },
+      previewState: dry.finalState,
+      newState: currentState,
+      applied: [],
+      rejected: [],
+      model: usedModel,
+      usage,
+    });
+  }
+
+  // 降级 2：LLM 没 emit plan 也没 tool_calls（纯信息性回复）· 返回文字
   return jsonResponse({
     text: parsed.text || "(processed)",
     newState: currentState,
