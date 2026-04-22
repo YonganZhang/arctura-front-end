@@ -84,6 +84,11 @@ export class SceneRenderer {
     window.__arcturaRenderer = this;
     this.controls.target.set(0, 1.2, 0);
 
+    // ── 视角持久化（跨刷新不变）· slug 维度存 localStorage ──
+    this._persistSlug = null;  // 通过 setPersistSlug(slug) 设置 · null 时不存不读
+    this._persistSaveTimer = null;
+    this.controls.addEventListener("end", () => this._schedulePersistSave());
+
     // 材质缓存（id → THREE.Material）
     this.materials = new Map();
 
@@ -235,6 +240,58 @@ export class SceneRenderer {
   // 供外部查询当前选中
   getSelection() { return this._selection ? { kind: this._selection.kind, id: this._selection.id } : null; }
 
+  // ── 视角持久化 ──
+  setPersistSlug(slug) {
+    this._persistSlug = slug || null;
+    // 设定后立刻 load 还原
+    if (this._persistSlug) this._loadPersistedState();
+  }
+  _persistKey() { return this._persistSlug ? `arctura:viewer-state:${this._persistSlug}` : null; }
+  _schedulePersistSave() {
+    if (!this._persistSlug) return;
+    if (this._persistSaveTimer) clearTimeout(this._persistSaveTimer);
+    this._persistSaveTimer = setTimeout(() => this._savePersistedState(), 500);
+  }
+  _savePersistedState() {
+    const key = this._persistKey();
+    if (!key) return;
+    try {
+      const state = {
+        cameraPos: this.camera.position.toArray(),
+        cameraTarget: this.controls.target.toArray(),
+        cameraFov: this.camera.fov,
+        daylight: this._daylightMode || "day",
+        transparency: this._lastTransp || null,
+        orbiting: this._introState ? !this._introState.cancel : false,
+        savedAt: Date.now(),
+      };
+      localStorage.setItem(key, JSON.stringify(state));
+    } catch (e) { console.warn("[persist-save]", e); }
+  }
+  _loadPersistedState() {
+    const key = this._persistKey();
+    if (!key) return null;
+    try {
+      const raw = localStorage.getItem(key);
+      if (!raw) return null;
+      const s = JSON.parse(raw);
+      if (Array.isArray(s.cameraPos)) this.camera.position.fromArray(s.cameraPos);
+      if (Array.isArray(s.cameraTarget)) this.controls.target.fromArray(s.cameraTarget);
+      if (typeof s.cameraFov === "number") {
+        this.camera.fov = s.cameraFov;
+        this.camera.updateProjectionMatrix();
+      }
+      this.controls.update();
+      return s;
+    } catch (e) { console.warn("[persist-load]", e); return null; }
+  }
+  getPersistedUIState() {
+    // 给 React 读 daylight/transparency/orbiting 用
+    const key = this._persistKey();
+    if (!key) return null;
+    try { return JSON.parse(localStorage.getItem(key) || "null"); } catch { return null; }
+  }
+
   // ───────── Phase 3.F · Camera Tween + 开场环绕 + 预设视角 ─────────
 
   // 通用 tween: 从当前 camera pos/target tween 到目标 · 2 维同步插值
@@ -270,6 +327,8 @@ export class SceneRenderer {
 
   // 环绕动画 · duration=一圈耗时(ms) · loop=是否永动
   // 默认：4000ms/圈（比旧版慢一半）· loop=true（一直转 · 用户按按钮才停）
+  _orbitingActive() { return !!(this._introState && !this._introState.cancel); }
+
   playIntroAnimation(options = {}) {
     if (!this.currentScene?.bounds) return;
     if (this._introState) this._introState.cancel = true;
@@ -284,6 +343,7 @@ export class SceneRenderer {
     const yHeight = h * 0.8;
     const state = { cancel: false, loop };
     this._introState = state;
+    this._schedulePersistSave();
     const step = () => {
       if (state.cancel || !this._isRunning) {
         this.controls.enabled = originalEnabled;
@@ -317,6 +377,7 @@ export class SceneRenderer {
     if (this._introState) {
       this._introState.cancel = true;
       this._introState = null;
+      this._schedulePersistSave();
     }
   }
   isIntroRunning() { return !!this._introState && !this._introState.cancel; }
@@ -328,6 +389,7 @@ export class SceneRenderer {
   async setDaylight(mode) {
     const isDay = mode !== "night";
     this._daylightMode = mode;
+    this._schedulePersistSave();
 
     // HDRI 尝试切换（有则 swap · 没则 fallback 用 background color）
     const hdriPath = isDay ? "/assets/hdri/interior_day.hdr" : "/assets/hdri/interior_night.hdr";
@@ -465,7 +527,9 @@ export class SceneRenderer {
   // Phase 3.E · 更新 transparency state · 立刻生效
   setTransparency(partial) {
     Object.assign(this.transparency, partial || {});
+    this._lastTransp = { ...this.transparency };
     this._applyTransparency();
+    this._schedulePersistSave();
   }
 
   getTransparency() { return { ...this.transparency }; }
@@ -664,8 +728,9 @@ export class SceneRenderer {
       this._buildLight(l);
     }
 
-    // Camera
-    if (scene.camera_default) {
+    // Camera · 持久化视角优先 · 有 persisted 就不 reset
+    const persistedCam = this._loadPersistedState();
+    if (!persistedCam && scene.camera_default) {
       const cd = scene.camera_default;
       // 注意：scene 里的 pos 是 Z-up；world rotation 已转 Y-up
       // 所以 camera 直接在 threeScene 层级放（不在 world 里），pos 需手动 swap
@@ -676,6 +741,13 @@ export class SceneRenderer {
       this.controls.target.set(lx, lz, -ly);
       this.camera.fov = cd.fov || 50;
       this.camera.updateProjectionMatrix();
+    }
+    // 如果有 persisted transparency/daylight · 覆盖 scene 默认
+    if (persistedCam?.transparency) {
+      Object.assign(this.transparency, persistedCam.transparency);
+    }
+    if (persistedCam?.daylight) {
+      this._daylightMode = persistedCam.daylight;
     }
 
     // FIX Phase 3.J: 保留 rebuild 前的透明状态 · 否则 scene 改了透明就丢了

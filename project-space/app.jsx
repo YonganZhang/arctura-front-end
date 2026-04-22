@@ -2237,6 +2237,20 @@ function Viewer3DScene() {
           r.build(currentScene)
             .then(() => {
               if (disposed) return;
+              // 视角 + UI 状态持久化（跨刷新不变）· 由 slug 区分项目
+              if (D.slug) {
+                r.setPersistSlug(D.slug);
+                const persisted = r.getPersistedUIState();
+                if (persisted) {
+                  if (persisted.daylight && persisted.daylight !== daylight) setDaylight(persisted.daylight);
+                  if (persisted.transparency) setTransp(persisted.transparency);
+                  if (persisted.orbiting) {
+                    r.playIntroAnimation({ duration: 4000, loop: true });
+                    setOrbiting(true);
+                  }
+                  // camera 位置已经在 setPersistSlug 里 load 了
+                }
+              }
               setLoading(false);
               setRendererReady(true);    // Phase 3.M · trigger transp/daylight sync
               // 环绕动画改为默认不转 · 用户按"环绕"按钮才启动（连续慢转）
