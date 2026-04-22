@@ -14,23 +14,26 @@ from pathlib import Path
 from typing import Optional, Callable
 
 SCHEMA_PATH = Path(__file__).parent.parent / "schemas" / "brief-interior.schema.json"
+_RULES_PATH = Path(__file__).parent.parent / "schemas" / "brief-rules.json"
 
-# 必填项（ready_for_tier 触发条件）· 不是 schema required · 是 UX 判断
-MUST_FILL_FOR_PLANNING = [
-    "project",               # 项目名
-    ("space", "area_sqm"),   # 面积
-    ("style", "keywords"),   # 风格关键词
-    "functional_zones",      # 功能分区（非空）
-]
 
-# 重要但可 LLM 默认补全（影响 completeness 计算）· 全填 = 1.0
-NICE_TO_HAVE = [
-    "slug", "client", "business_model",
-    ("space", "type"), ("space", "n_floors"),
-    ("style", "palette"), ("style", "reference_brands"),
-    "lighting", "budget_hkd", "timeline_weeks", "must_have",
-    ("envelope", "insulation_mm"), ("openings", "wwr"),
-]
+def _load_rules() -> dict:
+    return json.loads(_RULES_PATH.read_text())
+
+
+_RULES = _load_rules()
+
+def _parse_path(s: str):
+    """将 'space.area_sqm' 转成 tuple ('space', 'area_sqm'); 无点号则返回字符串"""
+    if "." in s:
+        return tuple(s.split("."))
+    return s
+
+# must-fill / nice-to-have / system prompt · 全来自 JSON · 单一真源
+MUST_FILL_FOR_PLANNING = [_parse_path(p) for p in _RULES["must_fill_for_planning"]]
+NICE_TO_HAVE = [_parse_path(p) for p in _RULES["nice_to_have"]]
+_WEIGHTS = _RULES["completeness_weights"]
+_READY_THRESHOLD = _RULES["ready_for_tier_threshold"]
 
 
 def load_schema() -> dict:
@@ -67,20 +70,20 @@ def _nonempty(v) -> bool:
 
 
 def completeness(brief: dict) -> float:
-    """0.0-1.0 · must-fill 占 60% · nice-to-have 占 40%"""
+    """0.0-1.0 · must-fill 占 60% · nice-to-have 占 40%（权重来自 brief-rules.json）"""
     if not brief:
         return 0.0
     must_score = sum(1 for p in MUST_FILL_FOR_PLANNING if _nonempty(_path_get(brief, p))) / len(MUST_FILL_FOR_PLANNING)
     nice_score = sum(1 for p in NICE_TO_HAVE if _nonempty(_path_get(brief, p))) / len(NICE_TO_HAVE)
-    return round(must_score * 0.6 + nice_score * 0.4, 2)
+    return round(must_score * _WEIGHTS["must_fill"] + nice_score * _WEIGHTS["nice_to_have"], 2)
 
 
 def ready_for_tier(brief: dict) -> bool:
-    """所有 must-fill 都填 + completeness ≥ 0.5"""
+    """所有 must-fill 都填 + completeness ≥ 阈值（阈值来自 brief-rules.json）"""
     for p in MUST_FILL_FOR_PLANNING:
         if not _nonempty(_path_get(brief, p)):
             return False
-    return completeness(brief) >= 0.5
+    return completeness(brief) >= _READY_THRESHOLD
 
 
 def missing_must_fields(brief: dict) -> list[str]:
@@ -93,39 +96,7 @@ def missing_must_fields(brief: dict) -> list[str]:
 
 # ───── LLM prompt ─────
 
-SYSTEM_PROMPT = """你是 Arctura 室内设计 brief 对话助手 · 帮用户通过多轮对话生成设计 brief。
-
-**你的目标**：通过 3-7 轮对话把用户的想法填到 brief JSON 里。必须字段（阻塞进入"选档位"阶段）：
-- project · 项目名（含中英文）
-- space.area_sqm · 面积（数字 · 单位㎡）
-- style.keywords · 风格关键词（数组 · 3-6 个）
-- functional_zones · 功能分区（数组 · 每区有 name/area_sqm）
-
-**重要但可选**（影响 completeness · 不阻塞）：
-slug / client / business_model / space.type / space.n_floors / style.palette / style.reference_brands / lighting / budget_hkd / timeline_weeks / must_have / envelope.insulation_mm / openings.wwr
-
-**对话规则**：
-1. 每次**先回复人话**（中文 · 1-2 句 · 确认+引导）· 然后给 JSON 更新
-2. 一次只问 1-2 个问题 · 不要连珠炮
-3. 用户回答不清楚时 · 给 2-3 个示例引导（比如"日式禅 / 现代极简 / 新中式"）
-4. 如果用户已经在一段话里说了很多 · 一次性提取所有字段 · 不要装不懂
-5. 用户的 PII（客户名 / 地址 / 预算）标入 `_pii_fields` 字段
-6. LLM 自己推导合理默认时 · 标注字段 · 用户可改
-
-**输出格式**（严格）：
-
-```json
-{
-  "reply": "给用户看的中文回复 · 1-2 句 · 含下一步引导或问题",
-  "brief_patch": {
-    /* 本轮要更新/追加的字段 · JSON Patch 风格 · merge 到当前 brief */
-  },
-  "next_question": "下一轮你会问什么 · 简短 · 用于 UI 提示",
-  "pii_fields": [ /* 本轮用户输入中的 PII 字段路径 · 如 ["client", "space.address"] */ ]
-}
-```
-
-严格只输出这个 JSON · 不加其他说明文字（UI 渲染需要）。"""
+SYSTEM_PROMPT = _RULES["system_prompt"]
 
 
 def make_user_prompt(user_message: str, current_brief: dict, schema: dict) -> str:

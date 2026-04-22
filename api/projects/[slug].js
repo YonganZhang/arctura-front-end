@@ -19,15 +19,15 @@ async function kv(cmd, ...args) {
 }
 
 async function getProject(slug) {
-  const v = await kv("get", `project:${slug}`);
+  const v = await kv("get", K.project(slug));
   return v ? JSON.parse(v) : null;
 }
 
 async function putProject(p, ttl) {
   const val = JSON.stringify(p);
-  if (ttl) return kv("set", `project:${p.slug}`, val, "EX", ttl);
-  await kv("set", `project:${p.slug}`, val);
-  await kv("persist", `project:${p.slug}`);
+  if (ttl) return kv("set", K.project(p.slug), val, "EX", ttl);
+  await kv("set", K.project(p.slug), val);
+  await kv("persist", K.project(p.slug));
   return true;
 }
 
@@ -38,14 +38,13 @@ function json(body, status = 200) {
   });
 }
 
-// state machine transitions 白名单（与 _build/arctura_mvp/state.py 对齐）
-const TRANSITIONS = {
-  empty: new Set(["briefing"]),
-  briefing: new Set(["briefing", "planning"]),
-  planning: new Set(["planning", "generating", "briefing"]),
-  generating: new Set(["live", "planning"]),
-  live: new Set(["live", "briefing", "planning"]),
-};
+import { K } from "../_shared/kv-keys.js";
+// state machine · 读 schemas/state-machine.json（单一真源 · Python state.py 也读它）
+import stateMachine from "../_shared/state-machine.json" with { type: "json" };
+
+const TRANSITIONS = Object.fromEntries(
+  Object.entries(stateMachine.transitions).map(([s, arr]) => [s, new Set(arr)])
+);
 
 function canTransition(from, to) {
   return TRANSITIONS[from]?.has(to) || false;
@@ -104,9 +103,9 @@ export default async function handler(req) {
     // 软删 · 30 天 TTL
     const p = await getProject(slug);
     if (!p) return json({ error: "not found" }, 404);
-    await kv("zrem", "projects:index", slug);
-    if (p.owner) await kv("zrem", `session:${p.owner}:projects`, slug);
-    await kv("expire", `project:${slug}`, String(30 * 86400));
+    await kv("zrem", K.projectsIndex(), slug);
+    if (p.owner) await kv("zrem", K.sessionProjects(p.owner), slug);
+    await kv("expire", K.project(slug), String(30 * 86400));
     return json({ deleted: true });
   }
 

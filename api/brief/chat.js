@@ -50,43 +50,20 @@ async function kvPersist(key) {
 
 // ─────── Brief engine (JS 版 · 跟 Python brief_engine.py 同步) ───────
 
-const SYSTEM_PROMPT = `你是 Arctura 室内设计 brief 对话助手 · 帮用户通过多轮对话生成设计 brief。
+// Brief rules · 单一真源 · 跟 _build/arctura_mvp/schemas/brief-rules.json 保持一致
+// 对称文件: api/_shared/brief-rules.json · 改一边必须改另一边（_tests/brief-rules-cross-lang.spec.mjs 保护）
+// ⚠ Edge runtime 不支持 fs · 这里 inline 引（build 时 Vercel bundle · 同步靠测试）
+import briefRules from "../_shared/brief-rules.json" with { type: "json" };
+import { K } from "../_shared/kv-keys.js";
 
-**你的目标**：通过 3-7 轮对话把用户的想法填到 brief JSON 里。必须字段（阻塞进入"选档位"阶段）：
-- project · 项目名（含中英文）
-- space.area_sqm · 面积（数字 · 单位㎡）
-- style.keywords · 风格关键词（数组 · 3-6 个）
-- functional_zones · 功能分区（数组 · 每区有 name/area_sqm）
+const SYSTEM_PROMPT = briefRules.system_prompt;
 
-**重要但可选**（影响 completeness · 不阻塞）：
-slug / client / business_model / space.type / space.n_floors / style.palette / style.reference_brands / lighting / budget_hkd / timeline_weeks / must_have / envelope.insulation_mm / openings.wwr
-
-**对话规则**：
-1. 每次先回复人话（中文 · 1-2 句 · 确认+引导）· 然后给 JSON 更新
-2. 一次只问 1-2 个问题 · 不要连珠炮
-3. 用户回答不清楚时 · 给 2-3 个示例引导
-4. 一段话里说了很多 · 一次性提取所有字段 · 不要装不懂
-5. PII（客户名 / 地址 / 预算）标入 pii_fields
-6. 推导合理默认时 · 标入 _defaults 字段 · 用户可改
-
-**输出格式**（严格 JSON · 只这个 · 不加其他文字）：
-{
-  "reply": "给用户看的中文回复 · 1-2 句",
-  "brief_patch": { /* 本轮更新字段 · deep merge 到当前 brief */ },
-  "next_question": "下一轮你会问什么 · 简短",
-  "pii_fields": [ /* 本轮新增的 PII 字段路径 */ ]
-}`;
-
-const MUST_FILL = [
-  "project", ["space", "area_sqm"], ["style", "keywords"], "functional_zones",
-];
-const NICE_FIELDS = [
-  "slug", "client", "business_model",
-  ["space", "type"], ["space", "n_floors"],
-  ["style", "palette"], ["style", "reference_brands"],
-  "lighting", "budget_hkd", "timeline_weeks", "must_have",
-  ["envelope", "insulation_mm"], ["openings", "wwr"],
-];
+// path string "space.area_sqm" → array ["space","area_sqm"] · 单节点仍用 string
+function parsePath(s) { return s.includes(".") ? s.split(".") : s; }
+const MUST_FILL = briefRules.must_fill_for_planning.map(parsePath);
+const NICE_FIELDS = briefRules.nice_to_have.map(parsePath);
+const WEIGHTS = briefRules.completeness_weights;
+const READY_THRESHOLD = briefRules.ready_for_tier_threshold;
 
 function pathGet(obj, path) {
   if (typeof path === "string") return obj?.[path];
@@ -107,11 +84,11 @@ function completeness(brief) {
   if (!brief) return 0;
   const must = MUST_FILL.filter(p => nonempty(pathGet(brief, p))).length / MUST_FILL.length;
   const nice = NICE_FIELDS.filter(p => nonempty(pathGet(brief, p))).length / NICE_FIELDS.length;
-  return Math.round((must * 0.6 + nice * 0.4) * 100) / 100;
+  return Math.round((must * WEIGHTS.must_fill + nice * WEIGHTS.nice_to_have) * 100) / 100;
 }
 
 function readyForTier(brief) {
-  return MUST_FILL.every(p => nonempty(pathGet(brief, p))) && completeness(brief) >= 0.5;
+  return MUST_FILL.every(p => nonempty(pathGet(brief, p))) && completeness(brief) >= READY_THRESHOLD;
 }
 
 function missingMust(brief) {
@@ -217,7 +194,7 @@ export default async function handler(req) {
       await safeWrite(sseMessage("start", { slug }));
 
       // 读 project + history
-      const project = await kvGetJson(`project:${slug}`);
+      const project = await kvGetJson(K.project(slug));
       if (!project) {
         await safeWrite(sseMessage("error", { message: "project not found", code: 404 }));
         return;
@@ -230,7 +207,7 @@ export default async function handler(req) {
         }));
         return;
       }
-      const history = (await kvGetJson(`project:${slug}:brief_history`)) || [];
+      const history = (await kvGetJson(K.briefHistory(slug))) || [];
       const currentBrief = project.brief || {};
 
       // LLM
@@ -272,13 +249,13 @@ export default async function handler(req) {
       if (project.state === "empty") project.state = "briefing";
       // ready 且用户显式说"进入选档"类字样 · 推 planning（保守：让前端按钮触发 PATCH · 这里不自动推）
 
-      await kvSetJson(`project:${slug}`, project, 7 * 86400);
+      await kvSetJson(K.project(slug), project, 7 * 86400);
 
       const newHistory = [...history,
         { role: "user", content: user_message },
         { role: "assistant", content: JSON.stringify({ reply, brief_patch: patch }) },
       ].slice(-20);  // 最多留 20 条（10 轮）
-      await kvSetJson(`project:${slug}:brief_history`, newHistory, 7 * 86400);
+      await kvSetJson(K.briefHistory(slug), newHistory, 7 * 86400);
 
       await safeWrite(sseMessage("complete", {
         state: project.state,

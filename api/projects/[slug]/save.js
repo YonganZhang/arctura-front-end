@@ -5,6 +5,7 @@
 // response: { ok, pending_cleared: N, commit_sha?: null }
 
 export const config = { runtime: "edge" };
+import { K } from "../../_shared/kv-keys.js";
 
 const KV_URL = process.env.UPSTASH_REDIS_REST_URL;
 const KV_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
@@ -38,7 +39,7 @@ export default async function handler(req) {
   try { body = await req.json(); } catch {}
 
   // 读 project
-  const key = `project:${slug}`;
+  const key = K.project(slug);
   const pRaw = await kv("get", key);
   if (!pRaw) return json({ error: "not found" }, 404);
   const p = JSON.parse(pRaw);
@@ -59,7 +60,7 @@ export default async function handler(req) {
 
   // 存 pending_edits 供后续 git commit 读（如有 GITHUB_TOKEN）
   if (frontendPending.length > 0) {
-    await kv("set", `project:${slug}:pending_edits`,
+    await kv("set", K.pendingEdits(slug),
              JSON.stringify(frontendPending), "EX", String(7 * 86400));
   }
 
@@ -82,7 +83,7 @@ export default async function handler(req) {
 
   // two-phase：写 project → 删 pending_edits list
   await kv("set", key, JSON.stringify(p));
-  await kv("del", `project:${slug}:pending_edits`);
+  await kv("del", K.pendingEdits(slug));
 
   return json({
     ok: true,

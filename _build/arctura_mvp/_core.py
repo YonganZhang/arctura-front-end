@@ -13,22 +13,17 @@ import time
 
 from .types import Project, utc_now
 from .store import kv
+from .store import keys as K  # 单一真源 · 跟 api/_shared/kv-keys.js 对称
 
 
 TTL_DRAFT = 7 * 86400          # empty/briefing/planning 7 天
 TTL_LIVE = None                # live/saved PERSIST
 
 
-def _project_key(slug: str) -> str:
-    return f"project:{slug}"
-
-
-def _index_key() -> str:
-    return "projects:index"
-
-
-def _session_projects_key(anon_id: str) -> str:
-    return f"session:{anon_id}:projects"
+# Backward compat · 保留函数别名（旧测试可能引用）· 统一走 K
+def _project_key(slug: str) -> str: return K.project(slug)
+def _index_key() -> str: return K.projects_index()
+def _session_projects_key(anon_id: str) -> str: return K.session_projects(anon_id)
 
 
 def _now_unix() -> int:

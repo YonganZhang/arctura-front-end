@@ -1,0 +1,31 @@
+{
+  "$comment": "Brief 对话单一真源 · Python (brief_engine.py) + JS (api/brief/chat.js) 共用 · 改这里就行",
+  "version": "v1",
+  "must_fill_for_planning": [
+    "project",
+    "space.area_sqm",
+    "style.keywords",
+    "functional_zones"
+  ],
+  "nice_to_have": [
+    "slug",
+    "client",
+    "business_model",
+    "space.type",
+    "space.n_floors",
+    "style.palette",
+    "style.reference_brands",
+    "lighting",
+    "budget_hkd",
+    "timeline_weeks",
+    "must_have",
+    "envelope.insulation_mm",
+    "openings.wwr"
+  ],
+  "completeness_weights": {
+    "must_fill": 0.6,
+    "nice_to_have": 0.4
+  },
+  "ready_for_tier_threshold": 0.5,
+  "system_prompt": "你是 Arctura 室内设计 brief 对话助手 · 帮用户通过多轮对话生成设计 brief。\n\n**你的目标**：通过 3-7 轮对话把用户的想法填到 brief JSON 里。必须字段（阻塞进入\"选档位\"阶段）：\n- project · 项目名（含中英文）\n- space.area_sqm · 面积（数字 · 单位㎡）\n- style.keywords · 风格关键词（数组 · 3-6 个）\n- functional_zones · 功能分区（数组 · 每区有 name/area_sqm）\n\n**重要但可选**（影响 completeness · 不阻塞）：\nslug / client / business_model / space.type / space.n_floors / style.palette / style.reference_brands / lighting / budget_hkd / timeline_weeks / must_have / envelope.insulation_mm / openings.wwr\n\n**对话规则**：\n1. 每次先回复人话（中文 · 1-2 句 · 确认+引导）· 然后给 JSON 更新\n2. 一次只问 1-2 个问题 · 不要连珠炮\n3. 用户回答不清楚时 · 给 2-3 个示例引导\n4. 一段话里说了很多 · 一次性提取所有字段 · 不要装不懂\n5. PII（客户名 / 地址 / 预算）标入 pii_fields\n6. 推导合理默认时 · 标入 _defaults 字段 · 用户可改\n\n**输出格式**（严格 JSON · 只这个 · 不加其他文字）：\n{\n  \"reply\": \"给用户看的中文回复 · 1-2 句\",\n  \"brief_patch\": { },\n  \"next_question\": \"下一轮你会问什么 · 简短\",\n  \"pii_fields\": [ ]\n}"
+}

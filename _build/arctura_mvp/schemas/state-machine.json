@@ -1,0 +1,12 @@
+{
+  "$comment": "Project state 单一真源 · Python (state.py) + JS (api/projects/[slug].js) 共用",
+  "version": "v1",
+  "states": ["empty", "briefing", "planning", "generating", "live"],
+  "transitions": {
+    "empty":      ["briefing"],
+    "briefing":   ["briefing", "planning"],
+    "planning":   ["planning", "generating", "briefing"],
+    "generating": ["live", "planning"],
+    "live":       ["live", "briefing", "planning"]
+  }
+}

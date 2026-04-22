@@ -1,19 +1,26 @@
-"""Project State Machine · 5 states · 合法 transitions 白名单
+"""Project State Machine · 从 schemas/state-machine.json load · 单一真源
 
-对齐 arctura-phase6-complete-plan-v3-2026-04-22.md §1。
-saved 被砍 · pending_count 驱动 UI（Delta #10）。
+对齐 JS 侧 api/projects/[slug].js 加载同一 JSON · 改一处就行。
 """
 from __future__ import annotations
 from typing import Literal
+import json
+from pathlib import Path
 
 ProjectState = Literal["empty", "briefing", "planning", "generating", "live"]
 
+_SCHEMA_PATH = Path(__file__).parent / "schemas" / "state-machine.json"
+
+
+def _load() -> dict:
+    return json.loads(_SCHEMA_PATH.read_text())
+
+
+_SCHEMA = _load()
+STATES = _SCHEMA["states"]
+# transitions: dict[state, set[state]]（JSON 是 list · 转 set 更好查）
 TRANSITIONS: dict[ProjectState, set[ProjectState]] = {
-    "empty": {"briefing"},
-    "briefing": {"briefing", "planning"},
-    "planning": {"planning", "generating", "briefing"},
-    "generating": {"live", "planning"},       # 成功 live · 失败回 planning
-    "live": {"live", "briefing", "planning"}, # 精修 · regenerate · 改档
+    s: set(allowed) for s, allowed in _SCHEMA["transitions"].items()
 }
 
 

@@ -7,10 +7,9 @@
 
 export const config = { runtime: "edge" };
 
-const KV_URL = globalThis.UPSTASH_REDIS_REST_URL
-             || process.env.UPSTASH_REDIS_REST_URL;
-const KV_TOKEN = globalThis.UPSTASH_REDIS_REST_TOKEN
-               || process.env.UPSTASH_REDIS_REST_TOKEN;
+import { K } from "./_shared/kv-keys.js";
+const KV_URL = process.env.UPSTASH_REDIS_REST_URL;
+const KV_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
 
 // ─────── Upstash REST helpers ───────
 
@@ -96,14 +95,14 @@ async function handleGet(req) {
   const headers = setCookie ? { "Set-Cookie": setCookie } : {};
 
   try {
-    const indexKey = (owner === "me") ? `session:${anon}:projects` : "projects:index";
+    const indexKey = (owner === "me") ? K.sessionProjects(anon) : K.projectsIndex();
     const total = await kvZcard(indexKey);
     // 多取一点 · 因为要 filter draft（预估 draft 占 ~30% · 取 2x）
     const fetchCount = stateFilter === "all" ? limit : Math.min(limit * 3, 300);
     const slugs = await kvZrevrange(indexKey, cursor, cursor + fetchCount - 1);
 
     const rawProjects = await Promise.all(slugs.map(async slug => {
-      const p = await kvGetJson(`project:${slug}`);
+      const p = await kvGetJson(K.project(slug));
       if (!p) return null;
       return {
         slug: p.slug,
@@ -163,11 +162,11 @@ async function handlePost(req) {
 
   // Rate limit: per IP 50/h · per session 100/day（Phase 6 测试期放宽 · 后续可收紧）
   try {
-    const ipCount = await kvIncrExpire(`rate:${ip}:create`, 3600);
+    const ipCount = await kvIncrExpire(K.rateIp(ip), 3600);
     if (ipCount > 50) {
       return json({ error: "rate limit · per IP", retry_after_s: 3600, retryable: true }, 429, headers);
     }
-    const sCount = await kvIncrExpire(`rate:session:${anon}:create`, 86400);
+    const sCount = await kvIncrExpire(K.rateSession(anon), 86400);
     if (sCount > 100) {
       return json({ error: "rate limit · per session", retry_after_s: 86400, retryable: true }, 429, headers);
     }
@@ -215,10 +214,10 @@ async function handlePost(req) {
   };
 
   try {
-    await kvSetJson(`project:${slug}`, project, { ex: 7 * 86400 });
+    await kvSetJson(K.project(slug), project, { ex: 7 * 86400 });
     const score = Math.floor(Date.now() / 1000);
-    await kvZadd(`projects:index`, score, slug);
-    await kvZadd(`session:${anon}:projects`, score, slug);
+    await kvZadd(K.projectsIndex(), score, slug);
+    await kvZadd(K.sessionProjects(anon), score, slug);
     return json({
       slug,
       state: "empty",
