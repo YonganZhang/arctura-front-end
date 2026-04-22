@@ -272,7 +272,7 @@ export default async function handler(req) {
     } catch (err) {
       lastErr = err;
       const isTimeout = err.name === "AbortError" || err.message?.includes("abort");
-      const is5xx = err.status === 502 || err.status === 503 || err.status === 429;
+      const is5xx = err.status === 500 || err.status === 502 || err.status === 503 || err.status === 429;
       // timeout 不 retry（浪费时间）· 只有 5xx/429 retry
       const isRetryable = is5xx;
       if (attempt >= maxAttempts || !isRetryable) {
