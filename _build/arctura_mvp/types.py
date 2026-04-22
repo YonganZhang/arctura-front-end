@@ -76,4 +76,6 @@ class Job:
 
 
 def utc_now() -> str:
-    return datetime.utcnow().isoformat() + "Z"
+    # Python 3.12+ deprecates datetime.utcnow() · 用 timezone-aware
+    from datetime import timezone
+    return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")

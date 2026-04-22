@@ -69,17 +69,8 @@ export default async function handler(req) {
   p.version = (p.version || 0) + 1;
   p.updated_at = new Date().toISOString();
 
-  // 尝试 git commit · 无 token 则 skip
-  let commitSha = null;
-  if (GITHUB_TOKEN) {
-    try {
-      commitSha = await tryGitCommit(p);
-      if (commitSha) p.last_save_ref = commitSha;
-    } catch (e) {
-      console.error("[save] git commit failed:", e.message);
-      // 不中断 · KV 已清 pending · 用户不会丢改动
-    }
-  }
+  // git commit 留 Phase 7 · 当前只 KV 持久化 · 用户不会丢改动
+  const commitSha = null;
 
   // two-phase：写 project → 删 pending_edits list
   await kv("set", key, JSON.stringify(p));
@@ -94,14 +85,8 @@ export default async function handler(req) {
   });
 }
 
-// Git commit · 用 GITHUB_TOKEN 直连 GitHub API
-// 只允许改 data/mvps/<slug>.json 路径（服务端 path 校验 · v3 §7.1 决策 #4）
-async function tryGitCommit(project) {
-  // 占位 · Phase 6.D 仅 KV 持久化版本 · git commit 待用户给 GITHUB_TOKEN 后完整实装
-  // 实装点：
-  //   1. gh api repos/.../contents/data/mvps/<slug>.json GET 拿当前 sha
-  //   2. PUT 新 content（base64）· message · sha
-  //   3. 返回 commit.sha
-  // 当前 MVP：直接返 null · 客户端看到 commit_sha=null 说明仅 KV 存了
-  return null;
-}
+// Git commit: Phase 7 待实装 · 计划：
+//   1. gh api repos/.../contents/data/mvps/<slug>.json GET 拿当前 sha
+//   2. PUT 新 content（base64）· message · 服务端校验只改 data/mvps/ + assets/mvps/ 两目录
+//   3. 返回 commit.sha
+// GITHUB_TOKEN 未配时直接返 null · 客户端看到 commit_sha=null 就知道仅 KV 存了

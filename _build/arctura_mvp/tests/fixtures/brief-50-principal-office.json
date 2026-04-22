@@ -1,0 +1,75 @@
+{
+  "project_id": "50-principal-office",
+  "project_name": "校长办公室 · 日式禅风",
+  "project_name_zh": "校长办公室 · 日式禅风",
+  "schema_version": "brief-interior-v1",
+  "cat": "workplace",
+  "type": "P1-interior",
+  "location": "Hong Kong",
+  "area_m2": 30,
+  "budget_HKD": 120000,
+  "style": "japandi, zen, light-oak, natural-linen, minimal, serene",
+  "palette": [
+    {
+      "name": "primary",
+      "hex": "#D7C4A8"
+    },
+    {
+      "name": "secondary",
+      "hex": "#8A7A5C"
+    },
+    {
+      "name": "accent",
+      "hex": "#2A2A2A"
+    },
+    {
+      "name": "wall",
+      "hex": "#F5F1E8"
+    }
+  ],
+  "zones": [
+    {
+      "id": "z_desk",
+      "name": "Work Desk",
+      "zh": "办公区",
+      "area": 8,
+      "x": -1.0,
+      "y": 0.8,
+      "w": 3.2,
+      "h": 1.8
+    },
+    {
+      "id": "z_lounge",
+      "name": "Reception",
+      "zh": "接待区",
+      "area": 6,
+      "x": 1.2,
+      "y": -1.2,
+      "w": 2.6,
+      "h": 2.0
+    },
+    {
+      "id": "z_shelf",
+      "name": "Bookshelf Wall",
+      "zh": "书柜墙",
+      "area": 3,
+      "x": -2.6,
+      "y": 0.2,
+      "w": 0.4,
+      "h": 3.0
+    }
+  ],
+  "openings": {
+    "wwr": 0.3
+  },
+  "mep_brief": {
+    "lighting_cct": 3000,
+    "lighting_density_w_m2": 8
+  },
+  "envelope": {
+    "insulation_mm": 60,
+    "glazing_uvalue": 2.0
+  },
+  "derived_from": "Arctura-Front-end/create_mvp_from_brief.py",
+  "generated_at": "2026-04-22T20:00:33.366668Z"
+}

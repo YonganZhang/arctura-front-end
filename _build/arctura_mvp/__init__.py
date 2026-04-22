@@ -20,7 +20,7 @@
 """
 from .types import Project, MVPResult, Job, ArtifactResult, utc_now
 from .tiers import (
-    TIER_CONFIG, TIER_ALIASES, OPT_ADDONS,
+    TIER_CONFIG, TIER_ALIASES,
     resolve_tier, pick_engine, all_tier_ids, list_tiers_for_ui,
 )
 from .state import (
@@ -31,7 +31,7 @@ from .state import (
 __version__ = "0.1.0"
 __all__ = [
     "Project", "MVPResult", "Job", "ArtifactResult", "utc_now",
-    "TIER_CONFIG", "TIER_ALIASES", "OPT_ADDONS",
+    "TIER_CONFIG", "TIER_ALIASES",
     "resolve_tier", "pick_engine", "all_tier_ids", "list_tiers_for_ui",
     "ProjectState", "TRANSITIONS", "validate_transition",
     "can_edit", "can_save", "is_terminal",

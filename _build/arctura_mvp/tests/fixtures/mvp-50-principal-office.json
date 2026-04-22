@@ -1,0 +1,1053 @@
+{
+  "slug": "50-principal-office",
+  "cat": "workplace",
+  "type": "P1-interior",
+  "complete": true,
+  "project": {
+    "name": "校长办公室 · 日式禅风",
+    "zh": "校长办公室 · 日式禅风",
+    "area": 30,
+    "location": "Hong Kong",
+    "budgetHKD": 120000,
+    "style": "japandi, zen, light-oak, natural-linen, minimal, serene",
+    "palette": [
+      {
+        "name": "primary",
+        "hex": "#D7C4A8"
+      },
+      {
+        "name": "secondary",
+        "hex": "#8A7A5C"
+      },
+      {
+        "name": "accent",
+        "hex": "#2A2A2A"
+      },
+      {
+        "name": "wall",
+        "hex": "#F5F1E8"
+      }
+    ]
+  },
+  "renders": [
+    {
+      "id": "01",
+      "file": "/assets/mvps/50-principal-office/renders/01_hero_corner.png",
+      "title": "01 Hero Corner",
+      "tag": "01_hero_corner"
+    },
+    {
+      "id": "02",
+      "file": "/assets/mvps/50-principal-office/renders/02_front_view.png",
+      "title": "02 Front View",
+      "tag": "02_front_view"
+    },
+    {
+      "id": "03",
+      "file": "/assets/mvps/50-principal-office/renders/03_back_view.png",
+      "title": "03 Back View",
+      "tag": "03_back_view"
+    },
+    {
+      "id": "04",
+      "file": "/assets/mvps/50-principal-office/renders/04_left_side.png",
+      "title": "04 Left Side",
+      "tag": "04_left_side"
+    },
+    {
+      "id": "05",
+      "file": "/assets/mvps/50-principal-office/renders/05_right_side.png",
+      "title": "05 Right Side",
+      "tag": "05_right_side"
+    },
+    {
+      "id": "06",
+      "file": "/assets/mvps/50-principal-office/renders/06_top_down.png",
+      "title": "06 Top Down",
+      "tag": "06_top_down"
+    },
+    {
+      "id": "07",
+      "file": "/assets/mvps/50-principal-office/renders/07_eye_level.png",
+      "title": "07 Eye Level",
+      "tag": "07_eye_level"
+    },
+    {
+      "id": "08",
+      "file": "/assets/mvps/50-principal-office/renders/08_corner_detail.png",
+      "title": "08 Corner Detail",
+      "tag": "08_corner_detail"
+    }
+  ],
+  "floorplan": "/assets/mvps/50-principal-office/floorplan.png",
+  "moodboard": "/assets/mvps/50-principal-office/moodboard.png",
+  "hero_img": "/assets/mvps/50-principal-office/renders/01_hero_corner.png",
+  "thumb_img": "/assets/mvps/50-principal-office/renders/01_hero_corner.png",
+  "zones": [
+    {
+      "id": "z_desk",
+      "name": "Work Desk",
+      "zh": "办公区",
+      "area": 8,
+      "x": -1.0,
+      "y": 0.8,
+      "w": 3.2,
+      "h": 1.8
+    },
+    {
+      "id": "z_lounge",
+      "name": "Reception",
+      "zh": "接待区",
+      "area": 6,
+      "x": 1.2,
+      "y": -1.2,
+      "w": 2.6,
+      "h": 2.0
+    },
+    {
+      "id": "z_shelf",
+      "name": "Bookshelf Wall",
+      "zh": "书柜墙",
+      "area": 3,
+      "x": -2.6,
+      "y": 0.2,
+      "w": 0.4,
+      "h": 3.0
+    }
+  ],
+  "furniture": [],
+  "pricing": {
+    "HK": {
+      "label": "Hong Kong",
+      "currency": "HKD",
+      "perM2": 4000,
+      "rows": [
+        {
+          "item": "Executive Desk",
+          "zh": "大班办公桌（浅橡木）",
+          "qty": 1,
+          "unit": "HKD 22,000"
+        },
+        {
+          "item": "Principal Chair",
+          "zh": "高背校长椅（米色亚麻）",
+          "qty": 1,
+          "unit": "HKD 7,800"
+        },
+        {
+          "item": "Guest Chairs",
+          "zh": "客椅（浅木框架）",
+          "qty": 2,
+          "unit": "HKD 2,800"
+        },
+        {
+          "item": "Open Bookshelf Wall",
+          "zh": "整面浅木格架",
+          "qty": 1,
+          "unit": "HKD 24,000"
+        },
+        {
+          "item": "Low Cabinet",
+          "zh": "低矮立柜（奖杯陈列）",
+          "qty": 1,
+          "unit": "HKD 7,000"
+        },
+        {
+          "item": "3-Seat Sofa",
+          "zh": "三人沙发（米白亚麻）",
+          "qty": 1,
+          "unit": "HKD 16,000"
+        },
+        {
+          "item": "Coffee Table",
+          "zh": "原木茶几",
+          "qty": 1,
+          "unit": "HKD 3,800"
+        },
+        {
+          "item": "Floor Lamp",
+          "zh": "和纸落地灯",
+          "qty": 1,
+          "unit": "HKD 2,600"
+        },
+        {
+          "item": "Desk Pendant",
+          "zh": "哑光黑铁吊灯",
+          "qty": 1,
+          "unit": "HKD 3,800"
+        },
+        {
+          "item": "Tatami Rug",
+          "zh": "米灰榻榻米地毯",
+          "qty": 1,
+          "unit": "HKD 4,800"
+        }
+      ],
+      "total": "HKD ~122,000"
+    }
+  },
+  "energy": {
+    "eui": 45.0,
+    "limit": 150,
+    "annual": 1350.0,
+    "engine": "EnergyPlus"
+  },
+  "compliance": {
+    "HK": {
+      "code": "HK_BEEO_BEC_2021",
+      "label": "HK · BEEO 2021",
+      "checks": [
+        {
+          "name": "EUI",
+          "value": "45",
+          "limit": "150",
+          "unit": "kWh/m2*yr",
+          "status": "pass",
+          "note": "30% of limit"
+        }
+      ],
+      "verdict": "pass"
+    }
+  },
+  "variants": {
+    "list": [
+      {
+        "id": "v1-essential",
+        "name": "v1",
+        "name_zh": "基础方案",
+        "desc": "校长办公室 · 日式禅风 · 基础配置 · 核心家具齐全 · 成本优先",
+        "priceHKD": 90000,
+        "priceDeltaPct": -25,
+        "thumb": "/assets/mvps/50-principal-office/renders/01_hero_corner.png",
+        "hero": "/assets/mvps/50-principal-office/renders/01_hero_corner.png"
+      },
+      {
+        "id": "v2-standard",
+        "name": "v2",
+        "name_zh": "标准方案",
+        "desc": "校长办公室 · 日式禅风 · 标准配置 · 含接待/陈列区 · 品质均衡",
+        "priceHKD": 120000,
+        "priceDeltaPct": 0,
+        "thumb": "/assets/mvps/50-principal-office/renders/01_hero_corner.png",
+        "hero": "/assets/mvps/50-principal-office/renders/01_hero_corner.png"
+      },
+      {
+        "id": "v3-premium",
+        "name": "v3",
+        "name_zh": "高端方案",
+        "desc": "校长办公室 · 日式禅风 · 高端定制 · 整面陈列墙 + 软包升级 + 定制灯具",
+        "priceHKD": 180000,
+        "priceDeltaPct": 50,
+        "thumb": "/assets/mvps/50-principal-office/renders/01_hero_corner.png",
+        "hero": "/assets/mvps/50-principal-office/renders/01_hero_corner.png"
+      }
+    ]
+  },
+  "timeline": [],
+  "decks": [],
+  "downloads": [
+    {
+      "name": "50-principal-office-bundle.zip",
+      "ext": "zip",
+      "sub": "All artifacts",
+      "size": "TBD",
+      "href": "/assets/mvps/50-principal-office/bundle.zip"
+    }
+  ],
+  "editable": {
+    "area_m2": 30,
+    "insulation_mm": 60,
+    "glazing_uvalue": 2.0,
+    "lighting_cct": 3000,
+    "lighting_density_w_m2": 8,
+    "wwr": 0.3,
+    "region": "HK"
+  },
+  "derived": {
+    "eui_kwh_m2_yr": 45.0,
+    "cost_total": 120000,
+    "cost_per_m2": 4000,
+    "co2_t_per_yr": 0.55
+  },
+  "scene": {
+    "schema_version": "1.0",
+    "unit": "m",
+    "bounds": {
+      "w": 6.0,
+      "d": 5.0,
+      "h": 3.0
+    },
+    "walls": [
+      {
+        "id": "wall_Back",
+        "name": "BackWall",
+        "start": [
+          -3.0,
+          2.5,
+          0
+        ],
+        "end": [
+          3.0,
+          2.5,
+          0
+        ],
+        "height": 3.0,
+        "thickness": 0.1,
+        "material_id": "wall"
+      },
+      {
+        "id": "wall_auto_S",
+        "name": "AutoWall_S",
+        "start": [
+          -3.0,
+          -2.5,
+          0
+        ],
+        "end": [
+          3.0,
+          -2.5,
+          0
+        ],
+        "height": 3.0,
+        "thickness": 0.1,
+        "material_id": "wall",
+        "_auto": true
+      },
+      {
+        "id": "wall_auto_E",
+        "name": "AutoWall_E",
+        "start": [
+          3.0,
+          -2.5,
+          0
+        ],
+        "end": [
+          3.0,
+          2.5,
+          0
+        ],
+        "height": 3.0,
+        "thickness": 0.1,
+        "material_id": "wall",
+        "_auto": true
+      },
+      {
+        "id": "wall_auto_W",
+        "name": "AutoWall_W",
+        "start": [
+          -3.0,
+          -2.5,
+          0
+        ],
+        "end": [
+          -3.0,
+          2.5,
+          0
+        ],
+        "height": 3.0,
+        "thickness": 0.1,
+        "material_id": "wall",
+        "_auto": true
+      }
+    ],
+    "objects": [
+      {
+        "id": "obj_desk",
+        "type": "desk_standard",
+        "pos": [
+          -0.5,
+          1.3,
+          0
+        ],
+        "size": [
+          2.2,
+          1.0,
+          0.76
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "material_id": "oak_light",
+        "label_en": "Executive Desk",
+        "label_zh": "大班办公桌",
+        "assembly_id": "asm_desk_1"
+      },
+      {
+        "id": "obj_chair_principal",
+        "type": "chair_standard",
+        "pos": [
+          -0.5,
+          1.95,
+          0
+        ],
+        "size": [
+          0.6,
+          0.6,
+          1.1
+        ],
+        "rotation": [
+          0,
+          0,
+          180
+        ],
+        "material_id": "linen_cream",
+        "label_en": "Principal Chair",
+        "label_zh": "校长椅",
+        "assembly_id": "asm_chair_p_2"
+      },
+      {
+        "id": "obj_chair_guest_l",
+        "type": "chair_standard",
+        "pos": [
+          -1.2,
+          0.5,
+          0
+        ],
+        "size": [
+          0.48,
+          0.48,
+          0.82
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "material_id": "oak_light",
+        "label_en": "Guest Chair L",
+        "label_zh": "客椅 · 左",
+        "assembly_id": "asm_chair_gl_3"
+      },
+      {
+        "id": "obj_chair_guest_r",
+        "type": "chair_standard",
+        "pos": [
+          0.2,
+          0.5,
+          0
+        ],
+        "size": [
+          0.48,
+          0.48,
+          0.82
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "material_id": "oak_light",
+        "label_en": "Guest Chair R",
+        "label_zh": "客椅 · 右",
+        "assembly_id": "asm_chair_gr_4"
+      },
+      {
+        "id": "obj_bookshelf",
+        "type": "shelf_open",
+        "pos": [
+          -2.75,
+          0.5,
+          1.2
+        ],
+        "size": [
+          0.3,
+          3.5,
+          2.4
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "material_id": "oak_light",
+        "label_en": "Open Bookshelf Wall",
+        "label_zh": "整面浅木格架",
+        "assembly_id": "asm_shelf_5"
+      },
+      {
+        "id": "obj_cabinet",
+        "type": "closet_tall",
+        "pos": [
+          2.7,
+          1.8,
+          0
+        ],
+        "size": [
+          0.5,
+          1.2,
+          1.6
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "material_id": "oak_light",
+        "label_en": "Low Cabinet",
+        "label_zh": "矮立柜",
+        "assembly_id": "asm_cabinet_6"
+      },
+      {
+        "id": "obj_sofa",
+        "type": "sofa_3seat",
+        "pos": [
+          1.5,
+          -1.65,
+          0
+        ],
+        "size": [
+          2.2,
+          0.92,
+          0.78
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "material_id": "linen_cream",
+        "label_en": "3-Seat Sofa",
+        "label_zh": "三人沙发",
+        "assembly_id": "asm_sofa_7"
+      },
+      {
+        "id": "obj_coffee_table",
+        "type": "table_coffee",
+        "pos": [
+          1.5,
+          -0.55,
+          0
+        ],
+        "size": [
+          1.15,
+          0.65,
+          0.38
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "material_id": "oak_natural",
+        "label_en": "Coffee Table",
+        "label_zh": "原木茶几",
+        "assembly_id": "asm_table_8"
+      },
+      {
+        "id": "obj_lamp_floor",
+        "type": "lamp_floor",
+        "pos": [
+          2.55,
+          -1.9,
+          0
+        ],
+        "size": [
+          0.36,
+          0.36,
+          1.7
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "material_id": "washi_paper",
+        "label_en": "Floor Lamp",
+        "label_zh": "和纸落地灯",
+        "assembly_id": "asm_lamp_f_9"
+      },
+      {
+        "id": "obj_lamp_pendant",
+        "type": "lamp_pendant",
+        "pos": [
+          -0.5,
+          1.2,
+          2.5
+        ],
+        "size": [
+          0.4,
+          0.4,
+          0.4
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "material_id": "iron_matte",
+        "label_en": "Desk Pendant",
+        "label_zh": "哑光黑铁吊灯",
+        "assembly_id": "asm_lamp_p_10"
+      },
+      {
+        "id": "obj_rug",
+        "type": "custom",
+        "pos": [
+          1.5,
+          -1.1,
+          0.005
+        ],
+        "size": [
+          2.4,
+          2.0,
+          0.02
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "material_id": "tatami",
+        "label_en": "Tatami Rug",
+        "label_zh": "榻榻米地毯",
+        "mesh_type_legacy": "plane",
+        "assembly_id": "asm_rug_11"
+      }
+    ],
+    "assemblies": [
+      {
+        "id": "asm_desk_1",
+        "type": "desk_standard",
+        "pos": [
+          -0.5,
+          1.3,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "size": [
+          2.2,
+          1.0,
+          0.76
+        ],
+        "part_ids": [
+          "obj_desk"
+        ],
+        "primary_part_id": "obj_desk",
+        "material_id_primary": "oak_light",
+        "label_en": "Executive Desk",
+        "label_zh": "大班办公桌",
+        "_generated_by": "manual"
+      },
+      {
+        "id": "asm_chair_p_2",
+        "type": "chair_standard",
+        "pos": [
+          -0.5,
+          1.95,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          180
+        ],
+        "size": [
+          0.6,
+          0.6,
+          1.1
+        ],
+        "part_ids": [
+          "obj_chair_principal"
+        ],
+        "primary_part_id": "obj_chair_principal",
+        "material_id_primary": "linen_cream",
+        "label_en": "Principal Chair",
+        "label_zh": "校长椅",
+        "_generated_by": "manual"
+      },
+      {
+        "id": "asm_chair_gl_3",
+        "type": "chair_standard",
+        "pos": [
+          -1.2,
+          0.5,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "size": [
+          0.48,
+          0.48,
+          0.82
+        ],
+        "part_ids": [
+          "obj_chair_guest_l"
+        ],
+        "primary_part_id": "obj_chair_guest_l",
+        "material_id_primary": "oak_light",
+        "label_en": "Guest Chair L",
+        "label_zh": "客椅 · 左",
+        "_generated_by": "manual"
+      },
+      {
+        "id": "asm_chair_gr_4",
+        "type": "chair_standard",
+        "pos": [
+          0.2,
+          0.5,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "size": [
+          0.48,
+          0.48,
+          0.82
+        ],
+        "part_ids": [
+          "obj_chair_guest_r"
+        ],
+        "primary_part_id": "obj_chair_guest_r",
+        "material_id_primary": "oak_light",
+        "label_en": "Guest Chair R",
+        "label_zh": "客椅 · 右",
+        "_generated_by": "manual"
+      },
+      {
+        "id": "asm_shelf_5",
+        "type": "shelf_open",
+        "pos": [
+          -2.75,
+          0.5,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "size": [
+          0.3,
+          3.5,
+          2.4
+        ],
+        "part_ids": [
+          "obj_bookshelf"
+        ],
+        "primary_part_id": "obj_bookshelf",
+        "material_id_primary": "oak_light",
+        "label_en": "Open Bookshelf Wall",
+        "label_zh": "整面浅木格架",
+        "_generated_by": "manual"
+      },
+      {
+        "id": "asm_cabinet_6",
+        "type": "closet_tall",
+        "pos": [
+          2.7,
+          1.8,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "size": [
+          0.5,
+          1.2,
+          1.6
+        ],
+        "part_ids": [
+          "obj_cabinet"
+        ],
+        "primary_part_id": "obj_cabinet",
+        "material_id_primary": "oak_light",
+        "label_en": "Low Cabinet",
+        "label_zh": "矮立柜",
+        "_generated_by": "manual"
+      },
+      {
+        "id": "asm_sofa_7",
+        "type": "sofa_3seat",
+        "pos": [
+          1.5,
+          -1.65,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "size": [
+          2.2,
+          0.92,
+          0.78
+        ],
+        "part_ids": [
+          "obj_sofa"
+        ],
+        "primary_part_id": "obj_sofa",
+        "material_id_primary": "linen_cream",
+        "label_en": "3-Seat Sofa",
+        "label_zh": "三人沙发",
+        "_generated_by": "manual"
+      },
+      {
+        "id": "asm_table_8",
+        "type": "table_coffee",
+        "pos": [
+          1.5,
+          -0.55,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "size": [
+          1.15,
+          0.65,
+          0.38
+        ],
+        "part_ids": [
+          "obj_coffee_table"
+        ],
+        "primary_part_id": "obj_coffee_table",
+        "material_id_primary": "oak_natural",
+        "label_en": "Coffee Table",
+        "label_zh": "原木茶几",
+        "_generated_by": "manual"
+      },
+      {
+        "id": "asm_lamp_f_9",
+        "type": "lamp_floor",
+        "pos": [
+          2.55,
+          -1.9,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "size": [
+          0.36,
+          0.36,
+          1.7
+        ],
+        "part_ids": [
+          "obj_lamp_floor"
+        ],
+        "primary_part_id": "obj_lamp_floor",
+        "material_id_primary": "washi_paper",
+        "label_en": "Floor Lamp",
+        "label_zh": "和纸落地灯",
+        "_generated_by": "manual"
+      },
+      {
+        "id": "asm_lamp_p_10",
+        "type": "lamp_pendant",
+        "pos": [
+          -0.5,
+          1.2,
+          2.5
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "size": [
+          0.4,
+          0.4,
+          0.4
+        ],
+        "part_ids": [
+          "obj_lamp_pendant"
+        ],
+        "primary_part_id": "obj_lamp_pendant",
+        "material_id_primary": "iron_matte",
+        "label_en": "Desk Pendant",
+        "label_zh": "哑光黑铁吊灯",
+        "_generated_by": "manual"
+      },
+      {
+        "id": "asm_rug_11",
+        "type": "custom",
+        "pos": [
+          1.5,
+          -1.1,
+          0.005
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "size": [
+          2.4,
+          2.0,
+          0.02
+        ],
+        "part_ids": [
+          "obj_rug"
+        ],
+        "primary_part_id": "obj_rug",
+        "material_id_primary": "tatami",
+        "label_en": "Tatami Rug",
+        "label_zh": "榻榻米地毯",
+        "_generated_by": "single_object"
+      }
+    ],
+    "lights": [
+      {
+        "id": "sun_1",
+        "type": "sun",
+        "dir": [
+          0.3,
+          0.55,
+          -0.78
+        ],
+        "power": 3.2,
+        "intensity": 3.2,
+        "color": [
+          1.0,
+          0.96,
+          0.88
+        ]
+      },
+      {
+        "id": "area_2",
+        "type": "area",
+        "pos": [
+          -0.5,
+          1.2,
+          2.82
+        ],
+        "power": 80.0,
+        "intensity": 5.5,
+        "color": [
+          1.0,
+          0.95,
+          0.85
+        ],
+        "size": 1.0,
+        "size_y": 0.8,
+        "shape": "RECTANGLE"
+      },
+      {
+        "id": "point_3",
+        "type": "point",
+        "pos": [
+          2.55,
+          -1.9,
+          1.6
+        ],
+        "power": 45.0,
+        "intensity": 24.0,
+        "color": [
+          1.0,
+          0.88,
+          0.7
+        ]
+      }
+    ],
+    "materials": {
+      "woodfloor": {
+        "base_color": "#C9B38C",
+        "roughness": 0.55,
+        "metallic": 0.0,
+        "label": "OakFloor"
+      },
+      "wall": {
+        "base_color": "#F5F1E8",
+        "roughness": 0.92,
+        "metallic": 0.0,
+        "label": "PlasterWall"
+      },
+      "oak_light": {
+        "base_color": "#D7C4A8",
+        "roughness": 0.55,
+        "metallic": 0.0,
+        "label": "LightOak"
+      },
+      "oak_natural": {
+        "base_color": "#B89F78",
+        "roughness": 0.5,
+        "metallic": 0.0,
+        "label": "NaturalOak"
+      },
+      "linen_cream": {
+        "base_color": "#D9CFB8",
+        "roughness": 0.97,
+        "metallic": 0.0,
+        "label": "CreamLinen"
+      },
+      "iron_matte": {
+        "base_color": "#2A2A2A",
+        "roughness": 0.85,
+        "metallic": 0.1,
+        "label": "MatteIron"
+      },
+      "washi_paper": {
+        "base_color": "#F0E6D0",
+        "roughness": 0.98,
+        "metallic": 0.0,
+        "label": "WashiPaper"
+      },
+      "tatami": {
+        "base_color": "#C9BFAE",
+        "roughness": 0.95,
+        "metallic": 0.0,
+        "label": "TatamiRug"
+      },
+      "charcoal": {
+        "base_color": "#6B6F73",
+        "roughness": 0.7,
+        "metallic": 0.02,
+        "label": "Charcoal"
+      },
+      "screen": {
+        "base_color": "#111318",
+        "roughness": 0.25,
+        "metallic": 0.05,
+        "label": "Screen"
+      }
+    },
+    "env": {
+      "hdri": "/assets/hdri/interior_neutral_2k.hdr",
+      "hdri_intensity": 1.1,
+      "background_color": "#E8E2D5"
+    },
+    "floor": {
+      "material_id": "woodfloor",
+      "thickness": 0.02
+    },
+    "ceiling": {
+      "material_id": "wall",
+      "thickness": 0.05,
+      "height": 3.0,
+      "_auto": true
+    },
+    "camera_default": {
+      "pos": [
+        4.3,
+        -3.6,
+        1.8
+      ],
+      "lookAt": [
+        0.0,
+        0.2,
+        1.1
+      ],
+      "fov": 50
+    }
+  },
+  "active_variant_id": "v2-standard"
+}

@@ -67,12 +67,7 @@ TIER_ALIASES: dict[str, dict] = {
     },
 }
 
-# 可选追加项（按需 · 任何档位都可加）· 来自 CLAUDE.md L375
-OPT_ADDONS: dict[str, dict] = {
-    "case_study": {"label_zh": "Case Study 作品集素材", "artifacts": ["case_study"]},
-    "what_if": {"label_zh": "What-If 参数敏感性", "artifacts": ["what_if"]},
-    "ai_render_enhance": {"label_zh": "AI 渲染增强（SDXL）", "requires_engine": "formal"},
-}
+# OPT_ADDONS（按需追加项 · CLAUDE.md L375）· 当前不参与 resolve · 保留等 Phase 7 接入
 
 
 def resolve_tier(tier: TierId, variant_count: int = 1) -> dict:
