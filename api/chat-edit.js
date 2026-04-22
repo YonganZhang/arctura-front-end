@@ -265,7 +265,7 @@ export default async function handler(req) {
   let lastErr;
   while (attempt < maxAttempts) {
     attempt++;
-    const budget = attempt === 1 ? 18000 : 5000;   // 给初次更多空间 · 5xx retry 才 5s
+    const budget = attempt === 1 ? 20000 : 4000;   // 初次 20s（Edge 25s 硬限 · 留 5s overhead+dry-run）· 5xx retry 才 4s
     try {
       llmResp = await callLLM(budget);
       break;
@@ -277,7 +277,7 @@ export default async function handler(req) {
       const isRetryable = is5xx;
       if (attempt >= maxAttempts || !isRetryable) {
         const status = err.status && err.status >= 400 ? err.status : 504;
-        const msg = isTimeout ? "LLM 响应超时（>18s） · 试试短一点的句子，或换个模型（点上方 Model 下拉 · 换 deepseek-v3-chat 更快）"
+        const msg = isTimeout ? "LLM 响应超时（>20s） · 试试短一点的句子，或换个模型（点上方 Model 下拉 · 换 deepseek-v3-chat 更快）"
                   : err.status ? `Upstream error ${err.status}` : "LLM call failed";
         return jsonResponse({
           error: msg,
