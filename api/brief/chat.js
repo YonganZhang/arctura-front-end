@@ -1,0 +1,307 @@
+// Vercel Edge Function · /api/brief/chat · SSE
+// Phase 6.B Brief Chat · 多轮对话 + schema-guided 填充 + state 推进
+//
+// body: { slug, user_message }
+// response: SSE
+//   event: start · {}
+//   event: reply · {text}
+//   event: brief_update · {brief_patch, brief, completeness, ready_for_tier, missing}
+//   event: heartbeat · {elapsed_ms}
+//   event: complete · {final_state}
+//   event: error · {message}
+//
+// 状态转移：
+//   state=empty → state=briefing（首轮）
+//   state=briefing → state=briefing（多轮）
+//   state=briefing → state=planning（用户显式 confirm + ready_for_tier）
+//   其他 state → 409
+
+export const config = { runtime: "edge" };
+
+const KV_URL = process.env.UPSTASH_REDIS_REST_URL;
+const KV_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
+const LLM_KEY = process.env.ZHIZENGZENG_API_KEY;
+
+// ─────── Upstash helpers ───────
+
+async function kv(cmd, ...args) {
+  const path = [cmd, ...args.map(a => encodeURIComponent(String(a)))].join("/");
+  const r = await fetch(`${KV_URL}/${path}`, {
+    headers: { Authorization: `Bearer ${KV_TOKEN}` },
+  });
+  if (!r.ok) throw new Error(`KV ${cmd}: HTTP ${r.status}`);
+  return (await r.json()).result;
+}
+
+async function kvGetJson(key) {
+  const v = await kv("get", key);
+  return v ? JSON.parse(v) : null;
+}
+
+async function kvSetJson(key, obj, ttl) {
+  const val = JSON.stringify(obj);
+  if (ttl) return kv("set", key, val, "EX", ttl);
+  return kv("set", key, val);
+}
+
+async function kvPersist(key) {
+  return kv("persist", key);
+}
+
+// ─────── Brief engine (JS 版 · 跟 Python brief_engine.py 同步) ───────
+
+const SYSTEM_PROMPT = `你是 Arctura 室内设计 brief 对话助手 · 帮用户通过多轮对话生成设计 brief。
+
+**你的目标**：通过 3-7 轮对话把用户的想法填到 brief JSON 里。必须字段（阻塞进入"选档位"阶段）：
+- project · 项目名（含中英文）
+- space.area_sqm · 面积（数字 · 单位㎡）
+- style.keywords · 风格关键词（数组 · 3-6 个）
+- functional_zones · 功能分区（数组 · 每区有 name/area_sqm）
+
+**重要但可选**（影响 completeness · 不阻塞）：
+slug / client / business_model / space.type / space.n_floors / style.palette / style.reference_brands / lighting / budget_hkd / timeline_weeks / must_have / envelope.insulation_mm / openings.wwr
+
+**对话规则**：
+1. 每次先回复人话（中文 · 1-2 句 · 确认+引导）· 然后给 JSON 更新
+2. 一次只问 1-2 个问题 · 不要连珠炮
+3. 用户回答不清楚时 · 给 2-3 个示例引导
+4. 一段话里说了很多 · 一次性提取所有字段 · 不要装不懂
+5. PII（客户名 / 地址 / 预算）标入 pii_fields
+6. 推导合理默认时 · 标入 _defaults 字段 · 用户可改
+
+**输出格式**（严格 JSON · 只这个 · 不加其他文字）：
+{
+  "reply": "给用户看的中文回复 · 1-2 句",
+  "brief_patch": { /* 本轮更新字段 · deep merge 到当前 brief */ },
+  "next_question": "下一轮你会问什么 · 简短",
+  "pii_fields": [ /* 本轮新增的 PII 字段路径 */ ]
+}`;
+
+const MUST_FILL = [
+  "project", ["space", "area_sqm"], ["style", "keywords"], "functional_zones",
+];
+const NICE_FIELDS = [
+  "slug", "client", "business_model",
+  ["space", "type"], ["space", "n_floors"],
+  ["style", "palette"], ["style", "reference_brands"],
+  "lighting", "budget_hkd", "timeline_weeks", "must_have",
+  ["envelope", "insulation_mm"], ["openings", "wwr"],
+];
+
+function pathGet(obj, path) {
+  if (typeof path === "string") return obj?.[path];
+  let cur = obj;
+  for (const k of path) { if (!cur || typeof cur !== "object") return undefined; cur = cur[k]; }
+  return cur;
+}
+
+function nonempty(v) {
+  if (v == null) return false;
+  if (typeof v === "string") return v.length > 0;
+  if (Array.isArray(v)) return v.length > 0;
+  if (typeof v === "object") return Object.keys(v).length > 0;
+  return true;
+}
+
+function completeness(brief) {
+  if (!brief) return 0;
+  const must = MUST_FILL.filter(p => nonempty(pathGet(brief, p))).length / MUST_FILL.length;
+  const nice = NICE_FIELDS.filter(p => nonempty(pathGet(brief, p))).length / NICE_FIELDS.length;
+  return Math.round((must * 0.6 + nice * 0.4) * 100) / 100;
+}
+
+function readyForTier(brief) {
+  return MUST_FILL.every(p => nonempty(pathGet(brief, p))) && completeness(brief) >= 0.5;
+}
+
+function missingMust(brief) {
+  return MUST_FILL.filter(p => !nonempty(pathGet(brief, p)))
+    .map(p => Array.isArray(p) ? p.join(".") : p);
+}
+
+function deepMerge(base, patch) {
+  const out = { ...base };
+  for (const [k, v] of Object.entries(patch || {})) {
+    if (out[k] && typeof out[k] === "object" && !Array.isArray(out[k])
+        && v && typeof v === "object" && !Array.isArray(v)) {
+      out[k] = deepMerge(out[k], v);
+    } else {
+      out[k] = v;
+    }
+  }
+  return out;
+}
+
+// ─────── LLM call · ZHIZENGZENG gateway · gpt-5.4 ───────
+
+async function callLLM(userMessage, brief, history) {
+  const userPrompt = `## 当前 brief
+\`\`\`json
+${JSON.stringify(brief, null, 2)}
+\`\`\`
+
+## 状态
+completeness: ${completeness(brief)}
+还缺必填: ${missingMust(brief).join(", ") || "无"}
+
+## 用户本轮说
+${userMessage}
+
+按系统指令严格输出 JSON。`;
+
+  const messages = [{ role: "system", content: SYSTEM_PROMPT }];
+  for (const t of history || []) messages.push({ role: t.role, content: t.content });
+  messages.push({ role: "user", content: userPrompt });
+
+  const resp = await fetch("https://api.zhizengzeng.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${LLM_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model: "gpt-5.4",
+      messages,
+      temperature: 0.3,
+      response_format: { type: "json_object" },
+    }),
+  });
+  if (!resp.ok) {
+    const txt = await resp.text();
+    throw new Error(`LLM ${resp.status}: ${txt.slice(0, 200)}`);
+  }
+  const d = await resp.json();
+  return JSON.parse(d.choices[0].message.content);
+}
+
+// ─────── SSE helpers ───────
+
+function encoder() { return new TextEncoder(); }
+function sseMessage(event, data) {
+  return `event: ${event}\ndata: ${JSON.stringify(data)}\n\n`;
+}
+
+// ─────── Main handler ───────
+
+export default async function handler(req) {
+  if (req.method !== "POST") {
+    return new Response(JSON.stringify({ error: "method not allowed" }), { status: 405 });
+  }
+
+  let body;
+  try { body = await req.json(); } catch { body = {}; }
+  const { slug, user_message } = body;
+
+  if (!slug || !user_message) {
+    return new Response(JSON.stringify({ error: "missing slug or user_message" }), { status: 400 });
+  }
+
+  const enc = encoder();
+  const { readable, writable } = new TransformStream();
+  const writer = writable.getWriter();
+  const heartbeatStart = Date.now();
+
+  // 后台异步处理（不阻塞响应 stream）
+  (async () => {
+    let closed = false;
+    const safeWrite = async (s) => {
+      if (closed) return;
+      try { await writer.write(enc.encode(s)); }
+      catch { closed = true; }
+    };
+    const heartbeatInterval = setInterval(() => {
+      safeWrite(sseMessage("heartbeat", { elapsed_ms: Date.now() - heartbeatStart }));
+    }, 12000);
+
+    try {
+      await safeWrite(sseMessage("start", { slug }));
+
+      // 读 project + history
+      const project = await kvGetJson(`project:${slug}`);
+      if (!project) {
+        await safeWrite(sseMessage("error", { message: "project not found", code: 404 }));
+        return;
+      }
+      const allowedStates = ["empty", "briefing", "planning"];
+      if (!allowedStates.includes(project.state)) {
+        await safeWrite(sseMessage("error", {
+          message: `state=${project.state} 不允许 brief chat`,
+          code: 409,
+        }));
+        return;
+      }
+      const history = (await kvGetJson(`project:${slug}:brief_history`)) || [];
+      const currentBrief = project.brief || {};
+
+      // LLM
+      let parsed;
+      try {
+        parsed = await callLLM(user_message, currentBrief, history);
+      } catch (e) {
+        await safeWrite(sseMessage("error", { message: `LLM: ${e.message}` }));
+        return;
+      }
+
+      const reply = parsed.reply || "";
+      const patch = parsed.brief_patch || {};
+      const piiNew = parsed.pii_fields || [];
+
+      await safeWrite(sseMessage("reply", { text: reply, next_question: parsed.next_question || "" }));
+
+      // Merge brief
+      const newBrief = deepMerge(currentBrief, patch);
+      const piiSet = new Set([...(newBrief._pii_fields || []), ...piiNew]);
+      newBrief._pii_fields = [...piiSet].sort();
+
+      const comp = completeness(newBrief);
+      const ready = readyForTier(newBrief);
+      const missing = missingMust(newBrief);
+
+      await safeWrite(sseMessage("brief_update", {
+        brief_patch: patch,
+        brief: newBrief,
+        completeness: comp,
+        ready_for_tier: ready,
+        missing,
+      }));
+
+      // 持久化 brief + history · state 推进
+      project.brief = newBrief;
+      project.version = (project.version || 0) + 1;
+      project.updated_at = new Date().toISOString();
+      if (project.state === "empty") project.state = "briefing";
+      // ready 且用户显式说"进入选档"类字样 · 推 planning（保守：让前端按钮触发 PATCH · 这里不自动推）
+
+      await kvSetJson(`project:${slug}`, project, 7 * 86400);
+
+      const newHistory = [...history,
+        { role: "user", content: user_message },
+        { role: "assistant", content: JSON.stringify({ reply, brief_patch: patch }) },
+      ].slice(-20);  // 最多留 20 条（10 轮）
+      await kvSetJson(`project:${slug}:brief_history`, newHistory, 7 * 86400);
+
+      await safeWrite(sseMessage("complete", {
+        state: project.state,
+        version: project.version,
+        completeness: comp,
+        ready_for_tier: ready,
+      }));
+    } catch (e) {
+      await safeWrite(sseMessage("error", { message: String(e.message || e) }));
+    } finally {
+      clearInterval(heartbeatInterval);
+      closed = true;
+      try { await writer.close(); } catch {}
+    }
+  })();
+
+  return new Response(readable, {
+    status: 200,
+    headers: {
+      "Content-Type": "text/event-stream",
+      "Cache-Control": "no-cache, no-transform",
+      "Connection": "keep-alive",
+      "X-Accel-Buffering": "no",
+    },
+  });
+}
