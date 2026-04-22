@@ -192,6 +192,7 @@ export default async function handler(req) {
   const apiKey = process.env.ZHIZENGZENG_API_KEY;
   if (!apiKey) return jsonResponse({ error: "Server misconfigured: ZHIZENGZENG_API_KEY missing" }, 500);
 
+  const requestStart = Date.now();
   const { slug, userMessage, model, chatHistory = [] } = body;
   let currentState = body.currentState;
   if (!slug || !userMessage || !currentState || !model) {
@@ -231,7 +232,7 @@ export default async function handler(req) {
   if (usesCompletionTokens(model)) payload.max_completion_tokens = maxTok;
   else payload.max_tokens = maxTok;
 
-  // LLM 调用 · 最多 2 次尝试（第一次 18s · 慢了就重试 8s）· 覆盖 25s Edge 上限
+  // LLM 调用 · Phase 4 · 初次 14s + 自修 6s = 20s · 留 5s 给 dry-run 和 Edge overhead
   async function callLLM(timeoutMs) {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), timeoutMs);
@@ -263,7 +264,7 @@ export default async function handler(req) {
   let lastErr;
   while (attempt < maxAttempts) {
     attempt++;
-    const budget = attempt === 1 ? 18000 : 8000;
+    const budget = attempt === 1 ? 14000 : 6000;   // Phase 4 · 为自修留时间
     try {
       llmResp = await callLLM(budget);
       break;
@@ -326,7 +327,9 @@ export default async function handler(req) {
     let dry = await dryRunPlan(currentState, steps, variantLoader);
     // Self-correction · 若有任何 step 失败 · 给 LLM 反馈 1 轮重 emit
     const failures = dry.stepResults.filter(r => !r.dry_run.ok);
-    if (failures.length > 0) {
+    const elapsedMs = Date.now() - requestStart;
+    const remainingBudget = 22000 - elapsedMs;   // Edge 25s 上限 · 留 3s margin
+    if (failures.length > 0 && remainingBudget > 7000) {
       const feedback = failures.map(f => `step ${f.id}: ${f.dry_run.reason}`).join("\n");
       const correctionMessages = [
         { role: "system", content: systemPrompt },
