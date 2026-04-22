@@ -225,36 +225,6 @@
     "complete": true
   },
   {
-    "slug": "17-luxury-indoor-pool",
-    "name": "5-Star Hotel Indoor Swimming Pool",
-    "name_zh": "",
-    "type": "P1-interior",
-    "cat": "wellness",
-    "area_m2": 850,
-    "eui": null,
-    "cost_per_m2": null,
-    "currency": "HK$",
-    "compliance": "—",
-    "thumb": "/assets/mvps/17-luxury-indoor-pool/thumb.webp",
-    "hero": "/assets/mvps/17-luxury-indoor-pool/hero.webp",
-    "complete": true
-  },
-  {
-    "slug": "22-boutique-book-cafe",
-    "name": "Boutique Book Cafe",
-    "name_zh": "精品书吧 Book Cafe",
-    "type": "P1-interior",
-    "cat": "hospitality",
-    "area_m2": 80,
-    "eui": 127.0,
-    "cost_per_m2": 11952,
-    "currency": "HK$",
-    "compliance": "PASS",
-    "thumb": "/assets/mvps/22-boutique-book-cafe/thumb.webp",
-    "hero": "/assets/mvps/22-boutique-book-cafe/hero.webp",
-    "complete": true
-  },
-  {
     "slug": "16-elderly-friendly-home",
     "name": "Elderly-Friendly Home Renovation",
     "name_zh": "",
@@ -268,6 +238,21 @@
     "thumb": "/assets/mvps/16-elderly-friendly-home/thumb.webp",
     "hero": "/assets/mvps/16-elderly-friendly-home/hero.webp",
     "complete": false
+  },
+  {
+    "slug": "17-luxury-indoor-pool",
+    "name": "5-Star Hotel Indoor Swimming Pool",
+    "name_zh": "",
+    "type": "P1-interior",
+    "cat": "wellness",
+    "area_m2": 850,
+    "eui": null,
+    "cost_per_m2": null,
+    "currency": "HK$",
+    "compliance": "—",
+    "thumb": "/assets/mvps/17-luxury-indoor-pool/thumb.webp",
+    "hero": "/assets/mvps/17-luxury-indoor-pool/hero.webp",
+    "complete": true
   },
   {
     "slug": "18-student-study-hall",
@@ -330,6 +315,21 @@
     "complete": false
   },
   {
+    "slug": "22-boutique-book-cafe",
+    "name": "Boutique Book Cafe",
+    "name_zh": "精品书吧 Book Cafe",
+    "type": "P1-interior",
+    "cat": "hospitality",
+    "area_m2": 80,
+    "eui": 127.0,
+    "cost_per_m2": 11952,
+    "currency": "HK$",
+    "compliance": "PASS",
+    "thumb": "/assets/mvps/22-boutique-book-cafe/thumb.webp",
+    "hero": "/assets/mvps/22-boutique-book-cafe/hero.webp",
+    "complete": true
+  },
+  {
     "slug": "22-luxury-penthouse",
     "name": "半山豪华顶层公寓",
     "name_zh": "",
@@ -373,6 +373,21 @@
     "thumb": "/assets/mvps/24-nordic-startup/thumb.webp",
     "hero": "/assets/mvps/24-nordic-startup/hero.webp",
     "complete": false
+  },
+  {
+    "slug": "50-principal-office",
+    "name": "校长办公室 · 日式禅风",
+    "name_zh": "校长办公室 · 日式禅风",
+    "type": "P1-interior",
+    "cat": "workplace",
+    "area_m2": 30,
+    "eui": 45.0,
+    "cost_per_m2": 4000,
+    "currency": "HKD",
+    "compliance": "pass",
+    "thumb": null,
+    "hero": null,
+    "complete": true
   },
   {
     "slug": "arch-01-house",

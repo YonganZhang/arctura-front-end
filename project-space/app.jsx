@@ -172,13 +172,18 @@ function Topbar() {
         </span>
         <button className="tb-btn" onClick={handleShare}>Share</button>
         <a className="tb-btn primary"
-           href={D.slug && D.slug !== "zen-tea" ? "#" : "/assets/zen-tea/bundle.zip"}
+           href={(() => {
+             const bundle = (D.downloads || []).find(f => f.ext === "zip");
+             if (bundle?.href) return bundle.href;
+             if (D.slug && D.slug !== "zen-tea") return `/assets/mvps/${D.slug}/bundle.zip`;
+             return "/assets/zen-tea/bundle.zip";
+           })()}
            download={`${D.slug || "zen-tea-room"}-bundle.zip`}
            onClick={e => {
-             if (D.slug && D.slug !== "zen-tea") {
-               e.preventDefault();
-               showToast("当前 MVP 暂无打包 zip · zen-tea demo 可下");
-             }
+             const bundle = (D.downloads || []).find(f => f.ext === "zip");
+             const href = bundle?.href || (D.slug && D.slug !== "zen-tea" ? `/assets/mvps/${D.slug}/bundle.zip` : "/assets/zen-tea/bundle.zip");
+             // HEAD 检查可能阻塞 · 直接放行 · 浏览器下 404 会自然显示
+             // 若主动想拦 fallback 到 zen-tea 可在这里 HEAD probe · 当前版直接信任 href
            }}
            style={{textDecoration: "none", display: "inline-flex", alignItems: "center"}}>
           Download all
@@ -1326,13 +1331,18 @@ function Files() {
           <div style={{fontFamily:"var(--f-display)",fontSize:18,fontWeight:400,marginTop:2}}>All artifacts · one ZIP</div>
         </div>
         <a className="tb-btn primary"
-           href={D.slug && D.slug !== "zen-tea" ? "#" : "/assets/zen-tea/bundle.zip"}
+           href={(() => {
+             const bundle = (D.downloads || []).find(f => f.ext === "zip");
+             if (bundle?.href) return bundle.href;
+             if (D.slug && D.slug !== "zen-tea") return `/assets/mvps/${D.slug}/bundle.zip`;
+             return "/assets/zen-tea/bundle.zip";
+           })()}
            download={`${D.slug || "zen-tea-room"}-bundle.zip`}
            onClick={e => {
-             if (D.slug && D.slug !== "zen-tea") {
-               e.preventDefault();
-               showToast("当前 MVP 暂无打包 zip · zen-tea demo 可下");
-             }
+             const bundle = (D.downloads || []).find(f => f.ext === "zip");
+             const href = bundle?.href || (D.slug && D.slug !== "zen-tea" ? `/assets/mvps/${D.slug}/bundle.zip` : "/assets/zen-tea/bundle.zip");
+             // HEAD 检查可能阻塞 · 直接放行 · 浏览器下 404 会自然显示
+             // 若主动想拦 fallback 到 zen-tea 可在这里 HEAD probe · 当前版直接信任 href
            }}
            style={{textDecoration: "none"}}>Download .zip</a>
       </div>

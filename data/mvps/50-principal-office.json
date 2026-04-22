@@ -161,11 +161,50 @@
     }
   },
   "variants": {
-    "list": []
+    "list": [
+      {
+        "id": "v1-essential",
+        "name": "v1",
+        "name_zh": "基础方案",
+        "desc": "校长办公室 · 日式禅风 · 基础配置 · 核心家具齐全 · 成本优先",
+        "priceHKD": 90000,
+        "priceDeltaPct": -25,
+        "thumb": null,
+        "hero": null
+      },
+      {
+        "id": "v2-standard",
+        "name": "v2",
+        "name_zh": "标准方案",
+        "desc": "校长办公室 · 日式禅风 · 标准配置 · 含接待/陈列区 · 品质均衡",
+        "priceHKD": 120000,
+        "priceDeltaPct": 0,
+        "thumb": null,
+        "hero": null
+      },
+      {
+        "id": "v3-premium",
+        "name": "v3",
+        "name_zh": "高端方案",
+        "desc": "校长办公室 · 日式禅风 · 高端定制 · 整面陈列墙 + 软包升级 + 定制灯具",
+        "priceHKD": 180000,
+        "priceDeltaPct": 50,
+        "thumb": null,
+        "hero": null
+      }
+    ]
   },
   "timeline": [],
   "decks": [],
-  "downloads": [],
+  "downloads": [
+    {
+      "name": "50-principal-office-bundle.zip",
+      "ext": "zip",
+      "sub": "All artifacts",
+      "size": "TBD",
+      "href": "/assets/mvps/50-principal-office/bundle.zip"
+    }
+  ],
   "editable": {
     "area_m2": 30,
     "insulation_mm": 60,
