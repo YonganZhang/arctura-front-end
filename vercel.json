@@ -8,7 +8,9 @@
   "installCommand": "echo 'no install needed'",
   "rewrites": [
     { "source": "/project/:slug([^/]+)", "destination": "/project" },
-    { "source": "/project/:slug([^/]+)/", "destination": "/project" }
+    { "source": "/project/:slug([^/]+)/", "destination": "/project" },
+    { "source": "/new", "destination": "/project" },
+    { "source": "/new/", "destination": "/project" }
   ],
   "redirects": [
     { "source": "/Arctura Labs", "destination": "/", "permanent": true },

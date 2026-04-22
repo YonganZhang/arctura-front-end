@@ -2434,7 +2434,16 @@ function Viewer3DScene() {
   );
 }
 
+// Phase 6.C · /new 路由判断 · Wizard 分流
+function isWizardRoute() {
+  const p = window.location.pathname;
+  return p === "/new" || p.startsWith("/new/") || p === "/new/index.html";
+}
+
 function App() {
+  // Phase 6.C · Wizard 模式分流（在 project state 初始化前）
+  if (isWizardRoute()) return <Wizard />;
+
   const [active, setActive] = useState("overview");
   const views = {
     overview: <Overview setActive={setActive} />,
@@ -2567,5 +2576,465 @@ function SelectionProvider({ children }) {
     </SelectionCtx.Provider>
   );
 }
+
+// ═════════════════════════════════════════════════════════════
+// Phase 6.C · Wizard · /new 路由 · 新建 project 3 step 向导
+// ═════════════════════════════════════════════════════════════
+
+const TIERS_UI = [
+  { id: "concept", label_zh: "概念", desc_zh: "brief + 3D + 渲染 + 平面图", est_min: 3, render_engine: "fast", icon: "💡" },
+  { id: "deliver", label_zh: "交付", desc_zh: "+方案 PPT + 客户文档", est_min: 6, render_engine: "fast", icon: "📄" },
+  { id: "quote",   label_zh: "报价", desc_zh: "+能耗 + 工料报价 + 合规", est_min: 8, render_engine: "fast", icon: "💰" },
+  { id: "full",    label_zh: "全案", desc_zh: "+BIM 导出 GLB/FBX/IFC + 质检", est_min: 40, render_engine: "formal", icon: "🏛" },
+  { id: "select",  label_zh: "甄选", desc_zh: "3 方案 × 全案 + 对比拼图", est_min: 120, render_engine: "formal", icon: "🎯" },
+];
+
+function useWizardProject() {
+  const [project, setProject] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const loadOrCreate = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      let slug = urlParams.get("slug");
+      if (!slug) {
+        // 创建新 draft
+        const r = await fetch("/api/projects", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ display_name: "未命名项目" }),
+          credentials: "include",
+        });
+        if (!r.ok) throw new Error(`create failed: ${r.status}`);
+        const d = await r.json();
+        slug = d.slug;
+        // 更新 URL（不 reload）
+        const newUrl = `/new?slug=${slug}`;
+        window.history.replaceState({}, "", newUrl);
+      }
+      const r2 = await fetch(`/api/projects/${slug}`, { credentials: "include" });
+      if (!r2.ok) throw new Error(`load ${slug} failed: ${r2.status}`);
+      const p = await r2.json();
+      setProject(p);
+    } catch (e) {
+      setError(String(e.message || e));
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => { loadOrCreate(); }, [loadOrCreate]);
+
+  const refresh = useCallback(async () => {
+    if (!project?.slug) return;
+    const r = await fetch(`/api/projects/${project.slug}`, { credentials: "include" });
+    if (r.ok) setProject(await r.json());
+  }, [project?.slug]);
+
+  const patch = useCallback(async (patchBody) => {
+    if (!project?.slug) return;
+    const r = await fetch(`/api/projects/${project.slug}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...patchBody, version: project.version }),
+      credentials: "include",
+    });
+    if (!r.ok) throw new Error(`patch: ${r.status}`);
+    const updated = await r.json();
+    setProject(updated);
+    return updated;
+  }, [project]);
+
+  return { project, loading, error, refresh, patch };
+}
+
+function Wizard() {
+  const { project, loading, error, refresh, patch } = useWizardProject();
+
+  if (loading) return <div style={wzLoading}>准备工作区…</div>;
+  if (error)   return <div style={wzLoading}>出错：{error}<br/><a href="/new" style={{color:"#4a9"}}>重试</a></div>;
+  if (!project) return <div style={wzLoading}>没拿到项目</div>;
+
+  // Step dispatch
+  const step = (project.state === "empty" || project.state === "briefing") ? 1
+             : project.state === "planning" ? 2
+             : project.state === "generating" ? 3
+             : project.state === "live" ? 4 : 0;
+
+  // 已 live · 跳转
+  useEffect(() => {
+    if (project.state === "live") {
+      window.location.href = `/project/${project.slug}`;
+    }
+  }, [project.state, project.slug]);
+
+  return (
+    <div style={wzRoot}>
+      <WizardHeader project={project} step={step} />
+      <div style={wzBody}>
+        {step === 1 && <BriefChatStep project={project} onRefresh={refresh} onPatch={patch} />}
+        {step === 2 && <TierPickerStep project={project} onPatch={patch} />}
+        {step === 3 && <GenerateProgressStep project={project} />}
+        {step === 4 && <div>已生成 · 跳转中…</div>}
+      </div>
+    </div>
+  );
+}
+
+function WizardHeader({ project, step }) {
+  return (
+    <header style={wzHeader}>
+      <div style={{fontFamily:"Fraunces,serif",fontSize:20,fontWeight:400}}>Arctura · 新建项目</div>
+      <div style={wzSteps}>
+        {[["1","Brief 对话"], ["2","选档位"], ["3","生成"]].map(([n,lbl], i) => (
+          <React.Fragment key={n}>
+            <div style={{...wzStepDot, ...(step >= i+1 ? wzStepDotActive : {})}}>
+              <span>{n}</span>
+              <span style={{fontSize:11,marginLeft:6}}>{lbl}</span>
+            </div>
+            {i < 2 && <div style={{...wzStepLine, ...(step > i+1 ? wzStepLineActive : {})}}></div>}
+          </React.Fragment>
+        ))}
+      </div>
+      <div style={{fontFamily:"JetBrains Mono,monospace",fontSize:11,color:"#999"}}>
+        {project.slug} · v{project.version}
+      </div>
+    </header>
+  );
+}
+
+// ───── Step 1 · Brief Chat ─────
+
+function BriefChatStep({ project, onRefresh, onPatch }) {
+  const [messages, setMessages] = useState([]);     // [{role, content, brief_update?}]
+  const [input, setInput] = useState("");
+  const [sending, setSending] = useState(false);
+  const [completeness, setCompleteness] = useState(0);
+  const [missing, setMissing] = useState([]);
+  const [readyForTier, setReadyForTier] = useState(false);
+  const scrollRef = useRef(null);
+
+  useEffect(() => {
+    if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+  }, [messages]);
+
+  // 初始提示
+  useEffect(() => {
+    if (messages.length === 0) {
+      const greet = "你好 👋 说一下你想做什么项目？比如「校长办公室 · 30 ㎡ · 日式禅风」—— 我会帮你把需求整理成 brief。";
+      setMessages([{ role: "assistant", content: greet }]);
+    }
+    // eslint-disable-next-line
+  }, []);
+
+  const send = async () => {
+    if (!input.trim() || sending) return;
+    const userMsg = input.trim();
+    setInput("");
+    setMessages(m => [...m, { role: "user", content: userMsg }]);
+    setSending(true);
+
+    let asstText = "";
+    let asstIdx = -1;
+    const appendAsst = (text) => {
+      if (asstIdx === -1) {
+        asstIdx = 1;
+        setMessages(m => {
+          asstIdx = m.length;
+          return [...m, { role: "assistant", content: text, streaming: true }];
+        });
+      } else {
+        setMessages(m => m.map((msg, i) => i === asstIdx ? { ...msg, content: text } : msg));
+      }
+    };
+
+    try {
+      const r = await fetch("/api/brief/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ slug: project.slug, user_message: userMsg }),
+        credentials: "include",
+      });
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+
+      const reader = r.body.getReader();
+      const decoder = new TextDecoder();
+      let buf = "";
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buf += decoder.decode(value, { stream: true });
+        let evEnd;
+        while ((evEnd = buf.indexOf("\n\n")) !== -1) {
+          const block = buf.slice(0, evEnd);
+          buf = buf.slice(evEnd + 2);
+          const evMatch = block.match(/^event: (\w+)/m);
+          const dataMatch = block.match(/^data: (.+)$/m);
+          if (!evMatch || !dataMatch) continue;
+          const ev = evMatch[1];
+          const data = JSON.parse(dataMatch[1]);
+          if (ev === "reply") {
+            asstText = data.text;
+            appendAsst(asstText);
+          } else if (ev === "brief_update") {
+            setCompleteness(data.completeness || 0);
+            setMissing(data.missing || []);
+            setReadyForTier(!!data.ready_for_tier);
+            // 给当前 assistant message 挂 brief_update 展示
+            setMessages(m => m.map((msg, i) =>
+              i === m.length - 1 && msg.role === "assistant"
+                ? { ...msg, brief_update: { completeness: data.completeness, missing: data.missing } }
+                : msg
+            ));
+          } else if (ev === "complete") {
+            // 完成一轮
+            await onRefresh();
+          } else if (ev === "error") {
+            asstText = (asstText ? asstText + "\n\n" : "") + `⚠ ${data.message}`;
+            appendAsst(asstText);
+          }
+        }
+      }
+      // mark streaming done
+      setMessages(m => m.map((msg, i) => i === m.length - 1 && msg.streaming ? { ...msg, streaming: false } : msg));
+    } catch (e) {
+      setMessages(m => [...m, { role: "assistant", content: `⚠ 对话出错: ${e.message}` }]);
+    } finally {
+      setSending(false);
+    }
+  };
+
+  const enterPlanning = async () => {
+    try {
+      await onPatch({ state: "planning" });
+    } catch (e) {
+      alert("进入选档失败: " + e.message);
+    }
+  };
+
+  return (
+    <div style={wzStepBody}>
+      <div style={wzMainPanel}>
+        <div style={wzChatScroll} ref={scrollRef}>
+          {messages.map((msg, i) => (
+            <div key={i} style={{...wzMsg, ...(msg.role === "user" ? wzMsgUser : wzMsgAsst)}}>
+              <div>{msg.content}{msg.streaming && <span style={{opacity:.5}}> ▊</span>}</div>
+              {msg.brief_update && (
+                <div style={{fontSize:11,marginTop:6,opacity:.65,fontFamily:"JetBrains Mono,monospace"}}>
+                  completeness {Math.round(msg.brief_update.completeness*100)}% · 还缺 {msg.brief_update.missing.join(", ") || "—"}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+        <div style={wzInputRow}>
+          <textarea
+            value={input}
+            onChange={e => setInput(e.target.value)}
+            onKeyDown={e => {
+              if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) send();
+            }}
+            placeholder="说说你想做什么项目…  (Cmd/Ctrl+Enter 发送)"
+            style={wzInput}
+            disabled={sending}
+            rows={2}
+          />
+          <button onClick={send} disabled={sending || !input.trim()} style={wzBtnPrimary}>
+            {sending ? "..." : "发送"}
+          </button>
+        </div>
+      </div>
+      <aside style={wzSidePanel}>
+        <div style={{fontFamily:"JetBrains Mono,monospace",fontSize:10,color:"#888",letterSpacing:"0.1em",textTransform:"uppercase",marginBottom:10}}>Brief 进度</div>
+        <div style={wzProgressOuter}>
+          <div style={{...wzProgressInner, width: `${Math.round(completeness*100)}%`}}></div>
+        </div>
+        <div style={{fontSize:13,marginTop:8}}>{Math.round(completeness*100)}% 完成</div>
+        {missing.length > 0 && (
+          <div style={{fontSize:12,color:"#c77",marginTop:14,lineHeight:1.5}}>
+            还缺必填：<br/>
+            {missing.map(m => <div key={m} style={{marginTop:2}}>· {m}</div>)}
+          </div>
+        )}
+        <div style={{marginTop:20}}>
+          <button
+            onClick={enterPlanning}
+            disabled={!readyForTier}
+            style={{...wzBtnPrimary, width:"100%", opacity: readyForTier ? 1 : .35, cursor: readyForTier ? "pointer" : "not-allowed"}}
+          >
+            进入选档 →
+          </button>
+          {!readyForTier && <div style={{fontSize:11,marginTop:8,color:"#888"}}>完成必填项后激活</div>}
+        </div>
+        <div style={{marginTop:28,paddingTop:20,borderTop:"1px solid #e5e5e5"}}>
+          <div style={{fontSize:11,color:"#888"}}>Project · {project.slug}</div>
+          <div style={{fontSize:11,color:"#888",marginTop:4}}>State · {project.state}</div>
+        </div>
+      </aside>
+    </div>
+  );
+}
+
+// ───── Step 2 · TierPicker ─────
+
+function TierPickerStep({ project, onPatch }) {
+  const [picked, setPicked] = useState(project.tier || null);
+  const [variantCount, setVariantCount] = useState(project.variant_count || 1);
+  const [saving, setSaving] = useState(false);
+
+  const select = (tierId) => {
+    setPicked(tierId);
+    if (tierId === "select") setVariantCount(3);
+    else if (picked === "select") setVariantCount(1);
+  };
+
+  const submit = async () => {
+    if (!picked) return;
+    setSaving(true);
+    try {
+      await onPatch({
+        tier: picked,
+        variant_count: variantCount,
+        render_engine: TIERS_UI.find(t => t.id === picked).render_engine,
+        state: "generating",
+      });
+    } catch (e) {
+      alert("选档失败: " + e.message);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const backToBriefing = async () => {
+    try { await onPatch({ state: "briefing" }); } catch (e) { alert(e.message); }
+  };
+
+  return (
+    <div style={wzStepBody}>
+      <div style={{width:"100%",maxWidth:1100,margin:"0 auto"}}>
+        <h2 style={{fontFamily:"Fraunces,serif",fontWeight:400,fontSize:28,margin:"0 0 8px"}}>选产物档位</h2>
+        <div style={{color:"#888",fontSize:14,marginBottom:30}}>对齐 StartUP-Building/CLAUDE.md Step 0b · 5 档产物深度 · 档位决定渲染引擎</div>
+        <div style={wzTierGrid}>
+          {TIERS_UI.map(t => (
+            <div
+              key={t.id}
+              onClick={() => select(t.id)}
+              style={{...wzTierCard, ...(picked === t.id ? wzTierCardPicked : {})}}
+            >
+              <div style={{fontSize:32,marginBottom:10}}>{t.icon}</div>
+              <div style={{fontFamily:"Fraunces,serif",fontSize:20,fontWeight:400}}>{t.label_zh}</div>
+              <div style={{fontSize:12,color:"#777",marginTop:6,lineHeight:1.5,flex:1}}>{t.desc_zh}</div>
+              <div style={{marginTop:14,fontSize:11,color:"#888",display:"flex",justifyContent:"space-between"}}>
+                <span>{t.render_engine === "fast" ? "⚡ 快速" : "🎨 Blender"}</span>
+                <span>~{t.est_min} min</span>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div style={{display:"flex",justifyContent:"space-between",marginTop:30}}>
+          <button onClick={backToBriefing} style={wzBtnGhost}>← 回 Brief</button>
+          <button onClick={submit} disabled={!picked || saving} style={{...wzBtnPrimary, opacity: picked ? 1 : .35}}>
+            {saving ? "..." : `开始生成 (${picked ? TIERS_UI.find(t => t.id === picked).label_zh : "选一个"})`}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ───── Step 3 · GenerateProgress（占位 · 6.D 实装）─────
+
+function GenerateProgressStep({ project }) {
+  const backPlanning = async () => {
+    await fetch(`/api/projects/${project.slug}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ state: "planning", version: project.version }),
+      credentials: "include",
+    });
+    window.location.reload();
+  };
+  return (
+    <div style={wzStepBody}>
+      <div style={{maxWidth:720,margin:"60px auto",textAlign:"center"}}>
+        <div style={{fontSize:56}}>🚧</div>
+        <h2 style={{fontFamily:"Fraunces,serif",fontSize:28,fontWeight:400,marginTop:20}}>生成功能 · Phase 6.D 实装中</h2>
+        <div style={{color:"#777",fontSize:14,lineHeight:1.8,marginTop:18}}>
+          当前 state = <b>generating</b> · tier = <b>{project.tier}</b> · variant_count = {project.variant_count} · render_engine = {project.render_engine}
+        </div>
+        <div style={{color:"#888",fontSize:13,marginTop:30,lineHeight:1.8}}>
+          下一阶段：<br/>
+          · 前端订阅 <code>/api/jobs/&lt;id&gt;/stream</code> SSE<br/>
+          · Worker（本机 tencent-hk · systemd）从 Upstash 队列拉 job<br/>
+          · 调 <code>arctura_mvp.pipeline.run</code> 按档位产出 artifacts<br/>
+          · 完成推 state → live · 跳 <code>/project/&lt;slug&gt;</code>
+        </div>
+        <div style={{marginTop:40}}>
+          <button onClick={backPlanning} style={wzBtnGhost}>← 回档位选择</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ───── Wizard styles ─────
+
+const wzRoot = {
+  minHeight: "100vh", background: "#FAFAF7", color: "#1a1a1a",
+  fontFamily: "Inter, sans-serif",
+};
+const wzLoading = {
+  minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center",
+  fontFamily: "Fraunces, serif", fontSize: 20, color: "#888", background: "#FAFAF7",
+};
+const wzHeader = {
+  display: "flex", justifyContent: "space-between", alignItems: "center",
+  padding: "18px 32px", borderBottom: "1px solid #e8e8e4",
+};
+const wzSteps = { display: "flex", alignItems: "center", gap: 8 };
+const wzStepDot = {
+  padding: "6px 14px", borderRadius: 14, background: "#eee", color: "#999",
+  fontSize: 12, fontWeight: 500, display: "flex", alignItems: "center",
+};
+const wzStepDotActive = { background: "#2c3e50", color: "#fff" };
+const wzStepLine = { width: 40, height: 1, background: "#ddd" };
+const wzStepLineActive = { background: "#2c3e50" };
+const wzBody = { padding: 0 };
+const wzStepBody = { display: "flex", gap: 0, minHeight: "calc(100vh - 72px)" };
+const wzMainPanel = { flex: 1, padding: 30, display: "flex", flexDirection: "column" };
+const wzSidePanel = {
+  width: 280, padding: 30, borderLeft: "1px solid #e8e8e4",
+  background: "#F5F3EE", display: "flex", flexDirection: "column",
+};
+const wzChatScroll = { flex: 1, overflow: "auto", paddingRight: 12, maxHeight: "calc(100vh - 220px)" };
+const wzMsg = { padding: "10px 14px", borderRadius: 10, margin: "8px 0", maxWidth: "80%", lineHeight: 1.6, fontSize: 14 };
+const wzMsgUser = { background: "#2c3e50", color: "#fff", marginLeft: "auto" };
+const wzMsgAsst = { background: "#fff", color: "#1a1a1a", border: "1px solid #eee" };
+const wzInputRow = { display: "flex", gap: 10, marginTop: 14 };
+const wzInput = {
+  flex: 1, padding: "12px 14px", border: "1px solid #ddd", borderRadius: 8,
+  fontFamily: "inherit", fontSize: 14, resize: "vertical",
+};
+const wzBtnPrimary = {
+  padding: "12px 24px", border: 0, borderRadius: 8,
+  background: "#2c3e50", color: "#fff", cursor: "pointer", fontSize: 14, fontWeight: 500,
+};
+const wzBtnGhost = {
+  padding: "12px 24px", border: "1px solid #ccc", borderRadius: 8,
+  background: "#fff", color: "#555", cursor: "pointer", fontSize: 14,
+};
+const wzProgressOuter = { height: 6, background: "#e0dfd9", borderRadius: 3, overflow: "hidden" };
+const wzProgressInner = { height: "100%", background: "#2c3e50", transition: "width .4s" };
+const wzTierGrid = {
+  display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 16,
+};
+const wzTierCard = {
+  padding: 22, border: "2px solid #e0e0e0", borderRadius: 10, cursor: "pointer",
+  background: "#fff", display: "flex", flexDirection: "column", minHeight: 190, transition: "all .18s",
+};
+const wzTierCardPicked = { borderColor: "#2c3e50", boxShadow: "0 6px 16px -6px rgba(44,62,80,.25)" };
 
 ReactDOM.createRoot(document.getElementById("root")).render(<Root />);
