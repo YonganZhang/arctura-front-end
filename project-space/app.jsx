@@ -2477,7 +2477,9 @@ function App() {
 
 // ───────── Root · 先异步加载 MVP 数据再 render App ─────────
 function Root() {
-  const [status, setStatus] = useState("loading"); // loading | ready | notfound | error
+  // Phase 6.C · Wizard 路由跳过 loadMvpData（不需要 MVP 数据 · 直接 render Wizard）
+  const isWizard = typeof window !== "undefined" && isWizardRoute();
+  const [status, setStatus] = useState(isWizard ? "ready" : "loading"); // loading | ready | notfound | error
   const [errMsg, setErrMsg] = useState("");
   const slug = getSlugFromUrl();
   const [projectState, dispatch] = useReducer(projectReducer, { current: null, original: null, history: [] });
@@ -2491,9 +2493,9 @@ function Root() {
   }
 
   useEffect(() => {
+    if (isWizard) return;  // Wizard 场景无需 MVP 数据
     loadMvpData(slug)
       .then(data => {
-        // 确保 slug 字段存在（默认 zen-tea 可能没有）
         if (!data.slug) data.slug = slug || "zen-tea";
         window.ZEN_DATA = data;
         stateHolder.current = data;
@@ -2654,6 +2656,13 @@ function useWizardProject() {
 function Wizard() {
   const { project, loading, error, refresh, patch } = useWizardProject();
 
+  // 已 live · 跳转（hook 必须在 if return 前 · 无条件调用）
+  useEffect(() => {
+    if (project?.state === "live") {
+      window.location.href = `/project/${project.slug}`;
+    }
+  }, [project?.state, project?.slug]);
+
   if (loading) return <div style={wzLoading}>准备工作区…</div>;
   if (error)   return <div style={wzLoading}>出错：{error}<br/><a href="/new" style={{color:"#4a9"}}>重试</a></div>;
   if (!project) return <div style={wzLoading}>没拿到项目</div>;
@@ -2663,13 +2672,6 @@ function Wizard() {
              : project.state === "planning" ? 2
              : project.state === "generating" ? 3
              : project.state === "live" ? 4 : 0;
-
-  // 已 live · 跳转
-  useEffect(() => {
-    if (project.state === "live") {
-      window.location.href = `/project/${project.slug}`;
-    }
-  }, [project.state, project.slug]);
 
   return (
     <div style={wzRoot}>
