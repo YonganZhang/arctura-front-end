@@ -60,11 +60,41 @@ function renderMvps(filter = "all") {
   grid.innerHTML = items.map(mvpCard).join("");
 }
 
+// Phase 6.A · 动态画廊：优先 /api/projects · 失败 fallback 静态 mvps-index.json
 async function loadMvpIndex() {
   const grid = document.getElementById("mvp-grid");
   if (grid) {
     grid.innerHTML = `<div style="grid-column:1/-1;padding:40px;text-align:center;color:var(--ink-mute);font-family:var(--f-mono);font-size:12px">Loading MVPs…</div>`;
   }
+
+  // 动态 · KV + session 感知（anon cookie · 看到自己的 draft）
+  try {
+    const r = await fetch("/api/projects?limit=100", { credentials: "include", cache: "no-cache" });
+    if (r.ok) {
+      const data = await r.json();
+      // 把 API 返回映射成旧 gallery 字段
+      window.MVPS = (data.projects || []).map(p => ({
+        slug: p.slug,
+        name: p.display_name,
+        name_zh: p.display_name,
+        type: p.state === "live" ? "P1-interior" : "(draft)",
+        cat: "workplace",
+        compliance: p.state === "live" ? "PASS" : "DRAFT",
+        thumb: p.hero_img || null,
+        hero: p.hero_img || null,
+        complete: p.state === "live",
+        state: p.state,
+        tier: p.tier,
+        _source: data.source || "kv",
+      }));
+      renderMvps();
+      return;
+    }
+  } catch (e) {
+    console.warn("[mvp-index] /api/projects failed, fall back to static:", e);
+  }
+
+  // Fallback: 静态 mvps-index.json
   try {
     const r = await fetch(MVP_INDEX_URL, { cache: "no-cache" });
     if (!r.ok) throw new Error(`HTTP ${r.status}`);

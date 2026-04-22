@@ -46,14 +46,24 @@ export default async function handler(req) {
   if (body.version !== undefined && body.version !== p.version) {
     return json({ error: "version conflict", expected: body.version, current: p.version }, 409);
   }
-  if (p.state !== "live") {
-    return json({ error: `state=${p.state} · 只能 live 态保存` }, 400);
+  // 老 MVP（legacy · migrated from static）state=live 但没 pending · 允许"pass-through"保存（供 SaveButton 走完流程）
+  if (p.state !== "live" && p.state !== "briefing" && p.state !== "planning") {
+    return json({ error: `state=${p.state} · 不允许保存` }, 400);
   }
-  if (!p.pending_count || p.pending_count === 0) {
+
+  // Phase 6.D · 前端传 pending_edits list · 合并后端已存的 · 写入 KV
+  const frontendPending = Array.isArray(body.pending_edits) ? body.pending_edits : [];
+  if (frontendPending.length === 0 && (!p.pending_count || p.pending_count === 0)) {
     return json({ ok: true, pending_cleared: 0, already_saved: true });
   }
 
-  const pendingCleared = p.pending_count;
+  // 存 pending_edits 供后续 git commit 读（如有 GITHUB_TOKEN）
+  if (frontendPending.length > 0) {
+    await kv("set", `project:${slug}:pending_edits`,
+             JSON.stringify(frontendPending), "EX", String(7 * 86400));
+  }
+
+  const pendingCleared = frontendPending.length || p.pending_count || 0;
   p.pending_count = 0;
   p.version = (p.version || 0) + 1;
   p.updated_at = new Date().toISOString();

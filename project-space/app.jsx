@@ -1,6 +1,26 @@
 /* global React, ReactDOM, ZEN_DATA */
 const { useState, useRef, useEffect, useMemo, useReducer, useContext, useCallback, createContext } = React;
 
+// ═══ Phase 6.D · pending edits · localStorage 按 slug 累计 ═══
+// 家具级改动（Plan Mode apply / FurnitureCard save / chat-edit）追加到 pending
+// UI 改动（日夜/透明/视角/orbit）不计 · 仍走独立 localStorage（Phase 5.4）
+function pendingKey(slug) { return `arctura:pending:${slug || "unknown"}`; }
+function getPending(slug) {
+  try { return JSON.parse(localStorage.getItem(pendingKey(slug)) || "[]"); } catch { return []; }
+}
+function appendPending(slug, entry) {
+  if (!slug) return;
+  const list = getPending(slug);
+  list.push({ ...entry, ts: Date.now() });
+  try { localStorage.setItem(pendingKey(slug), JSON.stringify(list.slice(-500))); } catch {}
+  // 通知 SaveButton 刷新
+  window.dispatchEvent(new CustomEvent("arctura:pending-changed", { detail: { slug } }));
+}
+function clearPending(slug) {
+  try { localStorage.removeItem(pendingKey(slug)); } catch {}
+  window.dispatchEvent(new CustomEvent("arctura:pending-changed", { detail: { slug } }));
+}
+
 // D 是 live-proxy 到 window.ZEN_DATA · 读取当前 state
 // 运行时被 ProjectProvider 通过 stateHolder 接管（chat-edit 后切换数据）
 const stateHolder = { current: null };
@@ -170,6 +190,7 @@ function Topbar() {
         <span className="tb-status">
           {D.project?.area ? `${D.project.area} m² · ${D.project.location || "HK"}` : "Pipeline synced"}
         </span>
+        <SaveButton slug={D.slug} />
         <button className="tb-btn" onClick={handleShare}>Share</button>
         <a className="tb-btn primary"
            href={(() => {
@@ -1479,6 +1500,12 @@ function Chat({ onNavigate }) {
       if (r.ok) {
         const data = await r.json();
         if (data.newState) dispatch({ type: "APPLY_EDIT", newState: data.newState });
+        // Phase 6.D · 追加 pending
+        (data.applied || []).forEach(a => appendPending(current.slug, {
+          source: "plan-mode",
+          call: a.call?.name,
+          summary: a.summary,
+        }));
         setMsgs(m => m.map((msg, i) => i === msgIdx
           ? { ...msg, planStatus: "applied", planAppliedCount: data.applied?.length || 0,
               rejected: data.rejected || [] }
@@ -1866,6 +1893,9 @@ function FurnitureCard({ scene, selection, onClose, onSaved, furnitureTypes }) {
           if (labelChanged) target.label_zh = draft.label_zh;
           if (zoneChanged)  target.zone     = draft.zone;
           dispatch({ type: "APPLY_EDIT", newState: { ...D, scene: newScene } });
+          // Phase 6.D · 追 pending
+          if (labelChanged) appendPending(D.slug, { source: "card", op: "change_label", target: target.id });
+          if (zoneChanged)  appendPending(D.slug, { source: "card", op: "change_zone", target: target.id });
           showToast("✓ 已保存");
           onSaved?.(newScene);
           onClose?.();
@@ -1882,6 +1912,10 @@ function FurnitureCard({ scene, selection, onClose, onSaved, furnitureTypes }) {
       if (data.rejected?.length) {
         setErr(`部分改动未应用：${data.rejected.map(x => x.reason).join(", ")}`);
       }
+      // Phase 6.D · 追 pending（成功的 ops）
+      (data.applied || []).forEach(a => appendPending(D.slug, {
+        source: "card", op: a.op?.op || "unknown", target: a.op?.target,
+      }));
       if (data.newScene) {
         // 同时把 label / zone 本地改上（不走 ops · 见上）
         const newScene = JSON.parse(JSON.stringify(data.newScene));
@@ -2576,6 +2610,78 @@ function SelectionProvider({ children }) {
     <SelectionCtx.Provider value={{ selection, setSelection }}>
       {children}
     </SelectionCtx.Provider>
+  );
+}
+
+// ═══ Phase 6.D · SaveButton · Project 页持久化按钮 ═══
+// pending_count > 0 时显示 · 点击 POST /api/projects/<slug>/save · KV 清 pending_edits + 可选 git commit
+function SaveButton({ slug }) {
+  const [count, setCount] = useState(() => getPending(slug).length);
+  const [saving, setSaving] = useState(false);
+  const [lastSavedAt, setLastSavedAt] = useState(null);
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.detail?.slug === slug) setCount(getPending(slug).length);
+    };
+    window.addEventListener("arctura:pending-changed", handler);
+    // 初始读一次
+    setCount(getPending(slug).length);
+    return () => window.removeEventListener("arctura:pending-changed", handler);
+  }, [slug]);
+
+  // 不显示：无 slug / slug 是 zen-tea 老 demo / count=0（无变动）
+  if (!slug || slug === "zen-tea" || count === 0) {
+    if (lastSavedAt && Date.now() - lastSavedAt < 3000) {
+      return <span className="tb-status" style={{color:"#4a9",fontSize:12}}>✓ 已保存</span>;
+    }
+    return null;
+  }
+
+  const onSave = async () => {
+    if (saving) return;
+    setSaving(true);
+    try {
+      const pending = getPending(slug);
+      const r = await fetch(`/api/projects/${slug}/save`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pending_edits: pending }),
+        credentials: "include",
+      });
+      if (!r.ok) {
+        if (r.status === 400 || r.status === 404) {
+          // project 不在 KV（老 legacy · 没迁完）· 仅本地清
+          clearPending(slug);
+          showToast(`⚠ 后端不识别（${r.status}）· 本地已清 pending`);
+          setLastSavedAt(Date.now());
+          return;
+        }
+        const err = await r.json().catch(() => ({}));
+        throw new Error(err.error || `HTTP ${r.status}`);
+      }
+      const d = await r.json();
+      clearPending(slug);
+      setLastSavedAt(Date.now());
+      const extra = d.commit_sha ? ` · commit ${d.commit_sha.slice(0,7)}` : "";
+      showToast(`✓ 已保存 ${d.pending_cleared || 0} 项${extra}`);
+    } catch (e) {
+      showToast(`⚠ 保存失败: ${e.message}`);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <button
+      className="tb-btn primary"
+      onClick={onSave}
+      disabled={saving}
+      style={{marginRight: 8}}
+      title={`${count} 项改动待保存`}
+    >
+      {saving ? "保存中…" : `保存 (${count})`}
+    </button>
   );
 }
 
