@@ -1448,6 +1448,46 @@ function Chat({ onNavigate }) {
     return turns;
   };
 
+  // Phase 4 · 用户确认 plan · 执行选中 steps
+  const applyPlan = async (msgIdx, selectedCalls) => {
+    if (!selectedCalls || selectedCalls.length === 0) {
+      cancelPlan(msgIdx);
+      return;
+    }
+    setThinking(true);
+    try {
+      const r = await fetch("/api/chat-edit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "apply",
+          slug: current.slug,
+          currentState: current,
+          tool_calls: selectedCalls,
+        }),
+      });
+      if (r.ok) {
+        const data = await r.json();
+        if (data.newState) dispatch({ type: "APPLY_EDIT", newState: data.newState });
+        setMsgs(m => m.map((msg, i) => i === msgIdx
+          ? { ...msg, planStatus: "applied", planAppliedCount: data.applied?.length || 0,
+              rejected: data.rejected || [] }
+          : msg));
+        showToast(`✓ 已应用 ${data.applied?.length || 0} 项改动`);
+      } else {
+        const err = await r.json().catch(() => ({}));
+        showToast(`应用失败：${err.error || "unknown"}`);
+      }
+    } catch (e) {
+      showToast(`网络错误：${e.message}`);
+    } finally {
+      setThinking(false);
+    }
+  };
+  const cancelPlan = (msgIdx) => {
+    setMsgs(m => m.map((msg, i) => i === msgIdx ? { ...msg, planStatus: "cancelled" } : msg));
+  };
+
   const send = async (text) => {
     if (!text.trim() || thinking) return;
     if (!current || !current.slug) {
@@ -1496,9 +1536,21 @@ function Chat({ onNavigate }) {
         }]);
       } else {
         const data = await r.json();
+        // Phase 4 · plan mode · 不立即 apply · 等用户在 PlanPreview 里确认
+        if (data.plan && data.plan.steps?.length > 0) {
+          setMsgs(m => [...m, {
+            role: "bot",
+            text: data.text || "(planning)",
+            plan: data.plan,
+            planStatus: "pending",
+            model: data.model,
+          }]);
+          setThinking(false);
+          return;
+        }
+        // 旧 apply 路径（保留用于 action=apply 回调 · 普通 chat 现在走 plan 路径）
         if (data.newState && data.applied && data.applied.length > 0) {
           dispatch({ type: "APPLY_EDIT", newState: data.newState });
-          // 提示用户去看变化的 tab · 根据改了什么字段判断
           const affected = new Set();
           for (const a of data.applied) {
             const f = a.call?.args?.field || a.call?.name;
@@ -1518,18 +1570,6 @@ function Chat({ onNavigate }) {
           text: data.text || "(processed)",
           applied: data.applied || [],
           rejected: data.rejected || [],
-          affectedTabs: Array.from(
-            new Set((data.applied || []).flatMap(a => {
-              const f = a.call?.args?.field;
-              const n = a.call?.name;
-              if (n === "switch_variant") return ["overview", "3d"];
-              if (n === "switch_region" || f === "region") return ["compliance", "boq"];
-              if (f === "area_m2" || n === "scale_editable") return ["boq", "energy"];
-              if (f === "insulation_mm" || f === "glazing_uvalue") return ["compliance", "energy"];
-              if (f === "lighting_cct" || f === "lighting_density_w_m2" || f === "wwr") return ["energy"];
-              return [];
-            }))
-          ),
           model: data.model,
         }]);
       }
@@ -1625,6 +1665,22 @@ function Chat({ onNavigate }) {
           ) : (
             <div key={i} className={"msg " + m.role + (m.error ? " error" : "")}>
               {m.text}
+              {/* Phase 4 · plan preview · 用户确认后执行 */}
+              {m.plan && m.planStatus !== "applied" && m.planStatus !== "cancelled" && (
+                <PlanPreview
+                  plan={m.plan}
+                  status={m.planStatus || "pending"}
+                  onApply={(selectedCalls) => applyPlan(i, selectedCalls)}
+                  onCancel={() => cancelPlan(i)}
+                  thinking={thinking}
+                />
+              )}
+              {m.planStatus === "applied" && (
+                <div style={{ marginTop: 6, padding: "4px 8px", background: "rgba(76,175,80,0.12)", color: "#4caf50", fontSize: 11, borderRadius: 3, fontFamily: "var(--f-mono)" }}>✓ 已应用 {m.planAppliedCount} 项</div>
+              )}
+              {m.planStatus === "cancelled" && (
+                <div style={{ marginTop: 6, padding: "4px 8px", background: "var(--bg-1)", color: "var(--text-3)", fontSize: 11, borderRadius: 3 }}>已取消</div>
+              )}
               {m.diff && <div className="msg-diff"><i>+</i>{m.diff}</div>}
               {m.applied && m.applied.length > 0 && (
                 <div className="msg-diff" style={{background:"rgba(76,175,80,0.1)", color:"#2c7a2c"}}>
@@ -1947,6 +2003,80 @@ function FurnitureCard({ scene, selection, onClose, onSaved, furnitureTypes }) {
         <button onClick={onDelete} disabled={saving} style={btnStyle("danger", saving)}>删除</button>
         <button onClick={onClose} disabled={saving} style={btnStyle("ghost")}>取消</button>
       </div>
+    </div>
+  );
+}
+
+// Phase 4 · PlanPreview · chat 消息里内嵌 · 展示 plan 步骤 + dry-run 状态 + 单选复选 · 用户按"应用"执行
+function PlanPreview({ plan, status, onApply, onCancel, thinking }) {
+  const steps = plan?.steps || [];
+  const [selected, setSelected] = useState(() => {
+    // 默认全选 · 但 dry-run 失败的不选
+    const s = {};
+    for (const st of steps) s[st.id] = st.dry_run?.ok !== false;
+    return s;
+  });
+  const toggleStep = (id) => setSelected(s => ({ ...s, [id]: !s[id] }));
+  const selectedCalls = steps.filter(s => selected[s.id]).map(s => s.tool_call).filter(Boolean);
+  const anyFailing = steps.some(s => s.dry_run && !s.dry_run.ok);
+
+  return (
+    <div style={{
+      marginTop: 8, padding: "8px 10px",
+      background: "rgba(255,255,255,0.04)",
+      border: "1px solid var(--line-2)", borderLeft: "3px solid var(--accent)",
+      borderRadius: 3,
+      fontSize: 12, color: "var(--text-2)",
+    }}>
+      <div style={{ fontFamily: "var(--f-mono)", fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--text-3)", marginBottom: 6 }}>
+        AI 建议 · {plan.intent || "操作方案"} · {steps.length} 步
+      </div>
+      {steps.map((s) => {
+        const ok = s.dry_run?.ok !== false;
+        const reason = s.dry_run?.reason;
+        return (
+          <label key={s.id} style={{
+            display: "flex", alignItems: "flex-start", gap: 6, padding: "4px 0",
+            cursor: ok ? "pointer" : "not-allowed",
+            opacity: ok ? 1 : 0.6,
+          }}>
+            <input type="checkbox" checked={!!selected[s.id]} disabled={!ok || thinking || status !== "pending"}
+                   onChange={() => toggleStep(s.id)}
+                   style={{ marginTop: 3 }} />
+            <div style={{ flex: 1, lineHeight: 1.4 }}>
+              <div>
+                <span style={{ color: ok ? "var(--text)" : "#f88" }}>{s.desc || s.tool_call?.name || `step ${s.id}`}</span>
+                <span style={{ marginLeft: 6, fontSize: 9, color: "var(--text-3)", fontFamily: "var(--f-mono)" }}>
+                  {s.tool_call?.name}
+                </span>
+              </div>
+              {!ok && reason && (
+                <div style={{ fontSize: 10, color: "#f88", marginTop: 1 }}>⚠️ dry-run: {reason}</div>
+              )}
+            </div>
+          </label>
+        );
+      })}
+      {status === "pending" && (
+        <div style={{ display: "flex", gap: 6, marginTop: 8, alignItems: "center" }}>
+          <button onClick={() => onApply(selectedCalls)} disabled={thinking || selectedCalls.length === 0}
+            style={{
+              padding: "4px 12px", fontSize: 11, border: "none", borderRadius: 3,
+              background: "var(--accent)", color: "#0C0D10",
+              cursor: thinking ? "wait" : (selectedCalls.length ? "pointer" : "not-allowed"),
+              opacity: selectedCalls.length ? 1 : 0.4,
+              fontFamily: "var(--f-sans)",
+            }}>应用 {selectedCalls.length > 0 && `(${selectedCalls.length})`}</button>
+          <button onClick={onCancel} disabled={thinking}
+            style={{
+              padding: "4px 12px", fontSize: 11,
+              background: "transparent", color: "var(--text-2)",
+              border: "1px solid var(--line-2)", borderRadius: 3, cursor: "pointer",
+              fontFamily: "var(--f-sans)",
+            }}>取消</button>
+          {anyFailing && <span style={{ fontSize: 10, color: "#f88", fontFamily: "var(--f-mono)" }}>注：失败步骤已自动取消勾选</span>}
+        </div>
+      )}
     </div>
   );
 }

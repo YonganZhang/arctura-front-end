@@ -36,15 +36,15 @@ function usesCompletionTokens(model) {
   return /^(gpt-5|o[1-9])/i.test(model);
 }
 
-// System prompt · 教 LLM 怎么用 tools
+// System prompt · Phase 4 · 所有请求都输出 plan（用户确认前不执行）
 function buildSystemPrompt(state) {
   const editable = state.editable || {};
   const variants = (state.variants?.list || []).map(v => `${v.id} (${v.name})`).join(", ") || "none";
   return `You are an AI design co-pilot inside the Arctura Labs interior-design platform.
 The user is editing a real project. Your job:
-1. Understand their natural-language request
-2. Reply briefly (1-2 sentences) explaining what you're changing and why
-3. Emit one or more tool_calls as a JSON code block to actually apply changes
+1. Understand user's request（can be subjective like "更温馨" or exact like "删衣柜"）
+2. Break it into concrete steps (1 step for simple, N steps for compound intent)
+3. 每步附带要调用的 tool_call · 服务端 dry-run 每步 · 用户确认后才真 apply
 
 Current project state:
 - slug: ${state.slug}
@@ -52,80 +52,99 @@ Current project state:
 - current editable: ${JSON.stringify(editable)}
 - available variants: ${variants}
 
-Available tools (emit as JSON):
+Available tools:
 ${TOOLS.map(t => `  • ${t.name}: ${t.description}
     params: ${JSON.stringify(t.parameters.properties)}`).join("\n")}
 
 Editable field ranges:
-- area_m2: 10-1000
-- insulation_mm: 0-300 (XPS thickness)
-- glazing_uvalue: 0.6-6.0 W/m²K (lower = better)
-- lighting_cct: 2200-6500 K (warmer = lower, e.g. 2700 warm / 3000 neutral / 4000 cool)
-- lighting_density_w_m2: 1-30
-- wwr: 0-0.95 (window-to-wall ratio)
-- region: HK/CN/US/JP (affects compliance + cost)
+- area_m2: 10-1000 · insulation_mm: 0-300 · glazing_uvalue: 0.6-6.0 (lower=better)
+- lighting_cct: 2200-6500K (warmer=lower · 2700 暖 · 3000 中 · 4000 冷)
+- lighting_density_w_m2: 1-30 · wwr: 0-0.95 · region: HK/CN/US/JP
 
-**Reply format (strict)**:
-<plain text explanation for the user, 1-2 sentences>
+**Output format (strict)** · 一律用 plan 结构：
+
+<1-2 sentences explanation · 告诉用户你的思路>
 
 \`\`\`json
-{"tool_calls": [
-  {"name": "set_editable", "args": {"field": "lighting_cct", "value": 2700}}
-]}
+{
+  "plan": {
+    "intent": "一句话概括用户意图",
+    "steps": [
+      { "id": 1, "desc": "<中文描述这步做啥>", "tool_call": { "name": "...", "args": {...} } }
+    ]
+  }
+}
 \`\`\`
 
-Examples:
+**例 1 · 简单指令（1 step）**：
 
-User: "make it warmer"
-Assistant: Dropped the color temperature from 3000K to 2700K for a warmer, cozier feel. EUI will go up a couple points.
+User: "删衣柜"
+Assistant: 好，把衣柜从场景里删掉。
 \`\`\`json
-{"tool_calls": [{"name": "set_editable", "args": {"field": "lighting_cct", "value": 2700}}]}
+{"plan":{"intent":"删除衣柜","steps":[
+  {"id":1,"desc":"删除衣柜及其所有零件","tool_call":{"name":"remove_furniture","args":{"id_or_name":"衣柜"}}}
+]}}
 \`\`\`
 
-User: "show me the wabi-sabi variant"
-Assistant: Switching to the Japanese Wabi-Sabi variant — raw wood, white walls, pottery accents.
+**例 2 · 模糊意图（多 step）**：
+
+User: "让房间更温馨"
+Assistant: 为营造温暖氛围 · 降色温 + 墙刷暖米 + 加一盏阅读角落地灯。
 \`\`\`json
-{"tool_calls": [{"name": "switch_variant", "args": {"variant_id": "v2-wabi-sabi"}}]}
+{"plan":{"intent":"让房间更温馨","steps":[
+  {"id":1,"desc":"主灯色温降到 2700K 暖光","tool_call":{"name":"change_light","args":{"id_or_name":"all","cct":2700}}},
+  {"id":2,"desc":"北墙刷暖米色 #E8DCC8","tool_call":{"name":"change_material","args":{"target":"wall_N","base_color":"#E8DCC8"}}},
+  {"id":3,"desc":"阅读角加一盏落地灯","tool_call":{"name":"add_furniture","args":{"type":"lamp_floor","pos":[1.8,-1.0,0],"label_zh":"阅读灯"}}}
+]}}
 \`\`\`
 
-User: "scale up 25%"
-Assistant: Scaling the floor area by 1.25× (40→50 m²). Budget and energy use will grow proportionally.
+**例 3 · 相对指令**：
+
+User: "把沙发往左移 30cm"
+Assistant: 把沙发 x 方向平移 -30cm。
 \`\`\`json
-{"tool_calls": [{"name": "scale_editable", "args": {"field": "area_m2", "factor": 1.25}}]}
+{"plan":{"intent":"沙发左移","steps":[
+  {"id":1,"desc":"沙发左移 30cm","tool_call":{"name":"move_furniture","args":{"id_or_name":"沙发","pos_delta":[-0.3,0,0]}}}
+]}}
 \`\`\`
 
-User: "check Tokyo code"
-Assistant: Switching compliance region to Japan (省エネ法 2025). This is a stricter envelope code; some items may fail.
-\`\`\`json
-{"tool_calls": [{"name": "switch_region", "args": {"region": "JP"}}]}
-\`\`\`
+**例 4 · 不可操作**（如场景里没有"宠物"）：
+
+User: "删掉宠物"
+Assistant: 场景里没有宠物对象 · 无法删除。可以告诉我具体家具名？
+（不 emit plan 代码块）
 
 Rules:
-- **CRITICAL**: 每个能操作的请求都必须 emit JSON 代码块 · 哪怕你觉得"已经 tell 用户了"也要带上 · 不 emit = 没生效
-- 多轮对话里 · 每一轮都独立判断当前 user message · 不要因为上一轮成功就省略当前的 tool_calls
-- 如果用户说的东西 scene 里找不到（比如"删宠物" 场景里没宠物）· 才不 emit · 并在 text 里解释
-- 不能做的事（如超出 tool 覆盖范围）· 在 text 里说 · 别硬编 tool name
-- Keep the natural-language reply short (1-2 sentences). The JSON block is separate.
-- Never invent new tool names or fields. Use only what's listed above.` + buildScenePromptFragment(state.scene, state._availableFurnitureTypes);
+- **CRITICAL**: 可操作的请求必须 emit plan 代码块 · 就算只 1 step 也要用 plan 包装 · 统一格式。
+- 多步顺序：由浅入深（先小改再大改）· 便于用户逐项审核
+- 每步 desc 用中文 · 具体说数值（2700K · 0.3m · #E8DCC8）· 不要空话
+- 每 tool_call 的 name / args 必须精确按上面 tools 列表
+- 如果用户请求超 tool 覆盖范围 · 不 emit plan · text 里解释` + buildScenePromptFragment(state.scene, state._availableFurnitureTypes);
 }
 
 function parseLLMReply(raw) {
-  // 提取文本 + JSON 代码块
-  if (!raw) return { text: "(no response)", tool_calls: [] };
-  // 找 ```json ... ``` 块
+  // 提取文本 + JSON 代码块 · 支持 {plan:...} 或 {tool_calls:...}（兼容旧）
+  if (!raw) return { text: "(no response)", tool_calls: [], plan: null };
   const jsonMatch = raw.match(/```(?:json)?\s*(\{[\s\S]*?\})\s*```/);
   let tool_calls = [];
+  let plan = null;
   let text = raw;
   if (jsonMatch) {
     text = raw.replace(jsonMatch[0], "").trim();
     try {
       const parsed = JSON.parse(jsonMatch[1]);
-      tool_calls = parsed.tool_calls || [];
+      if (parsed.plan && Array.isArray(parsed.plan.steps)) {
+        plan = parsed.plan;
+        // 同时为 legacy 代码路径填 tool_calls（所有步骤的 tool_call 铺平）
+        tool_calls = parsed.plan.steps.map(s => s.tool_call).filter(Boolean);
+      } else {
+        tool_calls = parsed.tool_calls || [];
+      }
     } catch (e) {
-      // JSON 解析失败 → 无 tool_calls，text 保留原样
+      // JSON 解析失败
     }
   }
-  return { text: text.trim(), tool_calls };
+  return { text: text.trim(), tool_calls, plan };
 }
 
 // 服务端 variant loader · 通过自身 domain fetch
@@ -145,15 +164,33 @@ async function makeVariantLoader(origin) {
 export default async function handler(req) {
   if (req.method !== "POST") return jsonResponse({ error: "POST only" }, 405);
 
-  const apiKey = process.env.ZHIZENGZENG_API_KEY;
-  if (!apiKey) return jsonResponse({ error: "Server misconfigured: ZHIZENGZENG_API_KEY missing" }, 500);
-
   let body;
   try {
     body = await req.json();
   } catch {
     return jsonResponse({ error: "Invalid JSON body" }, 400);
   }
+
+  // Phase 4 · action=apply · 用户确认 plan 后执行选中的 tool_calls · 不走 LLM
+  if (body?.action === "apply") {
+    const { slug, currentState, tool_calls } = body;
+    if (!slug || !currentState || !Array.isArray(tool_calls)) {
+      return jsonResponse({ error: "Required: slug, currentState, tool_calls (array)" }, 400);
+    }
+    const url = new URL(req.url);
+    const origin = `${url.protocol}//${url.host}`;
+    const variantLoader = await makeVariantLoader(origin);
+    const r = await applyToolCalls(currentState, tool_calls, variantLoader);
+    return jsonResponse({
+      text: "已应用确认的改动",
+      newState: r.newState,
+      applied: r.applied,
+      rejected: r.rejected,
+    });
+  }
+
+  const apiKey = process.env.ZHIZENGZENG_API_KEY;
+  if (!apiKey) return jsonResponse({ error: "Server misconfigured: ZHIZENGZENG_API_KEY missing" }, 500);
 
   const { slug, userMessage, model, chatHistory = [] } = body;
   let currentState = body.currentState;
@@ -257,23 +294,23 @@ export default async function handler(req) {
   // 解析出 tool_calls
   let parsed = parseLLMReply(rawText);
 
-  // FIX · LLM 偶尔说"好的"但忘了发 JSON 块 · 如果 user 消息含明显操作动词且 tool_calls 空 · 再 retry 一次强调格式
-  const ACTION_VERBS = /(删|移|换|加|放|改|升|降|旋转|缩放|remove|delete|move|change|add|place|set|shift|rotate|resize|scale|color|paint|hide|show)/i;
-  if (parsed.tool_calls.length === 0 && ACTION_VERBS.test(userMessage) && attempt === 1) {
+  // 若 LLM 没 emit plan 但用户消息像是操作请求 · retry 1 次要求输出 plan 格式
+  const ACTION_VERBS = /(删|移|换|加|放|改|升|降|旋转|缩放|remove|delete|move|change|add|place|set|shift|rotate|resize|scale|color|paint|hide|show|温馨|冷|暖|亮|暗|现代|简约|北欧)/i;
+  if (!parsed.plan && parsed.tool_calls.length === 0 && ACTION_VERBS.test(userMessage) && attempt === 1) {
     const retryMessages = [
       { role: "system", content: systemPrompt },
       ...userTurns,
       { role: "user", content: userMessage },
       { role: "assistant", content: rawText },
-      { role: "user", content: "你上面忘了 emit JSON 代码块 tool_calls · 只说文字没用 · 请**立即**重新回复 · 必须包含 ```json{\"tool_calls\":[...]}``` 代码块 · 否则改动无效。" },
+      { role: "user", content: '你上面忘了 emit plan 代码块 · 请**立即**重新回复 · 必须包含 ```json{"plan":{"intent":"...","steps":[...]}}``` 代码块 · 每步带 tool_call。否则改动无效。' },
     ];
     payload.messages = retryMessages;
     try {
       const retryResp = await callLLM(8000);
       const retryText = retryResp.choices?.[0]?.message?.content || "";
       const retryParsed = parseLLMReply(retryText);
-      if (retryParsed.tool_calls.length > 0) {
-        parsed = { text: parsed.text + " (自动重试后应用)", tool_calls: retryParsed.tool_calls };
+      if (retryParsed.plan || retryParsed.tool_calls.length > 0) {
+        parsed = { text: parsed.text + " (自动重试)", tool_calls: retryParsed.tool_calls, plan: retryParsed.plan };
       }
     } catch {}
   }
@@ -283,23 +320,71 @@ export default async function handler(req) {
   const origin = `${url.protocol}//${url.host}`;
   const variantLoader = await makeVariantLoader(origin);
 
-  // 分离 scene tool calls（13 个新 tool）与 editable tool calls（5 个老 tool）
-  const editableCalls = [];
-  const sceneCalls = [];
-  for (const call of parsed.tool_calls) {
-    if (isSceneTool(call?.name)) sceneCalls.push(call);
-    else editableCalls.push(call);
+  // Phase 4 · plan 模式 · 不直接 apply · dry-run 每步 · 返回给前端等用户确认
+  if (parsed.plan && Array.isArray(parsed.plan.steps)) {
+    let steps = parsed.plan.steps;
+    let dry = await dryRunPlan(currentState, steps, variantLoader);
+    // Self-correction · 若有任何 step 失败 · 给 LLM 反馈 1 轮重 emit
+    const failures = dry.stepResults.filter(r => !r.dry_run.ok);
+    if (failures.length > 0) {
+      const feedback = failures.map(f => `step ${f.id}: ${f.dry_run.reason}`).join("\n");
+      const correctionMessages = [
+        { role: "system", content: systemPrompt },
+        ...userTurns,
+        { role: "user", content: userMessage },
+        { role: "assistant", content: rawText },
+        { role: "user", content: `你的 plan dry-run 发现问题：\n${feedback}\n请基于当前 scene 状态 · 修正这些 step（或删除 · 或换参数 · 或换位置）· 重新 emit 完整 plan。` },
+      ];
+      payload.messages = correctionMessages;
+      try {
+        const retryResp = await callLLM(10000);
+        const retryText = retryResp.choices?.[0]?.message?.content || "";
+        const retryParsed = parseLLMReply(retryText);
+        if (retryParsed.plan && retryParsed.plan.steps?.length > 0) {
+          steps = retryParsed.plan.steps;
+          dry = await dryRunPlan(currentState, steps, variantLoader);
+          parsed = { ...parsed, text: retryParsed.text || parsed.text, plan: retryParsed.plan };
+        }
+      } catch {}
+    }
+    // 每步附 dry_run 结果返回前端
+    const stepsWithDry = steps.map(s => {
+      const r = dry.stepResults.find(r => r.id === s.id);
+      return { ...s, dry_run: r?.dry_run || null };
+    });
+    return jsonResponse({
+      text: parsed.text || "(planning)",
+      plan: { ...parsed.plan, steps: stepsWithDry },
+      previewState: dry.finalState,     // 全部执行后会变成这样 · 客户端仅用于预览
+      newState: currentState,            // 当前状态（未改动）
+      applied: [],
+      rejected: [],
+      model: usedModel,
+      usage,
+    });
   }
 
-  // 先应用 editable tools · applyTools 会替换 currentState
+  // 降级：LLM 没 emit plan（纯信息性回复）· 返回文字
+  return jsonResponse({
+    text: parsed.text || "(processed)",
+    newState: currentState,
+    applied: [],
+    rejected: [],
+    model: usedModel,
+    usage,
+  });
+}
+
+// ───────── Shared · 把 tool_calls 应用到 state（真 apply · 用 in dry-run 和 apply 动作）─────────
+async function applyToolCalls(currentState, tool_calls, variantLoader) {
+  const editableCalls = tool_calls.filter(c => !isSceneTool(c?.name));
+  const sceneCalls = tool_calls.filter(c => isSceneTool(c?.name));
   let { state: newState, applied, rejected } = await applyTools(currentState, editableCalls, {
     variantLoader,
     autoTimeline: true,
   });
-
-  // 再应用 scene tools
   if (sceneCalls.length > 0 && newState.scene) {
-    const opPairs = []; // 每 entry: { call, op } · 用对象引用匹配回调
+    const opPairs = [];
     for (const call of sceneCalls) {
       const r = toolToOps(call, newState.scene);
       if (r.ops.length === 0) {
@@ -314,31 +399,46 @@ export default async function handler(req) {
       newState = { ...newState, scene: sceneResult.newScene };
       for (const a of sceneResult.applied) {
         const pair = opPairs.find(p => p.op === a.op);
-        applied.push({
-          call: pair?.call || { name: `scene_${a.op.op}` },
-          summary: `scene: ${a.op.op}`,
-        });
+        applied.push({ call: pair?.call || { name: `scene_${a.op.op}` }, summary: `scene: ${a.op.op}` });
       }
       for (const r of sceneResult.rejected) {
         const pair = opPairs.find(p => p.op === r.op);
-        rejected.push({
-          call: pair?.call || { name: `scene_${r.op?.op || "unknown"}` },
-          reason: r.reason,
-        });
+        rejected.push({ call: pair?.call || { name: `scene_${r.op?.op || "?"}` }, reason: r.reason });
       }
     }
   } else if (sceneCalls.length > 0 && !newState.scene) {
     for (const call of sceneCalls) {
-      rejected.push({ call, reason: "此 MVP 暂无 scene 数据（Phase 2.0 pilot 只在 01-study-room 启用）" });
+      rejected.push({ call, reason: "此 MVP 暂无 scene 数据" });
     }
   }
+  return { newState, applied, rejected };
+}
 
-  return jsonResponse({
-    text: parsed.text || "(processed)",
-    newState,
-    applied,
-    rejected,
-    model: usedModel,
-    usage,
-  });
+// ───────── Dry-run · 在 state 克隆上 sequential apply 每步 · 不 mutate 入参 ─────────
+async function dryRunPlan(state, steps, variantLoader) {
+  const stepResults = [];
+  let workState = JSON.parse(JSON.stringify(state));
+  for (const step of steps || []) {
+    const call = step?.tool_call;
+    if (!call?.name) {
+      stepResults.push({ id: step.id, dry_run: { ok: false, reason: "step 缺 tool_call" } });
+      continue;
+    }
+    try {
+      const r = await applyToolCalls(workState, [call], variantLoader);
+      const stepOk = r.applied.length > 0 && r.rejected.length === 0;
+      workState = r.newState;
+      stepResults.push({
+        id: step.id,
+        dry_run: {
+          ok: stepOk,
+          reason: stepOk ? null : (r.rejected[0]?.reason || "step rejected"),
+          applied_count: r.applied.length,
+        },
+      });
+    } catch (e) {
+      stepResults.push({ id: step.id, dry_run: { ok: false, reason: String(e.message || e).slice(0, 140) } });
+    }
+  }
+  return { stepResults, finalState: workState };
 }
