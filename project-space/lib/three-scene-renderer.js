@@ -1059,6 +1059,7 @@ export class SceneRenderer {
       case "change_material": {
         // 清材质缓存 · 重建对应 entity
         const target = op.target;
+        this.materials.clear();   // 先清 · 防止缓存污染
         if (target === "floor" && this.floorObj && scene.floor) {
           this.world.remove(this.floorObj);
           this._buildFloor(scene.floor, scene.bounds);
@@ -1071,16 +1072,26 @@ export class SceneRenderer {
             this._removeWall(target);
             this._buildWall(wall);
           }
+        } else if (this.assemblyObjs.has(target)) {
+          // FIX · assembly 材质改变 · 重建整个 assembly（procedural 会拿新 material_id_primary）
+          this._removeAssembly(target);
+          const asm = (scene.assemblies || []).find((a) => a.id === target);
+          if (asm) await this._buildAssembly(asm);
         } else {
           // object
           const obj = this._findObject(target, scene);
           if (obj) {
-            this._removeObject(obj.id);
-            await this._buildObject(obj);
+            // 如果 obj 属于 assembly · 改 assembly（procedural 才看得到）
+            const owner = (scene.assemblies || []).find((a) => (a.part_ids || []).includes(obj.id));
+            if (owner && this.assemblyObjs.has(owner.id)) {
+              this._removeAssembly(owner.id);
+              await this._buildAssembly(owner);
+            } else if (this.objectObjs.has(obj.id)) {
+              this._removeObject(obj.id);
+              await this._buildObject(obj);
+            }
           }
         }
-        // invalidate material cache
-        this.materials.clear();
         break;
       }
     }

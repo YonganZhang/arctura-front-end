@@ -512,11 +512,36 @@ function opChangeMaterial(scene, op) {
     wall.material_id = mat_id;
     return { ok: true, before, after: { material_id: mat_id } };
   }
-  // object
+  // FIX · assembly 优先（procedural 渲染读 asm.material_id_primary · 不读 obj.material_id）
+  const asm = findAssembly(scene, target);
+  if (asm) {
+    const before = {
+      material_id_primary: asm.material_id_primary,
+      parts_before: (asm.part_ids || []).map(pid => {
+        const p = (scene.objects || []).find(o => o.id === pid);
+        return p ? { id: pid, material_id: p.material_id } : null;
+      }).filter(Boolean),
+    };
+    asm.material_id_primary = mat_id;
+    // 级联改 · 所有 parts 的 material_id 也改（raw 模式和未来真 GLB 会用）
+    for (const pid of asm.part_ids || []) {
+      const p = (scene.objects || []).find(o => o.id === pid);
+      if (p) p.material_id = mat_id;
+    }
+    return { ok: true, before, after: { material_id_primary: mat_id, parts_count: (asm.part_ids || []).length } };
+  }
+  // object (fallback · 自由 object 无 assembly)
   const obj = findObject(scene, target);
   if (obj) {
     const before = { material_id: obj.material_id };
     obj.material_id = mat_id;
+    // 如果 obj 归属某 assembly · 也改 assembly material_id_primary（procedural 渲染看的是 assembly）
+    const owner = findAssemblyByObjectId(scene, obj.id);
+    if (owner) {
+      const beforeOwner = owner.material_id_primary;
+      owner.material_id_primary = mat_id;
+      return { ok: true, before: { ...before, owner_before: beforeOwner }, after: { material_id: mat_id, assembly_id: owner.id } };
+    }
     return { ok: true, before, after: { material_id: mat_id } };
   }
   return { ok: false, reason: `target not found: ${target}` };

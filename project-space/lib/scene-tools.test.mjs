@@ -31,12 +31,102 @@ test("isSceneTool recognizes names", () => {
   assert.ok(!isSceneTool("unknown"));
 });
 
-test("move_furniture pos_delta · resolves to move_object", () => {
+test("move_furniture pos_delta · no assembly · falls back to move_object", () => {
   const r = toolToOps({ name: "move_furniture", args: { id_or_name: "衣柜", pos_delta: [-0.3, 0, 0] } }, baseScene());
   assert.equal(r.ops.length, 1);
   assert.equal(r.ops[0].op, "move_object");
   assert.equal(r.ops[0].id, "obj_closet");
   assert.deepEqual(r.ops[0].pos, [1.7, 1.5, 1.0]);
+});
+
+// ───────── Phase 3.M+ · 修 chat 操作家具的 routing（以前总 map 到 object · 现在优先 assembly） ─────────
+
+const sceneWithAsm = () => ({
+  schema_version: "1.0", unit: "m",
+  bounds: { w: 5, d: 4, h: 2.8 },
+  walls: [],
+  objects: [
+    { id: "obj_cabinet", type: "closet_tall", pos: [2.0, 1.5, 1.0], size: [0.6, 0.35, 2.0],
+      material_id: "wood", label_en: "Cabinet", label_zh: "衣柜", assembly_id: "asm_closet_tall_1" },
+    { id: "obj_chair", type: "chair_standard", pos: [0, 0, 0.45], size: [0.5, 0.5, 0.05],
+      material_id: "charcoal", label_zh: "办公椅", assembly_id: "asm_chair_standard_1" },
+    { id: "obj_chairback", type: "custom", pos: [0, -0.25, 0.75], size: [0.5, 0.06, 0.6],
+      material_id: "charcoal", label_zh: "椅背", assembly_id: "asm_chair_standard_1" },
+  ],
+  assemblies: [
+    { id: "asm_closet_tall_1", type: "closet_tall", pos: [2.0, 1.5, 0],
+      size: [0.6, 0.35, 2.0], part_ids: ["obj_cabinet"], primary_part_id: "obj_cabinet",
+      material_id_primary: "wood", label_zh: "衣柜" },
+    { id: "asm_chair_standard_1", type: "chair_standard", pos: [0, 0, 0],
+      size: [0.5, 0.55, 0.85], part_ids: ["obj_chair", "obj_chairback"], primary_part_id: "obj_chair",
+      material_id_primary: "charcoal", label_zh: "办公椅" },
+  ],
+  lights: [],
+  materials: { wood: { base_color: "#8B6F47" }, charcoal: { base_color: "#2C3539" } },
+});
+
+test("remove_furniture with assemblies · 优先 remove_assembly（级联删 parts）", () => {
+  const r = toolToOps({ name: "remove_furniture", args: { id_or_name: "办公椅" } }, sceneWithAsm());
+  assert.equal(r.ops.length, 1);
+  assert.equal(r.ops[0].op, "remove_assembly");   // FIX · 不再是 remove_object
+  assert.equal(r.ops[0].id, "asm_chair_standard_1");
+});
+
+test("remove_furniture by zh label fuzzy match assembly", () => {
+  const r = toolToOps({ name: "remove_furniture", args: { id_or_name: "衣柜" } }, sceneWithAsm());
+  assert.equal(r.ops[0].op, "remove_assembly");
+  assert.equal(r.ops[0].id, "asm_closet_tall_1");
+});
+
+test("move_furniture pos_delta · 走 move_assembly · parts 跟 delta 偏移", () => {
+  const r = toolToOps({ name: "move_furniture", args: { id_or_name: "衣柜", pos_delta: [-0.3, 0, 0] } }, sceneWithAsm());
+  assert.equal(r.ops.length, 1);
+  assert.equal(r.ops[0].op, "move_assembly");
+  assert.equal(r.ops[0].id, "asm_closet_tall_1");
+  assert.deepEqual(r.ops[0].delta, [-0.3, 0, 0]);
+});
+
+test("move_furniture + rotation · 走 rotate_assembly", () => {
+  const r = toolToOps({
+    name: "move_furniture",
+    args: { id_or_name: "衣柜", pos_absolute: [1, 1, 0], rotation_deg: [0, 0, 90] },
+  }, sceneWithAsm());
+  assert.equal(r.ops.length, 2);
+  assert.equal(r.ops[0].op, "move_assembly");
+  assert.equal(r.ops[1].op, "rotate_assembly");
+});
+
+test("change_material target=衣柜 · 解析成 asm id · 级联到 parts", () => {
+  const scene = sceneWithAsm();
+  const r = toolToOps({
+    name: "change_material",
+    args: { target: "衣柜", base_color: "#FFFFFF" },
+  }, scene);
+  assert.equal(r.ops.length, 1);
+  assert.equal(r.ops[0].op, "change_material");
+  // target 应该被解析为 assembly id（scene-ops 会处理 · 让 asm.material_id_primary 改）
+  assert.equal(r.ops[0].target, "asm_closet_tall_1");
+});
+
+test("change_material e2e · asm.material_id_primary + parts.material_id 都更新", () => {
+  const scene = sceneWithAsm();
+  const r1 = toolToOps({
+    name: "change_material",
+    args: { target: "衣柜", base_color: "#FFFFFF" },
+  }, scene);
+  const result = applyOps(scene, r1.ops);
+  assert.equal(result.applied.length, 1);
+  const asm = result.newScene.assemblies.find(a => a.id === "asm_closet_tall_1");
+  const obj = result.newScene.objects.find(o => o.id === "obj_cabinet");
+  // inline material 被注册 · 名字是 mat_inline_1
+  assert.match(asm.material_id_primary, /^mat_inline/);
+  assert.equal(obj.material_id, asm.material_id_primary, "part material cascaded");
+});
+
+test("remove_furniture with missing name → rejected with friendly reason", () => {
+  const r = toolToOps({ name: "remove_furniture", args: { id_or_name: "幽灵" } }, sceneWithAsm());
+  assert.equal(r.ops.length, 0);
+  assert.match(r.reason, /家具不存在/);
 });
 
 test("move_furniture with rotation · emits 2 ops", () => {
