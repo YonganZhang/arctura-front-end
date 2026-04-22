@@ -68,16 +68,16 @@ function useProject() {
 }
 
 // URL slug 解析：?mvp=<slug> 或 /project/<slug>/ 或 /project/
-// /project 默认进 20-zen-tea-room（有 3 个真 variants · 能完整演示 chat / 3D / variant 切换）
+// /project 默认进 01-study-room · 只有它有完整 scene（Phase 2/3/4 新功能：3D viewer / 卡片 / 5 透明 / plan 聊天）
+// 其他 MVP 的 scene 批量生成留 Phase 2.1
 function getSlugFromUrl() {
   const q = new URLSearchParams(location.search).get("mvp");
   if (q) return q;
   const parts = location.pathname.split("/").filter(Boolean);
-  // /project/index.html 时 parts[1]="index.html" · 不是真 slug
   if (parts[0] === "project" && parts[1] && parts[1] !== "index.html") {
     return parts[1];
   }
-  return "20-zen-tea-room"; // 默认 slug · 不用 data.js 老 demo
+  return "01-study-room";
 }
 
 // 缓存默认 data.js 的初始 ZEN_DATA · 不被后续 state 同步覆盖
