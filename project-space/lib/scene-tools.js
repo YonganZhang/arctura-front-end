@@ -172,7 +172,7 @@ export function toolToOps(call, scene) {
 export function sceneSummary(scene, availableTypes = []) {
   if (!scene) return "";
   const lines = [];
-  const { bounds, walls = [], objects = [], lights = [], materials = {} } = scene;
+  const { bounds, walls = [], objects = [], lights = [], materials = {}, assemblies = [] } = scene;
 
   lines.push("## Current Scene Summary");
   lines.push("");
@@ -180,9 +180,20 @@ export function sceneSummary(scene, availableTypes = []) {
     lines.push(`Room bounds: ${bounds.w}m × ${bounds.d}m × ${bounds.h}m`);
   }
 
-  if (objects.length > 0) {
+  // Phase 3.M+ · Assembly 层优先（procedural 渲染 / chat 默认操作粒度）
+  if (assemblies.length > 0) {
+    lines.push(`Assemblies · 家具（${assemblies.length} 件 · chat 的默认操作对象）:`);
+    for (const a of assemblies.slice(0, 30)) {
+      const label = a.label_zh || a.label_en || a.id;
+      lines.push(`  - ${a.id} (${a.type}) @ [${a.pos.join(", ")}] · label="${label}" · 用 "${label}" 或 "${a.type}" 指代`);
+    }
+    if (assemblies.length > 30) lines.push(`  ... +${assemblies.length - 30} more`);
+  }
+
+  if (objects.length > 0 && assemblies.length === 0) {
+    // 无 assemblies 的 MVP · 降级 · 展示 objects
     lines.push(`Objects (${objects.length} total):`);
-    for (const o of objects.slice(0, 40)) {  // 40 件封顶，防 token 爆
+    for (const o of objects.slice(0, 40)) {
       const label = o.label_zh || o.label_en || o.id;
       lines.push(`  - ${o.id} (${o.type}) @ [${o.pos.join(", ")}] · ${label}`);
     }

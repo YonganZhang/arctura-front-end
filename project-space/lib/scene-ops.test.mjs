@@ -352,6 +352,27 @@ test("findAssembly: by id / zh label / type", () => {
   assert.equal(findAssembly(s, "ghost"), null);
 });
 
+test("findAssembly: 中文同义词 · 衣柜 → closet_tall · 椅子 → chair_standard", () => {
+  const s = {
+    schema_version: "1.0", unit: "m", bounds: { w: 5, d: 4, h: 2.8 },
+    walls: [], lights: [], materials: {default:{base_color:"#CCC"}},
+    objects: [
+      { id: "obj_cabinet", type: "closet_tall", pos: [2, 1.5, 1], size: [0.6, 0.35, 2], material_id: "default", label_zh: "收纳柜" },
+      { id: "obj_chair", type: "chair_standard", pos: [0, 0, 0.4], size: [0.5, 0.5, 0.05], material_id: "default", label_zh: "办公椅" },
+    ],
+    assemblies: [
+      { id: "asm_closet", type: "closet_tall", pos: [2, 1.5, 0], size: [0.6, 0.35, 2],
+        part_ids: ["obj_cabinet"], primary_part_id: "obj_cabinet", label_zh: "收纳柜" },
+      { id: "asm_chair", type: "chair_standard", pos: [0, 0, 0], size: [0.5, 0.5, 0.85],
+        part_ids: ["obj_chair"], primary_part_id: "obj_chair", label_zh: "办公椅" },
+    ],
+  };
+  // 用户说"衣柜" · label_zh 是"收纳柜" · 但同义词映射到 closet_tall → 命中 asm_closet
+  assert.equal(findAssembly(s, "衣柜")?.id, "asm_closet");
+  assert.equal(findAssembly(s, "橱柜")?.id, "asm_closet");
+  assert.equal(findAssembly(s, "椅子")?.id, "asm_chair");
+});
+
 test("findAssemblyByObjectId: back-ref resolution", () => {
   const s = sceneWithAssembly();
   assert.equal(findAssemblyByObjectId(s, "obj_chairback")?.id, "asm_chair_1");

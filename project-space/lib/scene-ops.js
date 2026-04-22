@@ -35,7 +35,35 @@ export function findObject(scene, query) {
   // 5. type 包含 query
   const byType = objects.find(o => (o.type || "").toLowerCase().includes(q));
   if (byType) return byType;
+  // 6. 中文同义词（衣柜→closet_tall 等）
+  const bySynonym = objects.find(o => matchZhSynonym(query, o.type));
+  if (bySynonym) return bySynonym;
   return null;
+}
+
+// 中文家具同义词 → type · 解决 LLM 用别称（衣柜 vs 收纳柜）匹配失败
+// 每个 type 列出用户可能说的中文词 · fuzzy 按此扩展
+const ZH_SYNONYMS = {
+  closet_tall: ["衣柜", "收纳柜", "储物柜", "橱柜", "柜子"],
+  chair_standard: ["办公椅", "椅子", "靠背椅", "座椅"],
+  chair_lounge: ["休闲椅", "沙发椅", "懒人椅", "单人沙发"],
+  sofa_2seat: ["双人沙发", "双座沙发", "沙发"],
+  sofa_3seat: ["三人沙发", "三座沙发", "沙发"],
+  desk_standard: ["书桌", "办公桌", "桌子"],
+  table_coffee: ["茶几", "咖啡桌"],
+  table_dining: ["餐桌", "饭桌"],
+  bed_queen: ["床", "大床"],
+  shelf_open: ["书架", "书墙", "搁架", "开放架"],
+  lamp_floor: ["落地灯", "立灯"],
+  lamp_pendant: ["吊灯", "垂灯", "顶灯"],
+};
+
+// query 是否匹配该 type 的任一同义词
+function matchZhSynonym(query, type) {
+  const syns = ZH_SYNONYMS[type];
+  if (!syns) return false;
+  const q = String(query).trim();
+  return syns.some(s => s.includes(q) || q.includes(s));
 }
 
 // Assembly fuzzy match · Phase 3 · default target for chat / card edits
@@ -53,6 +81,9 @@ export function findAssembly(scene, query) {
     a => (a.label_zh || "").includes(query) || (a.label_en || "").toLowerCase().includes(q)
   );
   if (byLabelContains) return byLabelContains;
+  // 中文同义词（衣柜→closet_tall 等）· 比 type 精确匹配更宽容
+  const bySynonym = assemblies.find(a => matchZhSynonym(query, a.type));
+  if (bySynonym) return bySynonym;
   const byType = assemblies.find(a => (a.type || "").toLowerCase().includes(q));
   if (byType) return byType;
   return null;
