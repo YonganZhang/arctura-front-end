@@ -1,5 +1,5 @@
 /* global React, ReactDOM, ZEN_DATA */
-const { useState, useRef, useEffect, useMemo, useReducer, useContext, createContext } = React;
+const { useState, useRef, useEffect, useMemo, useReducer, useContext, useCallback, createContext } = React;
 
 // D 是 live-proxy 到 window.ZEN_DATA · 读取当前 state
 // 运行时被 ProjectProvider 通过 stateHolder 接管（chat-edit 后切换数据）
