@@ -66,7 +66,7 @@ brief
 - **`POST /api/projects`** 🆕 Phase 6.A · 创建 empty project · anon cookie + rate limit（IP 10/h · session 20/day）
 - **`POST /api/brief/chat`** 🆕 Phase 6.B · Brief 对话 SSE · GPT-5.4 · events: start/reply/brief_update/heartbeat/complete/error · state empty→briefing 自动推
 - **`GET/PATCH/DELETE /api/projects/<slug>`** 🆕 Phase 6.C · 单 project 读/改/软删 · optimistic lock + state transition 白名单
-- **`POST /api/projects/<slug>/save`** 🆕 Phase 6.D · pending_edits 持久化 · KV 版（git commit 待 GITHUB_TOKEN）
+- **`POST /api/projects/<slug>/save`** 🆕 Phase 6.D/7.3 · KV 持久化 + **真 git commit** · GitHub Contents API · 路径白名单 `data/mvps/<slug>.json` · 1 MB 上限
 - **`POST /api/mvp/create`** 🆕 Phase 7 · 验 state=planning + tier 已设 · rpush jobs:queue · 返 `{job_id, stream_url}`
 - **`GET /api/jobs/<id>/stream`** 🆕 Phase 7 · Edge SSE · lrange 游标 · heartbeat · worker_offline 探活 · 15min timeout
 - 前端 **`/new`** 路由 🆕 Phase 6.C/7 · Wizard 3 step（Brief Chat / TierPicker / GenerateProgress-SSE）· app.jsx 3300+ 行
@@ -96,7 +96,7 @@ brief
 ### 环境变量（Vercel prod 已设）
 - `UPSTASH_REDIS_REST_URL` · `UPSTASH_REDIS_REST_TOKEN`（Phase 6.A）
 - `ZHIZENGZENG_API_KEY`（LLM gateway）
-- `GITHUB_TOKEN`（未设 · Phase 6.D 保存功能才用）
+- `GITHUB_TOKEN` ✅ 已设（Phase 7.3 · 复用 gh CLI 全权限 PAT · save.js 路径白名单限 data/mvps/ · 低爆炸半径）
 
 本机同名 env：`~/.arctura-env`（chmod 600）· worker/CLI/迁移脚本读。凭据加密版在 `~/.claude/skills/share-docx/references/api-credentials.md.age`（csync 共享）。
 
@@ -144,6 +144,7 @@ node _build/capture_renders.mjs --slug 50-xxx
 | 7 Worker 队列 + SSE + 异步生成 | ✅ | `_build/arctura_mvp/worker.py` + `api/mvp/create.js` + `api/jobs/[id]/stream.js` |
 | 7.1 brief→scene generator + MCP 真接 + meta 字段 | ✅ | `generators/scene.py` · `_core.enqueue_job` · `ArtifactResult.meta` |
 | 7.2 Worker systemd + heartbeat + local render server | ✅ | `_build/systemd/` · `local_server.py` · `worker:<host>:heartbeat` |
+| 7.3 save.js 真 git commit · Vercel GITHUB_TOKEN | ✅ | `api/projects/[slug]/save.js::commitMvpFile` · GitHub Contents API · 路径白名单 |
 
 ## 编码纪律（Yongan 全局偏好）
 
