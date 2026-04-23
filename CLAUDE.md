@@ -145,6 +145,7 @@ node _build/capture_renders.mjs --slug 50-xxx
 | 7.1 brief→scene generator + MCP 真接 + meta 字段 | ✅ | `generators/scene.py` · `_core.enqueue_job` · `ArtifactResult.meta` |
 | 7.2 Worker systemd + heartbeat + local render server | ✅ | `_build/systemd/` · `local_server.py` · `worker:<host>:heartbeat` |
 | 7.3 save.js 真 git commit · Vercel GITHUB_TOKEN | ✅ | `api/projects/[slug]/save.js::commitMvpFile` · GitHub Contents API · 路径白名单 |
+| 7.4 对齐严老师 spec · 6 skeleton · _TODO-INDEX · brief 必填 | ✅ | `artifacts/_unimplemented.py` + `{deck_client,client_readme,energy_report,exports,variants,case_study}.py` · 各返 skipped + 写 `_TODO-<name>.md` · bundle 顶层 `_TODO-INDEX.md` · brief_rules must_fill 加 headcount |
 
 ## 编码纪律（Yongan 全局偏好）
 
