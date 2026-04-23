@@ -44,9 +44,10 @@ TIER_CONFIG: dict[str, dict] = {
         "label_zh": "全案",
         "label_en": "Full",
         "order": 4,
-        "desc_zh": "+BIM 导出 GLB/FBX/IFC + IFC 质检",
+        "desc_zh": "+BIM 导出 GLB/FBX/IFC + IFC 质检 + Case Study",
         "inherits": "quote",
-        "add_artifacts": ["exports"],
+        # Phase 7.4 · spec L403 exports + L405 case_study 都挂全案档
+        "add_artifacts": ["exports", "case_study"],
         "render_engine_default": "formal",  # 全案档 · 默认正式渲染
         "estimated_min": {"fast": 12, "formal": 40},
     },

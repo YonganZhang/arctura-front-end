@@ -3094,6 +3094,7 @@ function GenerateProgressStep({ project, onPatch }) {
   const [plan, setPlan] = useState(null);          // {artifacts, engine, estimated_min}
   const [currentArtifact, setCurrentArtifact] = useState(null);
   const [completed, setCompleted] = useState([]);  // [{name, timing_ms, meta}]
+  const [skipped, setSkipped] = useState([]);     // [{name, reason, meta}] · Phase 7.4
   const [status, setStatus] = useState(jobId ? "connecting" : "no_job");
   const [fatal, setFatal] = useState(null);
   const [tStart] = useState(() => Date.now());
@@ -3140,7 +3141,13 @@ function GenerateProgressStep({ project, onPatch }) {
         name: d.name, timing_ms: d.timing_ms, meta: d.meta || {},
       }]);
     });
-    es.addEventListener("artifact_skipped", (e) => pushEvent("artifact_skipped", JSON.parse(e.data)));
+    es.addEventListener("artifact_skipped", (e) => {
+      const d = JSON.parse(e.data);
+      pushEvent("artifact_skipped", d);
+      setSkipped(prev => prev.find(x => x.name === d.name) ? prev : [...prev, {
+        name: d.name, reason: d.reason || "", meta: d.meta || {},
+      }]);
+    });
     es.addEventListener("artifact_error", (e) => pushEvent("artifact_error", JSON.parse(e.data)));
     es.addEventListener("complete", (e) => pushEvent("complete", JSON.parse(e.data)));
     es.addEventListener("done", (e) => {
@@ -3257,9 +3264,13 @@ function GenerateProgressStep({ project, onPatch }) {
             <div style={{fontSize:12,color:"#888",fontWeight:600,textTransform:"uppercase",letterSpacing:1,marginBottom:12}}>Artifacts</div>
             {plan.artifacts.map(name => {
               const done = completed.find(c => c.name === name);
+              const skip = skipped.find(s => s.name === name);
               const isCurrent = currentArtifact === name;
-              const icon = done ? "✓" : isCurrent ? "⟳" : "·";
-              const color = done ? "#27ae60" : isCurrent ? "#2c3e50" : "#bbb";
+              let icon, color;
+              if (done)         { icon = "✓"; color = "#27ae60"; }
+              else if (skip)    { icon = "⚠"; color = "#B8860B"; }
+              else if (isCurrent) { icon = "⟳"; color = "#2c3e50"; }
+              else              { icon = "·"; color = "#bbb"; }
               return (
                 <div key={name} style={{display:"flex",alignItems:"center",gap:10,padding:"6px 0",fontSize:14,color}}>
                   <span style={{fontFamily:"monospace",width:18,textAlign:"center",
@@ -3267,11 +3278,19 @@ function GenerateProgressStep({ project, onPatch }) {
                   <span style={{flex:1,fontWeight: isCurrent ? 500 : 400}}>
                     {name}
                     {done?.meta && <span style={{color:"#999",fontSize:11,marginLeft:8,fontWeight:400}}>{formatArtifactMeta(name, done.meta)}</span>}
+                    {skip && <span style={{color:"#B8860B",fontSize:11,marginLeft:8,fontWeight:400}}>· LIGHT 模式未实装</span>}
                   </span>
                   {done && <span style={{color:"#999",fontSize:12}}>{done.timing_ms}ms</span>}
+                  {skip && <span style={{color:"#B8860B",fontSize:11,fontStyle:"italic"}}>skipped</span>}
                 </div>
               );
             })}
+            {skipped.length > 0 && (
+              <div style={{marginTop:14,padding:"10px 12px",background:"#FFF8E1",border:"1px solid #FFD87A",borderRadius:6,fontSize:12,color:"#7A5D1A"}}>
+                <div style={{fontWeight:600,marginBottom:4}}>⚠ {skipped.length} 项未实装（LIGHT 模式）</div>
+                <div>bundle.zip 顶层 <code>_TODO-INDEX.md</code> 列每项的 spec 引用和补齐方法。真 PPT/能耗/BIM 等需走 FULL pipeline（Mac + Blender + OpenStudio）。</div>
+              </div>
+            )}
           </div>
         )}
 

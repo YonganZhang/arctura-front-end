@@ -25,22 +25,21 @@ def test_completeness_empty():
 
 def test_completeness_only_project():
     b = {"project": "test"}
-    # must 1/4 · nice 0/13 · 0.25*0.6 + 0*0.4 = 0.15
-    assert 0.14 <= completeness(b) <= 0.16
+    # Phase 7.4 · must 1/5 · nice 0/15 · 0.2*0.6 = 0.12
+    assert 0.11 <= completeness(b) <= 0.13
 
 
 def test_completeness_full_must():
     b = {
         "project": "T",
         "space": {"area_sqm": 30},
+        "headcount": 5,
         "style": {"keywords": ["a"]},
         "functional_zones": [{"name": "x"}],
     }
-    # must 4/4 · nice 1/13（space 有 area · 但 nice 里没 area）
-    # 实际 nice 覆盖：space.type 没 · space.n_floors 没 · style.palette 没 · etc · 0
-    # 所以 ~ 0.6
+    # Phase 7.4 · must 5/5 · nice 0/15 · 1.0*0.6 + 0*0.4 = 0.6
     c = completeness(b)
-    assert 0.55 <= c <= 0.7
+    assert 0.55 <= c <= 0.65
 
 
 def test_ready_for_tier_blocked_until_all_must():
@@ -48,15 +47,20 @@ def test_ready_for_tier_blocked_until_all_must():
     partial = {"project": "T", "space": {"area_sqm": 30}}
     assert ready_for_tier(partial) is False
     full_must = {
-        "project": "T", "space": {"area_sqm": 30},
+        "project": "T", "space": {"area_sqm": 30}, "headcount": 5,
         "style": {"keywords": ["a"]}, "functional_zones": [{"n": "x"}],
     }
     assert ready_for_tier(full_must) is True
 
 
 def test_missing_must_fields():
-    assert set(missing_must_fields({})) == {"project", "space.area_sqm", "style.keywords", "functional_zones"}
-    assert missing_must_fields({"project": "T"}) == ["space.area_sqm", "style.keywords", "functional_zones"]
+    # Phase 7.4 · must_fill = project/space.area_sqm/headcount/style.keywords/functional_zones
+    assert set(missing_must_fields({})) == {
+        "project", "space.area_sqm", "headcount", "style.keywords", "functional_zones",
+    }
+    assert set(missing_must_fields({"project": "T"})) == {
+        "space.area_sqm", "headcount", "style.keywords", "functional_zones",
+    }
 
 
 # ── deep_merge 行为锁定（跟 JS 对齐）──
@@ -87,7 +91,7 @@ def test_deep_merge_does_not_mutate_base():
 def test_step_3_turns_reaches_ready(brief_book_cafe):
     """用 22-boutique-book-cafe 真 brief 反推 3 轮对话"""
     target = brief_book_cafe
-    # 脚本化 LLM · 3 轮逐步填
+    # 脚本化 LLM · 3 轮逐步填（Phase 7.4 · headcount 跟 functional_zones 一起在第 3 轮填）
     script = [
         {
             "reply": "好的 · 项目名和场地类型已记",
@@ -111,6 +115,7 @@ def test_step_3_turns_reaches_ready(brief_book_cafe):
             "reply": "齐了 · 可以进入选档",
             "brief_patch": {
                 "functional_zones": target.get("functional_zones", [{"name": "main", "area_sqm": 50}]),
+                "headcount": target.get("headcount") or 8,
             },
             "next_question": "",
             "pii_fields": [],

@@ -43,25 +43,28 @@ def test_nice_to_have_loaded_from_json():
 
 # 行为 snapshot · 输入固定 brief · 输出 completeness / ready_for_tier / missing
 # 如果 weights / threshold / must/nice 改 · 这些 snapshot 必变 · 提醒同步 JS
+# Phase 7.4 · must 扩到 5（加 headcount）· nice 扩到 15（加 n_floors / mep_brief 2 字段）
 SNAPSHOT_CASES = [
-    # 空
-    ({}, {"completeness": 0.0, "ready": False, "missing_count": 4}),
-    # 只有 project
-    ({"project": "T"}, {"completeness": 0.15, "ready": False, "missing_count": 3}),
-    # must 齐（但 nice 空）
+    # 空 · 5 must 全缺
+    ({}, {"completeness": 0.0, "ready": False, "missing_count": 5}),
+    # 只有 project · must 1/5 · nice 0/15 · 0.2*0.6 = 0.12
+    ({"project": "T"}, {"completeness": 0.12, "ready": False, "missing_count": 4}),
+    # must 齐（但 nice 空）· 5/5 · nice 0/15 · 1.0*0.6 + 0 = 0.6
     ({
         "project": "T",
         "space": {"area_sqm": 30},
+        "headcount": 5,
         "style": {"keywords": ["a"]},
         "functional_zones": [{"name": "x"}],
     }, {"completeness": 0.6, "ready": True, "missing_count": 0}),
-    # must 齐 + 几个 nice · must 4/4 (1.0) + nice 5/13 (0.385) → 0.6 + 0.385*0.4 = 0.754 ≈ 0.75
+    # must 齐 + 几个 nice · must 5/5 (1.0) + nice 5/15 (0.333) → 0.6 + 0.333*0.4 = 0.733 ≈ 0.73
     ({
         "project": "T", "slug": "test", "client": "c",
         "space": {"type": "x", "area_sqm": 30, "n_floors": 1},
+        "headcount": 5,
         "style": {"keywords": ["a"], "palette": {"p": "#fff"}},
         "functional_zones": [{"name": "x"}],
-    }, {"completeness": 0.75, "ready": True, "missing_count": 0}),
+    }, {"completeness": 0.73, "ready": True, "missing_count": 0}),
 ]
 
 

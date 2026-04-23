@@ -18,6 +18,18 @@ def get_artifact(name: str) -> Optional[Callable]:
         from .renders import produce; return produce
     if name == "bundle":
         from .bundle import produce; return produce
-    # 其他 artifact（deck_client / client_readme / energy_report / exports / variants / case_study）
-    # Phase 7 继续补 · 当前未实装 → None → pipeline 记 skipped
+    # Phase 7.4 · 6 个未实装 artifact 走 skeleton · 返 status=skipped + 写 _TODO-<name>.md
+    # 不再 silent skip · 对齐 spec L388-390 "做不到就说"
+    if name == "deck_client":
+        from .deck_client import produce; return produce
+    if name == "client_readme":
+        from .client_readme import produce; return produce
+    if name == "energy_report":
+        from .energy_report import produce; return produce
+    if name == "exports":
+        from .exports import produce; return produce
+    if name == "variants":
+        from .variants import produce; return produce
+    if name == "case_study":
+        from .case_study import produce; return produce
     return None
