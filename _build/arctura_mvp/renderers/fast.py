@@ -58,9 +58,7 @@ def render(ctx: dict, *, on_event: Optional[Callable] = None) -> dict:
             {"name": p.stem, "path": f"/assets/mvps/{slug}/renders/{p.name}"}
             for p in pngs
         ]
-        if on_event:
-            on_event("artifact_done", {"name": "renders", "count": len(produced),
-                                        "timing_ms": elapsed_ms})
+        # 不在这里 emit artifact_done · 由 pipeline 统一 emit（T32 去重规则）
         return {
             "produced": produced,
             "skipped": [],

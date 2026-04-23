@@ -67,22 +67,31 @@ brief
 - **`POST /api/brief/chat`** 🆕 Phase 6.B · Brief 对话 SSE · GPT-5.4 · events: start/reply/brief_update/heartbeat/complete/error · state empty→briefing 自动推
 - **`GET/PATCH/DELETE /api/projects/<slug>`** 🆕 Phase 6.C · 单 project 读/改/软删 · optimistic lock + state transition 白名单
 - **`POST /api/projects/<slug>/save`** 🆕 Phase 6.D · pending_edits 持久化 · KV 版（git commit 待 GITHUB_TOKEN）
-- 前端 **`/new`** 路由 🆕 Phase 6.C · Wizard 3 step（Brief Chat / TierPicker / GenerateProgress）· app.jsx 2800+ 行
+- **`POST /api/mvp/create`** 🆕 Phase 7 · 验 state=planning + tier 已设 · rpush jobs:queue · 返 `{job_id, stream_url}`
+- **`GET /api/jobs/<id>/stream`** 🆕 Phase 7 · Edge SSE · lrange 游标 · heartbeat · worker_offline 探活 · 15min timeout
+- 前端 **`/new`** 路由 🆕 Phase 6.C/7 · Wizard 3 step（Brief Chat / TierPicker / GenerateProgress-SSE）· app.jsx 3300+ 行
 
 ### 单一真源（改这里就够 · 不要散写）
 - `_build/arctura_mvp/schemas/brief-rules.json` + `api/_shared/brief-rules.json`（对称副本 · 测试锁定一致）
 - `_build/arctura_mvp/schemas/state-machine.json` + `api/_shared/state-machine.json`
 - `_build/arctura_mvp/store/keys.py` (Python K.xxx) + `api/_shared/kv-keys.js` (JS K.xxx)
 
-### 测试（Phase 6.E 加固 · 2026-04-23）
-- 单元：`npm run test:unit` · pytest 61 test · 0.11s · 覆盖 tiers / state / brief_engine / _core / cross-lang snapshot
+### 测试（Phase 7.1 · 2026-04-23）
+- 单元：`npm run test:unit` · pytest **78 test** · 0.24s · 覆盖 tiers / state / brief_engine / _core / cross-lang / **scene generator / artifacts meta / enqueue_job**
 - E2E：`npm test` · Playwright Wizard 4 + Phase6D 4 = 8 test
 - 全量：`npm run test:all`
 
-### MCP Server（Phase 6.E · 骨架就绪）
+### MCP Server（Phase 7.1 · 真接 worker）
 - `_build/arctura_mvp/mcp_server.py` · 9 tools · stdio JSON-RPC 2.0
+- `arctura_generate_mvp` **真入队** Upstash jobs:queue · 返真 job_id + stream_url（不再撒谎）
 - 运行：`python3 -m _build.arctura_mvp.mcp_server --stdio` · schema：不带参跑
 - 升级：`pip install mcp` 后改用 SDK · tool 定义复用
+
+### Worker（Phase 7.2 · systemd 常驻）
+- 本机 tencent-hk 走 `systemctl --user arctura-worker`（`_build/systemd/`）
+- Heartbeat 每 30s 写 `worker:<host>:heartbeat`（TTL 120s）· SSE 端点探 job 排队 >45s 无心跳 → `worker_offline` 事件
+- Worker 自起 localhost static server（`_build/arctura_mvp/local_server.py`）· Playwright 调 localhost 不依赖 Vercel static snapshot · 解决 "新 MVP 数据未 deploy 导致 renders 404"
+- `render_base_url` 独立于公开 `base_url` · 产物里填 prod URL · 渲染调 localhost
 
 ### 环境变量（Vercel prod 已设）
 - `UPSTASH_REDIS_REST_URL` · `UPSTASH_REDIS_REST_TOKEN`（Phase 6.A）
@@ -131,6 +140,10 @@ node _build/capture_renders.mjs --slug 50-xxx
 | 3 Assembly 层 + 点击卡片 + 美化 | ✅ | `assemblies[]` · `FurnitureCard` · 5 透明 |
 | 4 Plan Mode | ✅ | `chat-edit.js` LLM plan + dry-run |
 | 5 brief-driven MVP 创建 | ✅ | `create_mvp_from_brief.py` + `materialize_full_mvp.py` |
+| 6 KV 动态 projects + Brief SSE + Wizard | ✅ | `api/projects.js` · `api/brief/chat.js` · `/new` Wizard |
+| 7 Worker 队列 + SSE + 异步生成 | ✅ | `_build/arctura_mvp/worker.py` + `api/mvp/create.js` + `api/jobs/[id]/stream.js` |
+| 7.1 brief→scene generator + MCP 真接 + meta 字段 | ✅ | `generators/scene.py` · `_core.enqueue_job` · `ArtifactResult.meta` |
+| 7.2 Worker systemd + heartbeat + local render server | ✅ | `_build/systemd/` · `local_server.py` · `worker:<host>:heartbeat` |
 
 ## 编码纪律（Yongan 全局偏好）
 
