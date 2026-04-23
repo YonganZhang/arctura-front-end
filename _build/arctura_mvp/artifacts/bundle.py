@@ -21,23 +21,22 @@ def produce(ctx: dict, on_event: Optional[Callable] = None) -> ArtifactResult:
     bundle_path = fe_mvp_assets / "bundle.zip"
 
     file_count = 0
+    written = set()   # 记所有已加入 zip 的 arc 路径 · 防 sb_dir rglob 重复
     with zipfile.ZipFile(bundle_path, "w", zipfile.ZIP_DEFLATED) as zf:
         # 1. brief/scene dump
         if project.brief:
-            zf.writestr(f"{slug}/brief.json",
-                         json.dumps(project.brief, ensure_ascii=False, indent=2))
-            file_count += 1
+            arc = f"{slug}/brief.json"
+            zf.writestr(arc, json.dumps(project.brief, ensure_ascii=False, indent=2))
+            written.add(arc); file_count += 1
         if project.scene:
-            zf.writestr(f"{slug}/scene.json",
-                         json.dumps(project.scene, ensure_ascii=False, indent=2))
-            file_count += 1
+            arc = f"{slug}/scene.json"
+            zf.writestr(arc, json.dumps(project.scene, ensure_ascii=False, indent=2))
+            written.add(arc); file_count += 1
         # 2. Project meta
         from dataclasses import asdict
-        zf.writestr(f"{slug}/project.json",
-                     json.dumps(asdict(project), ensure_ascii=False, indent=2))
-        file_count += 1
-
-        written = set()
+        arc = f"{slug}/project.json"
+        zf.writestr(arc, json.dumps(asdict(project), ensure_ascii=False, indent=2))
+        written.add(arc); file_count += 1
 
         # 3. sb_dir 下所有真产物（moodboard/floorplan/README 等）· 跳 renders 子目录（步 4 独占）
         if sb_dir.exists():

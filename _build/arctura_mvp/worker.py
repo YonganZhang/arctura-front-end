@@ -80,11 +80,14 @@ def run_one(job: dict):
 
         on_event("job_picked", {"job_id": job_id, "slug": slug, "tier": job["tier"]})
 
-        # 跑 pipeline
+        # 跑 pipeline（可能 mutate project.scene · 见 scene artifact 生成回填）
         result = pipeline.run(project, on_event=on_event)
+        generated_scene = project.scene   # 保留 pipeline mutate 后的结果
 
         # 更新 project · 写 artifacts · state=live
         project = _core.get_project(slug)  # 拿最新 version
+        if generated_scene and not project.scene:
+            project.scene = generated_scene   # pipeline 新生成的 scene · 回填到 KV
         project.artifacts = asdict(result).get("artifacts") or {
             "produced": result.produced,
             "skipped": result.skipped,
