@@ -28,8 +28,14 @@ _STARTUP_BUILDING = _REPO_ROOT.parent / "StartUP-Building"
 def run(project: Project, *,
         on_event: Optional[Callable[[str, dict], None]] = None,
         dry_run: bool = False,
-        base_url: str = "https://arctura-front-end.vercel.app") -> MVPResult:
-    """主 pipeline · resolve tier → 遍历 artifacts → 推事件 → 返 MVPResult"""
+        base_url: str = "https://arctura-front-end.vercel.app",
+        render_base_url: Optional[str] = None) -> MVPResult:
+    """主 pipeline · resolve tier → 遍历 artifacts → 推事件 → 返 MVPResult
+
+    base_url · 产物里面填的公开 URL（mvp_page / bundle）· 默认 prod
+    render_base_url · Playwright 调哪个 URL 去截图 · 默认 = base_url
+                     worker 跑本机时应传 localhost（见 local_server.ensure_running）
+    """
 
     def emit(evt: str, data: dict):
         if on_event:
@@ -67,6 +73,7 @@ def run(project: Project, *,
         "sb_dir": sb_dir,
         "fe_root": _REPO_ROOT,
         "base_url": base_url,
+        "render_base_url": render_base_url or base_url,
         "dry_run": dry_run,
     }
 

@@ -26,9 +26,10 @@ def produce(ctx: dict, on_event: Optional[Callable] = None) -> ArtifactResult:
     renderer_fn = get_renderer(tier, override=engine_override)
 
     # renderer 接 ctx + on_event · 返 {produced, skipped, errors, timing_ms}
+    # render_base_url 是 Playwright 目标 · 可跟 base_url 不同（本机 worker 用 localhost）
     render_ctx = {
         "slug": project.slug,
-        "base_url": ctx.get("base_url", "https://arctura-front-end.vercel.app"),
+        "base_url": ctx.get("render_base_url") or ctx.get("base_url") or "https://arctura-front-end.vercel.app",
     }
     result = renderer_fn(render_ctx, on_event=on_event)
 

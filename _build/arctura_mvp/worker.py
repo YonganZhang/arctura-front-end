@@ -26,9 +26,13 @@ from . import _core
 from . import pipeline
 from .store import kv, keys as K
 from .types import utc_now
+from .local_server import ensure_running as ensure_local_server
 
 POLL_INTERVAL = 2  # 无 job 时每 2s poll · Upstash REST 没 blocking pop
 MAX_EVENT_LIST = 500  # job:<id>:events 最多留 500 事件
+
+# Worker 自起一个本机 static server · Playwright 调 localhost 拿实时 MVP 数据
+# 覆盖：ARCTURA_RENDER_BASE_URL env 环境变量 · 或 job dict 带 render_base_url 字段
 
 
 def push_event(job_id: str, evt: str, data: dict):
@@ -81,7 +85,16 @@ def run_one(job: dict):
         on_event("job_picked", {"job_id": job_id, "slug": slug, "tier": job["tier"]})
 
         # 跑 pipeline（可能 mutate project.scene · 见 scene artifact 生成回填）
-        result = pipeline.run(project, on_event=on_event)
+        # render_base_url 优先级：env ARCTURA_RENDER_BASE_URL > 本机 static server > 公开 base_url
+        render_base = os.environ.get("ARCTURA_RENDER_BASE_URL")
+        if not render_base:
+            try:
+                render_base = ensure_local_server()
+            except Exception as e:
+                print(f"[worker] local server start fail: {e} · 退回 prod 渲染",
+                      file=sys.stderr)
+                render_base = None
+        result = pipeline.run(project, on_event=on_event, render_base_url=render_base)
         generated_scene = project.scene   # 保留 pipeline mutate 后的结果
 
         # 更新 project · 写 artifacts · state=live
