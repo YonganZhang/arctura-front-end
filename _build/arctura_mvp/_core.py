@@ -64,8 +64,10 @@ def get_project(slug: str) -> Optional[Project]:
     d = kv.get_json(_project_key(slug))
     if d is None:
         return None
-    # state 字段需要保留 str · dataclass 接受
-    return Project(**d)
+    # 容忍 future 字段 · JS edge 写入的键若 Python 未同步则忽略（避免 hard fail）
+    valid = {f.name for f in __import__("dataclasses").fields(Project)}
+    filtered = {k: v for k, v in d.items() if k in valid}
+    return Project(**filtered)
 
 
 def list_projects(*, owner: Optional[str] = None, limit: int = 20,

@@ -68,11 +68,8 @@ def produce(ctx: dict, on_event: Optional[Callable] = None) -> ArtifactResult:
         d["scene"] = scene
         fe_path.write_text(json.dumps(d, ensure_ascii=False, indent=2))
 
-    if on_event:
-        on_event("artifact_done", {"name": "scene", "assemblies": len(scene.get("assemblies", []))})
-
     return ArtifactResult(
         name="scene", status="done",
         timing_ms=int((time.time()-t0)*1000),
-        output_path=str(sb_dir / "scene.json"),
+        output_path=f"{sb_dir / 'scene.json'} (assemblies={len(scene.get('assemblies', []))})",
     )

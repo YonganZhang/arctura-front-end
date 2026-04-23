@@ -29,6 +29,7 @@ class Project:
     })
     pending_count: int = 0
     last_save_ref: Optional[str] = None       # git commit SHA
+    active_job_id: Optional[str] = None       # Phase 7 · 当前生成 job id（SSE 订阅用）
     created_at: str = ""
     updated_at: str = ""
     _pii_fields: list[str] = field(default_factory=list)

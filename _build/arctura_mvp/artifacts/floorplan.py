@@ -30,13 +30,9 @@ def produce(ctx: dict, on_event: Optional[Callable] = None) -> ArtifactResult:
         subprocess.run(["rsvg-convert", "-o", str(png_path), "-w", "1200", str(svg_path)],
                        check=False, capture_output=True)
 
-    if on_event:
-        on_event("artifact_done", {"name": "floorplan",
-                                      "svg": str(svg_path), "png_exists": png_path.exists()})
-
     return ArtifactResult(name="floorplan", status="done",
                            timing_ms=int((time.time()-t0)*1000),
-                           output_path=str(svg_path))
+                           output_path=f"{svg_path} (png_exists={png_path.exists()})")
 
 
 def _build_svg(project, scene: dict) -> str:

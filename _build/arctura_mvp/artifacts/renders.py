@@ -11,6 +11,16 @@ from ..tiers import pick_engine
 def produce(ctx: dict, on_event: Optional[Callable] = None) -> ArtifactResult:
     t0 = time.time()
     project = ctx["project"]
+
+    # 依赖守卫 · scene 缺 → Three.js 页面无 canvas → Playwright 必 timeout
+    # 提前 skip 比 20s 超时更友好（scene 来自 brief → scene generator · 上游步骤）
+    if not project.scene:
+        return ArtifactResult(
+            name="renders", status="skipped",
+            timing_ms=int((time.time()-t0)*1000),
+            reason="scene 缺 · 无法渲染（上游 brief→scene 未产出）",
+        )
+
     tier = project.tier or "concept"
     engine_override = project.render_engine  # None 则走 tier 默认
     renderer_fn = get_renderer(tier, override=engine_override)

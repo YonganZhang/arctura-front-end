@@ -59,12 +59,9 @@ def produce(ctx: dict, on_event: Optional[Callable] = None) -> ArtifactResult:
     except ImportError:
         pass
 
-    if on_event:
-        on_event("artifact_done", {"name": "moodboard", "swatches": len(swatches), "png": png_ok})
-
     return ArtifactResult(name="moodboard", status="done",
                            timing_ms=int((time.time()-t0)*1000),
-                           output_path=str(sb_dir / "moodboard.json"))
+                           output_path=f"{sb_dir / 'moodboard.json'} (swatches={len(swatches)}, png={png_ok})")
 
 
 def _get_cjk_font(size: int):
