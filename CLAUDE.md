@@ -146,6 +146,7 @@ node _build/capture_renders.mjs --slug 50-xxx
 | 7.2 Worker systemd + heartbeat + local render server | ✅ | `_build/systemd/` · `local_server.py` · `worker:<host>:heartbeat` |
 | 7.3 save.js 真 git commit · Vercel GITHUB_TOKEN | ✅ | `api/projects/[slug]/save.js::commitMvpFile` · GitHub Contents API · 路径白名单 |
 | 7.4 对齐严老师 spec · 6 skeleton · _TODO-INDEX · brief 必填 | ✅ | `artifacts/_unimplemented.py` + `{deck_client,client_readme,energy_report,exports,variants,case_study}.py` · 各返 skipped + 写 `_TODO-<name>.md` · bundle 顶层 `_TODO-INDEX.md` · brief_rules must_fill 加 headcount |
+| 7.5 真集成严老师现成脚本 · 3 artifact 真产 | ✅ | client_readme 用 `templates/client-readme-template.md` · case_study 用 `vendor/case_study/render_templates.py` · variants 用 `vendor/score_variants.py` · `/api/projects/<slug>/history` 接 GitHub commits · 剩 3 skeleton _TODO 指真脚本路径 |
 
 ## 编码纪律（Yongan 全局偏好）
 
