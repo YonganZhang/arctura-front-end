@@ -1,7 +1,11 @@
-"""T23.5 · _core.put_project / get_project / list_projects · VersionConflict"""
+"""T23.5 · _core.put_project / get_project / list_projects · VersionConflict
+Phase 7.1 新增 · enqueue_job
+"""
+import json
 import pytest
 from _build.arctura_mvp._core import (
-    put_project, get_project, list_projects, delete_project, VersionConflict,
+    put_project, get_project, list_projects, delete_project, enqueue_job,
+    VersionConflict,
 )
 from _build.arctura_mvp.types import Project
 
@@ -88,3 +92,66 @@ def test_live_state_persists_no_ttl(kv_mock):
     p_live = _make_project("p-live", state="live")
     put_project(p_live)
     assert "project:p-live" not in kv_mock.ttls   # PERSIST
+
+
+# ───── Phase 7.1 · enqueue_job ─────
+
+def test_enqueue_job_happy_path(kv_mock):
+    """state=planning + tier=concept → 成功入队 · rpush + set job meta + state→generating"""
+    p = _make_project("p-eq", state="planning")
+    p.tier = "concept"
+    p.variant_count = 1
+    p.render_engine = "fast"
+    put_project(p)
+    before_version = p.version
+
+    result = enqueue_job("p-eq")
+    # 返回形状（跟 /api/mvp/create.js 对齐）
+    assert set(result.keys()) == {"job_id", "slug", "stream_url", "status"}
+    assert result["slug"] == "p-eq"
+    assert result["job_id"].startswith("job-")
+    assert result["stream_url"] == f"/api/jobs/{result['job_id']}/stream"
+    assert result["status"] == "queued"
+
+    # KV 副作用验证
+    # 1. jobs:queue 有一条
+    queue = kv_mock.lrange("jobs:queue")
+    assert len(queue) == 1
+    job_in_queue = json.loads(queue[0])
+    assert job_in_queue["id"] == result["job_id"]
+    assert job_in_queue["tier"] == "concept"
+
+    # 2. job:<id> meta 写入
+    meta_raw = kv_mock.get(f"job:{result['job_id']}")
+    assert meta_raw is not None
+    meta = json.loads(meta_raw)
+    assert meta["status"] == "queued"
+
+    # 3. project state=generating · active_job_id 写入 · version bump
+    updated = get_project("p-eq")
+    assert updated.state == "generating"
+    assert updated.active_job_id == result["job_id"]
+    assert updated.version == before_version + 1
+
+
+def test_enqueue_job_rejects_non_planning_state(kv_mock):
+    p = _make_project("p-br", state="briefing")
+    p.tier = "concept"
+    put_project(p)
+    with pytest.raises(ValueError, match="state=briefing"):
+        enqueue_job("p-br")
+
+
+def test_enqueue_job_rejects_missing_tier(kv_mock):
+    p = _make_project("p-nt", state="planning")
+    put_project(p)
+    with pytest.raises(ValueError, match="tier 未设"):
+        enqueue_job("p-nt")
+
+
+def test_enqueue_job_version_conflict(kv_mock):
+    p = _make_project("p-vc", state="planning")
+    p.tier = "concept"
+    put_project(p)
+    with pytest.raises(ValueError, match="version conflict"):
+        enqueue_job("p-vc", expected_version=99)

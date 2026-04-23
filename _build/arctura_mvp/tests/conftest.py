@@ -100,13 +100,39 @@ class KVMock:
 
     def ping(self): return True
 
+    # List 操作（jobs:queue / job:<id>:events 用）
+    def rpush(self, key, value):
+        lst = self.store.setdefault(f"__list__{key}", [])
+        lst.append(str(value))
+        return len(lst)
+
+    def lpush(self, key, *values):
+        lst = self.store.setdefault(f"__list__{key}", [])
+        for v in values:
+            lst.insert(0, str(v))
+        return len(lst)
+
+    def rpop(self, key):
+        lst = self.store.get(f"__list__{key}")
+        if not lst: return None
+        return lst.pop()
+
+    def lrange(self, key, start=0, stop=-1):
+        lst = self.store.get(f"__list__{key}", [])
+        if stop == -1: return lst[start:]
+        return lst[start:stop + 1]
+
+    def llen(self, key):
+        return len(self.store.get(f"__list__{key}", []))
+
 
 @pytest.fixture
 def kv_mock(monkeypatch):
     m = KVMock()
     from _build.arctura_mvp.store import kv as kv_mod
     for fn in ["get", "set", "set_json", "get_json", "delete", "persist",
-               "exists", "expire", "zadd", "zrevrange", "zcard", "zrem", "ping"]:
+               "exists", "expire", "zadd", "zrevrange", "zcard", "zrem", "ping",
+               "rpush", "lpush", "rpop", "lrange", "llen"]:
         if hasattr(kv_mod, fn):
             monkeypatch.setattr(kv_mod, fn, getattr(m, fn))
     return m

@@ -96,7 +96,9 @@ def run(project: Project, *,
             if result.status == "done":
                 produced.append(artifact_name)
                 emit("artifact_done", {"name": artifact_name,
-                                         "timing_ms": per_timing[artifact_name]})
+                                         "timing_ms": per_timing[artifact_name],
+                                         "meta": result.meta or {},
+                                         "output_path": result.output_path})
             elif result.status == "skipped":
                 skipped.append({"name": artifact_name, "reason": result.reason or "skipped"})
                 emit("artifact_skipped", {"name": artifact_name, "reason": result.reason})

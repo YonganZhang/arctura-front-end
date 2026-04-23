@@ -1,4 +1,4 @@
-"""scene artifact · 把 project.scene dump 到 sb_dir/scene.json + fe_data/mvps/<slug>.json"""
+"""scene artifact · project.scene 空则调 generator · dump 到 sb_dir + fe_data"""
 from __future__ import annotations
 import json
 import time
@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Callable, Optional
 
 from ..types import ArtifactResult
+from ..generators import build_scene_from_brief
 
 
 def produce(ctx: dict, on_event: Optional[Callable] = None) -> ArtifactResult:
@@ -15,11 +16,26 @@ def produce(ctx: dict, on_event: Optional[Callable] = None) -> ArtifactResult:
     fe_root: Path = ctx["fe_root"]
 
     scene = project.scene or {}
+    generated = False
     if not scene:
-        return ArtifactResult(
-            name="scene", status="skipped", timing_ms=int((time.time()-t0)*1000),
-            reason="project.scene 为空 · 需要 brief → 生成 scene 的上游步骤（Phase 7+）",
-        )
+        # project.scene 空 · 从 brief 生成（Phase 7.1）
+        if not project.brief:
+            return ArtifactResult(
+                name="scene", status="skipped",
+                timing_ms=int((time.time()-t0)*1000),
+                reason="brief 和 scene 都缺 · 先补 brief",
+            )
+        try:
+            scene = build_scene_from_brief(project.brief, project.slug)
+            project.scene = scene   # 回填到 project · 让 pipeline 后续（floorplan / renders）用
+            generated = True
+        except Exception as e:
+            return ArtifactResult(
+                name="scene", status="error",
+                timing_ms=int((time.time()-t0)*1000),
+                error={"name": "scene_generator", "exception": type(e).__name__,
+                       "trace_tail": str(e)[-200:]},
+            )
 
     # 写 StartUP-Building 侧 · 给 bundle 打包用
     sb_dir.mkdir(parents=True, exist_ok=True)
@@ -71,5 +87,10 @@ def produce(ctx: dict, on_event: Optional[Callable] = None) -> ArtifactResult:
     return ArtifactResult(
         name="scene", status="done",
         timing_ms=int((time.time()-t0)*1000),
-        output_path=f"{sb_dir / 'scene.json'} (assemblies={len(scene.get('assemblies', []))})",
+        output_path=str(sb_dir / "scene.json"),
+        meta={
+            "assemblies": len(scene.get("assemblies", [])),
+            "bounds": scene.get("bounds"),
+            "generated": generated,
+        },
     )

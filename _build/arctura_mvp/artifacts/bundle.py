@@ -64,6 +64,12 @@ def produce(ctx: dict, on_event: Optional[Callable] = None) -> ArtifactResult:
                 file_count += 1
 
     # 不再内部 emit artifact_done · 由 pipeline 统一 emit（避免重复）
-    return ArtifactResult(name="bundle", status="done",
-                           timing_ms=int((time.time()-t0)*1000),
-                           output_path=f"/assets/mvps/{slug}/bundle.zip (files={file_count}, size_kb={round(bundle_path.stat().st_size / 1024, 1)})")
+    return ArtifactResult(
+        name="bundle", status="done",
+        timing_ms=int((time.time()-t0)*1000),
+        output_path=f"/assets/mvps/{slug}/bundle.zip",
+        meta={
+            "files": file_count,
+            "size_kb": round(bundle_path.stat().st_size / 1024, 1),
+        },
+    )

@@ -95,6 +95,7 @@ def run_one(job: dict):
         }
         project.state = "live"
         project.render_engine = result.render_engine
+        project.active_job_id = None   # Phase 7.1 · 生命周期闭合
         _core.put_project(project, expected_version=project.version)
 
         on_event("done", {"job_id": job_id, "state": "live",
@@ -113,6 +114,14 @@ def run_one(job: dict):
             "exception": type(e).__name__,
             "trace_tail": trace,
         })
+        # 最佳努力清 active_job_id · 失败也不抛
+        try:
+            p = _core.get_project(slug)
+            if p and p.active_job_id == job_id:
+                p.active_job_id = None
+                _core.put_project(p, expected_version=p.version)
+        except Exception:
+            pass
 
 
 def main_loop(max_iter: int = None):

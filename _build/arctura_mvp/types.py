@@ -40,9 +40,10 @@ class ArtifactResult:
     name: str
     status: Literal["done", "skipped", "error"]
     timing_ms: int
-    output_path: Optional[str] = None
+    output_path: Optional[str] = None         # 纯路径 · 不塞 detail
     error: Optional[dict] = None              # {exception, trace_tail}
     reason: Optional[str] = None              # for skipped
+    meta: dict = field(default_factory=dict)  # artifact 自己的 detail（SSE → 前端消费）
 
 
 @dataclass

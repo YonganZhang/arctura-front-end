@@ -4,7 +4,7 @@
   1. 每 tool 是纯函数包装 · 无隐藏副作用（全走 store/kv）
   2. 异常转 JSON 错误（MCP 只能 JSON 序列化）
   3. dry_run 参数预留
-  4. 长任务返 job_id · agent 轮询（Phase 7 Worker 实装）
+  4. 长任务返 job_id · agent 订阅 SSE stream_url（Worker + SSE 已接 · Phase 7.1）
 
 运行：
   stdio（给 Claude Code / Continue 等 IDE）：
@@ -106,7 +106,7 @@ TOOLS = [
     },
     {
         "name": "arctura_generate_mvp",
-        "description": "触发 MVP 生成 · 返 job_id（Phase 7 接 Worker 真跑）",
+        "description": "入队 MVP 生成 job · 返 {job_id, stream_url} · agent 订阅 SSE 接进度",
         "input_schema": {
             "type": "object",
             "properties": {"slug": {"type": "string"}, "dry_run": {"type": "boolean", "default": False}},
@@ -199,13 +199,16 @@ def tool_pick_tier(slug, tier, variant_count=1, **_):
     return asdict(p)
 
 
-def tool_generate_mvp(slug, dry_run=False, **_):
-    return {
-        "job_id": f"job-{uuid.uuid4().hex[:10]}",
-        "status": "queued",
-        "stream_url": f"/api/jobs/<id>/stream",
-        "note": "Phase 7 Worker 未实装 · 当前为占位",
-    }
+def tool_generate_mvp(slug, **_):
+    """入队一个 MVP 生成 job · 真接 worker（Phase 7.1）
+
+    前置：project 已 pick_tier · state=planning
+    返 {job_id, slug, stream_url, status} 或 {error}
+    """
+    try:
+        return _core.enqueue_job(slug)
+    except ValueError as e:
+        return {"error": str(e)}
 
 
 def tool_save_project(slug, pending_edits=None, **_):

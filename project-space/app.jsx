@@ -2992,7 +2992,6 @@ function TierPickerStep({ project, onPatch, onRefresh }) {
   const [picked, setPicked] = useState(project.tier || null);
   const [variantCount, setVariantCount] = useState(project.variant_count || 1);
   const [saving, setSaving] = useState(false);
-  const [saveStage, setSaveStage] = useState("");
 
   const select = (tierId) => {
     setPicked(tierId);
@@ -3004,13 +3003,11 @@ function TierPickerStep({ project, onPatch, onRefresh }) {
     if (!picked) return;
     setSaving(true);
     try {
-      setSaveStage("保存档位…");
       const updated = await onPatch({
         tier: picked,
         variant_count: variantCount,
         render_engine: TIERS_UI.find(t => t.id === picked).render_engine,
       });
-      setSaveStage("入队生成…");
       const r = await fetch("/api/mvp/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -3027,7 +3024,6 @@ function TierPickerStep({ project, onPatch, onRefresh }) {
       alert("启动生成失败: " + e.message);
     } finally {
       setSaving(false);
-      setSaveStage("");
     }
   };
 
@@ -3060,7 +3056,7 @@ function TierPickerStep({ project, onPatch, onRefresh }) {
         <div style={{display:"flex",justifyContent:"space-between",marginTop:30}}>
           <button onClick={backToBriefing} style={wzBtnGhost}>← 回 Brief</button>
           <button onClick={submit} disabled={!picked || saving} style={{...wzBtnPrimary, opacity: picked ? 1 : .35}}>
-            {saving ? (saveStage || "...") : `开始生成 (${picked ? TIERS_UI.find(t => t.id === picked).label_zh : "选一个"})`}
+            {saving ? "生成中..." : `开始生成 (${picked ? TIERS_UI.find(t => t.id === picked).label_zh : "选一个"})`}
           </button>
         </div>
       </div>
@@ -3070,11 +3066,34 @@ function TierPickerStep({ project, onPatch, onRefresh }) {
 
 // ───── Step 3 · GenerateProgress · SSE consumer（Phase 7）─────
 
+function formatArtifactMeta(name, meta) {
+  if (!meta || typeof meta !== "object") return "";
+  const parts = [];
+  if (name === "scene" && meta.assemblies != null) {
+    parts.push(`${meta.assemblies} assemblies`);
+    if (meta.generated) parts.push("auto-generated");
+  } else if (name === "moodboard") {
+    if (meta.swatches != null) parts.push(`${meta.swatches} swatches`);
+    if (meta.png) parts.push("png");
+  } else if (name === "floorplan") {
+    if (meta.png_exists) parts.push("png");
+    else if (meta.svg) parts.push("svg only");
+  } else if (name === "renders") {
+    if (meta.count != null) parts.push(`${meta.count} imgs`);
+    if (meta.engine) parts.push(meta.engine);
+    if (meta.degraded_from) parts.push(`⚠ degraded from ${meta.degraded_from}`);
+  } else if (name === "bundle") {
+    if (meta.files != null) parts.push(`${meta.files} files`);
+    if (meta.size_kb != null) parts.push(`${meta.size_kb}KB`);
+  }
+  return parts.length ? `· ${parts.join(", ")}` : "";
+}
+
 function GenerateProgressStep({ project, onPatch }) {
   const jobId = project.active_job_id;
   const [plan, setPlan] = useState(null);          // {artifacts, engine, estimated_min}
   const [currentArtifact, setCurrentArtifact] = useState(null);
-  const [completed, setCompleted] = useState([]);  // [{name, timing_ms}]
+  const [completed, setCompleted] = useState([]);  // [{name, timing_ms, meta}]
   const [status, setStatus] = useState(jobId ? "connecting" : "no_job");
   const [fatal, setFatal] = useState(null);
   const [tStart] = useState(() => Date.now());
@@ -3117,7 +3136,9 @@ function GenerateProgressStep({ project, onPatch }) {
     es.addEventListener("artifact_done", (e) => {
       const d = JSON.parse(e.data);
       pushEvent("artifact_done", d);
-      setCompleted(prev => prev.find(x => x.name === d.name) ? prev : [...prev, { name: d.name, timing_ms: d.timing_ms }]);
+      setCompleted(prev => prev.find(x => x.name === d.name) ? prev : [...prev, {
+        name: d.name, timing_ms: d.timing_ms, meta: d.meta || {},
+      }]);
     });
     es.addEventListener("artifact_skipped", (e) => pushEvent("artifact_skipped", JSON.parse(e.data)));
     es.addEventListener("artifact_error", (e) => pushEvent("artifact_error", JSON.parse(e.data)));
@@ -3234,7 +3255,10 @@ function GenerateProgressStep({ project, onPatch }) {
                 <div key={name} style={{display:"flex",alignItems:"center",gap:10,padding:"6px 0",fontSize:14,color}}>
                   <span style={{fontFamily:"monospace",width:18,textAlign:"center",
                     ...(isCurrent ? {animation:"spin 1s linear infinite",display:"inline-block"} : {})}}>{icon}</span>
-                  <span style={{flex:1,fontWeight: isCurrent ? 500 : 400}}>{name}</span>
+                  <span style={{flex:1,fontWeight: isCurrent ? 500 : 400}}>
+                    {name}
+                    {done?.meta && <span style={{color:"#999",fontSize:11,marginLeft:8,fontWeight:400}}>{formatArtifactMeta(name, done.meta)}</span>}
+                  </span>
                   {done && <span style={{color:"#999",fontSize:12}}>{done.timing_ms}ms</span>}
                 </div>
               );
@@ -3261,13 +3285,15 @@ function GenerateProgressStep({ project, onPatch }) {
           )}
         </div>
 
-        {/* Debug · events 折叠（dev only 可留可删）*/}
-        <details style={{marginTop:40,fontSize:11,color:"#888"}}>
-          <summary style={{cursor:"pointer"}}>events log · {events.length}</summary>
-          <pre style={{background:"#f5f5f5",padding:10,overflow:"auto",maxHeight:200,fontSize:10}}>
-            {events.map((e, i) => `[${new Date(e.ts).toISOString().slice(11,19)}] ${e.name} ${JSON.stringify(e.data).slice(0,120)}`).join("\n")}
-          </pre>
-        </details>
+        {/* Debug · events 折叠 · 仅 ?debug=1 显示 */}
+        {typeof window !== "undefined" && new URLSearchParams(window.location.search).has("debug") && (
+          <details style={{marginTop:40,fontSize:11,color:"#888"}}>
+            <summary style={{cursor:"pointer"}}>events log · {events.length}</summary>
+            <pre style={{background:"#f5f5f5",padding:10,overflow:"auto",maxHeight:200,fontSize:10}}>
+              {events.map((e, i) => `[${new Date(e.ts).toISOString().slice(11,19)}] ${e.name} ${JSON.stringify(e.data).slice(0,120)}`).join("\n")}
+            </pre>
+          </details>
+        )}
       </div>
       <style>{`@keyframes spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }`}</style>
     </div>

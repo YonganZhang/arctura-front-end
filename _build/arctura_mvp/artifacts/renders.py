@@ -50,5 +50,10 @@ def produce(ctx: dict, on_event: Optional[Callable] = None) -> ArtifactResult:
     return ArtifactResult(
         name="renders", status="done",
         timing_ms=int((time.time()-t0)*1000),
-        output_path=f"{produced_count} renders in assets/mvps/{project.slug}/renders/",
+        output_path=f"assets/mvps/{project.slug}/renders/",
+        meta={
+            "count": produced_count,
+            "engine": engine_override or pick_engine(tier),
+            "degraded_from": result.get("_degraded_from"),
+        },
     )

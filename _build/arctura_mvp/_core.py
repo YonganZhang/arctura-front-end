@@ -65,7 +65,13 @@ def get_project(slug: str) -> Optional[Project]:
     if d is None:
         return None
     # 容忍 future 字段 · JS edge 写入的键若 Python 未同步则忽略（避免 hard fail）
-    valid = {f.name for f in __import__("dataclasses").fields(Project)}
+    import dataclasses as _dc, sys as _sys
+    valid = {f.name for f in _dc.fields(Project)}
+    unknown = set(d.keys()) - valid
+    if unknown:
+        # 静默 drop 但 warn · 提醒同步 types.py
+        print(f"[_core] warn: project {slug} has unknown fields dropped: {sorted(unknown)}",
+              file=_sys.stderr)
     filtered = {k: v for k, v in d.items() if k in valid}
     return Project(**filtered)
 
@@ -97,6 +103,46 @@ def list_projects(*, owner: Optional[str] = None, limit: int = 20,
     total = kv.zcard(key)
     next_cursor = (start + limit) if (start + limit) < total else None
     return {"projects": projects, "next_cursor": next_cursor, "total": total}
+
+
+def enqueue_job(slug: str, *, expected_version: Optional[int] = None) -> dict:
+    """入队一个 MVP 生成 job · MCP + CLI 用（JS /api/mvp/create.js 独立实现 · 接口对齐）
+
+    前置：project.state == "planning" · project.tier 已设
+    副作用：rpush jobs:queue + set job meta + 推 project state→generating + 写 active_job_id
+    返回：{job_id, slug, stream_url, status}
+    抛 ValueError：非 planning / 缺 tier / version 冲突
+    """
+    import json as _json
+    import secrets
+    p = get_project(slug)
+    if p is None:
+        raise ValueError("project not found")
+    if expected_version is not None and p.version != expected_version:
+        raise ValueError(f"version conflict · current={p.version} expected={expected_version}")
+    if p.state != "planning":
+        raise ValueError(f"state={p.state} · 必须 planning 才能入队")
+    if not p.tier:
+        raise ValueError("tier 未设 · 先走 pick_tier")
+
+    job_id = f"job-{secrets.token_hex(5)}"
+    job = {
+        "id": job_id, "slug": slug, "tier": p.tier,
+        "variant_count": p.variant_count or 1,
+        "render_engine": p.render_engine,
+        "queued_at": utc_now(),
+    }
+    # 推队列 + job meta（7 天 TTL）
+    kv.rpush(K.jobs_queue(), _json.dumps(job))
+    kv.set_json(K.job(job_id), {**job, "status": "queued"}, ex=7 * 86400)
+
+    # 推进 project state
+    p.state = "generating"
+    p.active_job_id = job_id
+    put_project(p, expected_version=p.version)
+
+    return {"job_id": job_id, "slug": slug,
+            "stream_url": f"/api/jobs/{job_id}/stream", "status": "queued"}
 
 
 def delete_project(slug: str) -> bool:
