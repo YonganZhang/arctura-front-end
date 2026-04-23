@@ -8,9 +8,14 @@ def produce(ctx, on_event=None):
         spec_line="L403",
         what_missing="exports/<slug>.glb + .obj + .fbx + .ifc4（含属性+材质+着色·enriched）",
         full_pipeline_hint=(
-            "Blender 4.2 LTS + cli-anything/blender harness `blender_cli model enrich-ifc` + "
-            "`blender_cli export` · Mac 或 Linux 装 Blender · 本机有 "
-            "`~/.local/blender/blender-4.2.3-linux-x64/` 但 export 脚本未接入 pipeline"
+            "严老师仓现成 pipeline（LIGHT 无法接 · 真产需 Blender 4.2 + IfcOpenShell）：\n"
+            "  • P0 IFC enrich：playbooks/ifc-enrichment/\n"
+            "  • P0 IFC audit：playbooks/ifc-audit/\n"
+            "  • 入口：`cd $BLENDER_H && python3 -m cli_anything.blender.blender_cli model enrich-ifc ...`\n"
+            "  • 验证：playbooks/scripts/verify_ifc_enriched.py\n"
+            "  • 本机 Blender 已装（~/.local/blender/blender-4.2.3-linux-x64/blender）\n"
+            "  • 缺的是 cli-anything/blender/agent-harness 的本机 deploy · 下一步可补\n"
+            "  • 或走 Mac（严老师原本的 dev 环境）"
         ),
         ctx=ctx, on_event=on_event,
     )

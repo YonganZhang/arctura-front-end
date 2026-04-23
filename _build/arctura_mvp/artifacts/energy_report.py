@@ -11,9 +11,14 @@ def produce(ctx, on_event=None):
             "（真 EnergyPlus 能耗模拟 + HK BEEO 2021 合规 + HK 工料报价）"
         ),
         full_pipeline_hint=(
-            "OpenStudio CLI（见 CLI-Anything/openstudio）+ EnergyPlus 26.1 + "
-            "`HKG_Hong.Kong.Intl.AP.epw` 气象 · 跑 P7/P8/P6 pipeline · "
-            "Mac 或 Linux 装 OpenStudio · 不在本机（Arctura LIGHT 模式）"
+            "严老师仓现成 pipeline（LIGHT 无法接 · 真跑需 OpenStudio + EnergyPlus 26.1）：\n"
+            "  • P7 Energy-Sim：playbooks/energy-simulation-pipeline.md\n"
+            "  • P8 Compliance：playbooks/compliance-pipeline.md（codes.json v2 · HK BEEO 2021）\n"
+            "  • P6 BOQ：playbooks/boq-pipeline.md\n"
+            "  • 批量：playbooks/scripts/batch_all_mvps.py（23 个 MVP 一次跑）\n"
+            "  • 气象：HKG_Hong.Kong.Intl.AP.epw\n"
+            "  • 入口：`cd $OPENST_H && python3 -m cli_anything.openstudio.openstudio_cli project new ...`\n"
+            "本机 Linux 可装 OpenStudio Server · 但 tencent-hk 未配 · 建议走 Mac 或 PolyU HPC"
         ),
         ctx=ctx, on_event=on_event,
     )
