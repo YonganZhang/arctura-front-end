@@ -1,0 +1,434 @@
+{
+  "slug": "p73-save-test",
+  "cat": "workplace",
+  "type": "P1-interior",
+  "complete": true,
+  "project": {
+    "name": "Phase 7.3 save test",
+    "zh": "Phase 7.3 save test",
+    "area": 22,
+    "location": "Hong Kong",
+    "budgetHKD": 0,
+    "style": "日式",
+    "palette": []
+  },
+  "renders": [],
+  "floorplan": "/assets/mvps/p73-save-test/floorplan.png",
+  "moodboard": "/assets/mvps/p73-save-test/moodboard.png",
+  "hero_img": "/assets/mvps/p73-save-test/renders/01_hero_corner.png",
+  "thumb_img": null,
+  "zones": [
+    {
+      "name": "阅读区"
+    }
+  ],
+  "furniture": [],
+  "pricing": {
+    "HK": {
+      "label": "Hong Kong",
+      "currency": "HKD",
+      "perM2": 0,
+      "rows": [],
+      "total": "HKD 0"
+    }
+  },
+  "energy": {
+    "eui": 45,
+    "limit": 150,
+    "annual": 0,
+    "engine": "EnergyPlus"
+  },
+  "compliance": {
+    "HK": {
+      "code": "HK_BEEO_BEC_2021",
+      "verdict": "pass",
+      "checks": []
+    }
+  },
+  "variants": {
+    "list": []
+  },
+  "timeline": [],
+  "decks": [],
+  "downloads": [],
+  "editable": {
+    "area_m2": 22,
+    "insulation_mm": 60,
+    "glazing_uvalue": 2,
+    "lighting_cct": 3000,
+    "lighting_density_w_m2": 8,
+    "wwr": 0.25,
+    "region": "HK"
+  },
+  "derived": {
+    "eui_kwh_m2_yr": 45,
+    "cost_total": 0,
+    "cost_per_m2": 0,
+    "co2_t_per_yr": 0
+  },
+  "scene": {
+    "schema_version": "1.0",
+    "unit": "m",
+    "bounds": {
+      "w": 5.2,
+      "d": 4.2,
+      "h": 2.8
+    },
+    "walls": [
+      {
+        "id": "wall_Back",
+        "name": "BackWall",
+        "start": [
+          -2.6,
+          2.1,
+          0
+        ],
+        "end": [
+          2.6,
+          2.1,
+          0
+        ],
+        "height": 2.8,
+        "thickness": 0.1,
+        "material_id": "wall"
+      },
+      {
+        "id": "wall_auto_S",
+        "name": "AutoWall_S",
+        "start": [
+          -2.6,
+          -2.1,
+          0
+        ],
+        "end": [
+          2.6,
+          -2.1,
+          0
+        ],
+        "height": 2.8,
+        "thickness": 0.1,
+        "material_id": "wall",
+        "_auto": true
+      },
+      {
+        "id": "wall_auto_E",
+        "name": "AutoWall_E",
+        "start": [
+          2.6,
+          -2.1,
+          0
+        ],
+        "end": [
+          2.6,
+          2.1,
+          0
+        ],
+        "height": 2.8,
+        "thickness": 0.1,
+        "material_id": "wall",
+        "_auto": true
+      },
+      {
+        "id": "wall_auto_W",
+        "name": "AutoWall_W",
+        "start": [
+          -2.6,
+          -2.1,
+          0
+        ],
+        "end": [
+          -2.6,
+          2.1,
+          0
+        ],
+        "height": 2.8,
+        "thickness": 0.1,
+        "material_id": "wall",
+        "_auto": true
+      }
+    ],
+    "objects": [
+      {
+        "id": "obj_desk_standard_1",
+        "type": "desk_standard",
+        "pos": [
+          -1.6,
+          1.45,
+          0
+        ],
+        "size": [
+          1.4,
+          0.7,
+          0.75
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "material_id": "default",
+        "label_en": "Standard Desk",
+        "label_zh": "书桌",
+        "assembly_id": "asm_desk_standard_1"
+      },
+      {
+        "id": "obj_chair_standard_2",
+        "type": "chair_standard",
+        "pos": [
+          -1.6,
+          0.65,
+          0
+        ],
+        "size": [
+          0.5,
+          0.5,
+          0.9
+        ],
+        "rotation": [
+          0,
+          0,
+          180
+        ],
+        "material_id": "default",
+        "label_en": "Standard Chair",
+        "label_zh": "标准椅",
+        "assembly_id": "asm_chair_standard_2"
+      },
+      {
+        "id": "obj_shelf_open_3",
+        "type": "shelf_open",
+        "pos": [
+          0.2,
+          1.88,
+          1.4
+        ],
+        "size": [
+          1.8,
+          0.35,
+          1.8
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "material_id": "default",
+        "label_en": "Open Shelf",
+        "label_zh": "开放书架",
+        "assembly_id": "asm_shelf_open_3"
+      }
+    ],
+    "assemblies": [
+      {
+        "id": "asm_desk_standard_1",
+        "type": "desk_standard",
+        "pos": [
+          -1.6,
+          1.45,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "size": [
+          1.4,
+          0.7,
+          0.75
+        ],
+        "part_ids": [
+          "obj_desk_standard_1"
+        ],
+        "primary_part_id": "obj_desk_standard_1",
+        "material_id_primary": "default",
+        "label_en": "Standard Desk",
+        "label_zh": "书桌",
+        "_generated_by": "scene_generator_v1"
+      },
+      {
+        "id": "asm_chair_standard_2",
+        "type": "chair_standard",
+        "pos": [
+          -1.6,
+          0.65,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          180
+        ],
+        "size": [
+          0.5,
+          0.5,
+          0.9
+        ],
+        "part_ids": [
+          "obj_chair_standard_2"
+        ],
+        "primary_part_id": "obj_chair_standard_2",
+        "material_id_primary": "default",
+        "label_en": "Standard Chair",
+        "label_zh": "标准椅",
+        "_generated_by": "scene_generator_v1"
+      },
+      {
+        "id": "asm_shelf_open_3",
+        "type": "shelf_open",
+        "pos": [
+          0.2,
+          1.88,
+          1.4
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "size": [
+          1.8,
+          0.35,
+          1.8
+        ],
+        "part_ids": [
+          "obj_shelf_open_3"
+        ],
+        "primary_part_id": "obj_shelf_open_3",
+        "material_id_primary": "default",
+        "label_en": "Open Shelf",
+        "label_zh": "开放书架",
+        "_generated_by": "scene_generator_v1"
+      }
+    ],
+    "lights": [
+      {
+        "id": "sun_1",
+        "type": "sun",
+        "dir": [
+          0.3,
+          0.55,
+          -0.78
+        ],
+        "power": 3,
+        "intensity": 3,
+        "color": [
+          1,
+          0.95,
+          0.85
+        ]
+      },
+      {
+        "id": "area_2",
+        "type": "area",
+        "pos": [
+          0,
+          0.5,
+          2.5999999999999996
+        ],
+        "power": 80,
+        "intensity": 5.5,
+        "color": [
+          1,
+          0.95,
+          0.85
+        ],
+        "size": 1,
+        "size_y": 0.8,
+        "shape": "RECTANGLE"
+      },
+      {
+        "id": "point_3",
+        "type": "point",
+        "pos": [
+          2.1,
+          -1.6,
+          1.4
+        ],
+        "power": 45,
+        "intensity": 24,
+        "color": [
+          1,
+          0.88,
+          0.7
+        ]
+      }
+    ],
+    "materials": {
+      "woodfloor": {
+        "base_color": "#C9B38C",
+        "roughness": 0.55,
+        "metallic": 0,
+        "label": "WoodFloor"
+      },
+      "wall": {
+        "base_color": "#F5F1E8",
+        "roughness": 0.92,
+        "metallic": 0,
+        "label": "Wall"
+      },
+      "lightwood": {
+        "base_color": "#D7C4A8",
+        "roughness": 0.55,
+        "metallic": 0,
+        "label": "LightOak"
+      },
+      "charcoal": {
+        "base_color": "#6B6F73",
+        "roughness": 0.7,
+        "metallic": 0.02,
+        "label": "Charcoal"
+      },
+      "linen_cream": {
+        "base_color": "#D9CFB8",
+        "roughness": 0.97,
+        "metallic": 0,
+        "label": "CreamLinen"
+      },
+      "screen": {
+        "base_color": "#111318",
+        "roughness": 0.25,
+        "metallic": 0.05,
+        "label": "Screen"
+      },
+      "default": {
+        "base_color": "#B8A888",
+        "roughness": 0.6,
+        "metallic": 0,
+        "label": "Default"
+      }
+    },
+    "env": {
+      "hdri": "/assets/hdri/interior_neutral_2k.hdr",
+      "hdri_intensity": 1,
+      "background_color": "#E8E2D5"
+    },
+    "floor": {
+      "material_id": "woodfloor",
+      "thickness": 0.02
+    },
+    "ceiling": {
+      "material_id": "wall",
+      "thickness": 0.05,
+      "height": 2.8,
+      "_auto": true
+    },
+    "camera_default": {
+      "pos": [
+        3.64,
+        -2.94,
+        1.68
+      ],
+      "lookAt": [
+        0,
+        0,
+        1.2
+      ],
+      "fov": 50
+    },
+    "_generated_by": "scene_generator_v1",
+    "_generated_for_slug": "p73-save-test"
+  },
+  "_saved_at": "2026-04-23T06:49:40.470Z",
+  "_saved_from": "api/projects/[slug]/save"
+}
