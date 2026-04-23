@@ -45,6 +45,11 @@ def job(job_id: str) -> str:
     return f"job:{job_id}"
 
 
+def job_events(job_id: str) -> str:
+    """Worker push · SSE stream 读 · 事件列表"""
+    return f"job:{job_id}:events"
+
+
 def jobs_queue() -> str:
     """Worker pull 用的 list"""
     return "jobs:queue"

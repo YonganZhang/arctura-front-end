@@ -2784,8 +2784,8 @@ function Wizard() {
       <WizardHeader project={project} step={step} />
       <div style={wzBody}>
         {step === 1 && <BriefChatStep project={project} onRefresh={refresh} onPatch={patch} />}
-        {step === 2 && <TierPickerStep project={project} onPatch={patch} />}
-        {step === 3 && <GenerateProgressStep project={project} />}
+        {step === 2 && <TierPickerStep project={project} onPatch={patch} onRefresh={refresh} />}
+        {step === 3 && <GenerateProgressStep project={project} onPatch={patch} />}
         {step === 4 && <div>已生成 · 跳转中…</div>}
       </div>
     </div>
@@ -2988,10 +2988,11 @@ function BriefChatStep({ project, onRefresh, onPatch }) {
 
 // ───── Step 2 · TierPicker ─────
 
-function TierPickerStep({ project, onPatch }) {
+function TierPickerStep({ project, onPatch, onRefresh }) {
   const [picked, setPicked] = useState(project.tier || null);
   const [variantCount, setVariantCount] = useState(project.variant_count || 1);
   const [saving, setSaving] = useState(false);
+  const [saveStage, setSaveStage] = useState("");
 
   const select = (tierId) => {
     setPicked(tierId);
@@ -3003,16 +3004,30 @@ function TierPickerStep({ project, onPatch }) {
     if (!picked) return;
     setSaving(true);
     try {
-      await onPatch({
+      setSaveStage("保存档位…");
+      const updated = await onPatch({
         tier: picked,
         variant_count: variantCount,
         render_engine: TIERS_UI.find(t => t.id === picked).render_engine,
-        state: "generating",
       });
+      setSaveStage("入队生成…");
+      const r = await fetch("/api/mvp/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ slug: updated.slug, version: updated.version }),
+        credentials: "include",
+      });
+      if (!r.ok) {
+        const err = await r.json().catch(() => ({}));
+        throw new Error(err.error || `HTTP ${r.status}`);
+      }
+      // Server 已把 state 推到 generating + 写 active_job_id · refresh 让 Wizard 进 step 3
+      await onRefresh();
     } catch (e) {
-      alert("选档失败: " + e.message);
+      alert("启动生成失败: " + e.message);
     } finally {
       setSaving(false);
+      setSaveStage("");
     }
   };
 
@@ -3045,7 +3060,7 @@ function TierPickerStep({ project, onPatch }) {
         <div style={{display:"flex",justifyContent:"space-between",marginTop:30}}>
           <button onClick={backToBriefing} style={wzBtnGhost}>← 回 Brief</button>
           <button onClick={submit} disabled={!picked || saving} style={{...wzBtnPrimary, opacity: picked ? 1 : .35}}>
-            {saving ? "..." : `开始生成 (${picked ? TIERS_UI.find(t => t.id === picked).label_zh : "选一个"})`}
+            {saving ? (saveStage || "...") : `开始生成 (${picked ? TIERS_UI.find(t => t.id === picked).label_zh : "选一个"})`}
           </button>
         </div>
       </div>
@@ -3053,37 +3068,208 @@ function TierPickerStep({ project, onPatch }) {
   );
 }
 
-// ───── Step 3 · GenerateProgress（占位 · 6.D 实装）─────
+// ───── Step 3 · GenerateProgress · SSE consumer（Phase 7）─────
 
-function GenerateProgressStep({ project }) {
-  const backPlanning = async () => {
-    await fetch(`/api/projects/${project.slug}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ state: "planning", version: project.version }),
-      credentials: "include",
+function GenerateProgressStep({ project, onPatch }) {
+  const jobId = project.active_job_id;
+  const [plan, setPlan] = useState(null);          // {artifacts, engine, estimated_min}
+  const [currentArtifact, setCurrentArtifact] = useState(null);
+  const [completed, setCompleted] = useState([]);  // [{name, timing_ms}]
+  const [status, setStatus] = useState(jobId ? "connecting" : "no_job");
+  const [fatal, setFatal] = useState(null);
+  const [tStart] = useState(() => Date.now());
+  const [elapsed, setElapsed] = useState(0);
+  const [events, setEvents] = useState([]);        // for debug panel
+
+  // 本地 elapsed 计时
+  useEffect(() => {
+    const t = setInterval(() => setElapsed(Math.floor((Date.now() - tStart) / 1000)), 1000);
+    return () => clearInterval(t);
+  }, [tStart]);
+
+  // SSE 订阅
+  useEffect(() => {
+    if (!jobId) return;
+    const es = new EventSource(`/api/jobs/${encodeURIComponent(jobId)}/stream`);
+
+    const pushEvent = (name, data) => setEvents(p => [...p.slice(-49), { name, data, ts: Date.now() }]);
+
+    es.addEventListener("open", (e) => {
+      const d = JSON.parse(e.data);
+      pushEvent("open", d);
+      setStatus(d.status === "queued" ? "queued" : d.status === "running" ? "running" : d.status);
     });
-    window.location.reload();
+    es.addEventListener("job_picked", (e) => {
+      pushEvent("job_picked", JSON.parse(e.data));
+      setStatus("running");
+    });
+    es.addEventListener("start", (e) => pushEvent("start", JSON.parse(e.data)));
+    es.addEventListener("plan", (e) => {
+      const d = JSON.parse(e.data);
+      pushEvent("plan", d);
+      setPlan(d);
+    });
+    es.addEventListener("artifact_start", (e) => {
+      const d = JSON.parse(e.data);
+      pushEvent("artifact_start", d);
+      setCurrentArtifact(d.name);
+    });
+    es.addEventListener("artifact_done", (e) => {
+      const d = JSON.parse(e.data);
+      pushEvent("artifact_done", d);
+      setCompleted(prev => prev.find(x => x.name === d.name) ? prev : [...prev, { name: d.name, timing_ms: d.timing_ms }]);
+    });
+    es.addEventListener("artifact_skipped", (e) => pushEvent("artifact_skipped", JSON.parse(e.data)));
+    es.addEventListener("artifact_error", (e) => pushEvent("artifact_error", JSON.parse(e.data)));
+    es.addEventListener("complete", (e) => pushEvent("complete", JSON.parse(e.data)));
+    es.addEventListener("done", (e) => {
+      const d = JSON.parse(e.data);
+      pushEvent("done", d);
+      setStatus("done");
+      setCurrentArtifact(null);
+      // 跳转延时 · 让用户看到 "完成" 状态
+      setTimeout(() => { window.location.href = `/project/${project.slug}`; }, 1500);
+    });
+    es.addEventListener("fatal", (e) => {
+      const d = JSON.parse(e.data);
+      pushEvent("fatal", d);
+      setFatal(d);
+      setStatus("failed");
+    });
+    es.addEventListener("error", (e) => {
+      // SSE 的 error 事件分两种 · 有 data = app-level · 无 data = 连接中断（浏览器自动重连）
+      if (!e.data) { pushEvent("connection_error", {}); return; }
+      try {
+        const d = JSON.parse(e.data);
+        pushEvent("error", d);
+        setFatal(d);
+        setStatus("failed");
+      } catch {}
+    });
+    es.addEventListener("stream_end", (e) => {
+      pushEvent("stream_end", JSON.parse(e.data));
+      es.close();
+    });
+    es.addEventListener("timeout", (e) => {
+      pushEvent("timeout", JSON.parse(e.data));
+      setStatus("timeout");
+    });
+    es.addEventListener("heartbeat", () => {});
+
+    return () => es.close();
+  }, [jobId, project.slug]);
+
+  const backPlanning = async () => {
+    try {
+      await onPatch({ state: "planning" });
+    } catch (e) { alert(e.message); }
   };
-  return (
-    <div style={wzStepBody}>
-      <div style={{maxWidth:720,margin:"60px auto",textAlign:"center"}}>
-        <div style={{fontSize:56}}>🚧</div>
-        <h2 style={{fontFamily:"Fraunces,serif",fontSize:28,fontWeight:400,marginTop:20}}>生成功能 · Phase 6.D 实装中</h2>
-        <div style={{color:"#777",fontSize:14,lineHeight:1.8,marginTop:18}}>
-          当前 state = <b>generating</b> · tier = <b>{project.tier}</b> · variant_count = {project.variant_count} · render_engine = {project.render_engine}
-        </div>
-        <div style={{color:"#888",fontSize:13,marginTop:30,lineHeight:1.8}}>
-          下一阶段：<br/>
-          · 前端订阅 <code>/api/jobs/&lt;id&gt;/stream</code> SSE<br/>
-          · Worker（本机 tencent-hk · systemd）从 Upstash 队列拉 job<br/>
-          · 调 <code>arctura_mvp.pipeline.run</code> 按档位产出 artifacts<br/>
-          · 完成推 state → live · 跳 <code>/project/&lt;slug&gt;</code>
-        </div>
-        <div style={{marginTop:40}}>
-          <button onClick={backPlanning} style={wzBtnGhost}>← 回档位选择</button>
+
+  if (!jobId) {
+    return (
+      <div style={wzStepBody}>
+        <div style={{maxWidth:720,margin:"60px auto",textAlign:"center"}}>
+          <div style={{fontSize:56}}>⚠️</div>
+          <h2 style={{fontFamily:"Fraunces,serif",fontSize:28,fontWeight:400,marginTop:20}}>未找到生成任务</h2>
+          <div style={{color:"#777",fontSize:14,lineHeight:1.8,marginTop:18}}>
+            state = generating · 但 active_job_id 缺失 · 可能上次 create 中断
+          </div>
+          <div style={{marginTop:40,display:"flex",gap:12,justifyContent:"center"}}>
+            <button onClick={backPlanning} style={wzBtnGhost}>← 回档位重选</button>
+          </div>
         </div>
       </div>
+    );
+  }
+
+  const totalArtifacts = (plan?.artifacts || []).length;
+  const pct = totalArtifacts > 0 ? Math.min(100, Math.round((completed.length / totalArtifacts) * 100)) : 0;
+  const mmss = `${String(Math.floor(elapsed / 60)).padStart(2, "0")}:${String(elapsed % 60).padStart(2, "0")}`;
+
+  return (
+    <div style={wzStepBody}>
+      <div style={{maxWidth:820,margin:"50px auto",width:"100%",padding:"0 24px"}}>
+        {/* Header */}
+        <div style={{textAlign:"center",marginBottom:30}}>
+          <div style={{fontSize:48}}>
+            {status === "done" ? "✅" : status === "failed" ? "❌" : status === "timeout" ? "⏱" : "🔨"}
+          </div>
+          <h2 style={{fontFamily:"Fraunces,serif",fontSize:28,fontWeight:400,marginTop:12}}>
+            {status === "done" ? "生成完成 · 即将跳转" :
+             status === "failed" ? "生成失败" :
+             status === "timeout" ? "生成超时" :
+             status === "queued" ? "排队中…" :
+             status === "connecting" ? "连接中…" :
+             "正在生成 MVP"}
+          </h2>
+          <div style={{color:"#888",fontSize:13,marginTop:6}}>
+            tier = <b>{project.tier}</b> · engine = <b>{project.render_engine || plan?.engine || "—"}</b>
+            · variants = {project.variant_count || 1} · 用时 {mmss}
+            {plan?.estimated_min && status !== "done" && <span> · 预计 ~{plan.estimated_min} min</span>}
+          </div>
+        </div>
+
+        {/* Progress bar */}
+        <div style={{marginBottom:24}}>
+          <div style={wzProgressOuter}>
+            <div style={{...wzProgressInner, width: `${pct}%`,
+              background: status === "failed" ? "#c0392b" : status === "done" ? "#27ae60" : "#2c3e50"}}/>
+          </div>
+          <div style={{fontSize:12,color:"#888",marginTop:6,display:"flex",justifyContent:"space-between"}}>
+            <span>{completed.length} / {totalArtifacts || "?"} artifacts</span>
+            <span>{pct}%</span>
+          </div>
+        </div>
+
+        {/* Artifact list */}
+        {plan && (
+          <div style={{background:"#fff",border:"1px solid #e8e8e4",borderRadius:10,padding:"16px 20px",marginBottom:24}}>
+            <div style={{fontSize:12,color:"#888",fontWeight:600,textTransform:"uppercase",letterSpacing:1,marginBottom:12}}>Artifacts</div>
+            {plan.artifacts.map(name => {
+              const done = completed.find(c => c.name === name);
+              const isCurrent = currentArtifact === name;
+              const icon = done ? "✓" : isCurrent ? "⟳" : "·";
+              const color = done ? "#27ae60" : isCurrent ? "#2c3e50" : "#bbb";
+              return (
+                <div key={name} style={{display:"flex",alignItems:"center",gap:10,padding:"6px 0",fontSize:14,color}}>
+                  <span style={{fontFamily:"monospace",width:18,textAlign:"center",
+                    ...(isCurrent ? {animation:"spin 1s linear infinite",display:"inline-block"} : {})}}>{icon}</span>
+                  <span style={{flex:1,fontWeight: isCurrent ? 500 : 400}}>{name}</span>
+                  {done && <span style={{color:"#999",fontSize:12}}>{done.timing_ms}ms</span>}
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Fatal error */}
+        {fatal && (
+          <div style={{background:"#FCECEB",border:"1px solid #E8A39E",borderRadius:8,padding:"14px 16px",marginBottom:24,fontSize:13,color:"#8B2D23"}}>
+            <div style={{fontWeight:600,marginBottom:6}}>错误</div>
+            <div style={{fontFamily:"monospace",whiteSpace:"pre-wrap",fontSize:12}}>{fatal.message || fatal.exception || JSON.stringify(fatal)}</div>
+            {fatal.trace_tail && <div style={{fontFamily:"monospace",whiteSpace:"pre-wrap",fontSize:11,color:"#A75041",marginTop:8}}>{fatal.trace_tail}</div>}
+          </div>
+        )}
+
+        {/* Actions */}
+        <div style={{display:"flex",justifyContent:"space-between",marginTop:20}}>
+          {(status === "failed" || status === "timeout") ? (
+            <button onClick={backPlanning} style={wzBtnGhost}>← 回档位重试</button>
+          ) : <span/>}
+          {status === "done" && (
+            <a href={`/project/${project.slug}`} style={{...wzBtnPrimary, textDecoration:"none", display:"inline-block"}}>查看结果 →</a>
+          )}
+        </div>
+
+        {/* Debug · events 折叠（dev only 可留可删）*/}
+        <details style={{marginTop:40,fontSize:11,color:"#888"}}>
+          <summary style={{cursor:"pointer"}}>events log · {events.length}</summary>
+          <pre style={{background:"#f5f5f5",padding:10,overflow:"auto",maxHeight:200,fontSize:10}}>
+            {events.map((e, i) => `[${new Date(e.ts).toISOString().slice(11,19)}] ${e.name} ${JSON.stringify(e.data).slice(0,120)}`).join("\n")}
+          </pre>
+        </details>
+      </div>
+      <style>{`@keyframes spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }`}</style>
     </div>
   );
 }

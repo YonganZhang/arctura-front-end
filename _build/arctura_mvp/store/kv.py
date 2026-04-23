@@ -147,6 +147,23 @@ def rpop(key: str) -> Optional[str]:
     return r.get("result")
 
 
+def rpush(key: str, value: str) -> int:
+    """RPUSH key value"""
+    r = _request(f"rpush/{urllib.parse.quote(key, safe='')}/{urllib.parse.quote(value, safe='')}",
+                 method="POST")
+    return r.get("result", 0)
+
+
+def lrange(key: str, start: int = 0, stop: int = -1) -> list:
+    r = _request(f"lrange/{urllib.parse.quote(key, safe='')}/{start}/{stop}")
+    return r.get("result", [])
+
+
+def llen(key: str) -> int:
+    r = _request(f"llen/{urllib.parse.quote(key, safe='')}")
+    return r.get("result", 0)
+
+
 # ───── Pipeline / MULTI（two-phase commit for save）─────
 
 def pipeline(commands: list[list]) -> list:

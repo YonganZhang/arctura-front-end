@@ -14,6 +14,7 @@ export const K = {
   rateSession:      (anon,   action = "create") => `rate:session:${anon}:${action}`,
   lock:             (slug) => `project:${slug}:lock`,
   job:              (id)   => `job:${id}`,
+  jobEvents:        (id)   => `job:${id}:events`,
   jobsQueue:        ()     => "jobs:queue",
   audit:            (slug, ts) => `audit:${slug}:${ts}`,
   migrationGuard:   (version)  => `migration:legacy:${version}`,
