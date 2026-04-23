@@ -147,6 +147,7 @@ node _build/capture_renders.mjs --slug 50-xxx
 | 7.3 save.js 真 git commit · Vercel GITHUB_TOKEN | ✅ | `api/projects/[slug]/save.js::commitMvpFile` · GitHub Contents API · 路径白名单 |
 | 7.4 对齐严老师 spec · 6 skeleton · _TODO-INDEX · brief 必填 | ✅ | `artifacts/_unimplemented.py` + `{deck_client,client_readme,energy_report,exports,variants,case_study}.py` · 各返 skipped + 写 `_TODO-<name>.md` · bundle 顶层 `_TODO-INDEX.md` · brief_rules must_fill 加 headcount |
 | 7.5 真集成严老师现成脚本 · 3 artifact 真产 | ✅ | client_readme 用 `templates/client-readme-template.md` · case_study 用 `vendor/case_study/render_templates.py` · variants 用 `vendor/score_variants.py` · `/api/projects/<slug>/history` 接 GitHub commits · 剩 3 skeleton _TODO 指真脚本路径 |
+| 8 架构整合 · product_registry SSOT · MCP 命名空间 · 对齐严老师 Pipelines 完整仓 | ✅ | `product_registry.py`（15 产物 × 5 档 × LIGHT/FULL）· tiers.py 降级为 thin facade · `vendor/` 镜像严老师 11 脚本 + 3 schema + 3 defaults · artifacts 全 registry 驱动 · skeleton 删 3 文件 · MCP 新 7 namespace 17 tools + 9 legacy alias |
 
 ## 编码纪律（Yongan 全局偏好）
 

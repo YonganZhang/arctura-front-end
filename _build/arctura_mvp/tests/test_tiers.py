@@ -5,9 +5,12 @@ from _build.arctura_mvp.tiers import (
 )
 
 
-def test_concept_has_4_artifacts():
+def test_concept_artifacts_from_registry():
+    """Phase 8 · registry 驱动 · 5 artifacts (scene/moodboard/floorplan/renders/bundle · brief 不入 pipeline)"""
     r = resolve_tier("concept")
-    assert set(r["artifacts"]) == {"scene", "moodboard", "floorplan", "renders"}
+    assert set(r["artifacts"]) == {"scene", "moodboard", "floorplan", "renders", "bundle"}
+    # bundle 永远最后
+    assert r["artifacts"][-1] == "bundle"
     assert r["render_engine_default"] == "fast"
     assert r["variant_count"] == 1
 

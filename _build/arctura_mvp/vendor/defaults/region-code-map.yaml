@@ -1,0 +1,159 @@
+# Region / Code / Weather Mapping — 单一真源
+#
+# 解决的问题：
+#   - P3 brief.json.region            → 自由文本（"香港"、"北京"...）
+#   - P6 BOQ        --region          → HK / CN / INTL
+#   - P7 Energy-Sim --weather <epw>   → 具体 EPW 文件名
+#   - P8 Compliance --code            → HK / CN_HOT / CN_COLD / ASHRAE / JP
+#
+# 这 4 套标识必须一致。以前散落在各 playbook 里，现在统一在这里。
+#
+# 使用方法：
+#   1. Agent 拿到 brief.json.region → 先查 region_fallback 映射到 locale
+#   2. 拿到 locale → 查 locales.<key> 得到全套 (boq_region, compliance_code, weather_epw, currency)
+#   3. 如果 locale 没覆盖，走 TODO：新增 locale 条目后再执行
+
+schema_version: "1.0.0"
+
+# ─────────────────────────────────────────────────────────────
+# Locale 定义（最细粒度，按城市/气候区）
+# ─────────────────────────────────────────────────────────────
+locales:
+
+  # --- 香港 ---
+  hk:
+    display_cn: 香港（机场站 · 默认）
+    display_en: Hong Kong (HKIA, default)
+    boq_region: HK
+    compliance_code: HK
+    currency: HKD
+    weather_epw: HKG_Hong.Kong.Intl.AP.epw
+    notes: "本项目主场景。P6 单价表 HK$8000-15000/m²，P8 按 BEEO / BEC 2021。"
+
+  hk_urban:
+    display_cn: 香港市区
+    display_en: Hong Kong (Urban Obs)
+    boq_region: HK
+    compliance_code: HK
+    currency: HKD
+    weather_epw: HKG_Hong.Kong.Obs.epw
+    notes: "市区热岛更明显，EUI 会比 hk 高 5-10%。"
+
+  # --- 中国大陆（按 GB 50178 建筑气候分区）---
+  cn_gz:
+    display_cn: 广州/深圳（夏热冬暖）
+    display_en: Guangzhou/Shenzhen (hot summer, warm winter)
+    boq_region: CN
+    compliance_code: CN_HOT
+    currency: RMB
+    weather_epw: null  # TODO: 从 climate.onebuilding.org 下载 CHN_Guangzhou.epw
+    notes: "P6 单价表 ¥2500-5000/m²。EPW 待补。"
+
+  cn_sh:
+    display_cn: 上海/杭州（夏热冬冷）
+    display_en: Shanghai/Hangzhou (hot summer, cold winter)
+    boq_region: CN
+    compliance_code: CN_HOT   # GB 50189 夏热冬冷也走 CN_HOT 分支
+    currency: RMB
+    weather_epw: null  # TODO: CHN_Shanghai.Hongqiao.epw
+    notes: "严格说 GB 50178 分区是 HSCW，目前映射到 CN_HOT。如需 HSCW 独立阈值，后续扩展 compliance_code。"
+
+  cn_bj:
+    display_cn: 北京/天津（寒冷区）
+    display_en: Beijing/Tianjin (cold)
+    boq_region: CN
+    compliance_code: CN_COLD
+    currency: RMB
+    weather_epw: CHN_Beijing.Capital.AP.epw
+    notes: "冬季供暖负荷显著，保温要求比 cn_gz 严格 2 档。"
+
+  # --- 国际 / 其他 ---
+  intl_us:
+    display_cn: 美国（ASHRAE 通用）
+    display_en: USA (ASHRAE generic)
+    boq_region: INTL
+    compliance_code: ASHRAE
+    currency: USD
+    weather_epw: null  # 用 EnergyPlus 自带 5 个美国城市之一
+    notes: "P6 单价表 $800-2000/m²。EPW 从 /Applications/EnergyPlus-*/WeatherData/ 选。"
+
+  jp_tokyo:
+    display_cn: 日本东京
+    display_en: Tokyo, Japan
+    boq_region: INTL
+    compliance_code: JP
+    currency: JPY
+    weather_epw: null  # TODO: JPN_Tokyo.Hyakuri.AP.epw
+    notes: "省エネ法 2025 是所有 code 里最严格的。EPW 待从 climate.onebuilding.org 下载。"
+
+
+# ─────────────────────────────────────────────────────────────
+# 反向查找：brief.json.region (自由文本) → locale key
+# ─────────────────────────────────────────────────────────────
+#
+# 规则：
+#   1. 如果 brief.json.region 精确匹配 locales key（"hk"、"cn_bj"）→ 直接用
+#   2. 否则查下面的 region_fallback（大小写不敏感）
+#   3. 都不中 → 报错，让用户在 brief 里写 locale key
+region_fallback:
+  # 粗粒度（历史兼容）
+  HK:          hk
+  CN:          cn_gz      # CN 默认走广州。要北京请写 "cn_bj" 或 "北京"
+  INTL:        intl_us
+  US:          intl_us
+  USA:         intl_us
+  JP:          jp_tokyo
+  JAPAN:       jp_tokyo
+
+  # 中文常见写法
+  香港:         hk
+  广州:         cn_gz
+  深圳:         cn_gz
+  上海:         cn_sh
+  杭州:         cn_sh
+  北京:         cn_bj
+  天津:         cn_bj
+  东京:         jp_tokyo
+  日本:         jp_tokyo
+  美国:         intl_us
+
+
+# ─────────────────────────────────────────────────────────────
+# Compliance code → 法规全称（展示用）
+# ─────────────────────────────────────────────────────────────
+compliance_codes:
+  HK:
+    full_name: "Hong Kong BEEO / BEC 2021"
+    full_name_cn: "香港建筑物能源效益条例 BEC 2021"
+    strictness: 2   # 1-5 级，越高越严
+  CN_HOT:
+    full_name: "GB 50189-2015 (夏热冬暖 / HSWW)"
+    full_name_cn: "公共建筑节能设计标准 夏热冬暖区"
+    strictness: 3
+  CN_COLD:
+    full_name: "GB 50189-2015 (寒冷区 / Cold)"
+    full_name_cn: "公共建筑节能设计标准 寒冷区"
+    strictness: 4
+  ASHRAE:
+    full_name: "ASHRAE 90.1-2022"
+    full_name_cn: "ASHRAE 90.1-2022（美国标准）"
+    strictness: 3
+  JP:
+    full_name: "省エネ法 2025 (Energy Conservation Law)"
+    full_name_cn: "日本省能源法 2025"
+    strictness: 5
+
+
+# ─────────────────────────────────────────────────────────────
+# BOQ region → 币种 + 典型单价区间（展示用）
+# ─────────────────────────────────────────────────────────────
+boq_regions:
+  HK:
+    currency: HKD
+    typical_range_per_m2: [8000, 15000]
+  CN:
+    currency: RMB
+    typical_range_per_m2: [2500, 5000]
+  INTL:
+    currency: USD
+    typical_range_per_m2: [800, 2000]

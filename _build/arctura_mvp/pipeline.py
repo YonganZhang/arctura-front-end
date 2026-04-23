@@ -55,7 +55,10 @@ def run(project: Project, *,
         )
 
     resolved = resolve_tier(project.tier, project.variant_count or 1)
-    artifacts_list = resolved["artifacts"] + ["bundle"]  # bundle 永远最后
+    # Phase 8 · bundle 已在 registry 中且保证最后 · 不再在这里 += bundle
+    artifacts_list = list(resolved["artifacts"])
+    if "bundle" not in artifacts_list:
+        artifacts_list.append("bundle")
     engine = project.render_engine or resolved["render_engine_default"]
 
     emit("plan", {
@@ -90,10 +93,12 @@ def run(project: Project, *,
 
         handler = get_artifact(artifact_name)
         if handler is None:
-            emit("artifact_skip_unimplemented", {"name": artifact_name})
-            skipped.append({"name": artifact_name,
-                             "reason": "artifact 未实装（Phase 7+ 补）"})
-            continue
+            # Phase 8 · 从 registry 派生 skeleton · 统一写 _TODO-<name>.md
+            from .artifacts import get_unimplemented_fallback
+            fallback = get_unimplemented_fallback()
+            # adapter · fallback 签名 (name, ctx, on_event) · 统一用 closure
+            def handler(ctx_inner, on_event=None, _name=artifact_name):
+                return fallback(_name, ctx_inner, on_event)
 
         emit("artifact_start", {"name": artifact_name})
         t_start = time.time()

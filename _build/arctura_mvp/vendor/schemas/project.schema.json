@@ -1,0 +1,173 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://startup-building.local/schemas/project.schema.json",
+  "title": "OpenStudio Project File (project.json)",
+  "description": "Shared state file between P7 (writer) and P6/P8/P9 (readers). Produced by P7 `project new` + `run simulate`; consumed by P6 BOQ path A, P8 Compliance, and P9 What-If. Any breaking change MUST bump schema_version and update all consumer playbooks.",
+
+  "type": "object",
+  "required": ["meta", "thermal_model"],
+  "additionalProperties": true,
+
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "SemVer. Bump MAJOR on breaking change (removed/renamed field). Bump MINOR on additive change. Current: 1.0.0. Files produced before this schema existed have no version field and default to 0.x legacy. 在过渡期 (2026-04+)，此字段可缺省。缺省时 validator 按 0.x legacy 对待。P7 `project new` 命令应在生成新文件时写入 `\"1.0.0\"`，老文件用 `project migrate` 回填。",
+      "examples": ["1.0.0"]
+    },
+
+    "meta": {
+      "type": "object",
+      "required": ["name", "version"],
+      "properties": {
+        "name":     { "type": "string" },
+        "version":  { "type": "string" },
+        "created":  { "type": "string", "format": "date-time" },
+        "modified": { "type": "string", "format": "date-time" }
+      }
+    },
+
+    "brief_path":   { "type": ["string", "null"], "description": "Absolute path to source brief.json" },
+    "ifc_path":     { "type": ["string", "null"], "description": "Absolute path to enriched IFC file (added in v0.2.0)" },
+    "weather_file": { "type": ["string", "null"], "description": "Absolute path to .epw file used by P7" },
+
+    "thermal_model": {
+      "type": "object",
+      "required": ["building_type", "zones", "constructions", "hvac"],
+      "properties": {
+        "building_type":     { "type": "string", "examples": ["residential", "office", "restaurant", "clinic", "retail"] },
+        "orientation_deg":   { "type": "number", "minimum": 0, "maximum": 360 },
+        "source":            { "type": "string", "enum": ["brief", "ifc", "ifc+brief"], "description": "Data source for this thermal model (added in v0.2.0)" },
+        "ifc_path":          { "type": "string", "description": "Path to the enriched IFC file used to build this model" },
+
+        "geometry": {
+          "type": "object",
+          "properties": {
+            "length_m":        { "type": "number", "exclusiveMinimum": 0 },
+            "width_m":         { "type": "number", "exclusiveMinimum": 0 },
+            "floors":          { "type": "integer", "minimum": 1 },
+            "floor_heights_m": { "type": "object", "additionalProperties": { "type": "number", "exclusiveMinimum": 0 } },
+            "total_height_m":  { "type": "number", "exclusiveMinimum": 0 }
+          }
+        },
+
+        "zones": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["name", "area_m2"],
+            "properties": {
+              "name":      { "type": "string" },
+              "floor":     { "type": "string" },
+              "area_m2":   { "type": "number", "exclusiveMinimum": 0 },
+              "height_m":  { "type": "number", "exclusiveMinimum": 0 },
+              "zone_type": { "type": "string", "examples": ["living", "bedroom", "office", "kitchen", "bathroom", "circulation", "storage", "outdoor", "general"] }
+            }
+          }
+        },
+
+        "constructions": {
+          "type": "object",
+          "description": "Envelope thermal properties. u_value keys are the primary contract fields read by P8 compliance checks.",
+          "properties": {
+            "exterior_wall":  { "$ref": "#/$defs/opaqueConstruction" },
+            "interior_wall":  { "$ref": "#/$defs/opaqueConstruction" },
+            "roof":           { "$ref": "#/$defs/opaqueConstruction" },
+            "floor":          { "$ref": "#/$defs/opaqueConstruction" },
+            "window": {
+              "type": "object",
+              "required": ["u_value"],
+              "properties": {
+                "name":                  { "type": "string" },
+                "u_value":               { "type": "number", "exclusiveMinimum": 0, "description": "W/(m²·K). Consumed by P8." },
+                "shgc":                  { "type": "number", "minimum": 0, "maximum": 1, "description": "Solar Heat Gain Coefficient. Consumed by P8." },
+                "visible_transmittance": { "type": "number", "minimum": 0, "maximum": 1 },
+                "frame_type":            { "type": "string" }
+              }
+            }
+          }
+        },
+
+        "hvac": {
+          "type": "object",
+          "required": ["type"],
+          "properties": {
+            "type":                { "type": "string", "examples": ["vrf", "split", "central_ahu", "window_ac", "none"] },
+            "fresh_air":           { "type": "boolean" },
+            "description":         { "type": "string" },
+            "heating_setpoint_c":  { "type": "number" },
+            "cooling_setpoint_c":  { "type": "number" }
+          }
+        },
+
+        "schedules": {
+          "type": "object",
+          "properties": {
+            "occupancy":   { "type": "object" },
+            "lighting":    { "type": "object", "properties": { "wperm2": { "type": "number", "minimum": 0 } } },
+            "equipment":   { "type": "object", "properties": { "wperm2": { "type": "number", "minimum": 0 } } },
+            "ventilation": { "type": "object", "properties": { "ach": { "type": "number", "minimum": 0 } } }
+          }
+        }
+      }
+    },
+
+    "simulation": {
+      "type": "object",
+      "properties": {
+        "status":     { "type": "string", "enum": ["not_run", "pending", "running", "completed", "failed"] },
+        "last_run":   { "type": "string", "format": "date-time" },
+        "output_dir": { "type": "string" },
+        "idf_path":   { "type": "string" }
+      }
+    },
+
+    "results": {
+      "type": "object",
+      "description": "Populated by P7 after `run simulate`. P8/P9 require status=completed and severe_errors=0 before consuming.",
+      "required": ["status"],
+      "properties": {
+        "status":                { "type": "string", "enum": ["pending", "completed", "failed"] },
+        "eui_kwh_m2_yr":         { "type": ["number", "null"], "description": "⭐ Primary field consumed by P8/P9/P10/P11." },
+        "total_site_energy_kwh": { "type": ["number", "null"] },
+        "total_heating_kwh":     { "type": ["number", "null"] },
+        "total_cooling_kwh":     { "type": ["number", "null"] },
+        "total_lighting_kwh":    { "type": ["number", "null"] },
+        "total_equipment_kwh":   { "type": ["number", "null"] },
+        "peak_heating_w":        { "type": ["number", "null"] },
+        "peak_cooling_w":        { "type": ["number", "null"] },
+        "floor_area_m2":         { "type": ["number", "null"], "description": "⭐ Consumed by P6 BOQ path A for $/m² calc." },
+        "warnings":              { "type": ["integer", "null"], "minimum": 0 },
+        "severe_errors":         { "type": ["integer", "null"], "minimum": 0, "description": "⭐ MUST be 0 before P8/P9 consume this project.json." },
+        "monthly_heating_kwh":   { "type": "array", "items": { "type": "number" } },
+        "monthly_cooling_kwh":   { "type": "array", "items": { "type": "number" } }
+      }
+    }
+  },
+
+  "$defs": {
+    "opaqueConstruction": {
+      "type": "object",
+      "required": ["u_value"],
+      "properties": {
+        "name":    { "type": "string" },
+        "u_value": { "type": "number", "exclusiveMinimum": 0, "description": "W/(m²·K). Consumed by P8 compliance thresholds." },
+        "layers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["material", "thickness_m"],
+            "properties": {
+              "material":      { "type": "string" },
+              "thickness_m":   { "type": "number", "exclusiveMinimum": 0 },
+              "conductivity":  { "type": "number", "exclusiveMinimum": 0 },
+              "density":       { "type": "number", "exclusiveMinimum": 0 },
+              "specific_heat": { "type": "number", "exclusiveMinimum": 0 }
+            }
+          }
+        }
+      }
+    }
+  }
+}

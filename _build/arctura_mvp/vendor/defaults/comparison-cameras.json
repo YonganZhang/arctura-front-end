@@ -1,0 +1,72 @@
+{
+  "_doc": "P10 A/B/C 对比渲染统一相机配置 — 所有 variant 必须用此文件的参数",
+  "_note": "room_bounds 基于 brief.json 的 dimensions_m 自动计算，camera 位置按比例缩放",
+
+  "interior_10x6": {
+    "_description": "10×6m 室内空间 (center at origin, ceiling 3.2m)",
+    "room_bounds": {"x": [-5, 5], "y": [-3, 3], "z": [0, 3.2]},
+    "cameras": [
+      {
+        "name": "01_hero_corner",
+        "description": "对角线俯视 — 看整体布局和材质差异",
+        "location": [4.5, -2.5, 2.8],
+        "target": [-1.0, 0.5, 1.0],
+        "lens_mm": 24
+      },
+      {
+        "name": "03_main_zone",
+        "description": "沙发区正面 — 看主材质和氛围",
+        "location": [-4.0, -2.0, 1.6],
+        "target": [2.0, 1.0, 1.2],
+        "lens_mm": 24
+      },
+      {
+        "name": "04_feature_zone",
+        "description": "餐厅/吧台区 — 看功能区材质",
+        "location": [4.0, 2.5, 1.6],
+        "target": [-1.0, -0.5, 1.2],
+        "lens_mm": 24
+      },
+      {
+        "name": "08_birds_eye_3d",
+        "description": "鸟瞰 — 看整体平面布局 (自动隐藏天花)",
+        "location": [6.0, -5.0, 7.0],
+        "target": [0.0, 0.0, 0.0],
+        "lens_mm": 24,
+        "hide_ceiling": true
+      }
+    ]
+  },
+
+  "interior_8x5": {
+    "_description": "8×5m 室内空间",
+    "room_bounds": {"x": [-4, 4], "y": [-2.5, 2.5], "z": [0, 3.0]},
+    "cameras": [
+      {
+        "name": "01_hero_corner",
+        "location": [3.5, -2.0, 2.4],
+        "target": [-0.8, 0.4, 1.0],
+        "lens_mm": 24
+      },
+      {
+        "name": "03_main_zone",
+        "location": [-3.2, -1.6, 1.6],
+        "target": [1.6, 0.8, 1.2],
+        "lens_mm": 24
+      },
+      {
+        "name": "04_feature_zone",
+        "location": [3.2, 2.0, 1.6],
+        "target": [-0.8, -0.4, 1.2],
+        "lens_mm": 24
+      },
+      {
+        "name": "08_birds_eye_3d",
+        "location": [5.0, -4.0, 6.0],
+        "target": [0.0, 0.0, 0.0],
+        "lens_mm": 24,
+        "hide_ceiling": true
+      }
+    ]
+  }
+}
