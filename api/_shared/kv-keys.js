@@ -16,6 +16,8 @@ export const K = {
   job:              (id)   => `job:${id}`,
   jobEvents:        (id)   => `job:${id}:events`,
   jobsQueue:        ()     => "jobs:queue",
+  workerHeartbeat:  (host) => `worker:${host}:heartbeat`,
+  workersIndex:     ()     => "workers:index",
   audit:            (slug, ts) => `audit:${slug}:${ts}`,
   migrationGuard:   (version)  => `migration:legacy:${version}`,
 };

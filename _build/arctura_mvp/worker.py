@@ -31,6 +31,11 @@ from .local_server import ensure_running as ensure_local_server
 POLL_INTERVAL = 2  # 无 job 时每 2s poll · Upstash REST 没 blocking pop
 MAX_EVENT_LIST = 500  # job:<id>:events 最多留 500 事件
 
+# Heartbeat · 每 30s 写 worker:<host>:heartbeat · TTL 120s（容忍 4 拍）
+HEARTBEAT_INTERVAL = 30
+HEARTBEAT_TTL = 120
+HOSTNAME = os.environ.get("HOSTNAME") or os.uname().nodename
+
 # Worker 自起一个本机 static server · Playwright 调 localhost 拿实时 MVP 数据
 # 覆盖：ARCTURA_RENDER_BASE_URL env 环境变量 · 或 job dict 带 render_base_url 字段
 
@@ -140,14 +145,32 @@ def run_one(job: dict):
             pass
 
 
+def _beat():
+    """写一次 heartbeat · TTL 120s · 加入 workers:index · 静默错"""
+    try:
+        kv.set(K.worker_heartbeat(HOSTNAME), str(time.time()), ex=HEARTBEAT_TTL)
+        kv.zadd(K.workers_index(), time.time(), HOSTNAME)
+    except Exception as e:
+        print(f"[worker] heartbeat fail: {e}", file=sys.stderr)
+
+
 def main_loop(max_iter: int = None):
-    """poll jobs:queue · iter_count 控制跑几轮（None 永远）· 手动测时限量"""
-    print(f"[worker] started · polling {K.jobs_queue()} every {POLL_INTERVAL}s")
+    """poll jobs:queue · iter_count 控制跑几轮（None 永远）· 手动测时限量
+
+    heartbeat 每 HEARTBEAT_INTERVAL s 写一次 · SSE 探活用
+    """
+    print(f"[worker] started · host={HOSTNAME} · polling {K.jobs_queue()} every {POLL_INTERVAL}s")
+    _beat()   # 启动即刻写一次
+    last_beat = time.time()
     it = 0
     while True:
         if max_iter is not None and it >= max_iter:
             break
         it += 1
+        # 定时 heartbeat
+        if time.time() - last_beat >= HEARTBEAT_INTERVAL:
+            _beat()
+            last_beat = time.time()
         try:
             # Upstash REST 不支持 brpop · 用 rpop 轮询
             raw = kv.rpop(K.jobs_queue())

@@ -55,6 +55,16 @@ def jobs_queue() -> str:
     return "jobs:queue"
 
 
+def worker_heartbeat(host: str) -> str:
+    """Worker 探活 · 每 30s 写 timestamp · TTL 120s · Phase 7.2"""
+    return f"worker:{host}:heartbeat"
+
+
+def workers_index() -> str:
+    """所有活跃 worker 的 hostname 集合（SET）· SSE 探活用"""
+    return "workers:index"
+
+
 def audit(slug: str, ts: str) -> str:
     return f"audit:{slug}:{ts}"
 

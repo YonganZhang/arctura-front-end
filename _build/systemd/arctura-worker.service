@@ -1,0 +1,30 @@
+[Unit]
+Description=Arctura MVP Generation Worker
+Documentation=https://github.com/YonganZhang/arctura-front-end/blob/main/CLAUDE.md
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/yongan/projects/公司项目/Building-CLI-Anything/Arctura-Front-end
+# ~/.arctura-env 带 'export ' 前缀 · systemd EnvironmentFile= 不吃
+# 用 bash source + exec · 保持 PID 1 给 python 便于 systemd 监控
+ExecStart=/bin/bash -lc 'source /home/yongan/.arctura-env && exec /usr/bin/python3 -u -m _build.arctura_mvp.worker'
+
+# 重启策略 · 非正常退出自动拉起
+Restart=always
+RestartSec=5s
+# systemd 不限 · 由 worker 内部 loop · 避免 flap 狂拉
+StartLimitIntervalSec=0
+
+# 资源限制 · 防 renders 爆内存拖死机器
+MemoryMax=2G
+CPUQuota=200%
+
+# 日志重定向 journalctl
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=arctura-worker
+
+[Install]
+WantedBy=default.target

@@ -25,6 +25,7 @@ const POLL_MS = 800;
 const HEARTBEAT_MS = 12000;
 const MAX_DURATION_MS = 15 * 60 * 1000;  // 15 min 上限
 const TERMINAL_EVENTS = new Set(["done", "fatal", "error"]);
+const WORKER_OFFLINE_AFTER_MS = 45 * 1000;  // job 排队 45s 仍无 worker 活跃 → offline 警告
 
 async function kv(cmd, ...args) {
   const path = [cmd, ...args.map(a => encodeURIComponent(String(a)))].join("/");
@@ -103,6 +104,7 @@ export default async function handler(req) {
       // 3. 游标式 poll · cursor = 已推送的事件 index
       let cursor = 0;
       let terminalSeen = false;
+      let offlineWarned = false;
 
       while (!closed && !terminalSeen) {
         if (Date.now() - t0 > MAX_DURATION_MS) {
@@ -133,6 +135,24 @@ export default async function handler(req) {
             // 忽略 corrupt entry
           }
           cursor += 1;
+        }
+
+        // Worker 离线探测：若已排队 >WORKER_OFFLINE_AFTER_MS 仍无 job_picked 事件 · 检查 heartbeat
+        if (!offlineWarned && !terminalSeen && cursor === 0 &&
+            Date.now() - t0 > WORKER_OFFLINE_AFTER_MS) {
+          const workers = await kv("zrevrange", K.workersIndex(), "0", "4").catch(() => []);
+          let anyAlive = false;
+          for (const host of (workers || [])) {
+            const hb = await kv("get", K.workerHeartbeat(host)).catch(() => null);
+            if (hb) { anyAlive = true; break; }
+          }
+          if (!anyAlive) {
+            await safeWrite(sseMessage("worker_offline", {
+              message: "所有 worker 离线中 · job 等待处理 · 联系管理员重启 worker service",
+              queued_for_ms: Date.now() - t0,
+            }));
+          }
+          offlineWarned = true;   // 只警告一次 · 避免刷屏
         }
 
         if (terminalSeen) break;

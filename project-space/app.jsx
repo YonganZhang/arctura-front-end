@@ -3175,6 +3175,11 @@ function GenerateProgressStep({ project, onPatch }) {
       pushEvent("timeout", JSON.parse(e.data));
       setStatus("timeout");
     });
+    es.addEventListener("worker_offline", (e) => {
+      const d = JSON.parse(e.data);
+      pushEvent("worker_offline", d);
+      setStatus("worker_offline");
+    });
     es.addEventListener("heartbeat", () => {});
 
     return () => es.close();
@@ -3213,12 +3218,16 @@ function GenerateProgressStep({ project, onPatch }) {
         {/* Header */}
         <div style={{textAlign:"center",marginBottom:30}}>
           <div style={{fontSize:48}}>
-            {status === "done" ? "✅" : status === "failed" ? "❌" : status === "timeout" ? "⏱" : "🔨"}
+            {status === "done" ? "✅" :
+             status === "failed" ? "❌" :
+             status === "timeout" ? "⏱" :
+             status === "worker_offline" ? "🔌" : "🔨"}
           </div>
           <h2 style={{fontFamily:"Fraunces,serif",fontSize:28,fontWeight:400,marginTop:12}}>
             {status === "done" ? "生成完成 · 即将跳转" :
              status === "failed" ? "生成失败" :
              status === "timeout" ? "生成超时" :
+             status === "worker_offline" ? "Worker 离线 · 请稍后" :
              status === "queued" ? "排队中…" :
              status === "connecting" ? "连接中…" :
              "正在生成 MVP"}
