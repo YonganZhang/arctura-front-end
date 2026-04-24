@@ -109,30 +109,41 @@ async function loadMvpData(slug) {
     if (!DEFAULT_ZEN_DATA) {
       throw new Error("默认 zen-tea 数据未加载（data.js 可能加载失败）");
     }
-    return DEFAULT_ZEN_DATA;
+    return { mode: "live", data: DEFAULT_ZEN_DATA };
   }
   // 1. 先试静态 JSON · 已 commit 的老 MVP 命中 CDN
   const staticResp = await fetch(`/data/mvps/${slug}.json`);
-  if (staticResp.ok) return await staticResp.json();
+  if (staticResp.ok) {
+    const data = await staticResp.json();
+    return { mode: "live", data };
+  }
 
-  // 2. Phase 9.5 · 静态 404 时从 KV 读 fe_payload
+  // 2. Phase 9.5 · 静态 404 时从 KV 读 project 元数据
   //    worker 刚 materialize 完但 Save 按钮还没推 GitHub · 仍能立刻访问
+  //    Phase 10 · 同时处理 draft / briefing / planning / generating · 回 Wizard 模式
   if (staticResp.status === 404) {
     try {
       const apiResp = await fetch(`/api/projects/${slug}`);
       if (apiResp.ok) {
         const p = await apiResp.json();
         const fep = p.artifacts?.fe_payload;
-        if (fep) {
-          console.log(`[loadMvpData] ${slug} · KV fallback hit · fe_payload keys=${Object.keys(fep).length}`);
+        const state = p.state || "empty";
+        // state 是 live/live_partial 且有 fe_payload → 进 MVP 展示
+        if ((state === "live" || state === "live_partial") && fep) {
+          console.log(`[loadMvpData] ${slug} · KV fallback hit · state=${state}`);
           return {
-            ...fep,
-            // scene 以 KV project.scene 为准（chat 编辑 SSOT）· fallback fe_payload.scene
-            scene: p.scene || fep.scene,
-            _source: "kv-fallback",
-            _kv_version: p.version,
+            mode: "live",
+            data: {
+              ...fep,
+              scene: p.scene || fep.scene,
+              _source: "kv-fallback",
+              _kv_version: p.version,
+            },
           };
         }
+        // Phase 10 · state < live · 回 Wizard 模式
+        console.log(`[loadMvpData] ${slug} · wizard mode · state=${state}`);
+        return { mode: "wizard", project: p };
       }
     } catch (e) {
       console.warn(`[loadMvpData] ${slug} · KV fallback error:`, e.message);
@@ -2532,15 +2543,19 @@ function Viewer3DScene() {
   );
 }
 
-// Phase 6.C · /new 路由判断 · Wizard 分流
-function isWizardRoute() {
+// Phase 6.C + Phase 10 · Wizard/Space 路由判断
+//   - /new · /new/* · /project/new · 都是 "新建/Wizard" 场景（先建 draft · 再 flow）
+//   - /project/<slug> · 走 Wizard 或 Tab 视图 · 取决于 project.state
+function isNewRoute() {
   const p = window.location.pathname;
-  return p === "/new" || p.startsWith("/new/") || p === "/new/index.html";
+  return p === "/new" || p.startsWith("/new/") || p === "/project/new";
 }
 
 function App() {
-  // Phase 6.C · Wizard 模式分流（在 project state 初始化前）
-  if (isWizardRoute()) return <Wizard />;
+  // Phase 10 · /new 和 /project/new 走 Wizard · 由它内部 POST /api/projects 创 draft
+  //   · Wizard 流程完成后 replaceState 到 /project/<slug> · 继续在 App 的 tab 视图
+  //   （老 Wizard 的 URL 跳转已删 · 见 2834 行附近）
+  if (isNewRoute()) return <Wizard />;
 
   const [active, setActive] = useState("overview");
   const views = {
@@ -2575,8 +2590,8 @@ function App() {
 
 // ───────── Root · 先异步加载 MVP 数据再 render App ─────────
 function Root() {
-  // Phase 6.C · Wizard 路由跳过 loadMvpData（不需要 MVP 数据 · 直接 render Wizard）
-  const isWizard = typeof window !== "undefined" && isWizardRoute();
+  // Phase 6.C + Phase 10 · /new / /project/new 路由 · 跳过 loadMvpData · Wizard 自己管
+  const isWizard = typeof window !== "undefined" && isNewRoute();
   const [status, setStatus] = useState(isWizard ? "ready" : "loading"); // loading | ready | notfound | error
   const [errMsg, setErrMsg] = useState("");
   const slug = getSlugFromUrl();
@@ -2590,10 +2605,21 @@ function Root() {
     window.ZEN_DATA = projectState.current;
   }
 
+  const [wizardMode, setWizardMode] = useState(isWizard);  // Phase 10 · 动态切 Wizard 模式
+
   useEffect(() => {
-    if (isWizard) return;  // Wizard 场景无需 MVP 数据
+    if (isWizard) return;  // /new · /project/new · Wizard 自己管
     loadMvpData(slug)
-      .then(data => {
+      .then(result => {
+        // Phase 10 · loadMvpData 返 {mode, data|project}
+        if (result.mode === "wizard") {
+          // draft / briefing / planning / generating · 走 Wizard 视图
+          setWizardMode(true);
+          setStatus("ready");
+          return;
+        }
+        // live · normal MVP tab 视图
+        const data = result.data;
         if (!data.slug) data.slug = slug || "zen-tea";
         window.ZEN_DATA = data;
         stateHolder.current = data;
@@ -2646,6 +2672,15 @@ function Root() {
       <div style={{minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: 40}}>
         <div>加载失败: {errMsg}</div>
       </div>
+    );
+  }
+
+  // Phase 10 · 动态切 Wizard 模式 · 用于 /project/<slug> 且 state < live 的 draft
+  if (wizardMode) {
+    return (
+      <SelectionProvider>
+        <Wizard />
+      </SelectionProvider>
     );
   }
 
@@ -2772,6 +2807,13 @@ function useWizardProject() {
     try {
       const urlParams = new URLSearchParams(window.location.search);
       let slug = urlParams.get("slug");
+      // Phase 10 · /project/<slug> URL 路径也带 slug · 优先 querystring · fallback path
+      if (!slug) {
+        const parts = window.location.pathname.split("/").filter(Boolean);
+        if (parts[0] === "project" && parts[1] && parts[1] !== "new") {
+          slug = parts[1];
+        }
+      }
       if (!slug) {
         // 创建新 draft
         const r = await fetch("/api/projects", {
@@ -2783,9 +2825,9 @@ function useWizardProject() {
         if (!r.ok) throw new Error(`create failed: ${r.status}`);
         const d = await r.json();
         slug = d.slug;
-        // 更新 URL（不 reload）
-        const newUrl = `/new?slug=${slug}`;
-        window.history.replaceState({}, "", newUrl);
+        // Phase 10 · URL 直接到 /project/<slug> · 统一 project 视图
+        //   · Wizard 在此 URL 下继续跑 · live 后 reload 切 App tab 视图
+        window.history.replaceState({}, "", `/project/${slug}`);
       }
       const r2 = await fetch(`/api/projects/${slug}`, { credentials: "include" });
       if (!r2.ok) throw new Error(`load ${slug} failed: ${r2.status}`);
@@ -2826,10 +2868,13 @@ function useWizardProject() {
 function Wizard() {
   const { project, loading, error, refresh, patch } = useWizardProject();
 
-  // 已 live · 跳转（hook 必须在 if return 前 · 无条件调用）
+  // Phase 10 · state=live 时 URL 替换为 /project/<slug> 并 reload（进 App tab 视图）
+  //   · 不 reload 的话 Root useEffect 不会重跑 · 拉不到 mvp data
+  //   · replaceState + reload = 用户看到 URL 秒变 · 主区切 tab 视图 · 流畅
   useEffect(() => {
-    if (project?.state === "live") {
-      window.location.href = `/project/${project.slug}`;
+    if (project?.state === "live" || project?.state === "live_partial") {
+      window.history.replaceState({}, "", `/project/${project.slug}`);
+      window.location.reload();
     }
   }, [project?.state, project?.slug]);
 
