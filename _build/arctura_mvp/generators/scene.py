@@ -200,6 +200,38 @@ def _layout_assemblies(types: list[str], bounds: dict, lib: dict) -> list[tuple[
         pos = [round((i - len(center)/2) * (size[0] + GAP), 2), 0, 0]
         placed.append((t, pos, size, [0, 0, 0]))
 
+    # Phase 9.2 · 往每个主家具加装饰小物（书/花瓶/杯等）· 推动 spec L398 "60+ objects" 接近达成
+    # 每个已 placed 的 assembly 带 2-3 个装饰 · 总数 ~8 主 × 2.5 = 20 加到 clutter
+    clutter = []
+    _DECOR_SIZES = [  # 小物件 default_size · 米
+        ("book", [0.18, 0.12, 0.03]),
+        ("vase", [0.12, 0.12, 0.25]),
+        ("cup", [0.08, 0.08, 0.09]),
+        ("plant_small", [0.2, 0.2, 0.35]),
+        ("picture_frame", [0.25, 0.04, 0.35]),
+    ]
+    decor_idx = 0
+    for pt, ppos, psize, _ in placed:
+        # Phase 9.2 · 更激进 · spec L398 要 60+ objects
+        if pt in ("desk_standard", "table_coffee", "table_dining"):
+            n_decor = 6   # 桌面 · 书 + 杯 + 小盆栽 + 相框 + etc
+        elif pt in ("shelf_open", "closet_tall"):
+            n_decor = 8   # 架子 · 满格书
+        elif pt in ("sofa_2seat", "sofa_3seat", "bed_queen"):
+            n_decor = 2   # 抱枕等
+        elif pt in ("chair_standard", "chair_lounge", "lamp_floor"):
+            n_decor = 1   # 配一本书或小物
+        else:
+            n_decor = 0
+        for k in range(n_decor):
+            dtype, dsize = _DECOR_SIZES[decor_idx % len(_DECOR_SIZES)]
+            decor_idx += 1
+            # 放在主家具顶上（z = 主家具高度 + decor/2）· x/y 偏移一点
+            offx = (k - n_decor/2 + 0.5) * 0.3
+            decor_pos = [round(ppos[0] + offx, 2), round(ppos[1], 2),
+                         round(psize[2] + dsize[2]/2, 2)]
+            clutter.append((dtype, decor_pos, dsize, [0, 0, 0]))
+
     # 角落
     corner_slots = [
         [-w/2 + MARGIN, -d/2 + MARGIN],   # 前左
@@ -217,6 +249,8 @@ def _layout_assemblies(types: list[str], bounds: dict, lib: dict) -> list[tuple[
         else:
             placed.append((t, [round(slot[0], 2), round(slot[1], 2), 0], size, [0, 0, 0]))
 
+    # 加装饰 clutter 到 placed 尾部（spec L398 推 60+ objects · LIGHT 能做到 ~25-40）
+    placed.extend(clutter)
     return placed
 
 

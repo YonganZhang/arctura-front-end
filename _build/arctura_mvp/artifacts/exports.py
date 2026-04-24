@@ -19,6 +19,13 @@ from pathlib import Path
 from typing import Callable, Optional
 
 from ..types import ArtifactResult
+from ..paths import CLI_ANYTHING_ROOT
+import sys
+
+# 严老师 ifc_export 纯 Python（只依赖 ifcopenshell）· 直接 import
+_BLENDER_HARNESS = CLI_ANYTHING_ROOT / "blender" / "agent-harness"
+if _BLENDER_HARNESS.exists() and str(_BLENDER_HARNESS) not in sys.path:
+    sys.path.insert(0, str(_BLENDER_HARNESS))
 
 _BLENDER = Path.home() / ".local" / "blender" / "blender-4.2.3-linux-x64" / "blender"
 
@@ -179,6 +186,20 @@ def produce(ctx: dict, on_event: Optional[Callable] = None) -> ArtifactResult:
         "obj": (exports_dir / f"{project.slug}.obj").exists(),
         "fbx": (exports_dir / f"{project.slug}.fbx").exists(),
     }
+
+    # Phase 9.2 · 加 IFC4 via 严老师 ifc_export（纯 Python · ifcopenshell）
+    ifc_path = exports_dir / f"{project.slug}.ifc"
+    ifc_err = None
+    try:
+        from cli_anything.blender.core import ifc_export
+        # 组 scene 为 export_ifc 期望的 "project" dict（objects[] 每个含 name + location + bbox）
+        ifc_project = _scene_to_ifc_project(project.scene, project.display_name or project.slug)
+        ifc_export.export_ifc(ifc_project, str(ifc_path), overwrite=True)
+        produced["ifc"] = ifc_path.exists()
+    except Exception as e:
+        ifc_err = str(e)[:200]
+        produced["ifc"] = False
+
     size_kb = {
         fmt: round((exports_dir / f"{project.slug}.{fmt}").stat().st_size / 1024, 1)
         for fmt, ok in produced.items() if ok
@@ -196,6 +217,39 @@ def produce(ctx: dict, on_event: Optional[Callable] = None) -> ArtifactResult:
             "formats": produced,
             "size_kb": size_kb,
             "count": ok_count,
-            "ifc_dxf_skipped": "LIGHT 不产 IFC4 enriched / DXF · 需 Blender-BIM + Pascal · FULL pipeline",
+            "ifc_err": ifc_err,
+            "dxf_skipped": "LIGHT 不产 DXF · spec L403 要 · 需 Pascal Editor（P2 建筑级）",
         },
     )
+
+
+def _scene_to_ifc_project(scene: dict, name: str) -> dict:
+    """把 Arctura scene.json 转成严老师 ifc_export 期望的 project dict
+
+    严老师 format: {name, objects: [{name, location, scale?, visible?}]}
+    Arctura scene: {assemblies: [{id, type, pos, size, rotation, label_en, ...}]}
+    """
+    objects = []
+    # 加墙 · 地板 · 天花板为 IfcWall / IfcSlab
+    bounds = scene.get("bounds") or {"w": 6, "d": 5, "h": 3}
+    W, D, H = bounds["w"], bounds["d"], bounds["h"]
+    # 地板
+    objects.append({"name": "Floor", "location": [0, 0, 0], "scale": [W, D, 0.1], "visible": True})
+    # 天花板
+    objects.append({"name": "Ceiling", "location": [0, 0, H], "scale": [W, D, 0.05], "visible": True})
+    # 4 墙（简化）
+    for i, (wx, wy, ww, wd) in enumerate([
+        (-W/2, 0, 0.1, D), (W/2, 0, 0.1, D),
+        (0, -D/2, W, 0.1), (0, D/2, W, 0.1),
+    ]):
+        objects.append({"name": f"Wall_{i+1}", "location": [wx, wy, H/2],
+                        "scale": [ww, wd, H], "visible": True})
+    # 家具 assemblies → IfcFurniture
+    for a in (scene.get("assemblies") or []):
+        objects.append({
+            "name": a.get("label_en") or a.get("type") or a.get("id", "Furniture"),
+            "location": list(a.get("pos", [0, 0, 0])),
+            "scale": list(a.get("size", [0.5, 0.5, 0.5])),
+            "visible": True,
+        })
+    return {"name": name, "objects": objects}

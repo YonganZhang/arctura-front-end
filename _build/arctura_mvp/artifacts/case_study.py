@@ -98,12 +98,11 @@ def _narrate_via_zhizengzeng(metrics: dict, template: str) -> Optional[str]:
     prompt = _NARRATIVE_PROMPTS.get(template, _NARRATIVE_PROMPTS["portfolio"])
     body = json.dumps({
         "model": "gpt-5.4",
-        "temperature": 0.7,
-        "max_tokens": 400,
         "messages": [
             {"role": "system", "content": "你是一个为建筑/室内设计项目写对外 narrative 的编辑。"},
             {"role": "user", "content": f"Project metrics:\n{json.dumps(metrics, ensure_ascii=False, indent=2)[:2000]}\n\nTask: {prompt}\n\n直接给正文 · 无 preamble。"},
         ],
+        "max_completion_tokens": 400,   # gpt-5.4 · 不接 max_tokens
     }).encode()
     req = urllib.request.Request(
         "https://api.zhizengzeng.com/v1/chat/completions",

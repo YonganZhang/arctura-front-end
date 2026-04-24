@@ -71,9 +71,10 @@ def _build_svg(project, scene: dict) -> str:
         y0 = ty(pos[1] + sz[1] / 2)
         parts.append(f'<rect x="{x0}" y="{y0}" width="{sz[0]*SC}" height="{sz[1]*SC}" fill="#8A7A5C" opacity="0.7" stroke="#3E2C26"/>')
         parts.append(f'<text x="{tx(pos[0])}" y="{ty(pos[1])+4}" fill="#F5F1E8" font-size="10" text-anchor="middle">{a.get("label_zh","")}</text>')
-    # Title + scale
+    # Title + scale · spec L400 要求"中文标注 + 面积 + 比例尺" 三项齐
+    area = round(W * D, 1)
     parts.append(f'<text x="{PAD}" y="{PAD-10}" fill="#3E2C26" font-size="16" font-weight="700">{project.display_name} · 平面图</text>')
-    parts.append(f'<text x="{vw-PAD}" y="{PAD-10}" fill="#3E2C26" font-size="12" text-anchor="end">比例 1:50 · {W}m × {D}m</text>')
+    parts.append(f'<text x="{vw-PAD}" y="{PAD-10}" fill="#3E2C26" font-size="12" text-anchor="end">比例 1:50 · {W}m × {D}m · 面积 {area} m²</text>')
     sbar_y = vh - 30
     parts.append(f'<line x1="{PAD}" y1="{sbar_y}" x2="{PAD+SC}" y2="{sbar_y}" stroke="#3E2C26" stroke-width="2"/>')
     parts.append(f'<text x="{PAD+SC/2}" y="{sbar_y-6}" fill="#3E2C26" font-size="10" text-anchor="middle">1m</text>')
