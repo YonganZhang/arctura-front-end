@@ -33,7 +33,7 @@ export default async function handler(req) {
   if (!GITHUB_TOKEN) {
     return json({
       commits: [],
-      _note: "GITHUB_TOKEN 未配 · 无法查 git 历史 · 修订流程降级到"只 KV"模式",
+      _note: "GITHUB_TOKEN 未配 · 无法查 git 历史 · 修订流程降级到 KV 模式",
     });
   }
 

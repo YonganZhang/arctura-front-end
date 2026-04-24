@@ -148,6 +148,7 @@ node _build/capture_renders.mjs --slug 50-xxx
 | 7.4 对齐严老师 spec · 6 skeleton · _TODO-INDEX · brief 必填 | ✅ | `artifacts/_unimplemented.py` + `{deck_client,client_readme,energy_report,exports,variants,case_study}.py` · 各返 skipped + 写 `_TODO-<name>.md` · bundle 顶层 `_TODO-INDEX.md` · brief_rules must_fill 加 headcount |
 | 7.5 真集成严老师现成脚本 · 3 artifact 真产 | ✅ | client_readme 用 `templates/client-readme-template.md` · case_study 用 `vendor/case_study/render_templates.py` · variants 用 `vendor/score_variants.py` · `/api/projects/<slug>/history` 接 GitHub commits · 剩 3 skeleton _TODO 指真脚本路径 |
 | 8 架构整合 · product_registry SSOT · MCP 命名空间 · 对齐严老师 Pipelines 完整仓 | ✅ | `product_registry.py`（15 产物 × 5 档 × LIGHT/FULL）· tiers.py 降级为 thin facade · `vendor/` 镜像严老师 11 脚本 + 3 schema + 3 defaults · artifacts 全 registry 驱动 · skeleton 删 3 文件 · MCP 新 7 namespace 17 tools + 9 legacy alias |
+| 9 真集成严老师 harness · 3 skeleton 升真产 · LIGHT 10/11 | ✅ | 删 vendor/ copy 13 文件 改 sys.path import · `paths.py` 本机源路径常量 · `pip install -e` 4 个 agent-harness（llm-intake / image-grid / blender / openstudio）· `deck_client` 真产 Marp PPT + PDF · `exports` 真产 GLB/OBJ/FBX（Blender headless）· `energy_report` 真产 project.json + BOQ + CSV · brief 必填硬校验 L356 · moodboard 6 色 5 preset · case_study 真 LLM narrate（ZHIZENGZENG）· full 档 E2E 10/10 真产 0 skip |
 
 ## 编码纪律（Yongan 全局偏好）
 
