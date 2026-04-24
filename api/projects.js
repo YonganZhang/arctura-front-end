@@ -97,8 +97,10 @@ async function handleGet(req) {
   try {
     const indexKey = (owner === "me") ? K.sessionProjects(anon) : K.projectsIndex();
     const total = await kvZcard(indexKey);
-    // 多取一点 · 因为要 filter draft（预估 draft 占 ~30% · 取 2x）
-    const fetchCount = stateFilter === "all" ? limit : Math.min(limit * 3, 300);
+    // Phase 9.5 · 小 limit 也保证 live 缓冲足够
+    // 老逻辑 limit*3 在 limit=3 时 fetchCount=9 · zset 顶部 empty/briefing draft 堆积 → 全被 filter → projects=[]
+    // 新逻辑 · live filter 下固定 fetch 至少 50 条 · 基本够 · 大 limit 时也放宽到 limit*5
+    const fetchCount = stateFilter === "all" ? limit : Math.min(Math.max(limit * 5, 50), 300);
     const slugs = await kvZrevrange(indexKey, cursor, cursor + fetchCount - 1);
 
     const rawProjects = await Promise.all(slugs.map(async slug => {

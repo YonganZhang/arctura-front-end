@@ -10,10 +10,8 @@ test.describe("Phase 6.D · Save + Gallery", () => {
     await page.waitForSelector(".mvp", { timeout: 15000 });
     const cards = await page.locator(".mvp").count();
     expect(cards).toBeGreaterThan(5);  // 至少 5 张
-    // 验证 KV source（网络请求层）
-    // TODO · prod /api/projects 有 bug · limit ≤ 小值时返空 · 用 limit=20 绕开
-    // 独立 bug · 跟 Phase 9.4 无关 · 记 wiki findings/arctura-api-projects-small-limit-bug
-    const resp = await page.request.get(`${BASE}/api/projects?limit=20`);
+    // 验证 KV source（网络请求层）· Phase 9.5 Fix D 修了 small limit 返空 bug
+    const resp = await page.request.get(`${BASE}/api/projects?limit=3`);
     const j = await resp.json();
     expect(j.source).toBe("kv");
     expect(j.state_filter).toBe("live");
