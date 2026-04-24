@@ -30,6 +30,7 @@ from .types import utc_now
 from .local_server import ensure_running as ensure_local_server
 from .paths import REPO_ROOT, STARTUP_BUILDING_ROOT
 from .materializer import build_fe_payload
+from .prod_push import push_mvp_to_prod
 
 
 # Phase 9.4 · 发布门槛 · 关键产物清单（缺 → state=generating_failed · 不置 live）
@@ -154,6 +155,26 @@ def run_one(job: dict):
             print(f"[worker] materialize fail: {e}", file=sys.stderr)
             traceback.print_exc()
             on_event("materialize_fail", {"error": str(e)[:200]})
+
+        # Phase 9.7 Fix E · 自动推 GitHub + Vercel · 用户新建 MVP 生成完立刻可见
+        # 失败不 block state=live · KV fallback 是第二保障
+        try:
+            push_result = push_mvp_to_prod(slug, sb_dir)
+            artifacts_meta["prod_push"] = push_result
+            on_event("prod_pushed", {
+                "slug": slug,
+                "git_sha": (push_result.get("git_sha") or "")[:8],
+                "copied_files": len(push_result.get("copied", [])),
+                "vercel_kicked": push_result.get("vercel_kicked", False),
+                "error": push_result.get("error"),
+                "timing_ms": push_result.get("timing_ms"),
+            })
+            if push_result.get("error"):
+                print(f"[worker] prod_push non-fatal error: {push_result['error']}", file=sys.stderr)
+        except Exception as e:
+            print(f"[worker] prod_push exception: {e}", file=sys.stderr)
+            traceback.print_exc()
+            on_event("prod_push_fail", {"error": str(e)[:200]})
 
         project.artifacts = artifacts_meta
 
