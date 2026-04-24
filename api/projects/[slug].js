@@ -38,6 +38,34 @@ function json(body, status = 200) {
   });
 }
 
+// Phase 9 · brief must_fill 硬校验 · 对齐 spec L356 + schemas/brief-rules.json
+// 跟 _build/arctura_mvp/chat/brief_engine.py::MUST_FILL_FOR_PLANNING 保持一致
+import briefRules from "../_shared/brief-rules.json" with { type: "json" };
+
+function _pathGet(obj, path) {
+  if (!obj) return null;
+  const keys = path.includes(".") ? path.split(".") : [path];
+  let cur = obj;
+  for (const k of keys) {
+    if (cur == null || typeof cur !== "object") return null;
+    cur = cur[k];
+  }
+  return cur;
+}
+
+function _nonempty(v) {
+  if (v == null) return false;
+  if (typeof v === "string" && v.length === 0) return false;
+  if (Array.isArray(v) && v.length === 0) return false;
+  if (typeof v === "object" && !Array.isArray(v) && Object.keys(v).length === 0) return false;
+  return true;
+}
+
+function _missingMustFill(brief) {
+  const must = briefRules.must_fill_for_planning || [];
+  return must.filter(p => !_nonempty(_pathGet(brief, p)));
+}
+
 import { K } from "../_shared/kv-keys.js";
 // state machine · 读 schemas/state-machine.json（单一真源 · Python state.py 也读它）
 import stateMachine from "../_shared/state-machine.json" with { type: "json" };
@@ -83,6 +111,18 @@ export default async function handler(req) {
     // state transition guard
     if (newState && newState !== p.state && !canTransition(p.state, newState)) {
       return json({ error: `illegal transition: ${p.state} → ${newState}` }, 400);
+    }
+
+    // Phase 9 · spec L356 硬校验 · 进 planning 前 brief must_fill 必须齐
+    if (newState === "planning") {
+      const missing = _missingMustFill(p.brief || {});
+      if (missing.length > 0) {
+        return json({
+          error: "brief 必填字段缺失 · 无法进入选档位阶段",
+          missing,
+          hint: "先完成 brief · 覆盖 project / space.area_sqm / headcount / style.keywords / functional_zones",
+        }, 400);
+      }
     }
 
     // apply patch

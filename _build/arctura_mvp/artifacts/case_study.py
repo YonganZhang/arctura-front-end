@@ -79,13 +79,57 @@ def _design_min_from_artifacts(artifacts: dict) -> Optional[float]:
     return round(total_ms / 1000 / 60, 1)
 
 
-def _write_placeholder_narrative(cs_dir: Path, template: str):
-    """占位 narrative · FULL 需跑 narrate.py with LLM"""
-    p = cs_dir / f"narrative-{template}.txt"
-    p.write_text(
-        f"_[narrative-{template}.txt 占位 · LIGHT 模式不调 LLM · "
-        f"FULL 需走 StartUP-Building/playbooks/scripts/case-study/narrate.py]_"
+_NARRATIVE_PROMPTS = {
+    "portfolio": "Write a 3-4 sentence portfolio blurb (中文) for an interior design project · "
+                 "客户视角 · 强调风格 + 使用场景 + 视觉记忆点 · 避免技术术语。",
+    "impact": "Write a 3-4 sentence impact statement (中文) · 学术/RAE tenure 视角 · "
+              "量化价值 + 方法论贡献 + 知识转化 · 正式语气。",
+    "sales": "Write a 3-4 sentence sales pitch (中文) · 客户 pitch 视角 · "
+             "痛点-方案-结果结构 · 情感驱动 + 具体数字 · 不堆砌。",
+}
+
+
+def _narrate_via_zhizengzeng(metrics: dict, template: str) -> Optional[str]:
+    """调 ZHIZENGZENG gateway gpt-5.4 · 产 narrative · 失败返 None"""
+    import os, urllib.request, urllib.error
+    api_key = os.environ.get("ZHIZENGZENG_API_KEY")
+    if not api_key:
+        return None
+    prompt = _NARRATIVE_PROMPTS.get(template, _NARRATIVE_PROMPTS["portfolio"])
+    body = json.dumps({
+        "model": "gpt-5.4",
+        "temperature": 0.7,
+        "max_tokens": 400,
+        "messages": [
+            {"role": "system", "content": "你是一个为建筑/室内设计项目写对外 narrative 的编辑。"},
+            {"role": "user", "content": f"Project metrics:\n{json.dumps(metrics, ensure_ascii=False, indent=2)[:2000]}\n\nTask: {prompt}\n\n直接给正文 · 无 preamble。"},
+        ],
+    }).encode()
+    req = urllib.request.Request(
+        "https://api.zhizengzeng.com/v1/chat/completions",
+        data=body,
+        headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+        method="POST",
     )
+    try:
+        with urllib.request.urlopen(req, timeout=30) as r:
+            d = json.loads(r.read())
+            return d["choices"][0]["message"]["content"].strip()
+    except (urllib.error.URLError, KeyError, json.JSONDecodeError):
+        return None
+
+
+def _write_narrative(cs_dir: Path, template: str, metrics: dict):
+    """调 ZHIZENGZENG 真 LLM · 失败降级占位"""
+    text = _narrate_via_zhizengzeng(metrics, template)
+    p = cs_dir / f"narrative-{template}.txt"
+    if text:
+        p.write_text(text)
+    else:
+        p.write_text(
+            f"_[narrative-{template}.txt · LIGHT LLM 调用失败（检查 ZHIZENGZENG_API_KEY）· "
+            f"FULL 需走 StartUP-Building/playbooks/scripts/case-study/narrate.py]_"
+        )
 
 
 def produce(ctx: dict, on_event: Optional[Callable] = None) -> ArtifactResult:
@@ -112,7 +156,7 @@ def produce(ctx: dict, on_event: Optional[Callable] = None) -> ArtifactResult:
 
     # 2. narrative 占位（3 份）· FULL 跑 narrate.py 填真 LLM
     for t in ("portfolio", "impact", "sales"):
-        _write_placeholder_narrative(cs_dir, t)
+        _write_narrative(cs_dir, t, metrics)
 
     # 3. 渲染 3 .md 模板 · 用严老师 vendor
     # 注意：render_templates 读 folder/case-study/ 目录 · 我们传 sb_dir
