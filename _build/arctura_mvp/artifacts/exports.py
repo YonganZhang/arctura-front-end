@@ -61,12 +61,8 @@ scene = json.loads({scene_json!r})
 for obj in list(bpy.data.objects):
     bpy.data.objects.remove(obj, do_unlink=True)
 
-# 建地板
 b = scene["bounds"]
-bpy.ops.mesh.primitive_plane_add(size=1, location=(0, 0, 0))
-floor = bpy.context.active_object
-floor.scale = (b["w"], b["d"], 1)
-floor.name = "Floor"
+W, D, H = b["w"], b["d"], b["h"]
 
 # 材质字典 · hex → RGBA
 def hex_to_rgba(h):
@@ -86,7 +82,41 @@ def get_mat(mat_id):
     mat_cache[mat_id] = mat
     return mat
 
-# 建 assemblies · primitives
+envelope_mat = get_mat("_envelope")  # 灰白色墙材 · 也给地板/天花用
+
+# Phase 9.5 · 围护层完整建模 · 供前端 applyEnvelopeVisibility 按 name 选择性隐藏
+# Floor · 地板（plane · 永远可见）
+bpy.ops.mesh.primitive_plane_add(size=1, location=(0, 0, 0))
+floor = bpy.context.active_object
+floor.scale = (W, D, 1)
+floor.name = "Floor"
+if not floor.data.materials: floor.data.materials.append(envelope_mat)
+
+# Ceiling · 天花（cube · 可透明）
+bpy.ops.mesh.primitive_cube_add(size=1, location=(0, 0, H))
+ceiling = bpy.context.active_object
+ceiling.scale = (W/2, D/2, 0.025)
+ceiling.name = "Ceiling"
+if not ceiling.data.materials: ceiling.data.materials.append(envelope_mat)
+
+# 4 Walls · 方位约定跟 _scene_to_ifc_project 对齐：
+#   Wall_1 = 西墙（-X · 垂直 Y 向长）· Wall_2 = 东墙（+X）
+#   Wall_3 = 南墙（-Y · 垂直 X 向长）· Wall_4 = 北墙（+Y）
+# 前端 envelope state key 映射：wall_N=Wall_4 · wall_S=Wall_3 · wall_E=Wall_2 · wall_W=Wall_1
+WALL_T = 0.05  # 墙厚 half-extent（cube size=1 + scale · 实际厚 2*0.05=0.1m）
+for i, (wx, wy, sx, sy) in enumerate([
+    (-W/2, 0, WALL_T, D/2),   # Wall_1 · West
+    ( W/2, 0, WALL_T, D/2),   # Wall_2 · East
+    (0, -D/2, W/2, WALL_T),   # Wall_3 · South
+    (0,  D/2, W/2, WALL_T),   # Wall_4 · North
+]):
+    bpy.ops.mesh.primitive_cube_add(size=1, location=(wx, wy, H/2))
+    wall = bpy.context.active_object
+    wall.scale = (sx, sy, H/2)
+    wall.name = f"Wall_{{i+1}}"
+    if not wall.data.materials: wall.data.materials.append(envelope_mat)
+
+# 建 assemblies · primitives（家具）
 for a in scene["assemblies"]:
     sz = a["size"]
     pos = a["pos"]

@@ -720,18 +720,30 @@ function Floorplan() {
 
 // ───────── 3D Viewer · 真 3D 模型（GLB · model-viewer）· 无模型时退化到多视角图 ─────────
 
-// Viewer3D toggle state · 模块级 · 切 tab 后也保留
-const envelopeHideMemory = { current: false };
+// Viewer3D envelope state · 模块级 · 切 tab 后也保留
+// Phase 9.5 · 从单 hideEnvelope 升成 5 按钮 · 墙/天花单独切
+// key: wall_N/wall_S/wall_E/wall_W/ceiling · true=显示 · false=隐藏
+const envelopeStateMemory = {
+  current: { wall_N: true, wall_S: true, wall_E: true, wall_W: true, ceiling: true },
+};
 
-// Node 名分类正则（build_models.py 拷的 Blender GLB · 节点名有语义）
+// Phase 9.5 · 节点名精确映射 (Fix B 后 Blender 产的 GLB 里 node 名就是 Wall_1-4 + Ceiling + Floor)
+//   wall_N (North · +Y 向) → Wall_4
+//   wall_S (South · -Y 向) → Wall_3
+//   wall_E (East · +X 向)  → Wall_2
+//   wall_W (West · -X 向)  → Wall_1
+// 老 MVP（Phase 9.5 前产 · GLB 里是其他名字 · 比如 Wall_Back/Front/Left/Right · 或 Wall_outer_N 等）
+// 走正则 fallback · 向后兼容
 const FLOOR_RX = /^(Floor|FloorMat|Ground|Site_Ground|Slab_F\d|Slab_Existing|Slab_New|Deck)/i;
-// 只外墙四面 · 室内分隔墙（partition）保留
-// 规则：cardinal direction (N/S/E/W/Back/Front/Left/Right) · _outer 后缀 · _Pier 外墩 · Wall_Existing_X_Y 双方位
-const EXTERIOR_WALL_RX = /^Wall[_]?(?:N|S|E|W|North|South|East|West|Back|Front|Left|Right)(?![a-zA-Z])|_outer(?:_|$)|_Pier|_(?:Existing|New)_[NSEW]_[NSEW]$/i;
-// 天花 / 屋顶 · 同 toggle 一起隐藏
-const CEIL_RX = /Ceiling|Roof|Beam.*Roof|Slab_Roof|Eave|parapet/i;
+const CEIL_RX = /^(Ceiling|Roof|Slab_Roof|Eave|parapet)/i;
+const WALL_LEGACY_RX = {
+  wall_N: /^Wall[_]?(?:N|North|Back)(?![a-zA-Z])/i,
+  wall_S: /^Wall[_]?(?:S|South|Front)(?![a-zA-Z])/i,
+  wall_E: /^Wall[_]?(?:E|East|Right)(?![a-zA-Z])/i,
+  wall_W: /^Wall[_]?(?:W|West|Left)(?![a-zA-Z])/i,
+};
 
-function applyEnvelopeVisibility(mv, hideEnvelope) {
+function applyEnvelopeVisibility(mv, envelope) {
   if (!mv) return false;
   const sym = Object.getOwnPropertySymbols(mv).find(s => s.toString() === "Symbol(scene)");
   if (!sym) return false;
@@ -739,16 +751,20 @@ function applyEnvelopeVisibility(mv, hideEnvelope) {
   if (!scene || typeof scene.traverse !== "function") return false;
   scene.traverse(obj => {
     const name = obj.name || "";
-    // 地板白名单：永远可见（用户明确要求）
-    if (FLOOR_RX.test(name)) {
-      obj.visible = true;
-      return;
+    // 地板 · 永远可见
+    if (FLOOR_RX.test(name)) { obj.visible = true; return; }
+    // Phase 9.5 精确匹配（Fix B 后的新 GLB）
+    if (name === "Wall_1") { obj.visible = envelope.wall_W; return; }
+    if (name === "Wall_2") { obj.visible = envelope.wall_E; return; }
+    if (name === "Wall_3") { obj.visible = envelope.wall_S; return; }
+    if (name === "Wall_4") { obj.visible = envelope.wall_N; return; }
+    if (name === "Ceiling") { obj.visible = envelope.ceiling; return; }
+    // 向后兼容 · 老 GLB 的 N/S/E/W 正则
+    for (const [key, rx] of Object.entries(WALL_LEGACY_RX)) {
+      if (rx.test(name)) { obj.visible = envelope[key]; return; }
     }
-    // 只隐藏 外墙 + 天花/屋顶 · 室内 partition / glass wall / interior wall 保留
-    if (EXTERIOR_WALL_RX.test(name) || CEIL_RX.test(name)) {
-      obj.visible = !hideEnvelope;
-    }
-    // 其他（家具 / 室内墙 / 楼梯等）保持默认 visible
+    if (CEIL_RX.test(name)) { obj.visible = envelope.ceiling; return; }
+    // 其他（家具 / 室内墙）保留默认 visible
   });
   return true;
 }
@@ -758,33 +774,57 @@ function Viewer3D() {
   const modelGlb = D.model_glb;
   const renders = D.renders || [];
   const mvRef = useRef(null);
-  // 通过 module-level ref 持久化 · 切 tab 回来状态保留
-  const [hideEnvelope, _setHideEnvelope] = useState(envelopeHideMemory.current);
-  const setHideEnvelope = (v) => {
-    const next = typeof v === "function" ? v(envelopeHideMemory.current) : v;
-    envelopeHideMemory.current = next;
-    _setHideEnvelope(next);
+  // Phase 9.5 · 5 按钮 envelope state · 切 tab 回来保留
+  const [envelope, _setEnvelope] = useState(envelopeStateMemory.current);
+  const setEnvelope = (updater) => {
+    const next = typeof updater === "function" ? updater(envelopeStateMemory.current) : updater;
+    envelopeStateMemory.current = next;
+    _setEnvelope(next);
+  };
+  const toggleEnv = (key) => setEnvelope(prev => ({ ...prev, [key]: !prev[key] }));
+  const anyHidden = !envelope.wall_N || !envelope.wall_S || !envelope.wall_E || !envelope.wall_W || !envelope.ceiling;
+  const toggleAll = () => {
+    const allOn = !anyHidden;
+    setEnvelope({
+      wall_N: allOn ? false : true,
+      wall_S: allOn ? false : true,
+      wall_E: allOn ? false : true,
+      wall_W: allOn ? false : true,
+      ceiling: allOn ? false : true,
+    });
   };
   const [modelLoaded, setModelLoaded] = useState(false);
 
-  // model 加载完成 OR toggle 变化 → apply
+  // model 加载完成 OR envelope 变化 → apply
   useEffect(() => {
     const mv = mvRef.current;
     if (!mv) return;
     const onLoad = () => {
       setModelLoaded(true);
-      applyEnvelopeVisibility(mv, hideEnvelope);
+      applyEnvelopeVisibility(mv, envelope);
     };
     mv.addEventListener("load", onLoad);
-    // 如果模型已加载（切换 tab 回来）· 直接 apply
-    if (modelLoaded) applyEnvelopeVisibility(mv, hideEnvelope);
+    if (modelLoaded) applyEnvelopeVisibility(mv, envelope);
     return () => mv.removeEventListener("load", onLoad);
-  }, [hideEnvelope, modelGlb, modelLoaded]);
+  }, [envelope, modelGlb, modelLoaded]);
 
   // 优先：有真 3D 模型 · 用 <model-viewer> 加载（drag/zoom/AR 内置）
   if (modelGlb) {
     const area = D.project?.area || 0;
     const variantId = D.active_variant_id;
+    // Phase 9.5 · 5 按钮样式（复用 TogglePill 的风格但内联 · 避免 Phase 3.E TogglePill 已被 Three.js 路径占用）
+    const pill = (active) => ({
+      padding: "5px 10px",
+      background: active ? "var(--bg-1)" : "var(--text-1)",
+      color: active ? "var(--text-1)" : "var(--bg-0)",
+      border: "1px solid " + (active ? "var(--line)" : "var(--text-1)"),
+      borderRadius: 4,
+      fontSize: 11,
+      fontFamily: "var(--f-mono)",
+      letterSpacing: "0.03em",
+      cursor: "pointer",
+      transition: "all 0.12s",
+    });
     return (
       <section>
         <div className="view-head">
@@ -796,24 +836,15 @@ function Viewer3D() {
               {area ? <> · {area} m²</> : null}
             </div>
           </div>
-          <div style={{display:"flex", gap:8, alignItems:"center"}}>
-            <button
-              onClick={() => setHideEnvelope(v => !v)}
-              style={{
-                padding: "6px 14px",
-                background: hideEnvelope ? "var(--text-1)" : "var(--bg-1)",
-                color: hideEnvelope ? "var(--bg-0)" : "var(--text-1)",
-                border: "1px solid " + (hideEnvelope ? "var(--text-1)" : "var(--line)"),
-                borderRadius: 4,
-                fontSize: 12,
-                fontFamily: "var(--f-mono)",
-                letterSpacing: "0.05em",
-                cursor: "pointer",
-                transition: "all 0.15s",
-              }}
-              title={hideEnvelope ? "显示墙壁 + 天花板" : "隐藏墙壁 + 天花板（地板保留）"}
-            >
-              {hideEnvelope ? "🏠 显示围护" : "🔲 仅家具"}
+          {/* Phase 9.5 · 5 按钮围护切换 · 跟老 Three.js 路径等价粒度 */}
+          <div style={{display:"flex", gap:5, alignItems:"center", flexWrap:"wrap"}}>
+            <button onClick={() => toggleEnv("wall_N")} style={pill(envelope.wall_N)} title="北墙 · Wall_4">🧱 N</button>
+            <button onClick={() => toggleEnv("wall_S")} style={pill(envelope.wall_S)} title="南墙 · Wall_3">🧱 S</button>
+            <button onClick={() => toggleEnv("wall_E")} style={pill(envelope.wall_E)} title="东墙 · Wall_2">🧱 E</button>
+            <button onClick={() => toggleEnv("wall_W")} style={pill(envelope.wall_W)} title="西墙 · Wall_1">🧱 W</button>
+            <button onClick={() => toggleEnv("ceiling")} style={pill(envelope.ceiling)} title="天花板 · Ceiling">☁️ 天花</button>
+            <button onClick={toggleAll} style={{...pill(anyHidden), marginLeft: 4}} title={anyHidden ? "全部显示" : "全部隐藏（家具可见）"}>
+              {anyHidden ? "🏠 全显" : "🔲 全隐"}
             </button>
           </div>
         </div>
@@ -833,7 +864,15 @@ function Viewer3D() {
         </div>
         <div style={{marginTop:12, padding:"10px 14px", background:"var(--bg-1)", border:"1px solid var(--line)", borderRadius:4, fontSize:12, color:"var(--text-3)", fontFamily:"var(--f-mono)"}}>
           ← drag · scroll · ⌘-click = pan · GLB {modelGlb.split("/").pop()}
-          {hideEnvelope && <span style={{marginLeft:12, color:"var(--accent)"}}>· envelope hidden（地板保留）</span>}
+          {anyHidden && <span style={{marginLeft:12, color:"var(--accent)"}}>· {
+            [
+              !envelope.wall_N && "北墙",
+              !envelope.wall_S && "南墙",
+              !envelope.wall_E && "东墙",
+              !envelope.wall_W && "西墙",
+              !envelope.ceiling && "天花",
+            ].filter(Boolean).join("/")
+          } 已隐（地板保留）</span>}
         </div>
       </section>
     );
