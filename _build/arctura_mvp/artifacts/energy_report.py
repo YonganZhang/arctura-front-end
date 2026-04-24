@@ -140,9 +140,8 @@ def produce(ctx: dict, on_event: Optional[Callable] = None) -> ArtifactResult:
         "boq_csv": boq_csv.exists(),
     }
     ok_count = sum(1 for v in produced.values() if v)
+    ep_available = bool(_EPW_HK.exists() and shutil.which("energyplus"))
 
-    # EUI 需要 EnergyPlus binary · 这里暂跳过
-    # 如果将来装 EP · 加 "run simulate" 这步
     return ArtifactResult(
         name="energy_report",
         status="done" if ok_count >= 2 else "error",
@@ -151,7 +150,7 @@ def produce(ctx: dict, on_event: Optional[Callable] = None) -> ArtifactResult:
         meta={
             "produced": produced,
             "count": ok_count,
-            "eui_pending": "需 EnergyPlus binary · `run simulate` · LIGHT 暂不装（~140MB）",
+            "ep_available": ep_available,
             "errors": errors or None,
         },
     )
