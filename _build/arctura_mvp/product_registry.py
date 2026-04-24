@@ -112,16 +112,16 @@ _PRODUCTS_LIST: list[ProductSpec] = [
         full_hint="LIGHT 版已用严老师 templates/client-readme-template.md 填占位符 · "
                   "FULL 会跑 materialize_full_mvp.py 带真统计",
     ),
-    # #8 · energy_report (project.json + compliance + boq)
+    # #8 · energy_report · Phase 9 · 真产 project.json + compliance + boq（EUI 需 EP binary 暂留）
     ProductSpec(
         key="energy_report", id=8, name="能耗 + 合规 + 报价", lang_hint_en="Energy + Compliance + BOQ",
         tiers=["quote", "full", "select"],
-        light_producer=None,
-        full_pipeline="P7 Energy-Sim + P8 Compliance + P6 BOQ",
+        light_producer="energy_report",   # ✅ Phase 9 · 3/4 工件真产 · EUI 待 EnergyPlus
+        full_pipeline="P7 Energy-Sim（需 EnergyPlus binary）+ P8 Compliance + P6 BOQ",
         spec_ref="L404",
         depends_on=["scene", "brief"],
-        full_hint="需 OpenStudio + EnergyPlus 26.1 · 入口 `cd $OPENST_H && openstudio_cli project new` · "
-                  "气象 HKG_Hong.Kong.Intl.AP.epw · 批量跑 playbooks/scripts/batch_all_mvps.py",
+        full_hint="LIGHT 产 project.json + compliance-HK.md + boq-HK.md/csv · EUI 待装 EnergyPlus（~140MB）"
+                  "· FULL `cli-anything-openstudio run simulate --weather HKG_Hong.Kong.Intl.AP.epw`",
     ),
     # #10 · exports · Phase 9 真产（Blender 4.2.3 已装 · GLB/OBJ/FBX）
     ProductSpec(
