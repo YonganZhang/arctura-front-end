@@ -111,9 +111,34 @@ async function loadMvpData(slug) {
     }
     return DEFAULT_ZEN_DATA;
   }
-  const r = await fetch(`/data/mvps/${slug}.json`);
-  if (!r.ok) throw new Error(`MVP "${slug}" 不存在 (HTTP ${r.status})`);
-  return await r.json();
+  // 1. 先试静态 JSON · 已 commit 的老 MVP 命中 CDN
+  const staticResp = await fetch(`/data/mvps/${slug}.json`);
+  if (staticResp.ok) return await staticResp.json();
+
+  // 2. Phase 9.5 · 静态 404 时从 KV 读 fe_payload
+  //    worker 刚 materialize 完但 Save 按钮还没推 GitHub · 仍能立刻访问
+  if (staticResp.status === 404) {
+    try {
+      const apiResp = await fetch(`/api/projects/${slug}`);
+      if (apiResp.ok) {
+        const p = await apiResp.json();
+        const fep = p.artifacts?.fe_payload;
+        if (fep) {
+          console.log(`[loadMvpData] ${slug} · KV fallback hit · fe_payload keys=${Object.keys(fep).length}`);
+          return {
+            ...fep,
+            // scene 以 KV project.scene 为准（chat 编辑 SSOT）· fallback fe_payload.scene
+            scene: p.scene || fep.scene,
+            _source: "kv-fallback",
+            _kv_version: p.version,
+          };
+        }
+      }
+    } catch (e) {
+      console.warn(`[loadMvpData] ${slug} · KV fallback error:`, e.message);
+    }
+  }
+  throw new Error(`MVP "${slug}" 不存在 (HTTP ${staticResp.status})`);
 }
 
 // Robust image: defers src until after mount (lets the sandbox path rewriter
