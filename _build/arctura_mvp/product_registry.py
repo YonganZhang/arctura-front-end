@@ -180,16 +180,17 @@ _PRODUCTS_LIST: list[ProductSpec] = [
         addon=True,
         full_hint="需 OpenStudio · `openstudio_cli report whatif --preset envelope-upgrade` 等",
     ),
-    # #16 · ai_renders
+    # #16 · ai_renders · Phase 9.1 · LIGHT 真产（fal.ai）· 保 addon（spec L368-375 按需追加）
     ProductSpec(
         key="ai_renders", id=16, name="AI 渲染增强", lang_hint_en="AI Renders",
-        tiers=[],
-        light_producer=None,
-        full_pipeline="P4 SDXL/L2-C",
-        spec_ref="L376",
+        tiers=[],                     # addon · 不默认挂档位 · 客户明说"加 AI 渲染"才触发
+        light_producer="ai_renders",  # 但 LIGHT 能产 · 通过 addon 入口调
+        full_pipeline="P4 · LIGHT 走 fal.ai fast-sdxl · FULL 走 ComfyUI SDXL + ControlNet depth",
+        spec_ref="L93-127 + L376",
         depends_on=["renders"],
         addon=True,
-        full_hint="需 ComfyUI + SDXL · RealVisXL V4.0 + xinsir depth CN · Mac/GPU Linux",
+        full_hint="LIGHT · fal.ai fast-sdxl img2img（~$0.06/项目 · 30-60s · 需 FAL_KEY + fal-client）· "
+                  "FULL · 严老师 P4 pipeline（本地 ComfyUI + RealVisXL + xinsir depth CN · GPU 必需）",
     ),
 
     # bundle 永远最后 · 不在产物编号里 · 但是 artifact
