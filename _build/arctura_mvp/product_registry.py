@@ -91,16 +91,15 @@ _PRODUCTS_LIST: list[ProductSpec] = [
         depends_on=["scene"],
         full_hint="FULL 走 Blender Eevee 出 8 张 · 可 + P4 SDXL 写实化 · LIGHT 走 Three.js Playwright 截图",
     ),
-    # #6 · deck_client PPT
+    # #6 · deck_client PPT · Phase 9 真产（Marp CLI 本机已装）
     ProductSpec(
         key="deck_client", id=6, name="方案 PPT", lang_hint_en="Client Deck (Marp)",
         tiers=["deliver", "quote", "full", "select"],
-        light_producer=None,   # 需 Marp CLI · LIGHT 本机无
-        full_pipeline="P1/P2 deck step · Marp CLI + .claude/skills/marp-deck",
+        light_producer="deck_client",   # ✅ Phase 9 · 接 marp CLI · 产 .pptx + .pdf
+        full_pipeline="P1/P2 deck step · Marp CLI + .claude/skills/marp-deck (full 8 stakeholder)",
         spec_ref="L401",
         depends_on=["brief", "scene", "renders"],
-        full_hint="Marp CLI（npm i -g @marp-team/marp-cli）· 模板在 .claude/skills/marp-deck/ · "
-                  "实例：deliverables/HOD-BRIEFING-KT.marp.md",
+        full_hint="LIGHT 版已产单份 client deck · FULL 走严老师 marp-deck skill 产 8 份 stakeholder PPT",
     ),
     # #7 · client_readme
     ProductSpec(
