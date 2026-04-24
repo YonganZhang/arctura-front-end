@@ -11,7 +11,8 @@
     "test:all": "npm run test:unit && npm run test && npm run test:chat",
     "test:ui": "npx playwright test --ui",
     "pre-deploy": "npm run validate && npm test && npm run test:chat",
-    "test:unit": "python3 -m pytest _build/arctura_mvp/tests/ -q"
+    "test:unit": "python3 -m pytest _build/arctura_mvp/tests/ -q",
+    "shot": "node _build/scripts/screenshot-telegram.mjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.48.0"
