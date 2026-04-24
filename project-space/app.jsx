@@ -2880,14 +2880,60 @@ function WizardHeader({ project, step }) {
 
 // ───── Step 1 · Brief Chat ─────
 
+// Phase 9.6 · Brief Chat UX 升级 · typing indicator + suggestions + 模型选择
+const BRIEF_MODELS = [
+  { id: "gpt-5.4", label: "GPT-5.4 (默认·快·准)" },
+  { id: "gpt-5", label: "GPT-5 (更强推理)" },
+  { id: "gpt-4.1", label: "GPT-4.1" },
+  { id: "claude-sonnet-4-6", label: "Claude Sonnet 4.6" },
+  { id: "deepseek-v3.2", label: "DeepSeek v3.2 (中文优化)" },
+];
+const BRIEF_MODEL_LS_KEY = "arctura:brief-model";
+
+// 三点 bounce 动画 · 纯 CSS keyframes · 挂到 document head 一次
+(function ensureTypingKeyframes() {
+  if (typeof document === "undefined") return;
+  if (document.getElementById("arctura-typing-kf")) return;
+  const s = document.createElement("style");
+  s.id = "arctura-typing-kf";
+  s.textContent = `@keyframes arctura-typing-bounce {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+    30% { transform: translateY(-4px); opacity: 1; }
+  }`;
+  document.head.appendChild(s);
+})();
+
+function TypingDots() {
+  return (
+    <span style={{display:"inline-flex",gap:4,padding:"4px 0",alignItems:"center"}}>
+      {[0, 1, 2].map(i => (
+        <span key={i} style={{
+          width: 7, height: 7, borderRadius: "50%", background: "var(--text-2)",
+          animation: `arctura-typing-bounce 1.2s ${i * 0.15}s infinite`,
+          display: "inline-block",
+        }}/>
+      ))}
+    </span>
+  );
+}
+
 function BriefChatStep({ project, onRefresh, onPatch }) {
-  const [messages, setMessages] = useState([]);     // [{role, content, brief_update?}]
+  const [messages, setMessages] = useState([]);     // [{role, content, brief_update?, typing?, suggestions?}]
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const [completeness, setCompleteness] = useState(0);
   const [missing, setMissing] = useState([]);
   const [readyForTier, setReadyForTier] = useState(false);
+  const [model, _setModel] = useState(() => {
+    try { return localStorage.getItem(BRIEF_MODEL_LS_KEY) || "gpt-5.4"; } catch { return "gpt-5.4"; }
+  });
+  const setModel = (m) => {
+    _setModel(m);
+    try { localStorage.setItem(BRIEF_MODEL_LS_KEY, m); } catch {}
+  };
+  const [currentSuggestions, setCurrentSuggestions] = useState([]);
   const scrollRef = useRef(null);
+  const inputRef = useRef(null);
 
   useEffect(() => {
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -2902,24 +2948,29 @@ function BriefChatStep({ project, onRefresh, onPatch }) {
     // eslint-disable-next-line
   }, []);
 
-  const send = async () => {
-    if (!input.trim() || sending) return;
-    const userMsg = input.trim();
+  const send = async (overrideText) => {
+    const userMsg = (overrideText ?? input).trim();
+    if (!userMsg || sending) return;
     setInput("");
-    setMessages(m => [...m, { role: "user", content: userMsg }]);
+    setCurrentSuggestions([]);  // 发送后清除旧 suggestions · 等新回复带来的
+    // Phase 9.6 · 发送后立即 append typing bubble · 不等 LLM
+    setMessages(m => [...m, { role: "user", content: userMsg }, { role: "assistant", typing: true }]);
     setSending(true);
 
     let asstText = "";
-    let asstIdx = -1;
-    const appendAsst = (text) => {
+    let asstIdx = -1;  // 指向 typing bubble · 首个 reply event 到时替换
+    const appendAsst = (text, extra = {}) => {
       if (asstIdx === -1) {
-        asstIdx = 1;
         setMessages(m => {
-          asstIdx = m.length;
-          return [...m, { role: "assistant", content: text, streaming: true }];
+          // 找最后一个 typing bubble（刚 append 的）· 覆盖
+          const idx = m.length - 1;
+          asstIdx = idx;
+          return m.map((msg, i) =>
+            i === idx ? { ...msg, content: text, typing: false, streaming: true, ...extra } : msg
+          );
         });
       } else {
-        setMessages(m => m.map((msg, i) => i === asstIdx ? { ...msg, content: text } : msg));
+        setMessages(m => m.map((msg, i) => i === asstIdx ? { ...msg, content: text, ...extra } : msg));
       }
     };
 
@@ -2927,7 +2978,7 @@ function BriefChatStep({ project, onRefresh, onPatch }) {
       const r = await fetch("/api/brief/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ slug: project.slug, user_message: userMsg }),
+        body: JSON.stringify({ slug: project.slug, user_message: userMsg, model }),
         credentials: "include",
       });
       if (!r.ok) throw new Error(`HTTP ${r.status}`);
@@ -2950,7 +3001,9 @@ function BriefChatStep({ project, onRefresh, onPatch }) {
           const data = JSON.parse(dataMatch[1]);
           if (ev === "reply") {
             asstText = data.text;
-            appendAsst(asstText);
+            appendAsst(asstText, { suggestions: data.suggestions || [], model_used: data.model });
+            // Phase 9.6 · chip bar 显示
+            if (Array.isArray(data.suggestions)) setCurrentSuggestions(data.suggestions);
           } else if (ev === "brief_update") {
             setCompleteness(data.completeness || 0);
             setMissing(data.missing || []);
@@ -2973,11 +3026,22 @@ function BriefChatStep({ project, onRefresh, onPatch }) {
       // mark streaming done
       setMessages(m => m.map((msg, i) => i === m.length - 1 && msg.streaming ? { ...msg, streaming: false } : msg));
     } catch (e) {
-      setMessages(m => [...m, { role: "assistant", content: `⚠ 对话出错: ${e.message}` }]);
+      // Phase 9.6 · 失败也要清掉 typing bubble
+      setMessages(m => {
+        const last = m[m.length - 1];
+        if (last?.typing) {
+          return [...m.slice(0, -1), { role: "assistant", content: `⚠ 对话出错: ${e.message}` }];
+        }
+        return [...m, { role: "assistant", content: `⚠ 对话出错: ${e.message}` }];
+      });
     } finally {
       setSending(false);
     }
   };
+
+  // Phase 9.6 · 快速发送（chip click）
+  const quickSend = (text) => send(text);
+  const requestMoreSuggestions = () => send("再给我 5 个不同的建议选项");
 
   const enterPlanning = async () => {
     try {
@@ -2987,23 +3051,63 @@ function BriefChatStep({ project, onRefresh, onPatch }) {
     }
   };
 
+  // Phase 9.6 · chip 按钮样式
+  const chipStyle = {
+    padding: "5px 12px",
+    background: "var(--bg-1)",
+    border: "1px solid var(--line)",
+    borderRadius: 16,
+    fontSize: 12,
+    fontFamily: "var(--f-sans)",
+    cursor: "pointer",
+    color: "var(--text-1)",
+    transition: "all 0.12s",
+    whiteSpace: "nowrap",
+  };
+  const chipMetaStyle = { ...chipStyle, fontStyle: "italic", color: "var(--text-2)", background: "transparent" };
+
   return (
     <div style={wzStepBody}>
       <div style={wzMainPanel}>
         <div style={wzChatScroll} ref={scrollRef}>
           {messages.map((msg, i) => (
             <div key={i} style={{...wzMsg, ...(msg.role === "user" ? wzMsgUser : wzMsgAsst)}}>
-              <div>{msg.content}{msg.streaming && <span style={{opacity:.5}}> ▊</span>}</div>
+              {msg.typing ? (
+                <TypingDots />
+              ) : (
+                <div>{msg.content}{msg.streaming && <span style={{opacity:.5}}> ▊</span>}</div>
+              )}
               {msg.brief_update && (
                 <div style={{fontSize:11,marginTop:6,opacity:.65,fontFamily:"JetBrains Mono,monospace"}}>
                   completeness {Math.round(msg.brief_update.completeness*100)}% · 还缺 {msg.brief_update.missing.join(", ") || "—"}
+                  {msg.model_used && msg.model_used !== "gpt-5.4" ? ` · 用 ${msg.model_used}` : ""}
                 </div>
               )}
             </div>
           ))}
         </div>
+        {/* Phase 9.6 · suggestions chip bar · 跟最新 assistant bubble 绑定 */}
+        {currentSuggestions.length > 0 && !sending && (
+          <div style={{display:"flex",gap:6,flexWrap:"wrap",padding:"10px 14px",borderTop:"1px solid var(--line)",background:"var(--bg-1)"}}>
+            <span style={{fontSize:11,color:"var(--text-3)",fontFamily:"var(--f-mono)",alignSelf:"center",marginRight:4}}>
+              💡 建议：
+            </span>
+            {currentSuggestions.slice(0, 5).map((s, i) => (
+              <button key={i} onClick={() => quickSend(s)} style={chipStyle} title={`点击直接发送「${s}」`}>
+                {s}
+              </button>
+            ))}
+            <button onClick={requestMoreSuggestions} style={chipMetaStyle} title="再要 5 个不同建议">
+              🔄 更多
+            </button>
+            <button onClick={() => inputRef.current?.focus()} style={chipMetaStyle} title="自己打字">
+              ✏ 自定义
+            </button>
+          </div>
+        )}
         <div style={wzInputRow}>
           <textarea
+            ref={inputRef}
             value={input}
             onChange={e => setInput(e.target.value)}
             onKeyDown={e => {
@@ -3014,12 +3118,26 @@ function BriefChatStep({ project, onRefresh, onPatch }) {
             disabled={sending}
             rows={2}
           />
-          <button onClick={send} disabled={sending || !input.trim()} style={wzBtnPrimary}>
+          <button onClick={() => send()} disabled={sending || !input.trim()} style={wzBtnPrimary}>
             {sending ? "..." : "发送"}
           </button>
         </div>
       </div>
       <aside style={wzSidePanel}>
+        {/* Phase 9.6 · 模型选择器 */}
+        <div style={{marginBottom:16}}>
+          <div style={{fontFamily:"JetBrains Mono,monospace",fontSize:10,color:"#888",letterSpacing:"0.1em",textTransform:"uppercase",marginBottom:6}}>模型</div>
+          <select
+            value={model}
+            onChange={e => setModel(e.target.value)}
+            disabled={sending}
+            style={{width:"100%",padding:"6px 8px",fontSize:12,border:"1px solid var(--line)",background:"var(--bg-1)",borderRadius:4,fontFamily:"var(--f-sans)"}}
+            title="切换 LLM · 下一轮对话生效"
+          >
+            {BRIEF_MODELS.map(m => <option key={m.id} value={m.id}>{m.label}</option>)}
+          </select>
+          <div style={{fontSize:10,marginTop:4,color:"#999"}}>偏好自动记住</div>
+        </div>
         <div style={{fontFamily:"JetBrains Mono,monospace",fontSize:10,color:"#888",letterSpacing:"0.1em",textTransform:"uppercase",marginBottom:10}}>Brief 进度</div>
         <div style={wzProgressOuter}>
           <div style={{...wzProgressInner, width: `${Math.round(completeness*100)}%`}}></div>

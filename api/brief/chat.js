@@ -111,7 +111,12 @@ function deepMerge(base, patch) {
 
 // ─────── LLM call · ZHIZENGZENG gateway · gpt-5.4 ───────
 
-async function callLLM(userMessage, brief, history) {
+// Phase 9.6 · 允许的 LLM 模型列表 · 跟 ZHIZENGZENG gateway 支持的对齐
+// 前端 dropdown 选 · 后端 allowlist 拒非法
+const ALLOWED_MODELS = ["gpt-5.4", "gpt-5", "gpt-4.1", "claude-sonnet-4-6", "deepseek-v3.2"];
+const DEFAULT_MODEL = "gpt-5.4";
+
+async function callLLM(userMessage, brief, history, model = DEFAULT_MODEL) {
   const userPrompt = `## 当前 brief
 \`\`\`json
 ${JSON.stringify(brief, null, 2)}
@@ -130,18 +135,27 @@ ${userMessage}
   for (const t of history || []) messages.push({ role: t.role, content: t.content });
   messages.push({ role: "user", content: userPrompt });
 
+  // gpt-5 系列参数名不同（max_completion_tokens · 不接 temperature / max_tokens）
+  const isGpt5 = /^gpt-5/.test(model);
+  const body = {
+    model,
+    messages,
+    response_format: { type: "json_object" },
+  };
+  if (isGpt5) {
+    body.max_completion_tokens = 2000;
+  } else {
+    body.temperature = 0.3;
+    body.max_tokens = 2000;
+  }
+
   const resp = await fetch("https://api.zhizengzeng.com/v1/chat/completions", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${LLM_KEY}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      model: "gpt-5.4",
-      messages,
-      temperature: 0.3,
-      response_format: { type: "json_object" },
-    }),
+    body: JSON.stringify(body),
   });
   if (!resp.ok) {
     const txt = await resp.text();
@@ -167,11 +181,13 @@ export default async function handler(req) {
 
   let body;
   try { body = await req.json(); } catch { body = {}; }
-  const { slug, user_message } = body;
+  const { slug, user_message, model: reqModel } = body;
 
   if (!slug || !user_message) {
     return new Response(JSON.stringify({ error: "missing slug or user_message" }), { status: 400 });
   }
+  // Phase 9.6 · 模型 allowlist · 防任意注入
+  const model = (reqModel && ALLOWED_MODELS.includes(reqModel)) ? reqModel : DEFAULT_MODEL;
 
   const enc = encoder();
   const { readable, writable } = new TransformStream();
@@ -213,7 +229,7 @@ export default async function handler(req) {
       // LLM
       let parsed;
       try {
-        parsed = await callLLM(user_message, currentBrief, history);
+        parsed = await callLLM(user_message, currentBrief, history, model);
       } catch (e) {
         await safeWrite(sseMessage("error", { message: `LLM: ${e.message}` }));
         return;
@@ -222,8 +238,17 @@ export default async function handler(req) {
       const reply = parsed.reply || "";
       const patch = parsed.brief_patch || {};
       const piiNew = parsed.pii_fields || [];
+      // Phase 9.6 · suggestions 最多 5 条 · 去重 + 截断
+      const suggestions = Array.isArray(parsed.suggestions)
+        ? [...new Set(parsed.suggestions.filter(s => typeof s === "string" && s.trim().length > 0))].slice(0, 5)
+        : [];
 
-      await safeWrite(sseMessage("reply", { text: reply, next_question: parsed.next_question || "" }));
+      await safeWrite(sseMessage("reply", {
+        text: reply,
+        next_question: parsed.next_question || "",
+        suggestions,
+        model,
+      }));
 
       // Merge brief
       const newBrief = deepMerge(currentBrief, patch);
