@@ -23,10 +23,10 @@ from pathlib import Path
 from typing import Callable, Optional
 
 from ..types import ArtifactResult
+from ..paths import ensure_playbook_script_subdir_on_path
 
-_VENDOR = Path(__file__).resolve().parents[1] / "vendor"
-if str(_VENDOR) not in sys.path:
-    sys.path.insert(0, str(_VENDOR))
+# Phase 9 · 直接用本机 StartUP-Building/playbooks/scripts/ab-comparison/score_variants.py
+ensure_playbook_script_subdir_on_path("ab-comparison")
 
 
 # 3 方案基础配方 · 基于严老师 change-impact-matrix 的 envelope/hvac 升级方向

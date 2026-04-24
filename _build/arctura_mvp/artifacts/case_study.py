@@ -17,11 +17,10 @@ from pathlib import Path
 from typing import Callable, Optional
 
 from ..types import ArtifactResult
+from ..paths import ensure_playbook_script_subdir_on_path
 
-# vendor · render_templates 纯 stdlib · 加到 path
-_VENDOR = Path(__file__).resolve().parents[1] / "vendor" / "case_study"
-if str(_VENDOR) not in sys.path:
-    sys.path.insert(0, str(_VENDOR))
+# Phase 9 · 直接用本机 StartUP-Building/playbooks/scripts/case-study/ · 不 vendor copy
+ensure_playbook_script_subdir_on_path("case-study")
 
 
 def _build_metrics(project) -> dict:
