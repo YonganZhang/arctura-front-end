@@ -1,0 +1,404 @@
+{
+  "slug": "smoke-ep-202886",
+  "cat": "other",
+  "type": "P1-interior",
+  "complete": false,
+  "model_glb": "/assets/mvps/smoke-ep-202886/smoke-ep-202886.glb",
+  "project": {
+    "name": "smoke-ep-202886",
+    "zh": "",
+    "area": 42,
+    "location": "Hong Kong",
+    "budgetHKD": 0,
+    "style": "",
+    "palette": [
+      {
+        "name": "primary",
+        "hex": "#D7C4A8"
+      },
+      {
+        "name": "secondary",
+        "hex": "#8A7A5C"
+      },
+      {
+        "name": "accent",
+        "hex": "#2A2A2A"
+      },
+      {
+        "name": "wall",
+        "hex": "#F5F1E8"
+      },
+      {
+        "name": "neutral_mid",
+        "hex": "#A8A298"
+      },
+      {
+        "name": "warm_accent",
+        "hex": "#B88A5E"
+      }
+    ]
+  },
+  "renders": [
+    {
+      "id": "01",
+      "file": "/assets/mvps/smoke-ep-202886/renders/01_hero_corner.png",
+      "title": "01 Hero Corner",
+      "tag": "01_hero_corner"
+    },
+    {
+      "id": "02",
+      "file": "/assets/mvps/smoke-ep-202886/renders/02_front_view.png",
+      "title": "02 Front View",
+      "tag": "02_front_view"
+    },
+    {
+      "id": "03",
+      "file": "/assets/mvps/smoke-ep-202886/renders/03_back_view.png",
+      "title": "03 Back View",
+      "tag": "03_back_view"
+    },
+    {
+      "id": "04",
+      "file": "/assets/mvps/smoke-ep-202886/renders/04_left_side.png",
+      "title": "04 Left Side",
+      "tag": "04_left_side"
+    },
+    {
+      "id": "05",
+      "file": "/assets/mvps/smoke-ep-202886/renders/05_right_side.png",
+      "title": "05 Right Side",
+      "tag": "05_right_side"
+    },
+    {
+      "id": "06",
+      "file": "/assets/mvps/smoke-ep-202886/renders/06_top_down.png",
+      "title": "06 Top Down",
+      "tag": "06_top_down"
+    },
+    {
+      "id": "07",
+      "file": "/assets/mvps/smoke-ep-202886/renders/07_eye_level.png",
+      "title": "07 Eye Level",
+      "tag": "07_eye_level"
+    },
+    {
+      "id": "08",
+      "file": "/assets/mvps/smoke-ep-202886/renders/08_corner_detail.png",
+      "title": "08 Corner Detail",
+      "tag": "08_corner_detail"
+    }
+  ],
+  "floorplan": "/assets/mvps/smoke-ep-202886/floorplan.webp",
+  "moodboard": "/assets/mvps/smoke-ep-202886/moodboard.webp",
+  "hero_img": "/assets/mvps/smoke-ep-202886/hero.webp",
+  "thumb_img": "/assets/mvps/smoke-ep-202886/thumb.webp",
+  "zones": [],
+  "furniture": [],
+  "pricing": {
+    "HK": {
+      "label": "Hong Kong",
+      "currency": "HK$",
+      "perM2": 10851,
+      "rows": [
+        {
+          "cat": "slab",
+          "desc": "F1 Floor Slab — RC slab (120mm) incl. formwork + rebar",
+          "sub": "m2",
+          "qty": "42.0",
+          "amt": "50,400"
+        },
+        {
+          "cat": "wall",
+          "desc": "F1 Exterior Walls — Common brick wall (200mm) incl. render (U≤1.2)",
+          "sub": "m2",
+          "qty": "78.0",
+          "amt": "66,300"
+        },
+        {
+          "cat": "wall",
+          "desc": "F1 Interior Partitions — Gypsum board partition (double-sided)",
+          "sub": "m2",
+          "qty": "14.4",
+          "amt": "6,048"
+        },
+        {
+          "cat": "window",
+          "desc": "F1 Windows — Aluminum frame + double clear glazing (U≤3.5)",
+          "sub": "m2",
+          "qty": "23.4",
+          "amt": "74,880"
+        },
+        {
+          "cat": "door",
+          "desc": "F1 Doors — Solid wood door (900mm) + frame + hardware",
+          "sub": "ea",
+          "qty": "2.0",
+          "amt": "17,000"
+        },
+        {
+          "cat": "finish",
+          "desc": "F1_reception Floor Finish — Ceramic tile floor (supply + install)",
+          "sub": "m2",
+          "qty": "20.0",
+          "amt": "7,600"
+        },
+        {
+          "cat": "finish",
+          "desc": "F1_lounge Floor Finish — Ceramic tile floor (supply + install)",
+          "sub": "m2",
+          "qty": "22.0",
+          "amt": "8,360"
+        },
+        {
+          "cat": "roof",
+          "desc": "Roof — RC roof + 60mm XPS + membrane (U≤0.50)",
+          "sub": "m2",
+          "qty": "42.2",
+          "amt": "71,825"
+        }
+      ],
+      "total": "455,736",
+      "totalNumber": 455736,
+      "subtotal": "310,024",
+      "mep": "77,506",
+      "prelim": "37,203",
+      "cont": "31,002"
+    }
+  },
+  "energy": {
+    "eui": 41.9,
+    "limit": 150,
+    "annual": 0,
+    "engine": "EnergyPlus"
+  },
+  "compliance": {
+    "HK": {
+      "code": "HK_BEEO_BEC_2021",
+      "label": "HK · BEEO 2021",
+      "checks": [
+        {
+          "name": "Energy Energy Use Intensity (EUI)",
+          "value": "41.9",
+          "limit": "438",
+          "unit": "kWh/m2*yr",
+          "status": "advisory",
+          "note": "10% of benchmark — advisory only (not code-mandated)"
+        },
+        {
+          "name": "Envelope Exterior Wall U-value",
+          "value": "0.555",
+          "limit": "1.8",
+          "unit": "W/m2K",
+          "status": "advisory",
+          "note": "— advisory (code uses OTTV/RTTV composite, not per-element)"
+        },
+        {
+          "name": "Envelope Roof U-value",
+          "value": "0.498",
+          "limit": "0.8",
+          "unit": "W/m2K",
+          "status": "advisory",
+          "note": "— advisory (code uses OTTV/RTTV composite, not per-element)"
+        },
+        {
+          "name": "Envelope Window U-value",
+          "value": "2.0",
+          "limit": "5.8",
+          "unit": "W/m2K",
+          "status": "advisory",
+          "note": "— advisory (code uses OTTV/RTTV composite, not per-element)"
+        },
+        {
+          "name": "Envelope Window SHGC",
+          "value": "0.6",
+          "limit": "0.6",
+          "unit": "—",
+          "status": "advisory",
+          "note": "advisory — code uses OTTV composite"
+        },
+        {
+          "name": "Envelope OTTV (Overall Thermal Transfer Value)",
+          "value": "needs facade analysis",
+          "limit": "21.0",
+          "unit": "W/m2",
+          "status": "advisory",
+          "note": "OTTV requires detailed facade WWR + orientation data — not yet calculated."
+        },
+        {
+          "name": "Lighting Lighting Power Density",
+          "value": "8.0",
+          "limit": "10.0",
+          "unit": "W/m2",
+          "status": "pass",
+          "note": "v2 strictest of zones: {'general'}"
+        },
+        {
+          "name": "Ventilation Fresh Air (ACH)",
+          "value": "0.7",
+          "limit": "0.7",
+          "unit": "ACH",
+          "status": "advisory",
+          "note": "advisory — HK ACH is not in BEC; see IAQ Practice Note"
+        }
+      ],
+      "items": [
+        {
+          "name": "Energy Energy Use Intensity (EUI)",
+          "value": "41.9",
+          "limit": "438",
+          "unit": "kWh/m2*yr",
+          "status": "advisory",
+          "note": "10% of benchmark — advisory only (not code-mandated)"
+        },
+        {
+          "name": "Envelope Exterior Wall U-value",
+          "value": "0.555",
+          "limit": "1.8",
+          "unit": "W/m2K",
+          "status": "advisory",
+          "note": "— advisory (code uses OTTV/RTTV composite, not per-element)"
+        },
+        {
+          "name": "Envelope Roof U-value",
+          "value": "0.498",
+          "limit": "0.8",
+          "unit": "W/m2K",
+          "status": "advisory",
+          "note": "— advisory (code uses OTTV/RTTV composite, not per-element)"
+        },
+        {
+          "name": "Envelope Window U-value",
+          "value": "2.0",
+          "limit": "5.8",
+          "unit": "W/m2K",
+          "status": "advisory",
+          "note": "— advisory (code uses OTTV/RTTV composite, not per-element)"
+        },
+        {
+          "name": "Envelope Window SHGC",
+          "value": "0.6",
+          "limit": "0.6",
+          "unit": "—",
+          "status": "advisory",
+          "note": "advisory — code uses OTTV composite"
+        },
+        {
+          "name": "Envelope OTTV (Overall Thermal Transfer Value)",
+          "value": "needs facade analysis",
+          "limit": "21.0",
+          "unit": "W/m2",
+          "status": "advisory",
+          "note": "OTTV requires detailed facade WWR + orientation data — not yet calculated."
+        },
+        {
+          "name": "Lighting Lighting Power Density",
+          "value": "8.0",
+          "limit": "10.0",
+          "unit": "W/m2",
+          "status": "pass",
+          "note": "v2 strictest of zones: {'general'}"
+        },
+        {
+          "name": "Ventilation Fresh Air (ACH)",
+          "value": "0.7",
+          "limit": "0.7",
+          "unit": "ACH",
+          "status": "advisory",
+          "note": "advisory — HK ACH is not in BEC; see IAQ Practice Note"
+        }
+      ],
+      "verdict": "COMPLIANT",
+      "score": "1/8 passed"
+    }
+  },
+  "variants": {
+    "list": []
+  },
+  "timeline": [],
+  "decks": [
+    {
+      "name": "deck-client.pptx",
+      "label": "Client deck (PPTX)",
+      "size_kb": 499.3,
+      "url": "/assets/mvps/smoke-ep-202886/decks/deck-client.pptx"
+    },
+    {
+      "name": "deck-client.pdf",
+      "label": "Client deck (PDF)",
+      "size_kb": 192.0,
+      "url": "/assets/mvps/smoke-ep-202886/decks/deck-client.pdf"
+    },
+    {
+      "name": "deck-client.md",
+      "label": "Client deck (Markdown)",
+      "size_kb": 1.3,
+      "url": "/assets/mvps/smoke-ep-202886/decks/deck-client.md"
+    }
+  ],
+  "downloads": [
+    {
+      "name": "smoke-ep-202886-bundle.zip",
+      "ext": "zip",
+      "sub": "All artifacts",
+      "size": "873 KB",
+      "url": "/assets/mvps/smoke-ep-202886/bundle.zip"
+    },
+    {
+      "name": "smoke-ep-202886.glb",
+      "ext": "glb",
+      "sub": "3D model (GLB)",
+      "size": "16 KB",
+      "url": "/assets/mvps/smoke-ep-202886/exports/smoke-ep-202886.glb"
+    },
+    {
+      "name": "smoke-ep-202886.obj",
+      "ext": "obj",
+      "sub": "3D mesh (OBJ)",
+      "size": "10 KB",
+      "url": "/assets/mvps/smoke-ep-202886/exports/smoke-ep-202886.obj"
+    },
+    {
+      "name": "smoke-ep-202886.fbx",
+      "ext": "fbx",
+      "sub": "3D scene (FBX)",
+      "size": "39 KB",
+      "url": "/assets/mvps/smoke-ep-202886/exports/smoke-ep-202886.fbx"
+    },
+    {
+      "name": "smoke-ep-202886.ifc",
+      "ext": "ifc",
+      "sub": "BIM (IFC4)",
+      "size": "13 KB",
+      "url": "/assets/mvps/smoke-ep-202886/exports/smoke-ep-202886.ifc"
+    },
+    {
+      "name": "boq-HK.csv",
+      "ext": "csv",
+      "sub": "BOQ spreadsheet",
+      "size": "1.0 KB",
+      "url": "/assets/mvps/smoke-ep-202886/energy/boq-HK.csv"
+    },
+    {
+      "name": "CLIENT-README.md",
+      "ext": "md",
+      "sub": "Client documentation",
+      "size": "5.2 KB",
+      "url": "/assets/mvps/smoke-ep-202886/CLIENT-README.md"
+    }
+  ],
+  "editable": {
+    "area_m2": 42,
+    "insulation_mm": 60,
+    "glazing_uvalue": 2.0,
+    "lighting_cct": 3000,
+    "lighting_density_w_m2": 8,
+    "wwr": 0.25,
+    "region": "HK"
+  },
+  "derived": {
+    "eui_kwh_m2_yr": 41.9,
+    "cost_total": 455736,
+    "cost_per_m2": 10851,
+    "co2_t_per_yr": 1.04
+  }
+}
