@@ -23,8 +23,11 @@ from pathlib import Path
 from typing import Callable, Optional
 
 from ..types import ArtifactResult
+from ..paths import CLI_ANYTHING_ROOT
 
 _OS_CLI = shutil.which("cli-anything-openstudio") or "cli-anything-openstudio"
+# HK 气象文件 · 严老师 openstudio harness 自带
+_EPW_HK = CLI_ANYTHING_ROOT / "openstudio" / "agent-harness" / "cli_anything" / "openstudio" / "data" / "weather" / "HKG_Hong.Kong.Intl.AP.epw"
 
 
 def _write_brief_json(brief: dict, path: Path):
@@ -92,7 +95,18 @@ def produce(ctx: dict, on_event: Optional[Callable] = None) -> ArtifactResult:
             error={"name": "project_new_fail", "trace_tail": " | ".join(errors)[:300]},
         )
 
-    # Step 2 · report compliance · 输出 compliance-HK.md
+    # Step 1.5 · run simulate · 产 EnergyPlus results · compliance 硬依赖
+    # Phase 9.3 · 装 EP 25.1 后可跑 · 无 EP 时会失败 · compliance 也就缺
+    if _EPW_HK.exists() and shutil.which("energyplus"):
+        ok, out, err = _run_os_cli([
+            "-p", str(project_json),
+            "run", "simulate",
+            "--weather", str(_EPW_HK),
+        ], timeout=300)   # 年度模拟 · 给 5 分钟上限
+        if not ok:
+            errors.append(f"simulate: {err[:200]}")
+
+    # Step 2 · report compliance · 输出 compliance-HK.md（需 simulate 成功）
     compliance_path = energy_dir / "compliance-HK.md"
     ok, out, err = _run_os_cli([
         "-p", str(project_json),
