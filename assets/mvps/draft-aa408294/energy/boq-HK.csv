@@ -1,0 +1,15 @@
+Category,Description,Material,Qty,Unit,Unit Price,Total,Currency
+slab,F1 Floor Slab — RC slab (120mm) incl. formwork + rebar,Concrete_C30,38.0,m2,1200,45600.0,HKD
+wall,F1 Exterior Walls — Common brick wall (200mm) incl. render (U≤1.2),Brick_Common,74.4,m2,850,63240.0,HKD
+wall,F1 Interior Partitions — Gypsum board partition (double-sided),Gypsum_Board,14.4,m2,420,6048.0,HKD
+window,F1 Windows — Aluminum frame + double clear glazing (U≤3.5),Aluminum_Frame,22.3,m2,3200,71360.0,HKD
+door,F1 Doors — Solid wood door (900mm) + frame + hardware,Wood_Door,2,ea,8500,17000,HKD
+finish,F1_zone Floor Finish — Ceramic tile floor (supply + install),Ceramic_Tile,12.0,m2,380,4560.0,HKD
+finish,F1_zone_2 Floor Finish — Ceramic tile floor (supply + install),Ceramic_Tile,26.0,m2,380,9880.0,HKD
+roof,Roof — RC roof + 60mm XPS + membrane (U≤0.50),Roof_Insulated,38.4,m2,1700,65348.0,HKD
+
+,,,,,,Subtotal,283036.0
+,,,,,,MEP (25%),70759.0
+,,,,,,Prelim (12%),33964.32
+,,,,,,Contingency (10%),38775.93
+,,,,,,Grand Total,426535.25
