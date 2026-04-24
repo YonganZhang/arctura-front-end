@@ -108,8 +108,79 @@ async function loadMvpIndex() {
   }
 }
 
+// Phase 10 · "我的项目" 工作区 · 显示用户所有 draft + live MVP · 置顶"+ 新建"卡
+const STATE_LABELS = {
+  empty: "草稿",
+  briefing: "对话中",
+  planning: "选档",
+  generating: "生成中",
+  live: "已完成",
+  live_partial: "部分完成",
+  generating_failed: "生成失败",
+};
+const STATE_CTA = {
+  empty: "继续 →", briefing: "继续 Brief →", planning: "选档 →",
+  generating: "查看进度 →", live: "打开 →", live_partial: "打开 →",
+  generating_failed: "重试 →",
+};
+
+async function renderMyProjects() {
+  const grid = document.getElementById("my-projects-grid");
+  if (!grid) return;
+  try {
+    const r = await fetch("/api/projects?owner=me&state=all&limit=50", {
+      credentials: "include", cache: "no-cache",
+    });
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    const data = await r.json();
+    const projects = (data.projects || []).filter(p => p.state !== "deleted");
+
+    const newCard = `
+      <a href="/project/new" class="my-project-card my-new">
+        <div style="font-size:40px;line-height:1;margin-bottom:8px;">+</div>
+        <div>新建项目</div>
+        <div class="mpc-cta" style="margin-top:10px;">从 brief 开始</div>
+      </a>`;
+
+    const projectCards = projects.map(p => {
+      const state = p.state || "empty";
+      const label = STATE_LABELS[state] || state;
+      const cta = STATE_CTA[state] || "打开 →";
+      const name = p.display_name || p.slug || "未命名";
+      const thumb = p.hero_img ? `<div class="mpc-thumb" style="background-image:url('${p.hero_img}')"></div>` : "";
+      return `
+        <a href="/project/${encodeURIComponent(p.slug)}" class="my-project-card">
+          ${thumb}
+          <div class="mpc-title">${name.replace(/</g,"&lt;")}</div>
+          <div class="mpc-meta">
+            <span class="mpc-state state-${state}">${label}</span>
+            ${p.tier ? `<span>${p.tier}</span>` : ""}
+          </div>
+          <div class="mpc-cta">${cta}</div>
+        </a>`;
+    }).join("");
+
+    grid.innerHTML = newCard + projectCards;
+    // 项目计数提示
+    const sub = document.querySelector("#my-projects .sec-sub");
+    if (sub && projects.length > 0) {
+      sub.innerHTML = `共 <b>${projects.length}</b> 个项目 · 含草稿和已完成 · 点卡片继续编辑或打开。`;
+    }
+  } catch (e) {
+    console.warn("[my-projects] load failed:", e);
+    grid.innerHTML = `
+      <a href="/project/new" class="my-project-card my-new">
+        <div style="font-size:40px;line-height:1;margin-bottom:8px;">+</div>
+        <div>新建项目</div>
+        <div class="mpc-cta" style="margin-top:10px;">从 brief 开始</div>
+      </a>
+      <div style="padding:30px;color:var(--text-3);font-size:13px;grid-column:2/-1;">加载失败：${String(e.message||e)}（仍可新建）</div>`;
+  }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   loadMvpIndex();
+  renderMyProjects();  // Phase 10 · 工作区
 
   function setFilter(filter) {
     document.querySelectorAll(".gal-filter").forEach(b => {
