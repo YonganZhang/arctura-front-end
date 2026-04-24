@@ -67,14 +67,15 @@ test(`pilot · ${PILOT} · Floorplan SVG with walls + objects`, async ({ page })
   expect(lineCount, "walls + grid lines").toBeGreaterThanOrEqual(2);
 });
 
-test(`pilot · ${PILOT} · data has scene field with 18 objects / 2 walls / 3 lights`, async ({ page }) => {
+test(`pilot · ${PILOT} · data has scene field with 18 objects / 4 walls / 3 lights`, async ({ page }) => {
   const r = await page.request.get(`/data/mvps/${PILOT}.json`);
   expect(r.status()).toBe(200);
   const data = await r.json();
   expect(data.scene, "scene field present").toBeDefined();
   expect(data.scene.schema_version).toBe("1.0");
   expect(data.scene.objects.length).toBe(18);
-  expect(data.scene.walls.length).toBe(2);
+  // Phase 7.1+ · scene generator 4 墙（原 2 墙为老 Phase 1 · 简化布局）
+  expect(data.scene.walls.length).toBe(4);
   expect(data.scene.lights.length).toBe(3);
   expect(data.scene.bounds).toEqual({ w: 5.0, d: 4.0, h: 2.8 });
 });
