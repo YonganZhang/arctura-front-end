@@ -21,12 +21,20 @@ import sys
 import time
 import traceback
 from dataclasses import asdict
+from pathlib import Path
 
 from . import _core
 from . import pipeline
 from .store import kv, keys as K
 from .types import utc_now
 from .local_server import ensure_running as ensure_local_server
+from .paths import REPO_ROOT, STARTUP_BUILDING_ROOT
+from .materializer import build_fe_payload
+
+
+# Phase 9.4 · 发布门槛 · 关键产物清单（缺 → state=generating_failed · 不置 live）
+ESSENTIAL_CORE = {"scene", "moodboard", "floorplan", "renders"}
+ESSENTIAL_FULL = ESSENTIAL_CORE | {"deck_client", "client_readme", "exports", "energy_report", "case_study"}
 
 POLL_INTERVAL = 2  # 无 job 时每 2s poll · Upstash REST 没 blocking pop
 MAX_EVENT_LIST = 500  # job:<id>:events 最多留 500 事件
@@ -106,7 +114,7 @@ def run_one(job: dict):
         project = _core.get_project(slug)  # 拿最新 version
         if generated_scene and not project.scene:
             project.scene = generated_scene   # pipeline 新生成的 scene · 回填到 KV
-        project.artifacts = asdict(result).get("artifacts") or {
+        artifacts_meta = asdict(result).get("artifacts") or {
             "produced": result.produced,
             "skipped": result.skipped,
             "errors": result.errors,
@@ -114,18 +122,66 @@ def run_one(job: dict):
             "timing_ms": result.timing_ms,
             "urls": result.urls,
         }
-        project.state = "live"
+
+        # Phase 9.4 · Materializer · 扫磁盘真产物 → 组前端 JSON payload
+        # worker 挂 KV (save.js 读) + 本地写 data/mvps/<slug>.json（dev preview）
+        try:
+            sb_dir = STARTUP_BUILDING_ROOT / "studio-demo" / "mvp" / slug
+            fe_payload = build_fe_payload(
+                sb_dir, slug, REPO_ROOT,
+                mvp_type="P1-interior",
+                agg={},  # worker 不走聚合批量 · 让 materializer 读 metrics.json fallback
+            )
+            artifacts_meta["fe_payload"] = fe_payload
+
+            # 本机写盘 · 让 localhost:8787/project/<slug> 立刻能看到真内容
+            fe_json = REPO_ROOT / "data" / "mvps" / f"{slug}.json"
+            fe_json.parent.mkdir(parents=True, exist_ok=True)
+            fe_json.write_text(
+                json.dumps(fe_payload, ensure_ascii=False, indent=2),
+                encoding="utf-8",
+            )
+            on_event("materialized", {
+                "slug": slug,
+                "renders": len(fe_payload.get("renders", [])),
+                "decks": len(fe_payload.get("decks", [])),
+                "downloads": len(fe_payload.get("downloads", [])),
+                "eui": (fe_payload.get("energy") or {}).get("eui"),
+                "compliance_checks": len(((fe_payload.get("compliance") or {}).get("HK") or {}).get("checks") or []),
+            })
+        except Exception as e:
+            # 降级 · 不 block live · 记 log + on_event 让前端能看到
+            print(f"[worker] materialize fail: {e}", file=sys.stderr)
+            traceback.print_exc()
+            on_event("materialize_fail", {"error": str(e)[:200]})
+
+        project.artifacts = artifacts_meta
+
+        # Phase 9.4 · 发布门槛 · 按 essential 产物 + partial/errors 判定 state
+        essential = ESSENTIAL_FULL if project.tier == "full" else ESSENTIAL_CORE
+        produced_set = set(result.produced or [])
+        missing_essential = essential - produced_set
+        if missing_essential:
+            project.state = "generating_failed"
+        elif result.partial or result.errors:
+            project.state = "live_partial"
+        else:
+            project.state = "live"
+
         project.render_engine = result.render_engine
         project.active_job_id = None   # Phase 7.1 · 生命周期闭合
         _core.put_project(project, expected_version=project.version)
 
-        on_event("done", {"job_id": job_id, "state": "live",
+        on_event("done", {"job_id": job_id, "state": project.state,
                             "produced": result.produced, "partial": result.partial,
+                            "missing_essential": sorted(missing_essential) or None,
                             "urls": result.urls})
         _set_job_status(job_id, "done", {
             "finished_at": time.time(),
             "produced": result.produced,
             "partial": result.partial,
+            "state": project.state,
+            "missing_essential": sorted(missing_essential) or None,
         })
     except Exception as e:
         trace = traceback.format_exc()[-400:]

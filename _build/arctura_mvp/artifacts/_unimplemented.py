@@ -1,7 +1,15 @@
-"""通用 skeleton for 无 LIGHT producer 的产物（Phase 8）
+"""通用 skeleton for 无 LIGHT producer 的产物（Phase 8 · 9.4 收敛）
 
 pipeline 遇到 get_artifact(name)=None 时调 produce_for_spec(name, ctx, ...) ·
 从 product_registry 查 spec_ref / full_hint 自动写 _TODO-<name>.md · 统一逻辑
+
+当前 fallback 覆盖（`light_producer=None` in product_registry.py）：
+  - `stakeholder_decks` (FULL-only · 按需 addon · 不在默认 tier)
+  - `whatif` (FULL-only · 按需 addon · 不在默认 tier)
+
+其余 13 产物（brief/scene/moodboard/floorplan/renders/deck_client/client_readme/
+energy_report/exports/variants/case_study/ai_renders/bundle）均有 LIGHT 真产 ·
+不走此 fallback（详见 artifacts/<name>.py）。
 """
 from __future__ import annotations
 import time

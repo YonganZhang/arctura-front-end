@@ -111,12 +111,29 @@ export default async function handler(req) {
 
 // 把 project KV 记录变成 /data/mvps/<slug>.json 的标准形状
 // 对齐 pilot 01-study-room.json · 对齐 worker scene artifact 写的本机文件
+//
+// Phase 9.4 · worker 跑完 pipeline 后调 materializer.build_fe_payload() 扫磁盘真产物 →
+//   挂到 project.artifacts.fe_payload · 真 renders/decks/downloads/energy/compliance
+//   此函数优先用 fe_payload · fallback 才走旧占位 shape（briefing/planning/legacy）
 function buildMvpFileContent(slug, p) {
   const brief = p.brief || {};
   const scene = p.scene || {};
   const artifacts = p.artifacts || {};
-  const urls = artifacts.urls || {};
+  const fePayload = artifacts.fe_payload;
 
+  // Phase 9.4 · 有 fe_payload 就直接用 · materializer 已扫过真产物
+  if (fePayload && typeof fePayload === "object") {
+    return {
+      ...fePayload,
+      // 保底 scene 必须是 KV 里的 · 因为 KV 是 chat 编辑的 SSOT
+      scene: scene || fePayload.scene,
+      _saved_at: p.updated_at,
+      _saved_from: "api/projects/[slug]/save · fe_payload (Phase 9.4)",
+    };
+  }
+
+  // Fallback · 老 MVP / state=briefing/planning（还没跑 pipeline）· 占位 shape
+  const urls = artifacts.urls || {};
   return {
     slug,
     cat: "workplace",
@@ -151,7 +168,7 @@ function buildMvpFileContent(slug, p) {
     derived: { eui_kwh_m2_yr: 45, cost_total: 0, cost_per_m2: 0, co2_t_per_yr: 0 },
     scene,
     _saved_at: p.updated_at,
-    _saved_from: "api/projects/[slug]/save",
+    _saved_from: "api/projects/[slug]/save · fallback (pre-materializer)",
   };
 }
 

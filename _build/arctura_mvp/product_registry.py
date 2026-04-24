@@ -1,4 +1,6 @@
-"""Product Registry · SSOT for 16 产物 × 5 档 × LIGHT/FULL 能力
+"""Product Registry · SSOT for 15 产物 × 5 档 × LIGHT/FULL 能力
+
+（Phase 9.4 · drift 修 · 实际 PRODUCTS dict 15 key · 非 16 · variants 不是产物 而是 aux list · 严老师原 spec 1-16 编号在 id 字段保留）
 
 对齐 严老师 spec：
   - StartUP-Building/CLAUDE.md L358-L420（5 档 · 必含产物清单）
@@ -38,7 +40,7 @@ class ProductSpec:
     lang_hint_en: str = ""              # 英文名（前端双语用）
 
 
-# ───────── 16 产物 + variants（aux）· 严老师 spec 权威清单 ─────────
+# ───────── 15 产物 + variants（aux）· 严老师 spec 权威清单 ─────────
 # 顺序 = 依赖顺序（brief 最先 · bundle 最后 · 便于 pipeline 按序执行）
 
 _PRODUCTS_LIST: list[ProductSpec] = [
