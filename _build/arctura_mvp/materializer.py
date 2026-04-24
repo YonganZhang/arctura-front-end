@@ -23,6 +23,7 @@ from __future__ import annotations
 import json
 import re
 from pathlib import Path
+from typing import Optional
 
 
 # ───────── 默认可编辑字段 ─────────
@@ -340,6 +341,7 @@ def build_mvp_record(
     mvp_type: str,
     agg: dict,
     fe_root: Path,
+    asset_urls: Optional[dict] = None,
 ) -> tuple[dict, dict]:
     """从单个 MVP 目录抽取数据 · 返回 (index_entry, full_data) tuple
 
@@ -348,6 +350,8 @@ def build_mvp_record(
       mvp_type: "P1-interior" / "P2-architecture"
       agg: ALL-MVPS-ENERGY-BOQ.json 聚合数据（批量跑时用 · worker 传 {}）
       fe_root: Arctura-Front-end/ 根目录 · 查找 assets/ 和 LIGHT pipeline 产的 renders
+      asset_urls: Phase 9.8 · blob_push.upload_mvp_assets 的返值 · URL 指向 Vercel Blob CDN
+                  · None 时（老 MVP 批量跑 / 本机 preview）走老逻辑 /assets/mvps/<slug>/...
 
     返回: (index_entry, full_data) — 给 build_mvp_data.py 用
     """
@@ -607,6 +611,47 @@ def build_mvp_record(
     if not moodboard_url and (mvp_dir / "moodboard.png").exists():
         moodboard_url = f"/assets/mvps/{slug}/moodboard.webp"
 
+    # Phase 9.8 · asset_urls 覆盖 · 如果传入了 Blob URLs 就用 Blob · 否则继续老 /assets/ 路径
+    if asset_urls:
+        # renders · Blob URL 覆盖所有 file 字段（保持 id/title/tag 不变 · 只换 URL）
+        if asset_urls.get("renders"):
+            for i, r in enumerate(renders):
+                if i < len(asset_urls["renders"]):
+                    r["file"] = asset_urls["renders"][i]
+        # GLB
+        if asset_urls.get("glb"):
+            model_glb = asset_urls["glb"]
+        # misc: floorplan / moodboard
+        misc = asset_urls.get("misc") or {}
+        if misc.get("floorplan.png"):
+            floorplan_url = misc["floorplan.png"]
+        if misc.get("moodboard.png"):
+            moodboard_url = misc["moodboard.png"]
+        # decks · 更新 url 字段
+        blob_decks = asset_urls.get("decks") or {}
+        for d in decks:
+            ext_key = d.get("name", "").split(".")[-1].lower()
+            if ext_key in blob_decks:
+                d["url"] = blob_decks[ext_key]
+        # downloads · 更新 url · 包含 bundle / exports / energy csv / CLIENT-README
+        blob_bundle = asset_urls.get("bundle")
+        blob_exports = asset_urls.get("exports") or {}
+        blob_energy = asset_urls.get("energy") or {}
+        blob_glb = asset_urls.get("glb")
+        for d in downloads:
+            ext = d.get("ext", "").lower()
+            name = d.get("name", "")
+            if ext == "zip" and blob_bundle:
+                d["url"] = blob_bundle
+            elif ext == "glb" and blob_glb:
+                d["url"] = blob_glb
+            elif ext in blob_exports:
+                d["url"] = blob_exports[ext]
+            elif ext == "csv" and blob_energy.get("boq_csv"):
+                d["url"] = blob_energy["boq_csv"]
+            elif name == "CLIENT-README.md" and misc.get("CLIENT-README.md"):
+                d["url"] = misc["CLIENT-README.md"]
+
     full_data = {
         "slug": slug,
         "cat": index_entry["cat"],
@@ -686,11 +731,16 @@ def build_fe_payload(
     fe_root: Path,
     mvp_type: str = "P1-interior",
     agg: dict | None = None,
+    asset_urls: dict | None = None,
 ) -> dict:
     """Phase 9.4 主入口 · 返前端 data/mvps/<slug>.json payload · worker + save.js 用
 
     slug 作为独立参数是因为 worker 跑的时候 mvp_dir.name 已经是 slug，
     但为了防御性（dir 名和 slug 漂移）· 显式传。
+
+    asset_urls (Phase 9.8 · optional):
+      blob_push.upload_mvp_assets() 的返值 · 把本地 /assets/mvps/<slug>/* 路径
+      替换为 Vercel Blob CDN URL · 让前端不依赖 Vercel deploy 分发资产。
     """
-    _index, full_data = build_mvp_record(mvp_dir, mvp_type, agg or {}, fe_root)
+    _index, full_data = build_mvp_record(mvp_dir, mvp_type, agg or {}, fe_root, asset_urls=asset_urls)
     return full_data

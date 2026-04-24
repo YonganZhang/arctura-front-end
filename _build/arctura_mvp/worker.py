@@ -30,7 +30,7 @@ from .types import utc_now
 from .local_server import ensure_running as ensure_local_server
 from .paths import REPO_ROOT, STARTUP_BUILDING_ROOT
 from .materializer import build_fe_payload
-from .prod_push import push_mvp_to_prod
+from .blob_push import upload_mvp_assets  # Phase 9.8 · 资产走 Blob · 不再 git push
 
 
 # Phase 9.4 · 发布门槛 · 关键产物清单（缺 → state=generating_failed · 不置 live）
@@ -124,16 +124,36 @@ def run_one(job: dict):
             "urls": result.urls,
         }
 
-        # Phase 9.4 · Materializer · 扫磁盘真产物 → 组前端 JSON payload
-        # worker 挂 KV (save.js 读) + 本地写 data/mvps/<slug>.json（dev preview）
+        # Phase 9.4 + 9.8 · Materializer · 扫磁盘真产物 → 组前端 JSON payload
+        # 9.8 · 资产先上传 Vercel Blob · URL 指 CDN · 前端不等 Vercel redeploy
+        sb_dir = STARTUP_BUILDING_ROOT / "studio-demo" / "mvp" / slug
+        asset_urls = None
         try:
-            sb_dir = STARTUP_BUILDING_ROOT / "studio-demo" / "mvp" / slug
+            asset_urls = upload_mvp_assets(slug, sb_dir, REPO_ROOT)
+            meta = asset_urls.get("_meta") or {}
+            on_event("blob_uploaded", {
+                "slug": slug,
+                "uploaded": meta.get("uploaded"),
+                "failed": meta.get("failed"),
+                "timing_ms": meta.get("timing_ms"),
+                "errors": meta.get("errors"),
+            })
+        except Exception as e:
+            # Blob 挂了不 block · materializer 会降级走老本地路径（用户仍能看 · 只是是破图风险）
+            print(f"[worker] blob upload fail: {e}", file=sys.stderr)
+            traceback.print_exc()
+            on_event("blob_upload_fail", {"error": str(e)[:200]})
+            asset_urls = None
+
+        try:
             fe_payload = build_fe_payload(
                 sb_dir, slug, REPO_ROOT,
                 mvp_type="P1-interior",
                 agg={},  # worker 不走聚合批量 · 让 materializer 读 metrics.json fallback
+                asset_urls=asset_urls,  # Phase 9.8 · 有 Blob URL 就用 · 没就 fallback 老 /assets/
             )
             artifacts_meta["fe_payload"] = fe_payload
+            artifacts_meta["asset_urls_source"] = "blob" if asset_urls and asset_urls.get("_meta", {}).get("uploaded") else "local"
 
             # 本机写盘 · 让 localhost:8787/project/<slug> 立刻能看到真内容
             fe_json = REPO_ROOT / "data" / "mvps" / f"{slug}.json"
@@ -156,26 +176,8 @@ def run_one(job: dict):
             traceback.print_exc()
             on_event("materialize_fail", {"error": str(e)[:200]})
 
-        # Phase 9.7 Fix E · 自动推 GitHub + Vercel · 用户新建 MVP 生成完立刻可见
-        # 失败不 block state=live · KV fallback 是第二保障
-        try:
-            push_result = push_mvp_to_prod(slug, sb_dir)
-            artifacts_meta["prod_push"] = push_result
-            on_event("prod_pushed", {
-                "slug": slug,
-                "git_sha": (push_result.get("git_sha") or "")[:8],
-                "copied_files": len(push_result.get("copied", [])),
-                "vercel_kicked": push_result.get("vercel_kicked", False),
-                "error": push_result.get("error"),
-                "timing_ms": push_result.get("timing_ms"),
-            })
-            if push_result.get("error"):
-                print(f"[worker] prod_push non-fatal error: {push_result['error']}", file=sys.stderr)
-        except Exception as e:
-            print(f"[worker] prod_push exception: {e}", file=sys.stderr)
-            traceback.print_exc()
-            on_event("prod_push_fail", {"error": str(e)[:200]})
-
+        # Phase 9.8 · 不再 git push / vercel deploy · 资产已在 Blob · KV fe_payload 已写
+        # · 用户刷 /project/<slug> · KV fallback 返 fe_payload · URL 指 Blob CDN · 秒级可见
         project.artifacts = artifacts_meta
 
         # Phase 9.4 · 发布门槛 · 按 essential 产物 + partial/errors 判定 state
