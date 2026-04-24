@@ -123,16 +123,15 @@ _PRODUCTS_LIST: list[ProductSpec] = [
         full_hint="需 OpenStudio + EnergyPlus 26.1 · 入口 `cd $OPENST_H && openstudio_cli project new` · "
                   "气象 HKG_Hong.Kong.Intl.AP.epw · 批量跑 playbooks/scripts/batch_all_mvps.py",
     ),
-    # #10 · exports
+    # #10 · exports · Phase 9 真产（Blender 4.2.3 已装 · GLB/OBJ/FBX）
     ProductSpec(
-        key="exports", id=10, name="BIM 导出 5 件套", lang_hint_en="Exports (GLB/OBJ/FBX/IFC4/DXF)",
+        key="exports", id=10, name="BIM 导出（GLB/OBJ/FBX）", lang_hint_en="Exports (GLB/OBJ/FBX)",
         tiers=["full", "select"],
-        light_producer=None,
-        full_pipeline="P0 IFC enrich + P1/P2 export step",
+        light_producer="exports",   # ✅ Phase 9 · Blender headless 产 3 格式
+        full_pipeline="P0 IFC enrich + P1/P2 export step · 加 IFC4+DXF 需 Blender-BIM + Pascal",
         spec_ref="L403",
         depends_on=["scene"],
-        full_hint="需 Blender 4.2 + IfcOpenShell · `cd $BLENDER_H && blender_cli model enrich-ifc ...` · "
-                  "验证脚本 playbooks/scripts/verify_ifc_enriched.py",
+        full_hint="LIGHT 产 3/5 格式（GLB/OBJ/FBX）· FULL 加 IFC4 enriched（Blender-BIM）+ DXF（Pascal）",
     ),
     # variants · aux for select tier
     ProductSpec(
