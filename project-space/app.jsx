@@ -3185,9 +3185,19 @@ function BriefChatStep({ project, onRefresh, onPatch }) {
         </div>
         <div style={{fontFamily:"JetBrains Mono,monospace",fontSize:10,color:"#888",letterSpacing:"0.1em",textTransform:"uppercase",marginBottom:10}}>Brief 进度</div>
         <div style={wzProgressOuter}>
-          <div style={{...wzProgressInner, width: `${Math.round(completeness*100)}%`}}></div>
+          <div style={{...wzProgressInner, width: `${Math.round(completeness*100)}%`, background: readyForTier ? "#22c55e" : (wzProgressInner.background || "var(--accent)")}}></div>
         </div>
-        <div style={{fontSize:13,marginTop:8}}>{Math.round(completeness*100)}% 完成</div>
+        {/* Phase 10 · 必填齐时显 ✅ + 鼓励但不要求继续 · 不再误导 "63% 完成" */}
+        {readyForTier ? (
+          <div style={{marginTop:8}}>
+            <div style={{fontSize:13,fontWeight:600,color:"#16a34a"}}>✅ 必填齐全 · 可进入下一步</div>
+            <div style={{fontSize:11,color:"#888",marginTop:4,lineHeight:1.5}}>
+              （已填 {Math.round(completeness*100)}% · 可继续补充可选项让方案更精准 · 也可直接选档）
+            </div>
+          </div>
+        ) : (
+          <div style={{fontSize:13,marginTop:8}}>{Math.round(completeness*100)}% 完成</div>
+        )}
         {missing.length > 0 && (
           <div style={{fontSize:12,color:"#c77",marginTop:14,lineHeight:1.5}}>
             还缺必填：<br/>
@@ -3200,7 +3210,7 @@ function BriefChatStep({ project, onRefresh, onPatch }) {
             disabled={!readyForTier}
             style={{...wzBtnPrimary, width:"100%", opacity: readyForTier ? 1 : .35, cursor: readyForTier ? "pointer" : "not-allowed"}}
           >
-            进入选档 →
+            {readyForTier ? "进入选档 →" : "进入选档（先补必填）"}
           </button>
           {!readyForTier && <div style={{fontSize:11,marginTop:8,color:"#888"}}>完成必填项后激活</div>}
         </div>

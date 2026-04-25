@@ -31,7 +31,13 @@ def _config():
     return url.rstrip("/"), token
 
 
-def _request(path: str, *, method="GET", body=None, timeout=10):
+def _request(path: str, *, method="GET", body=None, timeout=10, max_retries=3):
+    """Upstash REST 请求 · Phase 10 加 retry · SSL EOF / 502 等 retryable 错自动重试
+
+    Upstash 偶发 SSL UNEXPECTED_EOF · 实测每天数次 · 单点失败让 pipeline 整个垮（10/10 跑成
+    最后写 KV 挂了 · 用户看 'KVError'）· 不可接受。
+    指数退避 · 1s / 2s / 4s · 累计 7s · 一般够过抖动。
+    """
     url, token = _config()
     full = f"{url}/{path}"
     headers = {"Authorization": f"Bearer {token}"}
@@ -39,16 +45,33 @@ def _request(path: str, *, method="GET", body=None, timeout=10):
     if body is not None:
         headers["Content-Type"] = "application/json"
         data = _json.dumps(body).encode()
-    req = urllib.request.Request(full, data=data, headers=headers, method=method)
-    try:
-        with urllib.request.urlopen(req, timeout=timeout) as r:
-            return _json.loads(r.read())
-    except urllib.error.HTTPError as e:
-        text = e.read().decode("utf-8", "replace")[:200]
-        retryable = e.code in (429, 502, 503, 504)
-        raise KVError(f"Upstash HTTP {e.code}: {text}", status=e.code, retryable=retryable)
-    except urllib.error.URLError as e:
-        raise KVError(f"Upstash network: {e.reason}", retryable=True)
+
+    last_err = None
+    for attempt in range(max_retries):
+        req = urllib.request.Request(full, data=data, headers=headers, method=method)
+        try:
+            with urllib.request.urlopen(req, timeout=timeout) as r:
+                return _json.loads(r.read())
+        except urllib.error.HTTPError as e:
+            text = e.read().decode("utf-8", "replace")[:200]
+            retryable = e.code in (429, 502, 503, 504)
+            last_err = KVError(f"Upstash HTTP {e.code}: {text}", status=e.code, retryable=retryable)
+            if not retryable or attempt == max_retries - 1:
+                raise last_err
+        except urllib.error.URLError as e:
+            # SSL EOF / connection reset / DNS 等 · 全 retryable
+            last_err = KVError(f"Upstash network: {e.reason}", retryable=True)
+            if attempt == max_retries - 1:
+                raise last_err
+        # 指数退避 · 1s · 2s · 4s
+        backoff = 2 ** attempt
+        try:
+            print(f"[kv] retry {attempt+1}/{max_retries} after {backoff}s · {last_err}", flush=True)
+        except Exception:
+            pass
+        time.sleep(backoff)
+    # 不应到这 · 防御性
+    raise last_err or KVError("Upstash unknown error", retryable=False)
 
 
 # ───── Basic KV ─────
