@@ -52,20 +52,30 @@ function parseArgs() {
   return { slug, tabs, base };
 }
 
-async function sendTelegram(token, pngPath, caption) {
+async function sendTelegram(token, pngPath, caption, asDoc = false) {
+  // sendPhoto 对尺寸敏感（fullPage 太长会 PHOTO_INVALID_DIMENSIONS）
+  // 大图 / 长图自动 fallback sendDocument
+  const api = asDoc ? "sendDocument" : "sendPhoto";
+  const field = asDoc ? "document" : "photo";
   const form = [
     "-F", `chat_id=${CHAT_ID}`,
-    "-F", `photo=@${pngPath}`,
+    "-F", `${field}=@${pngPath}`,
     "-F", `caption=${caption}`,
   ];
   try {
     const out = execFileSync(
       "curl",
-      ["-sS", "--max-time", "30", `https://api.telegram.org/bot${token}/sendPhoto`, ...form],
+      ["-sS", "--max-time", "30", `https://api.telegram.org/bot${token}/${api}`, ...form],
       { stdio: ["ignore", "pipe", "pipe"] },
     );
     const r = JSON.parse(out.toString());
-    if (!r.ok) throw new Error(`Telegram API: ${r.description}`);
+    if (!r.ok) {
+      // PHOTO_INVALID_DIMENSIONS 时 fallback 到 sendDocument
+      if (!asDoc && /PHOTO_INVALID_DIMENSIONS|too big/i.test(r.description || "")) {
+        return sendTelegram(token, pngPath, caption, true);
+      }
+      throw new Error(`Telegram API: ${r.description}`);
+    }
     return r.result.message_id;
   } catch (e) {
     console.error(`[tg] send fail: ${e.message}`);
@@ -108,15 +118,27 @@ async function screenshotPage(browser, { slug, tab, base }) {
       await btn.click({ timeout: 3000 }).catch(() => {});
       await page.waitForTimeout(800);
     }
-    // 3D 视口再多等一会（Three.js canvas render）
-    if (tab === "3d") await page.waitForTimeout(2000);
+    // 3D 视口再多等（model-viewer 加载 GLB + Three.js render）
+    if (tab === "3d") {
+      // 等 model-viewer 的 load event · 最多 15s
+      await page.evaluate(() => new Promise((resolve) => {
+        const mv = document.querySelector("model-viewer");
+        if (!mv) return resolve(null);
+        if (mv.loaded) return resolve("already-loaded");
+        mv.addEventListener("load", () => resolve("loaded"), { once: true });
+        setTimeout(() => resolve("timeout"), 15000);
+      })).catch(() => null);
+      await page.waitForTimeout(1500);  // 额外 animation 帧
+    }
   }
 
   fs.mkdirSync(TMP_DIR, { recursive: true });
   const ts = Date.now();
   const safeSlug = slug.replace(/[^a-zA-Z0-9_-]/g, "_");
   const pngPath = path.join(TMP_DIR, `${safeSlug}-${tab}-${ts}.png`);
-  await page.screenshot({ path: pngPath, fullPage: false });  // viewport 只 · fullPage 太长
+  // home 页截 fullPage · MVP 页 viewport 即可（避免太长）
+  const fullPage = slug === "home";
+  await page.screenshot({ path: pngPath, fullPage });
   const size = fs.statSync(pngPath).size;
   await ctx.close();
   return { pngPath, size, url, errors };
