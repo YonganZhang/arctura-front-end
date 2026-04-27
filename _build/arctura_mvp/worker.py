@@ -26,11 +26,15 @@ from pathlib import Path
 from . import _core
 from . import pipeline
 from .store import kv, keys as K
+from .store.kv import KVError
 from .types import utc_now
 from .local_server import ensure_running as ensure_local_server
 from .paths import REPO_ROOT, STARTUP_BUILDING_ROOT
 from .materializer import build_fe_payload
 from .blob_push import upload_mvp_assets  # Phase 9.8 · 资产走 Blob · 不再 git push
+
+# Phase 10.5 · 写 KV final state 失败时的本地磁盘兜底（rescue 脚本可扫这里扶正）
+STATE_CACHE_DIR = REPO_ROOT / "_build" / "_state-cache"
 
 
 # Phase 9.4 · 发布门槛 · 关键产物清单（缺 → state=generating_failed · 不置 live）
@@ -74,10 +78,58 @@ def _set_job_status(job_id: str, status: str, extra: dict = None):
         print(f"[worker] set_job_status fail: {e}", file=sys.stderr)
 
 
+def _err_dict(where: str, exc: Exception, **ctx) -> dict:
+    """统一错误字典 · 给 on_event / set_job_status 共用 · 前端拿到这个 schema"""
+    d = {
+        "where": where,
+        "code": getattr(exc, "code", None) or type(exc).__name__,
+        "message": str(exc)[:500],
+        "trace_tail": traceback.format_exc()[-1500:],
+        "context": ctx,
+    }
+    if isinstance(exc, KVError):
+        d["kv"] = exc.to_dict()
+    return d
+
+
+def _persist_state_with_fallback(project, job_id: str, on_event) -> dict:
+    """写 final state · KV 失败时**本地磁盘兜底** · 不让整个 job 进 fatal 路径
+
+    这是 Phase 10.5 关键修复：4-25 全案 fatal 根因 = 产物全跑完 · 最后一步写 KV SSL EOF
+    → 整个 run_one 进 except → user 看到失败 · 但产物在磁盘已经成功。
+    """
+    state_dump = asdict(project)
+    STATE_CACHE_DIR.mkdir(parents=True, exist_ok=True)
+    cache_file = STATE_CACHE_DIR / f"{job_id}.json"
+    try:
+        cache_file.write_text(json.dumps(state_dump, ensure_ascii=False, indent=2), encoding="utf-8")
+    except Exception as e:
+        print(f"[worker] state cache disk write fail (non-fatal): {e}", file=sys.stderr)
+
+    try:
+        _core.put_project(project, expected_version=project.version)
+        # KV 写成功 · 删除磁盘兜底（不再需要救援）
+        try:
+            cache_file.unlink(missing_ok=True)
+        except Exception:
+            pass
+        return {"persisted": "kv", "kv_ok": True}
+    except Exception as e:
+        # KV 失败但本地磁盘已写 · 救援脚本可扫 _state-cache/ 扶正
+        err = _err_dict("worker.persist_state.put_project", e,
+                        slug=project.slug, state=project.state,
+                        version=project.version, cache_file=str(cache_file))
+        print(f"[worker] put_project fail (state={project.state}) · 已落盘 {cache_file} · err={err['message']}",
+              file=sys.stderr)
+        on_event("persist_kv_fail", err)
+        return {"persisted": "disk_only", "kv_ok": False, "cache_file": str(cache_file), "error": err}
+
+
 def run_one(job: dict):
-    """跑一个 job · 不抛异常"""
+    """跑一个 job · 不抛异常 · 各 step 独立报错（不让 final-state KV 抖断把全 job 标 error）"""
     job_id = job["id"]
     slug = job["slug"]
+    current_step = "init"  # 给 fatal handler 报"挂在哪一步"
 
     def on_event(evt, data):
         push_event(job_id, evt, data)
@@ -85,18 +137,27 @@ def run_one(job: dict):
     _set_job_status(job_id, "running", {"started_at": time.time()})
 
     try:
+        current_step = "load_project"
         project = _core.get_project(slug)
         if not project:
-            on_event("error", {"message": f"project {slug} not found"})
-            _set_job_status(job_id, "error", {"error": "project not found"})
+            on_event("error", _err_dict("worker.run_one.load_project",
+                                          ValueError(f"project {slug} not found"),
+                                          slug=slug, job_id=job_id))
+            _set_job_status(job_id, "error", {"error": "project not found", "where": "load_project"})
             return
 
         # 推进 state → generating（如未进）
+        current_step = "advance_state_generating"
         if project.state != "generating":
             project.state = "generating"
             _core.put_project(project, expected_version=project.version)
 
-        on_event("job_picked", {"job_id": job_id, "slug": slug, "tier": job["tier"]})
+        on_event("job_picked", {"job_id": job_id, "slug": slug, "tier": job["tier"],
+                                  "variant_count": project.variant_count,
+                                  "render_engine": project.render_engine,
+                                  "brief_summary": _brief_summary(project.brief)})
+
+        current_step = "pipeline_run"
 
         # 跑 pipeline（可能 mutate project.scene · 见 scene artifact 生成回填）
         # render_base_url 优先级：env ARCTURA_RENDER_BASE_URL > 本机 static server > 公开 base_url
@@ -112,6 +173,7 @@ def run_one(job: dict):
         generated_scene = project.scene   # 保留 pipeline mutate 后的结果
 
         # 更新 project · 写 artifacts · state=live
+        current_step = "reload_project_for_state_write"
         project = _core.get_project(slug)  # 拿最新 version
         if generated_scene and not project.scene:
             project.scene = generated_scene   # pipeline 新生成的 scene · 回填到 KV
@@ -126,6 +188,7 @@ def run_one(job: dict):
 
         # Phase 9.4 + 9.8 · Materializer · 扫磁盘真产物 → 组前端 JSON payload
         # 9.8 · 资产先上传 Vercel Blob · URL 指 CDN · 前端不等 Vercel redeploy
+        current_step = "blob_upload"
         sb_dir = STARTUP_BUILDING_ROOT / "studio-demo" / "mvp" / slug
         asset_urls = None
         try:
@@ -140,11 +203,13 @@ def run_one(job: dict):
             })
         except Exception as e:
             # Blob 挂了不 block · materializer 会降级走老本地路径（用户仍能看 · 只是是破图风险）
+            err = _err_dict("worker.run_one.blob_upload", e,
+                            slug=slug, sb_dir=str(sb_dir))
             print(f"[worker] blob upload fail: {e}", file=sys.stderr)
-            traceback.print_exc()
-            on_event("blob_upload_fail", {"error": str(e)[:200]})
+            on_event("blob_upload_fail", err)
             asset_urls = None
 
+        current_step = "materialize"
         try:
             fe_payload = build_fe_payload(
                 sb_dir, slug, REPO_ROOT,
@@ -172,9 +237,9 @@ def run_one(job: dict):
             })
         except Exception as e:
             # 降级 · 不 block live · 记 log + on_event 让前端能看到
+            err = _err_dict("worker.run_one.materialize", e, slug=slug)
             print(f"[worker] materialize fail: {e}", file=sys.stderr)
-            traceback.print_exc()
-            on_event("materialize_fail", {"error": str(e)[:200]})
+            on_event("materialize_fail", err)
 
         # Phase 9.8 · 不再 git push / vercel deploy · 资产已在 Blob · KV fe_payload 已写
         # · 用户刷 /project/<slug> · KV fallback 返 fe_payload · URL 指 Blob CDN · 秒级可见
@@ -193,26 +258,36 @@ def run_one(job: dict):
 
         project.render_engine = result.render_engine
         project.active_job_id = None   # Phase 7.1 · 生命周期闭合
-        _core.put_project(project, expected_version=project.version)
 
+        # Phase 10.5 关键修复 · 写 final state 用磁盘兜底 · KV 失败不进 fatal 路径
+        current_step = "persist_final_state"
+        persist_info = _persist_state_with_fallback(project, job_id, on_event)
+
+        # done event 永远发 · 即使 KV 写挂了 · 产物本身已经成功
         on_event("done", {"job_id": job_id, "state": project.state,
                             "produced": result.produced, "partial": result.partial,
                             "missing_essential": sorted(missing_essential) or None,
-                            "urls": result.urls})
-        _set_job_status(job_id, "done", {
+                            "urls": result.urls,
+                            "persisted": persist_info.get("persisted")})
+        _set_job_status(job_id, "done" if persist_info["kv_ok"] else "done_disk_only", {
             "finished_at": time.time(),
             "produced": result.produced,
             "partial": result.partial,
             "state": project.state,
             "missing_essential": sorted(missing_essential) or None,
+            "persist_info": persist_info,
         })
     except Exception as e:
-        trace = traceback.format_exc()[-400:]
-        on_event("fatal", {"job_id": job_id, "exception": type(e).__name__, "trace_tail": trace})
+        # 真正的 fatal 路径 · 上面任意 step 出错（含 _persist_state_with_fallback 之外的）
+        err = _err_dict(f"worker.run_one[step={current_step}]", e,
+                        slug=slug, job_id=job_id, tier=job.get("tier"),
+                        variant_count=job.get("variant_count"))
+        on_event("fatal", err)
         _set_job_status(job_id, "error", {
             "finished_at": time.time(),
+            "where": current_step,
             "exception": type(e).__name__,
-            "trace_tail": trace,
+            "trace_tail": err["trace_tail"],
         })
         # 最佳努力清 active_job_id · 失败也不抛
         try:
@@ -222,6 +297,24 @@ def run_one(job: dict):
                 _core.put_project(p, expected_version=p.version)
         except Exception:
             pass
+
+
+def _brief_summary(brief) -> dict:
+    """从 Project.brief 拎几个关键字段给 job_picked event · 出错时方便看输入"""
+    if not brief:
+        return {}
+    if not isinstance(brief, dict):
+        try:
+            brief = asdict(brief)
+        except Exception:
+            return {"_error": "brief not serializable"}
+    return {
+        "type": brief.get("type"),
+        "area_m2": brief.get("area_m2"),
+        "headcount": brief.get("headcount"),
+        "style": brief.get("style"),
+        "must_fill_complete": brief.get("must_fill_complete"),
+    }
 
 
 def _beat():

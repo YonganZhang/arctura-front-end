@@ -3424,6 +3424,20 @@ function GenerateProgressStep({ project, onPatch }) {
       pushEvent("worker_offline", d);
       setStatus("worker_offline");
     });
+    es.addEventListener("kv_unstable", (e) => {
+      // KV 抖动告警 · 不算 fatal · 仅提示进度暂停
+      pushEvent("kv_unstable", JSON.parse(e.data));
+    });
+    es.addEventListener("persist_kv_fail", (e) => {
+      // worker 写 final state KV 失败 · 但产物已成功 · 仅提示
+      pushEvent("persist_kv_fail", JSON.parse(e.data));
+    });
+    es.addEventListener("blob_upload_fail", (e) => {
+      pushEvent("blob_upload_fail", JSON.parse(e.data));
+    });
+    es.addEventListener("materialize_fail", (e) => {
+      pushEvent("materialize_fail", JSON.parse(e.data));
+    });
     es.addEventListener("heartbeat", () => {});
 
     return () => es.close();
@@ -3531,12 +3545,60 @@ function GenerateProgressStep({ project, onPatch }) {
           </div>
         )}
 
-        {/* Fatal error */}
+        {/* Fatal error · Phase 10.5 · 显完整 where/code/context + 复制按钮 */}
         {fatal && (
           <div style={{background:"#FCECEB",border:"1px solid #E8A39E",borderRadius:8,padding:"14px 16px",marginBottom:24,fontSize:13,color:"#8B2D23"}}>
-            <div style={{fontWeight:600,marginBottom:6}}>错误</div>
-            <div style={{fontFamily:"monospace",whiteSpace:"pre-wrap",fontSize:12}}>{fatal.message || fatal.exception || JSON.stringify(fatal)}</div>
-            {fatal.trace_tail && <div style={{fontFamily:"monospace",whiteSpace:"pre-wrap",fontSize:11,color:"#A75041",marginTop:8}}>{fatal.trace_tail}</div>}
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
+              <div style={{fontWeight:600}}>
+                ❌ 失败
+                {fatal.code && <span style={{fontFamily:"monospace",fontSize:11,marginLeft:8,padding:"2px 6px",background:"#fff",borderRadius:4,color:"#666"}}>{fatal.code}</span>}
+              </div>
+              <button onClick={() => {
+                const dump = {
+                  job_id: jobId, slug: project.slug, tier: project.tier,
+                  status, elapsed_s: elapsed, fatal,
+                  events: events.slice(-30),
+                  ua: navigator.userAgent,
+                  ts: new Date().toISOString(),
+                };
+                navigator.clipboard.writeText(JSON.stringify(dump, null, 2))
+                  .then(() => alert("错误详情已复制 · 直接贴给 Claude 调试")).catch(() => {});
+              }} style={{fontSize:11,padding:"4px 10px",background:"#fff",border:"1px solid #E8A39E",borderRadius:4,color:"#8B2D23",cursor:"pointer"}}>📋 复制详情</button>
+            </div>
+            {fatal.where && <div style={{fontSize:11,color:"#666",marginBottom:6}}>位置 <code style={{background:"#fff",padding:"1px 4px",borderRadius:3}}>{fatal.where}</code></div>}
+            <div style={{fontFamily:"monospace",whiteSpace:"pre-wrap",fontSize:12,marginBottom:8}}>
+              {fatal.message || fatal.exception || JSON.stringify(fatal)}
+            </div>
+            {fatal.context && Object.keys(fatal.context).length > 0 && (
+              <details style={{marginTop:6}}>
+                <summary style={{cursor:"pointer",fontSize:11,color:"#666"}}>上下文（{Object.keys(fatal.context).length} 字段）</summary>
+                <pre style={{fontFamily:"monospace",fontSize:11,color:"#666",margin:"6px 0 0",padding:"6px 8px",background:"#fff",borderRadius:4,overflow:"auto"}}>
+                  {JSON.stringify(fatal.context, null, 2)}
+                </pre>
+              </details>
+            )}
+            {fatal.kv && (
+              <details style={{marginTop:6}}>
+                <summary style={{cursor:"pointer",fontSize:11,color:"#666"}}>KV 详情（{fatal.kv.op} {fatal.kv.key}）</summary>
+                <pre style={{fontFamily:"monospace",fontSize:11,color:"#666",margin:"6px 0 0",padding:"6px 8px",background:"#fff",borderRadius:4}}>
+                  {JSON.stringify(fatal.kv, null, 2)}
+                </pre>
+              </details>
+            )}
+            {fatal.hint && <div style={{fontSize:12,color:"#666",marginTop:8,padding:"6px 8px",background:"#FFF6E5",borderRadius:4,borderLeft:"3px solid #E8A23E"}}>💡 {fatal.hint}</div>}
+            {fatal.trace_tail && (
+              <details style={{marginTop:6}}>
+                <summary style={{cursor:"pointer",fontSize:11,color:"#A75041"}}>traceback</summary>
+                <pre style={{fontFamily:"monospace",whiteSpace:"pre-wrap",fontSize:10,color:"#A75041",marginTop:6,padding:6,background:"#fff",borderRadius:4,maxHeight:200,overflow:"auto"}}>{fatal.trace_tail}</pre>
+              </details>
+            )}
+          </div>
+        )}
+
+        {/* KV 抖动 / 局部 fail 告警 · 非 fatal */}
+        {events.some(e => ["kv_unstable","persist_kv_fail","blob_upload_fail","materialize_fail"].includes(e.name)) && !fatal && (
+          <div style={{background:"#FFF6E5",border:"1px solid #E8A23E",borderRadius:8,padding:"10px 14px",marginBottom:16,fontSize:12,color:"#7A5D1A"}}>
+            ⚠ 进度中检测到非致命错误（KV 抖动 / 局部 fail）· 看下方 events log
           </div>
         )}
 
@@ -3550,15 +3612,32 @@ function GenerateProgressStep({ project, onPatch }) {
           )}
         </div>
 
-        {/* Debug · events 折叠 · 仅 ?debug=1 显示 */}
-        {typeof window !== "undefined" && new URLSearchParams(window.location.search).has("debug") && (
-          <details style={{marginTop:40,fontSize:11,color:"#888"}}>
-            <summary style={{cursor:"pointer"}}>events log · {events.length}</summary>
-            <pre style={{background:"#f5f5f5",padding:10,overflow:"auto",maxHeight:200,fontSize:10}}>
-              {events.map((e, i) => `[${new Date(e.ts).toISOString().slice(11,19)}] ${e.name} ${JSON.stringify(e.data).slice(0,120)}`).join("\n")}
-            </pre>
-          </details>
-        )}
+        {/* Events log · Phase 10.5 默认显（不再藏 ?debug=1） · 给调试用 */}
+        <details style={{marginTop:32,fontSize:11,color:"#888",border:"1px solid #eee",borderRadius:6,padding:"6px 12px"}} open>
+          <summary style={{cursor:"pointer",userSelect:"none"}}>
+            🔍 events log · {events.length} 条
+            <span style={{fontSize:10,color:"#aaa",marginLeft:8}}>
+              （job_id={jobId?.slice(0,16)}... · slug={project.slug?.slice(0,20)}...）
+            </span>
+            <button onClick={(e) => {
+              e.preventDefault(); e.stopPropagation();
+              const dump = { job_id: jobId, slug: project.slug, status, elapsed_s: elapsed, events };
+              navigator.clipboard.writeText(JSON.stringify(dump, null, 2))
+                .then(() => alert("events log 已复制")).catch(() => {});
+            }} style={{float:"right",fontSize:10,padding:"2px 8px",background:"#fff",border:"1px solid #ddd",borderRadius:3,cursor:"pointer"}}>📋 复制全部</button>
+          </summary>
+          <pre style={{background:"#f5f5f5",padding:10,overflow:"auto",maxHeight:280,fontSize:10,marginTop:8,marginBottom:0,fontFamily:"monospace"}}>
+            {events.length === 0
+              ? "（连上 SSE 后这里会实时显示 worker 推的每个事件）"
+              : events.map((ev) => {
+                  const t = new Date(ev.ts).toISOString().slice(11,19);
+                  const where = ev.data?.where ? ` @${ev.data.where}` : "";
+                  const code = ev.data?.code ? ` [${ev.data.code}]` : "";
+                  const summary = JSON.stringify(ev.data || {}).slice(0, 200);
+                  return `[${t}] ${ev.name}${where}${code} ${summary}`;
+                }).join("\n")}
+          </pre>
+        </details>
       </div>
       <style>{`@keyframes spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }`}</style>
     </div>
