@@ -17,6 +17,11 @@ def pending_edits(slug: str) -> str:
     return f"project:{slug}:pending_edits"
 
 
+def project_overrides(slug: str) -> str:
+    """Phase 11.4 · ADR-001 §"差量 SSOT" · scene-ops 拖动持久化"""
+    return f"project:{slug}:overrides"
+
+
 def projects_index() -> str:
     return "projects:index"
 

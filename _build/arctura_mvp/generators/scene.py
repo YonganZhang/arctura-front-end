@@ -18,6 +18,8 @@ import json
 from pathlib import Path
 from typing import Optional
 
+from ._resolve_space_type import resolve_space_type, merge_furniture_lists
+
 # 家具库 · 单一真源（前端 / renderer / generator 共用）
 _LIB_PATH = Path(__file__).resolve().parents[3] / "data" / "furniture-library.json"
 
@@ -31,15 +33,25 @@ def _load_furniture_lib() -> dict:
 
 
 # ───────── 默认家具清单（按 space.type 兜底）─────────
-# 值是 furniture-library.json 的 key · 不直接内联尺寸 · 保持真源在 library
+# 值是 furniture-library.json 的 key（当前 12 项：chair_standard / chair_lounge /
+# sofa_2seat / sofa_3seat / desk_standard / table_coffee / table_dining / bed_queen /
+# shelf_open / closet_tall / lamp_floor / lamp_pendant）· 不直接内联尺寸。
+#
+# 每个 enum（见 api/_shared/space-type-keywords.json::enum）都必须有一行 ·
+# test_scene_distinguish_types.py 锁住 office vs cafe 等组合家具有别 ·
+# 防止今天 bug（hybrid cafe-office → default fallback → 永远同一个 scene）。
 _DEFAULTS_BY_TYPE: dict[str, list[str]] = {
-    "office":      ["desk_standard", "chair_standard", "shelf_open", "lamp_floor"],
-    "bedroom":     ["bed_queen", "closet_tall", "lamp_pendant"],
-    "study":       ["desk_standard", "chair_standard", "shelf_open", "lamp_floor"],
-    "living_room": ["sofa_3seat", "table_coffee", "shelf_open", "lamp_floor"],
-    "cafe":        ["table_dining", "chair_standard", "shelf_open", "lamp_pendant"],
-    "dining":      ["table_dining", "chair_standard", "lamp_pendant"],
-    "default":     ["chair_standard", "table_coffee", "lamp_floor"],
+    "office":       ["desk_standard", "chair_standard", "shelf_open", "lamp_floor"],
+    "bedroom":      ["bed_queen", "closet_tall", "lamp_pendant"],
+    "study":        ["desk_standard", "chair_standard", "shelf_open", "lamp_floor"],
+    "living_room":  ["sofa_3seat", "table_coffee", "shelf_open", "lamp_floor"],
+    "cafe":         ["table_dining", "chair_standard", "shelf_open", "lamp_pendant"],
+    "dining":       ["table_dining", "chair_standard", "lamp_pendant"],
+    "retail":       ["shelf_open", "chair_lounge", "table_coffee", "lamp_pendant"],
+    "clinic":       ["desk_standard", "chair_standard", "chair_lounge", "lamp_floor"],
+    "gallery":      ["chair_lounge", "shelf_open", "lamp_pendant"],
+    "multipurpose": ["table_coffee", "chair_standard", "shelf_open", "lamp_floor"],
+    "default":      ["chair_standard", "table_coffee", "lamp_floor"],
 }
 
 # must_have 里的通用词 → library type 映射
@@ -310,15 +322,29 @@ def build_scene_from_brief(brief: dict, slug: str) -> dict:
                 types.append(key)
             # 不识别的静默跳过
     else:
-        space_type = (space.get("type") or "default").lower().replace(" ", "_")
-        # 中文别名映射
-        space_type = {
-            "办公室": "office", "办公": "office", "书房": "study",
-            "卧室": "bedroom", "客厅": "living_room",
-            "咖啡厅": "cafe", "咖啡": "cafe",
-            "餐厅": "dining",
-        }.get(space_type, space_type)
-        types = list(_DEFAULTS_BY_TYPE.get(space_type, _DEFAULTS_BY_TYPE["default"]))
+        # 优先读 space.resolved_types（normalize-brief.js 写入的并集 · 见 ADR-001）
+        # 这样 LLM 写 "hybrid cafe-office" → normalize 后 type='multipurpose' resolved_types=[cafe,office]
+        # → 这里取 cafe ∪ office 并集 · 不是 multipurpose 单类型默认家具
+        # 没经 normalize 的旧数据 → resolved_types 缺 → 退到 type_raw / type 现场解析
+        resolved_types = space.get("resolved_types")
+        if isinstance(resolved_types, list) and resolved_types:
+            resolved = [str(t) for t in resolved_types if isinstance(t, str)]
+        else:
+            # 兜底：解析 type_raw（normalize 保留的原值）或 type 本身
+            raw = space.get("type_raw") or space.get("type")
+            resolved = resolve_space_type(raw)
+
+        types = merge_furniture_lists(resolved, _DEFAULTS_BY_TYPE)
+        if not types:
+            types = list(_DEFAULTS_BY_TYPE["default"])
+
+        # cap = 8：极端 type 字符串（"office cafe clinic showroom retail dining bedroom"）
+        # 会拼出 11+ 件家具 · 小房间 _layout_assemblies 沿墙铺会溢出。
+        # 8 是 _layout_assemblies 当前 4 + 4 + 居中 + 角落布局的安全上限。
+        # TODO Step 2 hardening：改面积分档（4/6/8）· 保每个命中类型至少 1 件代表家具
+        _MAX_MAIN_FURNITURE = 8
+        if len(types) > _MAX_MAIN_FURNITURE:
+            types = types[:_MAX_MAIN_FURNITURE]
 
     # 若 functional_zones 数 > 3 · 多加一组家具副本
     zones_n = len(brief.get("functional_zones") or [])

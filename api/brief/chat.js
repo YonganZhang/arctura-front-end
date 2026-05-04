@@ -55,6 +55,8 @@ async function kvPersist(key) {
 // ⚠ Edge runtime 不支持 fs · 这里 inline 引（build 时 Vercel bundle · 同步靠测试）
 import briefRules from "../_shared/brief-rules.json" with { type: "json" };
 import { K } from "../_shared/kv-keys.js";
+import { extractDisplayName, isPlaceholderName } from "../_shared/project-name.js";
+import { normalizeBriefSpaceType } from "../_shared/normalize-brief.js";
 
 const SYSTEM_PROMPT = briefRules.system_prompt;
 
@@ -108,6 +110,9 @@ function deepMerge(base, patch) {
   }
   return out;
 }
+
+// extractDisplayName / isPlaceholderName 已抽到 api/_shared/project-name.js（Step 1 重构）
+// normalizeBriefSpaceType 抽到 api/_shared/normalize-brief.js（Step 1 修 Codex 反馈 #5）
 
 // ─────── LLM call · ZHIZENGZENG gateway · gpt-5.4 ───────
 
@@ -267,11 +272,22 @@ export default async function handler(req) {
         missing,
       }));
 
+      // API 边界归一化 space.type 到 enum（Codex Step 1 #5 · LLM 自创字符串问题）
+      // 这里 mutate newBrief · 写入 KV 时已是 canonical
+      normalizeBriefSpaceType(newBrief);
+
       // 持久化 brief + history · state 推进
       project.brief = newBrief;
       project.version = (project.version || 0) + 1;
       project.updated_at = new Date().toISOString();
       if (project.state === "empty") project.state = "briefing";
+
+      // 同步 display_name from brief.project（修 "未命名项目" bug · 见 ADR-002）
+      // 仅当当前 display_name 是占位时才覆盖（不冲用户 PATCH 自设的名字）
+      const extracted = extractDisplayName(newBrief.project);
+      if (extracted && isPlaceholderName(project.display_name)) {
+        project.display_name = extracted.slice(0, 80);
+      }
       // ready 且用户显式说"进入选档"类字样 · 推 planning（保守：让前端按钮触发 PATCH · 这里不自动推）
 
       await kvSetJson(K.project(slug), project, 7 * 86400);

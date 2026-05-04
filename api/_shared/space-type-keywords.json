@@ -1,0 +1,17 @@
+{
+  "$comment": "space.type → 标准类型解析的关键词表 · Python (_build/arctura_mvp/generators/_resolve_space_type.py) + JS (api/_shared/resolve-space-type.js) 共享 · 改这里就行 · 双端一致由 test_resolve_space_type_cross_lang 锁",
+  "version": "v1",
+  "keywords": {
+    "office":       ["office", "办公", "校长", "principal", "workspace", "工作室", "writing room", "executive office", "private office", "meeting room", "boardroom", "sales office", "school office"],
+    "cafe":         ["cafe", "café", "coffee", "咖啡", "bistro", "espresso", "coffeehouse", "teahouse", "tea shop", "茶馆"],
+    "study":        ["study", "书房", "library", "阅读", "reading", "study room", "home study", "reading room", "图书馆"],
+    "bedroom":      ["bedroom", "卧室", "寝", "master bedroom"],
+    "living_room":  ["living", "客厅", "lounge", "sitting room", "family room", "lounge area"],
+    "dining":       ["dining", "餐厅", "restaurant", "餐馆", "bar"],
+    "retail":       ["retail", "shop", "store", "零售", "店铺", "boutique", "concept store", "flagship store", "bookstore", "书店"],
+    "clinic":       ["clinic", "诊所", "dental", "牙科", "医疗", "medical", "healthcare"],
+    "gallery":      ["gallery", "画廊", "exhibition", "showroom", "展厅", "concept gallery"],
+    "multipurpose": ["multipurpose", "multi-use", "multi use", "mixed-use", "mixed use", "hybrid", "多功能", "复合", "co-working", "coworking", "community room", "event space"]
+  },
+  "enum": ["office", "cafe", "study", "bedroom", "living_room", "dining", "retail", "clinic", "gallery", "multipurpose"]
+}

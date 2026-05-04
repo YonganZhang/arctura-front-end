@@ -1,11 +1,55 @@
-"""Phase 8 · product_registry SSOT 单测"""
+"""Phase 8 · product_registry SSOT 单测 · Phase 11.5 加 kind 字段测试"""
 import pytest
 from _build.arctura_mvp.product_registry import (
     PRODUCTS, TIER_META, _PRODUCTS_LIST,
     resolve_tier_products, resolve_tier_artifact_names,
     list_tiers_for_ui, get_spec_for_artifact, all_tier_ids,
     _validate,
+    resolve_tier_products_by_kind, list_kinds,
 )
+
+
+# ───── Phase 11.5 · kind 字段（ADR-001 §"4 层缓存模型"）─────
+
+def test_kind_taxonomy_uses_only_4_values():
+    """所有 ProductSpec.kind 必须 ∈ {input, derive_input, fast_artifact, slow_artifact}"""
+    allowed = {"input", "derive_input", "fast_artifact", "slow_artifact"}
+    actual = list_kinds()
+    assert actual.issubset(allowed), f"未知 kind: {actual - allowed}"
+
+
+def test_brief_is_input_kind():
+    """brief 是用户编辑的输入 · 不是 artifact"""
+    assert PRODUCTS["brief"].kind == "input"
+
+
+def test_scene_is_derive_input():
+    """scene 是 derive 函数的输入 · 由 brief+overrides 派生 · 不需 worker"""
+    assert PRODUCTS["scene"].kind == "derive_input"
+
+
+def test_slow_artifacts_are_default():
+    """renders/deck_client/energy_report/exports/case_study 是 worker 跑的慢产物"""
+    for key in ["renders", "deck_client", "energy_report", "exports", "case_study"]:
+        assert PRODUCTS[key].kind == "slow_artifact", \
+            f"{key}.kind 期望 slow_artifact · 实际 {PRODUCTS[key].kind}"
+
+
+def test_resolve_tier_products_by_kind_filters():
+    """full 档的 slow_artifact 应包含 renders 等 · 不应含 brief/scene"""
+    slow = resolve_tier_products_by_kind("full", "slow_artifact")
+    keys = {p.key for p in slow}
+    assert "renders" in keys
+    assert "brief" not in keys
+    assert "scene" not in keys
+
+
+def test_resolve_tier_derive_input_minimal():
+    """concept 档的 derive_input 至少含 scene"""
+    derive_inputs = resolve_tier_products_by_kind("concept", "derive_input")
+    keys = {p.key for p in derive_inputs}
+    assert "scene" in keys
+
 
 
 # ───── 1. registry 一致性（核心保护）─────

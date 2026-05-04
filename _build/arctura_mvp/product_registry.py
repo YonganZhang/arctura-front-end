@@ -38,6 +38,12 @@ class ProductSpec:
     depends_on: list[str] = field(default_factory=list)   # 上游产物 key（scene → renders）
     full_hint: str = ""                 # _TODO-*.md 里填的 FULL pipeline 补齐说明
     lang_hint_en: str = ""              # 英文名（前端双语用）
+    # Phase 11.5 · ADR-001 §"4 层缓存模型" 落地：分类产物的 worker/derive 归属
+    #   "derive_input"   — brief/scene 这类纯函数派生的"快产物" · 不需 worker · derive() 同步算
+    #   "fast_artifact"  — fe_payload / editable / derived_metrics · derive() 同步出
+    #   "slow_artifact"  — renders / deck / energy / exports / case_study · 需 worker（10s-5min）
+    #   "input"          — brief 自身（用户编辑 · 不是 artifact）
+    kind: str = "slow_artifact"
 
 
 # ───────── 15 产物 + variants（aux）· 严老师 spec 权威清单 ─────────
@@ -48,6 +54,7 @@ _PRODUCTS_LIST: list[ProductSpec] = [
     ProductSpec(
         key="brief", id=1, name="设计简报", lang_hint_en="Brief",
         tiers=["concept", "deliver", "quote", "full", "select"],
+        kind="input",
         light_producer=None,  # brief 不是 artifact · 是 chat 产出 · 这里仅登记存在
         full_pipeline="P3 brief-intake",
         spec_ref="L393+L396",
@@ -57,6 +64,7 @@ _PRODUCTS_LIST: list[ProductSpec] = [
     ProductSpec(
         key="scene", id=3, name="3D 场景", lang_hint_en="Scene (room/building)",
         tiers=["concept", "deliver", "quote", "full", "select"],
+        kind="derive_input",
         light_producer="scene",
         full_pipeline="P1 Interior / P2 Architecture",
         spec_ref="L398",
@@ -67,6 +75,7 @@ _PRODUCTS_LIST: list[ProductSpec] = [
     ProductSpec(
         key="moodboard", id=2, name="风格板", lang_hint_en="Moodboard",
         tiers=["concept", "deliver", "quote", "full", "select"],
+        kind="slow_artifact",
         light_producer="moodboard",
         full_pipeline="P1/P2 moodboard step",
         spec_ref="L397",
@@ -267,6 +276,20 @@ def resolve_tier_artifact_names(tier_id: str) -> list[str]:
             continue   # brief 不走 pipeline · 在 chat 阶段已有
         out.append(spec.key)
     return out
+
+
+def resolve_tier_products_by_kind(tier_id: str, kind: str, *, include_addons: bool = False) -> list[ProductSpec]:
+    """返回此 tier 中指定 kind 的产物清单 · ADR-001 §"4 层缓存模型"
+    用法：
+      resolve_tier_products_by_kind("full", "slow_artifact")  # worker 跑这些
+      resolve_tier_products_by_kind("full", "derive_input")    # derive() 同步出
+    """
+    return [p for p in resolve_tier_products(tier_id, include_addons=include_addons) if p.kind == kind]
+
+
+def list_kinds() -> set[str]:
+    """所有出现过的 kind · 校验 spec 不漂"""
+    return {p.kind for p in _PRODUCTS_LIST}
 
 
 def get_spec_for_artifact(name: str) -> Optional[ProductSpec]:

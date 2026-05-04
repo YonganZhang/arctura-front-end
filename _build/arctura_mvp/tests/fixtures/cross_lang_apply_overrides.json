@@ -1,0 +1,92 @@
+{
+  "$comment": "跨语言一致性测试 fixture · Python apply_overrides_to_scene 跟 JS applyOverridesToScene 对同一 base_scene + overrides 必须产同样结果。 · 子智能体审查 #4 + Gemini #6 都 flag 了这个测试缺。",
+  "schema_version": "v1",
+  "cases": [
+    {
+      "name": "tombstones-then-layout-add-pure-order",
+      "description": "tombstones 删 obj_x 之前 layout 加新 obj_x · 应用顺序保证 add 后不被先 remove 抹掉",
+      "base_scene": {
+        "bounds": {"w": 5, "d": 4, "h": 2.8},
+        "walls": [{"id": "wall_Back"}],
+        "objects": [{"id": "obj_desk_1", "pos": [0, 0, 0], "material_id": "default"}],
+        "assemblies": [{"id": "asm_desk_1", "pos": [0, 0, 0], "part_ids": ["obj_desk_1"], "material_id_primary": "default"}],
+        "lights": [{"id": "sun_1", "type": "sun", "intensity": 3.0}],
+        "materials": {"default": {"base_color": "#fff"}},
+        "floor": {"material_id": "wood"},
+        "ceiling": {"material_id": "wall"}
+      },
+      "overrides": {
+        "tombstones": {"objects": ["obj_to_be_added"]},
+        "layout": {
+          "ov_add_1": {
+            "target": "added",
+            "override_id": "ov_add_1",
+            "payload": {"id": "obj_to_be_added", "type": "lamp_floor", "pos": [1, 1, 0]}
+          }
+        }
+      },
+      "expected_invariants": {
+        "objects_count": 2,
+        "objects_contains_id": "obj_to_be_added",
+        "_comment": "tombstones 先应用（什么也没删 · obj_to_be_added 当时还不存在）· 然后 layout 加它 · 最终保留"
+      }
+    },
+    {
+      "name": "appearance-floor-and-layout-move",
+      "description": "改 floor material + 移动 assembly · 两个独立 namespace 并存",
+      "base_scene": {
+        "bounds": {"w": 5, "d": 4, "h": 2.8},
+        "walls": [],
+        "objects": [],
+        "assemblies": [{"id": "asm_desk_1", "pos": [0, 0, 0], "rotation": [0, 0, 0], "part_ids": []}],
+        "lights": [],
+        "materials": {"wood": {"base_color": "#abc"}},
+        "floor": {"material_id": "wood"},
+        "ceiling": {"material_id": "wall"}
+      },
+      "overrides": {
+        "appearance": {"floor": {"material_id": "concrete"}},
+        "layout": {"ov1": {"target": "assembly", "target_id": "asm_desk_1", "pos": [3.5, 1.2, 0]}}
+      },
+      "expected_invariants": {
+        "floor_material": "concrete",
+        "asm_desk_1_pos": [3.5, 1.2, 0]
+      }
+    },
+    {
+      "name": "lighting-intensity-scale-and-tombstone",
+      "description": "缩放灯光 intensity + 同时 tombstone 删另一灯",
+      "base_scene": {
+        "bounds": {"w": 5, "d": 4, "h": 2.8}, "walls": [], "objects": [], "assemblies": [],
+        "lights": [
+          {"id": "sun_1", "type": "sun", "intensity": 4.0},
+          {"id": "lamp_1", "type": "point", "intensity": 2.0}
+        ],
+        "materials": {}, "floor": {}, "ceiling": {}
+      },
+      "overrides": {
+        "lighting": {"sun_1": {"intensity_scale": 0.5}},
+        "tombstones": {"lights": ["lamp_1"]}
+      },
+      "expected_invariants": {
+        "lights_count": 1,
+        "sun_1_intensity": 2.0
+      }
+    },
+    {
+      "name": "orphan-target-id-silent-skip",
+      "description": "target_id 不存在 · 应用静默跳过 · scene 不变",
+      "base_scene": {
+        "bounds": {"w": 5, "d": 4, "h": 2.8}, "walls": [], "objects": [],
+        "assemblies": [{"id": "asm_real", "pos": [0, 0, 0], "rotation": [0, 0, 0], "part_ids": []}],
+        "lights": [], "materials": {}, "floor": {}, "ceiling": {}
+      },
+      "overrides": {
+        "layout": {"ov1": {"target": "assembly", "target_id": "asm_does_not_exist", "pos": [9, 9, 0]}}
+      },
+      "expected_invariants": {
+        "asm_real_pos": [0, 0, 0]
+      }
+    }
+  ]
+}
