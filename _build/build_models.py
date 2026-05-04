@@ -19,8 +19,8 @@ import shutil
 import sys
 from pathlib import Path
 
-SB_ROOT = Path(os.environ.get("SB_ROOT", "/root/projects/公司项目/Building-CLI-Anything/StartUP-Building"))
 FE_ROOT = Path(__file__).resolve().parents[1]
+SB_ROOT = Path(os.environ.get("SB_ROOT", str(FE_ROOT.parent / "StartUP-Building")))
 OUT_ROOT = FE_ROOT / "assets" / "mvps"
 
 
