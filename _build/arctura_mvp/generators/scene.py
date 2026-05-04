@@ -76,7 +76,7 @@ _MUST_HAVE_ALIASES: dict[str, str] = {
 _PALETTE_PRESETS: dict[str, dict] = {
     "japandi": {
         "woodfloor":  {"base_color": "#C9B38C", "roughness": 0.55, "metallic": 0.0, "label": "WoodFloor"},
-        "wall":       {"base_color": "#F5F1E8", "roughness": 0.92, "metallic": 0.0, "label": "Wall"},
+        "wall":       {"base_color": "#EFE6D2", "roughness": 0.92, "metallic": 0.0, "label": "Wall"},  # 温暖米色 · 跟 default #F5F1E8 区分
         "lightwood":  {"base_color": "#D7C4A8", "roughness": 0.55, "metallic": 0.0, "label": "LightOak"},
         "charcoal":   {"base_color": "#6B6F73", "roughness": 0.70, "metallic": 0.02, "label": "Charcoal"},
         "linen_cream":{"base_color": "#D9CFB8", "roughness": 0.97, "metallic": 0.0, "label": "CreamLinen"},
@@ -101,6 +101,43 @@ _PALETTE_PRESETS: dict[str, dict] = {
         "screen":     {"base_color": "#111318", "roughness": 0.25, "metallic": 0.1,  "label": "Screen"},
         "default":    {"base_color": "#5C564E", "roughness": 0.6,  "metallic": 0.1,  "label": "Default"},
     },
+    # Phase 11.6 · 加 4 preset 修同类塌缩（任何 LLM 风格词都掉 default · 跟空间类型 bug 同形状）
+    "warm": {  # 暖色 / 奶油 / 复古 / cream
+        "woodfloor":  {"base_color": "#B8997A", "roughness": 0.55, "metallic": 0.0, "label": "WarmOak"},
+        "wall":       {"base_color": "#F5EEE0", "roughness": 0.94, "metallic": 0.0, "label": "Cream"},
+        "lightwood":  {"base_color": "#C9A57E", "roughness": 0.55, "metallic": 0.0, "label": "Honey"},
+        "charcoal":   {"base_color": "#3E2C26", "roughness": 0.65, "metallic": 0.0, "label": "Espresso"},
+        "linen_cream":{"base_color": "#E8D9B8", "roughness": 0.96, "metallic": 0.0, "label": "Tan"},
+        "screen":     {"base_color": "#1A1310", "roughness": 0.25, "metallic": 0.05, "label": "Screen"},
+        "default":    {"base_color": "#C9A57E", "roughness": 0.6, "metallic": 0.0, "label": "WarmDefault"},
+    },
+    "modern_luxury": {  # 现代 / 高端 / 轻奢 / luxury / contemporary
+        "woodfloor":  {"base_color": "#7A6A5E", "roughness": 0.4, "metallic": 0.0, "label": "DarkOak"},
+        "wall":       {"base_color": "#EFEAE2", "roughness": 0.9, "metallic": 0.0, "label": "OffWhite"},
+        "lightwood":  {"base_color": "#A89280", "roughness": 0.45, "metallic": 0.05, "label": "Walnut"},
+        "charcoal":   {"base_color": "#2A2D32", "roughness": 0.5, "metallic": 0.4, "label": "GunMetal"},
+        "linen_cream":{"base_color": "#D6CFC0", "roughness": 0.92, "metallic": 0.0, "label": "Linen"},
+        "screen":     {"base_color": "#0F1115", "roughness": 0.2, "metallic": 0.15, "label": "Glass"},
+        "default":    {"base_color": "#9C8E80", "roughness": 0.55, "metallic": 0.1, "label": "ModDefault"},
+    },
+    "fresh": {  # 清新 / 自然 / 绿植 / nature / scandi-light
+        "woodfloor":  {"base_color": "#D9C9A8", "roughness": 0.5, "metallic": 0.0, "label": "Birch"},
+        "wall":       {"base_color": "#F8F5EE", "roughness": 0.95, "metallic": 0.0, "label": "Snow"},
+        "lightwood":  {"base_color": "#E5DAC2", "roughness": 0.5, "metallic": 0.0, "label": "Pale"},
+        "charcoal":   {"base_color": "#5A6B5A", "roughness": 0.7, "metallic": 0.0, "label": "Forest"},
+        "linen_cream":{"base_color": "#E8E5D5", "roughness": 0.97, "metallic": 0.0, "label": "Linen"},
+        "screen":     {"base_color": "#222826", "roughness": 0.3, "metallic": 0.05, "label": "Screen"},
+        "default":    {"base_color": "#C5B89A", "roughness": 0.55, "metallic": 0.0, "label": "FreshDefault"},
+    },
+    "bold": {  # 大胆 / 撞色 / 复古工业 / vintage / eclectic
+        "woodfloor":  {"base_color": "#5D4839", "roughness": 0.55, "metallic": 0.0, "label": "Mahogany"},
+        "wall":       {"base_color": "#A89888", "roughness": 0.85, "metallic": 0.0, "label": "Stucco"},
+        "lightwood":  {"base_color": "#8C6E55", "roughness": 0.6, "metallic": 0.05, "label": "Aged"},
+        "charcoal":   {"base_color": "#1F2024", "roughness": 0.45, "metallic": 0.3, "label": "Iron"},
+        "linen_cream":{"base_color": "#B5A286", "roughness": 0.85, "metallic": 0.0, "label": "Burlap"},
+        "screen":     {"base_color": "#0A0B0D", "roughness": 0.2, "metallic": 0.1, "label": "Screen"},
+        "default":    {"base_color": "#7A6149", "roughness": 0.58, "metallic": 0.05, "label": "BoldDefault"},
+    },
     "default": {
         "woodfloor":  {"base_color": "#C9B38C", "roughness": 0.55, "metallic": 0.0, "label": "WoodFloor"},
         "wall":       {"base_color": "#F5F1E8", "roughness": 0.92, "metallic": 0.0, "label": "Wall"},
@@ -113,15 +150,35 @@ _PALETTE_PRESETS: dict[str, dict] = {
 }
 
 
+# Phase 11.6 · 跟 _resolve_space_type 同 shape 的 keyword resolver · 修 palette 塌缩盲点
+# 不同 style.keywords 必须命中不同 preset · 否则跟之前 scene-default-fallback 一样所有风格都 default
+_PALETTE_KEYWORDS: dict[str, list[str]] = {
+    "japandi":      ["日式", "japandi", "japanese", "禅", "zen", "和风", "侘寂", "wabi"],
+    "minimal":      ["极简", "minimal", "minimalist", "北欧", "scandi", "nordic", "白色", "干净", "clean"],
+    "industrial":   ["工业", "industrial", "loft", "粗犷", "raw", "concrete", "水泥", "金属", "metal"],
+    "warm":         ["暖", "奶油", "cream", "warm", "复古", "vintage", "cozy", "舒适", "温馨", "羊毛", "wool"],
+    "modern_luxury":["现代", "modern", "luxury", "轻奢", "高端", "contemporary", "elegant", "优雅", "高级", "酒店", "hotel"],
+    "fresh":        ["清新", "fresh", "自然", "natural", "nature", "绿植", "植物", "green", "scandi-light", "森林", "forest"],
+    "bold":         ["大胆", "bold", "撞色", "复古工业", "eclectic", "戏剧", "drama", "深色", "dark"],
+}
+
+
 def _pick_palette(keywords: list[str]) -> str:
-    """按 style.keywords 选色板 preset key"""
-    kws = {k.lower() for k in (keywords or [])}
-    if any(k in kws for k in ["日式", "japandi", "japanese", "禅"]):
-        return "japandi"
-    if any(k in kws for k in ["极简", "minimal", "minimalist", "北欧"]):
-        return "minimal"
-    if any(k in kws for k in ["工业", "industrial", "loft"]):
-        return "industrial"
+    """按 style.keywords 选色板 preset key · 同 _resolve_space_type 关键词包含匹配。
+
+    单一命中 → 返该 preset · 多命中 → 返第一个（按 _PALETTE_KEYWORDS 字典顺序优先）·
+    全 miss → "default"。
+    （Phase 11.6 · 修同类塌缩盲点 · subagent 审查 #1）
+    """
+    if not keywords:
+        return "default"
+    text = " ".join(str(k) for k in keywords).lower()
+    if not text.strip():
+        return "default"
+    for preset_key, kws in _PALETTE_KEYWORDS.items():
+        for kw in kws:
+            if kw.lower() in text:
+                return preset_key
     return "default"
 
 

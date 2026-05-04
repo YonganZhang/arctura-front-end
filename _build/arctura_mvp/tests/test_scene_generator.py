@@ -62,9 +62,16 @@ def test_build_scene_style_keywords_affect_palette():
     s2 = build_scene_from_brief(b2, "t")
     # 日式的 wall 和工业的 wall 颜色必不同
     assert s1["materials"]["wall"]["base_color"] != s2["materials"]["wall"]["base_color"]
-    # 工业风该暗 · 日式偏暖米
-    assert s1["materials"]["wall"]["base_color"].upper().startswith("#F")  # 浅
-    assert s2["materials"]["wall"]["base_color"].upper().startswith("#8")  # 灰暗
+    # 用亮度对比代替前缀（鲁棒于色板调色 · Phase 11.6 加新 preset 后）
+    def _hex_luma(h):
+        h = h.lstrip("#")
+        r, g, b = int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16)
+        return 0.299 * r + 0.587 * g + 0.114 * b
+    luma_japandi = _hex_luma(s1["materials"]["wall"]["base_color"])
+    luma_industrial = _hex_luma(s2["materials"]["wall"]["base_color"])
+    assert luma_japandi > 200, f"japandi wall 应偏亮（>200）· 实际 luma {luma_japandi:.0f}"
+    assert luma_industrial < 160, f"industrial wall 应偏暗（<160）· 实际 luma {luma_industrial:.0f}"
+    assert luma_japandi - luma_industrial > 50, "两种风格亮度差应明显（>50）"
 
 
 # ───────── 4. area 影响 bounds ─────────
