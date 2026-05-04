@@ -159,22 +159,60 @@ ${userMessage}
     body.max_tokens = MAX_TOKENS;
   }
 
-  const resp = await fetch("https://api.zhizengzeng.com/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${LLM_KEY}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(body),
-  });
-  if (!resp.ok) {
-    const txt = await resp.text();
-    throw new Error(`LLM ${resp.status}: ${txt.slice(0, 200)}`);
+  // Phase 11.10 · 防御 LLM_KEY 缺失（之前只默默 Bearer undefined → 上游回 401）
+  if (!LLM_KEY) {
+    throw new Error(`LLM gateway 未配置 · 缺 ZHIZENGZENG_API_KEY 环境变量`);
   }
-  const d = await resp.json();
-  const choice = d.choices?.[0] || {};
+
+  // Phase 11.10 · 显式 25s timeout（Vercel Edge 默认 30s · 留 5s 给 SSE 写）·
+  // 之前 Sonnet 极慢响应 + Vercel 杀进程 → 用户看到 "internal error"（Edge runtime 兜底消息）
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 25_000);
+  let resp;
+  try {
+    resp = await fetch("https://api.zhizengzeng.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${LLM_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+      signal: controller.signal,
+    });
+  } catch (e) {
+    if (e.name === "AbortError") {
+      throw new Error(`LLM 请求超时 25s（model=${model}）· 网关或模型响应过慢 · 试试换 GPT-5.4 或 deepseek-v3.2`);
+    }
+    throw new Error(`LLM 网络失败（model=${model}）: ${e.name}: ${e.message}`);
+  } finally {
+    clearTimeout(timeoutId);
+  }
+
+  if (!resp.ok) {
+    const txt = await resp.text().catch(() => "(body 读取失败)");
+    throw new Error(`LLM gateway HTTP ${resp.status}（model=${model}）: ${txt.slice(0, 300)}`);
+  }
+
+  // Phase 11.10 · 防御 gateway 返 200 但非 JSON / 缺 choices 的怪 case
+  let d;
+  try {
+    d = await resp.json();
+  } catch (e) {
+    const rawBody = await resp.text().catch(() => "");
+    throw new Error(`LLM gateway 返非 JSON（model=${model}, status=${resp.status}）: ${rawBody.slice(0, 300)}`);
+  }
+  if (!d || !Array.isArray(d.choices) || d.choices.length === 0) {
+    const summary = d?.error
+      ? (typeof d.error === "string" ? d.error : JSON.stringify(d.error).slice(0, 300))
+      : JSON.stringify(d || {}).slice(0, 300);
+    throw new Error(`LLM gateway 无 choices（model=${model}）: ${summary}`);
+  }
+  const choice = d.choices[0] || {};
   const content = choice.message?.content;
   const finishReason = choice.finish_reason;
+  if (typeof content !== "string" || !content.trim()) {
+    throw new Error(`LLM 返空 content（model=${model}, finish_reason=${finishReason}）· 模型可能拒答 · 试换模型`);
+  }
 
   // Phase 11.9 · 显式检测 max_tokens 截断 · 给 user-facing 友好错误
   // OpenAI 用 "length" · Claude 用 "max_tokens" · Gemini 用 "MAX_TOKENS"
@@ -261,7 +299,12 @@ export default async function handler(req) {
       try {
         parsed = await callLLM(user_message, currentBrief, history, model);
       } catch (e) {
-        await safeWrite(sseMessage("error", { message: `LLM: ${e.message}` }));
+        // Phase 11.10 · 直接传 e.message · 不再 prepend "LLM: "（callLLM 内已含上下文）
+        await safeWrite(sseMessage("error", {
+          message: e.message || "(LLM 失败 · 无 message)",
+          error_name: e.name || "Error",
+          model_used: model,
+        }));
         return;
       }
 
@@ -330,7 +373,12 @@ export default async function handler(req) {
         ready_for_tier: ready,
       }));
     } catch (e) {
-      await safeWrite(sseMessage("error", { message: String(e.message || e) }));
+      // Phase 11.10 · 诊断信息扩展（之前 e.name === "Error" 时只剩 message · debug 困难）
+      await safeWrite(sseMessage("error", {
+        message: String(e.message || e),
+        error_name: e.name || "UnknownError",
+        stack_tail: (e.stack || "").split("\n").slice(0, 3).join(" | "),
+      }));
     } finally {
       clearInterval(heartbeatInterval);
       closed = true;
