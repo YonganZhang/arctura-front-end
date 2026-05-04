@@ -104,6 +104,18 @@
       "name": "broken_json",
       "raw": "{\"x\": 1, \"y\":",
       "expected_error": "全策略失败"
+    },
+    {
+      "name": "truncated_at_max_tokens",
+      "$comment": "Phase 11.9 · 用户实测 Claude Sonnet hit max_tokens=2000 · 在 next_question 中文字符串中间被腰斩 · 末尾缺收尾的 \" 跟 } · 必须报错（不静默吞）",
+      "raw": "{\"reply\":\"学习书桌区也加进来了！必填信息已经齐全了～还想加梳妆台区或衣帽间区吗？\",\"brief_patch\":{\"functional_zones\":[{\"name\":\"睡眠区\",\"area_sqm\":15},{\"name\":\"学习书桌区\",\"area_sqm\":8}]},\"next_question\":\"还想加梳妆台区或衣帽间",
+      "expected_error": "全策略失败"
+    },
+    {
+      "name": "truncated_in_brief_patch_array",
+      "$comment": "腰斩在 array 中间 · 应该报错而不是返半成品",
+      "raw": "{\"reply\":\"OK\",\"brief_patch\":{\"zones\":[{\"name\":\"区1\"},{\"nam",
+      "expected_error": "全策略失败"
     }
   ]
 }

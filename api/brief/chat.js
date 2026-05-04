@@ -143,16 +143,20 @@ ${userMessage}
 
   // gpt-5 系列参数名不同（max_completion_tokens · 不接 temperature / max_tokens）
   const isGpt5 = /^gpt-5/.test(model);
+  // Phase 11.9 · 中文 brief 多轮对话 + JSON 包装 token 重 · 2000 太低被截断
+  // （用户报告：跑到第 4 轮加学习区时 Sonnet 输出末尾被腰斩在 next_question 中间）
+  // 4096 给 Claude/DeepSeek 留出"reply 1 段中文 + brief_patch + suggestions"的余地
+  const MAX_TOKENS = 4096;
   const body = {
     model,
     messages,
     response_format: { type: "json_object" },
   };
   if (isGpt5) {
-    body.max_completion_tokens = 2000;
+    body.max_completion_tokens = MAX_TOKENS;
   } else {
     body.temperature = 0.3;
-    body.max_tokens = 2000;
+    body.max_tokens = MAX_TOKENS;
   }
 
   const resp = await fetch("https://api.zhizengzeng.com/v1/chat/completions", {
@@ -168,14 +172,24 @@ ${userMessage}
     throw new Error(`LLM ${resp.status}: ${txt.slice(0, 200)}`);
   }
   const d = await resp.json();
-  const content = d.choices[0].message.content;
-  // Phase 11.8 · 鲁棒 LLM JSON 解析（修 Claude Sonnet 包 ```json fence 的塌缩）
-  // 之前直接 JSON.parse → 切到 Sonnet 立即炸 "Unexpected token '`'"
+  const choice = d.choices?.[0] || {};
+  const content = choice.message?.content;
+  const finishReason = choice.finish_reason;
+
+  // Phase 11.9 · 显式检测 max_tokens 截断 · 给 user-facing 友好错误
+  // OpenAI 用 "length" · Claude 用 "max_tokens" · Gemini 用 "MAX_TOKENS"
+  // （同 shape 防御：之前 JSON.parse 直接炸 · 现在分清"截断"vs"格式漂移"vs"真坏 JSON"）
+  const isTruncated = ["length", "max_tokens", "MAX_TOKENS"].includes(finishReason);
+
+  // Phase 11.8 · 鲁棒 LLM JSON 解析（修 Claude Sonnet 包 ```json fence）
   try {
     return parseLLMJson(content);
   } catch (e) {
     if (e instanceof LLMParseError) {
-      throw new Error(`LLM 输出非 JSON (${model}): ${String(content).slice(0, 200)}`);
+      const reason = isTruncated
+        ? `LLM 回复被截断（finish_reason=${finishReason} · 超出 ${MAX_TOKENS} token 上限）· 请说短一点或分多步问`
+        : `LLM 输出非 JSON (${model}, finish_reason=${finishReason}): ${String(content).slice(0, 500)}`;
+      throw new Error(reason);
     }
     throw e;
   }

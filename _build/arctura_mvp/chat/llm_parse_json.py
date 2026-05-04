@@ -105,18 +105,23 @@ def parse_llm_json(raw: str):
             pass
 
     # 3. 平衡 JSON 块
-    block = _find_balanced_json_block(text)
-    if block:
-        s, e = block
-        sl = text[s:e]
-        try:
-            return json.loads(sl)
-        except json.JSONDecodeError:
-            pass
-        try:
-            return json.loads(_cleanup_json_string(sl))
-        except json.JSONDecodeError:
-            pass
+    # ⚠ 如果文本本身以 { 或 [ 开头 · 跳过 · 否则会从被截断的 JSON 抽内部子对象（Phase 11.9 真实 bug）
+    # 例：'{"reply":"x","brief_patch":{"zones":[{"name":"a"}]}, ← 被截断'
+    #     balanced block 会返 inner {"name":"a"} · 严重错误
+    starts_with_brace = bool(text) and text[0] in "{["
+    if not starts_with_brace:
+        block = _find_balanced_json_block(text)
+        if block:
+            s, e = block
+            sl = text[s:e]
+            try:
+                return json.loads(sl)
+            except json.JSONDecodeError:
+                pass
+            try:
+                return json.loads(_cleanup_json_string(sl))
+            except json.JSONDecodeError:
+                pass
 
     # 4. 整体 cleanup
     try:

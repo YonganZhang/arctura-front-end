@@ -100,15 +100,21 @@ export function parseLLMJson(raw) {
   }
 
   // 策略 3：抽第一个平衡 JSON 块（散文 + JSON 混合）
-  const block = findBalancedJsonBlock(text);
-  if (block) {
-    const slice = text.slice(block.start, block.end);
-    try {
-      return JSON.parse(slice);
-    } catch {}
-    try {
-      return JSON.parse(cleanupJsonString(slice));
-    } catch {}
+  // ⚠ 如果文本本身以 { 或 [ 开头 · 跳过这一步 · 否则会从被截断的 JSON 中挑出内部子对象当合法（Phase 11.9 真实 bug）
+  // 例：{"reply":"x","brief_patch":{"zones":[{"name":"a"}]}, ← 被截断
+  //     如果跑 balanced block 会返 inner {"name":"a"} 当结果 · 严重错误
+  const startsWithBrace = text[0] === "{" || text[0] === "[";
+  if (!startsWithBrace) {
+    const block = findBalancedJsonBlock(text);
+    if (block) {
+      const slice = text.slice(block.start, block.end);
+      try {
+        return JSON.parse(slice);
+      } catch {}
+      try {
+        return JSON.parse(cleanupJsonString(slice));
+      } catch {}
+    }
   }
 
   // 策略 4：整体 cleanup 再试
