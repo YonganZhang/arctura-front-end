@@ -48,3 +48,8 @@ node_modules/
 # Python bytecode
 __pycache__/
 *.pyc
+
+# Phase 12 (2026-05-05): 测试 / 草稿 MVP 产物
+data/mvps/draft-*.json
+assets/mvps/draft-*/
+assets/mvps/p73-save-test/
