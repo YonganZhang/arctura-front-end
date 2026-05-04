@@ -1,0 +1,109 @@
+{
+  "$comment": "LLM 响应 fixture · 跨语言 Python+JS 共享 · Phase 11.8 防 LLM 输出格式假设漂移。覆盖 GPT-5 / Claude Sonnet / Claude Opus / Gemini 等不同模型常见格式。",
+  "cases": [
+    {
+      "name": "gpt5_strict_json",
+      "description": "GPT-5 走 response_format=json_object · 严格干净",
+      "raw": "{\"reply\":\"好的\",\"brief_patch\":{\"space\":{\"area_sqm\":30}},\"next_question\":\"\",\"suggestions\":[],\"pii_fields\":[]}",
+      "expect": {
+        "reply": "好的",
+        "brief_patch": {"space": {"area_sqm": 30}}
+      }
+    },
+    {
+      "name": "claude_sonnet_fence_json",
+      "description": "Claude Sonnet 经常包 ```json fence（用户报告的真实场景）",
+      "raw": "```json\n{\n  \"reply\": \"好的\",\n  \"brief_patch\": {\"space\": {\"area_sqm\": 30}},\n  \"next_question\": \"\",\n  \"suggestions\": [],\n  \"pii_fields\": []\n}\n```",
+      "expect": {
+        "reply": "好的",
+        "brief_patch": {"space": {"area_sqm": 30}}
+      }
+    },
+    {
+      "name": "claude_fence_no_lang_tag",
+      "description": "无语言标签的 fence",
+      "raw": "```\n{\"reply\":\"OK\",\"brief_patch\":{}}\n```",
+      "expect": {
+        "reply": "OK",
+        "brief_patch": {}
+      }
+    },
+    {
+      "name": "prose_then_fence_json",
+      "description": "Claude/Gemini 偶尔在 fence 前加散文",
+      "raw": "Sure! Here's the JSON you asked for:\n\n```json\n{\"reply\":\"散文也能解\",\"brief_patch\":{\"headcount\":5}}\n```\n\nHope this helps!",
+      "expect": {
+        "reply": "散文也能解",
+        "brief_patch": {"headcount": 5}
+      }
+    },
+    {
+      "name": "prose_then_naked_json",
+      "description": "无 fence · 散文 + 裸 JSON（更脏）",
+      "raw": "Sure! {\"reply\":\"裸的也行\",\"brief_patch\":{\"headcount\":7}}",
+      "expect": {
+        "reply": "裸的也行",
+        "brief_patch": {"headcount": 7}
+      }
+    },
+    {
+      "name": "trailing_comma_in_object",
+      "description": "LLM 偶尔生成多余尾逗号",
+      "raw": "{\"reply\":\"x\",\"brief_patch\":{\"area\":10,},}",
+      "expect": {
+        "reply": "x",
+        "brief_patch": {"area": 10}
+      }
+    },
+    {
+      "name": "smart_quotes_replaced",
+      "description": "中文输入法智能引号污染",
+      "raw": "{“reply”:“智能引号”,“brief_patch”:{}}",
+      "expect": {
+        "reply": "智能引号",
+        "brief_patch": {}
+      }
+    },
+    {
+      "name": "nested_braces_in_string",
+      "description": "字符串内有 { } 不能干扰平衡块识别",
+      "raw": "{\"reply\":\"模板里 {placeholder} 不算块\",\"brief_patch\":{}}",
+      "expect": {
+        "reply": "模板里 {placeholder} 不算块"
+      }
+    },
+    {
+      "name": "array_top_level",
+      "description": "顶层 JSON 是数组（少见但可能）",
+      "raw": "[1,2,{\"x\":3}]",
+      "expect_type": "array"
+    },
+    {
+      "name": "chinese_full_response",
+      "description": "完整中文 brief 响应（真 brief chat 场景）",
+      "raw": "```json\n{\n  \"reply\": \"我帮你设计一个 30 平米的咖啡厅 · 风格偏现代奶油色 · 明亮通透。\",\n  \"brief_patch\": {\n    \"space\": {\"area_sqm\": 30, \"type\": \"cafe\"},\n    \"style\": {\"keywords\": [\"现代\", \"奶油色\", \"通透\"]},\n    \"functional_zones\": [\n      {\"name\": \"吧台区\", \"area_sqm\": 8},\n      {\"name\": \"座位区\", \"area_sqm\": 22}\n    ]\n  },\n  \"next_question\": \"咖啡厅服务什么类型的客人？精品咖啡还是早午餐？\",\n  \"suggestions\": [\"精品咖啡\", \"早午餐\", \"轻食\", \"24h 营业\"],\n  \"pii_fields\": []\n}\n```",
+      "expect": {
+        "brief_patch": {
+          "space": {"area_sqm": 30, "type": "cafe"}
+        }
+      }
+    }
+  ],
+  "expected_to_fail": [
+    {
+      "name": "completely_empty",
+      "raw": "",
+      "expected_error": "empty content"
+    },
+    {
+      "name": "pure_prose_no_json",
+      "raw": "I'm sorry I can't help with that.",
+      "expected_error": "全策略失败"
+    },
+    {
+      "name": "broken_json",
+      "raw": "{\"x\": 1, \"y\":",
+      "expected_error": "全策略失败"
+    }
+  ]
+}

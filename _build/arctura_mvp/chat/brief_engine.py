@@ -178,14 +178,13 @@ def step(user_message: str, *,
     user_prompt = make_user_prompt(user_message, current_brief, schema)
 
     raw = llm_call(SYSTEM_PROMPT, user_prompt, history=history, model=model)
+    # Phase 11.8 · 走鲁棒解析器 · 替换原 json.loads + greedy regex 兜底
+    # 修 Claude Sonnet 包 ```json fence / Gemini 散文+JSON 等格式漂移问题
+    from .llm_parse_json import parse_llm_json, LLMParseError
     try:
-        parsed = json.loads(raw)
-    except json.JSONDecodeError:
-        # 兜底：从文本里抽 JSON
-        m = re.search(r"\{.*\}", raw, re.DOTALL)
-        if not m:
-            raise ValueError(f"LLM 没返 JSON: {raw[:300]}")
-        parsed = json.loads(m.group())
+        parsed = parse_llm_json(raw)
+    except LLMParseError as e:
+        raise ValueError(f"LLM 没返 JSON: {raw[:300]}") from e
 
     reply = parsed.get("reply", "")
     patch = parsed.get("brief_patch", {}) or {}

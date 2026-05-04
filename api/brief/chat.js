@@ -57,6 +57,7 @@ import briefRules from "../_shared/brief-rules.json" with { type: "json" };
 import { K } from "../_shared/kv-keys.js";
 import { extractDisplayName, isPlaceholderName } from "../_shared/project-name.js";
 import { normalizeBriefSpaceType } from "../_shared/normalize-brief.js";
+import { parseLLMJson, LLMParseError } from "../_shared/llm-parse-json.js";
 
 const SYSTEM_PROMPT = briefRules.system_prompt;
 
@@ -167,7 +168,17 @@ ${userMessage}
     throw new Error(`LLM ${resp.status}: ${txt.slice(0, 200)}`);
   }
   const d = await resp.json();
-  return JSON.parse(d.choices[0].message.content);
+  const content = d.choices[0].message.content;
+  // Phase 11.8 · 鲁棒 LLM JSON 解析（修 Claude Sonnet 包 ```json fence 的塌缩）
+  // 之前直接 JSON.parse → 切到 Sonnet 立即炸 "Unexpected token '`'"
+  try {
+    return parseLLMJson(content);
+  } catch (e) {
+    if (e instanceof LLMParseError) {
+      throw new Error(`LLM 输出非 JSON (${model}): ${String(content).slice(0, 200)}`);
+    }
+    throw e;
+  }
 }
 
 // ─────── SSE helpers ───────
