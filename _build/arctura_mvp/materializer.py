@@ -31,21 +31,18 @@ from typing import Optional
 def default_editable(mvp_cat: str, area_m2: float) -> dict:
     """chat 能改这些字段 · 驱动 derived (eui/cost) 重算
 
-    lighting density 按场景粗略设（W/m²）· 工程合理值
+    lighting density 按场景粗略设（W/m²）· 工程合理值。
+    Phase 11.7 改走 resolver 注册表 · 修 LLM 推 'wellness center'/'校长办公室' 等
+    脏 mvp_cat 之前 fallback 8 W/m² 的塌缩盲点。
     """
-    light_by_cat = {
-        "hospitality": 11,
-        "workplace": 9,
-        "residential": 6,
-        "civic": 8,
-        "wellness": 10,
-    }
+    from .resolvers import get as get_resolver, LIGHTING_DENSITY_W_M2_BY_CAT
+    cat_canonical = get_resolver("building_category").resolve_first(mvp_cat)
     return {
         "area_m2": round(float(area_m2)) if area_m2 else 40,
         "insulation_mm": 60,        # XPS 墙体保温
         "glazing_uvalue": 2.0,      # W/m²K · 双玻默认
         "lighting_cct": 3000,       # K · 2700=warm / 3000=neutral / 4000=cool
-        "lighting_density_w_m2": light_by_cat.get(mvp_cat, 8),
+        "lighting_density_w_m2": LIGHTING_DENSITY_W_M2_BY_CAT[cat_canonical],
         "wwr": 0.25,                # window-to-wall ratio
         "region": "HK",             # 合规地区：HK / CN / US / JP
     }

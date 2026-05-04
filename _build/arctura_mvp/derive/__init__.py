@@ -30,6 +30,7 @@ from typing import Any, Optional
 
 from ..generators import build_scene_from_brief
 from .overrides import apply_overrides_to_scene, OVERRIDES_SCHEMA_VERSION
+from ..resolvers import get as get_resolver, COST_PER_M2_BY_REGION
 
 # 任何字段变更都必须 bump
 DERIVE_SCHEMA_VERSION = "v1"
@@ -99,15 +100,16 @@ def _derived_metrics_from_editable(editable: dict, brief: dict) -> dict:
     cct = editable.get("lighting_cct", 3000)
     density = editable.get("lighting_density_w_m2", 8)
     insul = editable.get("insulation_mm", 60)
-    region = editable.get("region", "HK")
+    region_raw = editable.get("region", "HK")
 
     # 启发式 · 不是真模拟（HK ~45 baseline · 加密插值 · 只为前端 UI 展示）
     base_eui = 45.0
     eui = base_eui - (insul - 60) * 0.15 + (density - 8) * 1.5
     eui = max(20.0, round(eui, 1))
 
-    # 单方价 (HK$/m²)：HK ~3500 · CN ~2200 · INTL ~4500
-    cost_per_m2 = {"HK": 3500, "CN": 2200, "INTL": 4500}.get(region, 3500)
+    # 单方价 (HK$/m²) · 走 resolver 注册表（Phase 11.7 修同类塌缩 · LLM 写 "Singapore" 不再 fallback HK）
+    region_canonical = get_resolver("region").resolve_first(region_raw)
+    cost_per_m2 = COST_PER_M2_BY_REGION[region_canonical]
     cost_total = round(area * cost_per_m2)
     co2 = round(eui * area * 0.4 / 1000, 2)   # CO2 ton/yr (HK 排放因子 0.4)
 
