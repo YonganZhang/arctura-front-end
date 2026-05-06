@@ -258,12 +258,24 @@ def _layout_assemblies(types: list[str], bounds: dict, lib: dict) -> list[tuple[
 
     # 贴前墙
     x_cursor = -w/2 + MARGIN
+    # Phase 12.2 · 算 wall_back 占的最深 sz_d · 检测前后墙几何冲突
+    wall_back_max_d = 0.0
+    for _t, _p, s, _r in placed:
+        if _p[1] > 0:  # 在 +y 后墙侧
+            wall_back_max_d = max(wall_back_max_d, s[1])
+
     for t in wall_front:
         entry = lib.get(t, {})
         size = list(entry.get("default_size", [1.6, 0.9, 0.85]))
         sz_w, sz_d, sz_h = size
-        # Phase 12.1 · 防溢墙
+        # Phase 12.1 · 防溢墙(x 方向)
         if x_cursor + sz_w > w/2 - MARGIN:
+            overflow_to_side.append((t, size, "front"))
+            continue
+        # Phase 12.2 · 防 wall_front vs wall_back 几何冲突(y 方向):
+        # 后墙占 wall_back_max_d + MARGIN · 前墙 bed 占 MARGIN + sz_d · 留 GAP 中间
+        # 总深度: wall_back_max_d + 2*MARGIN + GAP + sz_d > d → 转 90° 贴侧墙
+        if wall_back_max_d + sz_d + 2*MARGIN + GAP > d:
             overflow_to_side.append((t, size, "front"))
             continue
         x = x_cursor + sz_w/2
@@ -291,11 +303,23 @@ def _layout_assemblies(types: list[str], bounds: dict, lib: dict) -> list[tuple[
             side_wall_y_cursors[wall_name] = y_c + sz_w + GAP
             break
 
-    # 居中
+    # 居中(Phase 12.2 · 加溢墙 guard:table_dining 1.8m 在 3.5m 房会溢)
     for i, t in enumerate(center):
         entry = lib.get(t, {})
         size = list(entry.get("default_size", [1.0, 0.6, 0.45]))
+        sz_w, sz_d, _ = size
         pos = [round((i - len(center)/2) * (size[0] + GAP), 2), 0, 0]
+        # 溢墙 → 缩小 size 适配房间(保留比例)
+        if abs(pos[0]) + sz_w/2 > w/2 - MARGIN or sz_d/2 > d/2 - MARGIN:
+            scale = min(
+                (w - 2*MARGIN - 2*abs(pos[0])) / sz_w if sz_w > 0 else 1.0,
+                (d - 2*MARGIN) / sz_d if sz_d > 0 else 1.0,
+                1.0,
+            )
+            if scale < 0.6:
+                # 太挤 · 跳过 center 家具(小房间不放餐桌)
+                continue
+            size = [round(size[0]*scale, 2), round(size[1]*scale, 2), size[2]]
         placed.append((t, pos, size, [0, 0, 0]))
 
     # Phase 9.2 · 往每个主家具加装饰小物（书/花瓶/杯等）· 推动 spec L398 "60+ objects" 接近达成
@@ -358,22 +382,53 @@ def _layout_assemblies(types: list[str], bounds: dict, lib: dict) -> list[tuple[
             ]
             clutter.append((dtype, decor_pos, dsize, [0, 0, 0]))
 
-    # 角落
-    corner_slots = [
+    # 角落(Phase 12.2 · 避开 wall_back/front 已占的角)
+    # 旧 bug:lamp_floor 总放前左角,但 sofa_3seat/bed 也在前墙左侧 → 重叠
+    # 修:遍历 4 角找"距离任何主家具 ≥ 0.6m" 的空角
+    corner_slots_all = [
         [-w/2 + MARGIN, -d/2 + MARGIN],   # 前左
         [ w/2 - MARGIN, -d/2 + MARGIN],   # 前右
         [ w/2 - MARGIN,  d/2 - MARGIN],   # 后右
         [-w/2 + MARGIN,  d/2 - MARGIN],   # 后左
     ]
-    for i, t in enumerate(corner):
+
+    def _slot_free(slot, lamp_size):
+        """slot 距离已 placed 主家具 bbox 边缘 ≥ 0.1m 算空"""
+        sx, sy = slot
+        for _t, p, s, _r in placed:
+            px, py = p[0], p[1]
+            psx, psy = s[0]/2, s[1]/2
+            # lamp 占 lamp_size 中心 sx,sy · 检 bbox vs 主家具 bbox
+            lx_min, lx_max = sx - lamp_size[0]/2, sx + lamp_size[0]/2
+            ly_min, ly_max = sy - lamp_size[1]/2, sy + lamp_size[1]/2
+            mx_min, mx_max = px - psx, px + psx
+            my_min, my_max = py - psy, py + psy
+            if lx_max > mx_min - 0.1 and lx_min < mx_max + 0.1 \
+               and ly_max > my_min - 0.1 and ly_min < my_max + 0.1:
+                return False
+        return True
+
+    used_corner_idx = set()
+    for t in corner:
         entry = lib.get(t, {})
         size = list(entry.get("default_size", [0.5, 0.5, 1.6]))
-        slot = corner_slots[i % 4]
         if t == "lamp_pendant":
-            # 吊灯挂天花板中心
+            # 吊灯挂天花板中心 · 不占角
             placed.append((t, [0, 0, bounds["h"] - size[2] - 0.05], size, [0, 0, 0]))
-        else:
-            placed.append((t, [round(slot[0], 2), round(slot[1], 2), 0], size, [0, 0, 0]))
+            continue
+        # 找第一个空角(避开主家具)
+        slot = None
+        for idx, s in enumerate(corner_slots_all):
+            if idx in used_corner_idx:
+                continue
+            if _slot_free(s, size):
+                slot = s
+                used_corner_idx.add(idx)
+                break
+        if slot is None:
+            # 所有角都被占 · 退到房间内偏中位置(避免重叠)
+            slot = [w/2 - MARGIN - size[0]/2, 0]
+        placed.append((t, [round(slot[0], 2), round(slot[1], 2), 0], size, [0, 0, 0]))
 
     # 加装饰 clutter 到 placed 尾部（spec L398 推 60+ objects · LIGHT 能做到 ~25-40）
     placed.extend(clutter)
