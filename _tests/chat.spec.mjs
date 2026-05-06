@@ -16,8 +16,9 @@ const SKIP_CHAT = process.env.PLAYWRIGHT_SKIP_CHAT === "1";
 test.describe.configure({ mode: "serial", timeout: 60_000 });
 
 async function callChatEdit(page, payload) {
-  // 已 navigate 到 PROD · 这里是相对路径
-  return page.evaluate(async (body) => {
+  // Phase 4 (cf34531) 后 chat-edit 默认 plan mode · 返 plan.steps + applied: []
+  // 测试模拟"用户 confirm"流程:plan → 提取 tool_calls → action=apply → 拿真 applied
+  const planRes = await page.evaluate(async (body) => {
     const r = await fetch("/api/chat-edit", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -25,6 +26,20 @@ async function callChatEdit(page, payload) {
     });
     return { status: r.status, data: await r.json().catch(() => ({})) };
   }, payload);
+  if (planRes.status !== 200) return planRes;
+  // 提取 dry_run.ok 的 tool_calls 触发真 apply
+  const steps = planRes.data?.plan?.steps || [];
+  const tool_calls = steps.filter(s => s.dry_run?.ok && s.tool_call).map(s => s.tool_call);
+  if (tool_calls.length === 0) return planRes;  // 无可 apply · LLM 说理 · 返 plan
+  const applyRes = await page.evaluate(async (body) => {
+    const r = await fetch("/api/chat-edit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    return { status: r.status, data: await r.json().catch(() => ({})) };
+  }, { slug: payload.slug, currentState: payload.currentState, tool_calls, action: "apply" });
+  return applyRes;
 }
 
 function baseState(slug = "22-boutique-book-cafe", overrides = {}) {
@@ -64,7 +79,7 @@ test("warmer · should lower CCT and leave EUI near baseline（方向 assert · 
     slug: "22-boutique-book-cafe",
     userMessage: "make it warmer",
     currentState: baseState(),
-    model: "deepseek-v3.2",
+    model: "deepseek-v4-flash",
   });
   expect(res.status, `HTTP ${res.status} · ${JSON.stringify(res.data).slice(0,200)}`).toBe(200);
   const applied = res.data.applied || [];
@@ -90,7 +105,7 @@ test("scale up 25% · area 80→100 · cost scales ~×1.25", async ({ page }) =>
     slug: "22-boutique-book-cafe",
     userMessage: "scale up 25%",
     currentState: baseState(),
-    model: "deepseek-v3.2",
+    model: "deepseek-v4-flash",
   });
   expect(res.status).toBe(200);
   const applied = res.data.applied || [];
@@ -108,7 +123,7 @@ test("switch Tokyo code · region → JP · compliance 变 CONDITIONAL", async (
     slug: "22-boutique-book-cafe",
     userMessage: "check Tokyo code",
     currentState: baseState(),
-    model: "deepseek-v3.2",
+    model: "deepseek-v4-flash",
   });
   expect(res.status).toBe(200);
   expect((res.data.applied || []).length).toBeGreaterThanOrEqual(1);
@@ -130,7 +145,7 @@ test("switch variant (20-zen-tea-room) · 应真 overlay project.name + renders"
     slug: "20-zen-tea-room",
     userMessage: "switch to the wabi-sabi variant",
     currentState: state,
-    model: "deepseek-v3.2",
+    model: "deepseek-v4-flash",
   });
   expect(res.status).toBe(200);
   const applied = res.data.applied || [];
@@ -148,7 +163,7 @@ test("帮我把衣柜删掉 · 应 NOT apply furniture delete（无此 tool · L
     slug: "22-boutique-book-cafe",
     userMessage: "帮我把衣柜删掉",
     currentState: baseState(),
-    model: "deepseek-v3.2",
+    model: "deepseek-v4-flash",
   });
   expect(res.status).toBe(200);
   const applied = res.data.applied || [];
@@ -168,7 +183,7 @@ test("无 variants 时尝试 switch_variant · rejected", async ({ page }) => {
     slug: "22-boutique-book-cafe",
     userMessage: "switch to variant v2-wabi-sabi",
     currentState: baseState(),  // variants.list 空
-    model: "deepseek-v3.2",
+    model: "deepseek-v4-flash",
   });
   expect(res.status).toBe(200);
   const applied = res.data.applied || [];
@@ -187,7 +202,7 @@ test("out-of-range 值 · 如 insulation 9999 · 应 rejected", async ({ page })
     slug: "22-boutique-book-cafe",
     userMessage: "Set the insulation to 9999 mm please",
     currentState: baseState(),
-    model: "deepseek-v3.2",
+    model: "deepseek-v4-flash",
   });
   expect(res.status).toBe(200);
   const applied = res.data.applied || [];
@@ -209,7 +224,7 @@ test("baseline 尊重：warmer 后再次 warmer 应继续 +EUI · 不重置", as
     slug: "22-boutique-book-cafe",
     userMessage: "make it warmer",
     currentState: baseState(),
-    model: "deepseek-v3.2",
+    model: "deepseek-v4-flash",
   });
   expect(res1.status).toBe(200);
   const state1 = res1.data.newState;
@@ -219,7 +234,7 @@ test("baseline 尊重：warmer 后再次 warmer 应继续 +EUI · 不重置", as
     slug: "22-boutique-book-cafe",
     userMessage: "not warm enough, go more warm",
     currentState: state1,
-    model: "deepseek-v3.2",
+    model: "deepseek-v4-flash",
   });
   expect(res2.status).toBe(200);
   const state2 = res2.data.newState;

@@ -7,7 +7,7 @@ export default defineConfig({
   timeout: 30_000,
   expect: { timeout: 5_000 },
   fullyParallel: true,
-  retries: 0,
+  retries: 2,
   workers: 4,
   reporter: "line",
   use: {

@@ -9,11 +9,11 @@ test.describe("Wizard · Phase 6.C", () => {
   test("主页 → /new · 自动创建 draft · URL 加 slug", async ({ page }) => {
     await page.goto(`${BASE}/`, { waitUntil: "networkidle" });
     // 点 "+ 新建项目" 按钮
-    const newBtn = page.locator('a[href="/new"]').first();
+    const newBtn = page.locator('a[href="/project/new"]').first();
     await expect(newBtn).toBeVisible();
     await newBtn.click();
-    // 等 draft 创建 · URL 变 /new?slug=draft-xxx
-    await page.waitForURL(/\/new\?slug=draft-[a-f0-9]+/, { timeout: 15000 });
+    // 等 draft 创建 · URL 变 /project/draft-xxx(路由后续改)
+    await page.waitForURL(/\/project\/draft-[a-f0-9]+/, { timeout: 15000 });
     // Wizard 头部显示
     await expect(page.locator("text=Arctura · 新建项目")).toBeVisible();
     await expect(page.locator("text=Brief 对话")).toBeVisible();
@@ -22,8 +22,8 @@ test.describe("Wizard · Phase 6.C", () => {
   });
 
   test("Wizard Step 1 · Brief Chat 发一句话 · SSE 更新进度", async ({ page }) => {
-    await page.goto(`${BASE}/new`, { waitUntil: "networkidle" });
-    await page.waitForURL(/slug=draft-/, { timeout: 15000 });
+    await page.goto(`${BASE}/project/new`, { waitUntil: "networkidle" });
+    await page.waitForURL(/\/project\/draft-/, { timeout: 15000 });
     await page.waitForSelector("textarea");
 
     // 输入 + 发送
@@ -97,7 +97,7 @@ test.describe("Wizard · Phase 6.C", () => {
     });
     expect(r3.status(), `PATCH → planning failed ${await r3.text().catch(()=>'')}`).toBe(200);
 
-    await page.goto(`${BASE}/new?slug=${slug}`, { waitUntil: "networkidle" });
+    await page.goto(`${BASE}/project/new?slug=${slug}`, { waitUntil: "networkidle" });
     // UI 文案 "选产物档位"（h2）· 找不到说明 Wizard 没进到 step 2（state=planning 条件不对？）
     await expect(page.locator("text=选产物档位")).toBeVisible({ timeout: 10000 });
     for (const label of ["概念", "交付", "报价", "全案", "甄选"]) {
