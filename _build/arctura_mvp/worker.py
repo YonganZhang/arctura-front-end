@@ -318,12 +318,36 @@ def _brief_summary(brief) -> dict:
 
 
 def _beat():
-    """写一次 heartbeat · TTL 120s · 加入 workers:index · 静默错"""
+    """写一次 heartbeat · TTL 120s · 加入 workers:index · 静默错
+
+    Phase 12.2:heartbeat value 由 timestamp 改 JSON · 含 git_rev / hostname
+    让"哪台 worker 跑啥版本" 能从 KV 直接读
+    """
     try:
-        kv.set(K.worker_heartbeat(HOSTNAME), str(time.time()), ex=HEARTBEAT_TTL)
+        beat_data = json.dumps({"ts": time.time(), "git_rev": WORKER_GIT_REV, "host": HOSTNAME})
+        kv.set(K.worker_heartbeat(HOSTNAME), beat_data, ex=HEARTBEAT_TTL)
         kv.zadd(K.workers_index(), time.time(), HOSTNAME)
     except Exception as e:
         print(f"[worker] heartbeat fail: {e}", file=sys.stderr)
+
+
+def _git_rev() -> str:
+    """读当前 worker 跑的 git commit · 用于诊断"prod 数据看着不对 · worker 跑啥版本"
+
+    Phase 12.2(2026-05-07 PolyU 接管)· 用户报告:tencent-hk worker 跑旧代码 5 个 commit,
+    新 layout 修复没生效。日志里没 git_rev 时,只能对比 prod 坐标 vs 本地 generator 反推。
+    加这一行避免类似问题:每次启动 + 每次 job 完成都把 commit 写进日志/KV。
+    """
+    try:
+        import subprocess
+        r = subprocess.run(["git", "-C", str(REPO_ROOT), "rev-parse", "--short", "HEAD"],
+                           capture_output=True, text=True, timeout=3)
+        return r.stdout.strip() or "unknown"
+    except Exception:
+        return "unknown"
+
+
+WORKER_GIT_REV = _git_rev()
 
 
 def main_loop(max_iter: int = None):
@@ -331,7 +355,7 @@ def main_loop(max_iter: int = None):
 
     heartbeat 每 HEARTBEAT_INTERVAL s 写一次 · SSE 探活用
     """
-    print(f"[worker] started · host={HOSTNAME} · polling {K.jobs_queue()} every {POLL_INTERVAL}s")
+    print(f"[worker] started · host={HOSTNAME} · git_rev={WORKER_GIT_REV} · polling {K.jobs_queue()} every {POLL_INTERVAL}s")
     _beat()   # 启动即刻写一次
     last_beat = time.time()
     it = 0
