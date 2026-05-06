@@ -219,6 +219,7 @@ def _layout_assemblies(types: list[str], bounds: dict, lib: dict) -> list[tuple[
                 center.append(t)
 
     placed = []
+    overflow_to_side = []  # Phase 12.1 · wall_back/front 放不下时移到侧墙
 
     # 贴后墙 · 从 -w/2+MARGIN 向 +w/2 流
     x_cursor = -w/2 + MARGIN
@@ -236,6 +237,11 @@ def _layout_assemblies(types: list[str], bounds: dict, lib: dict) -> list[tuple[
             pos = [dx, round(chair_y, 2), 0]
             rot = [0, 0, 180]  # face desk
             placed.append((t, pos, size, rot))
+            continue
+
+        # Phase 12.1 · 防溢墙:cursor + sz_w > w/2 - MARGIN 时改放侧墙
+        if x_cursor + sz_w > w/2 - MARGIN:
+            overflow_to_side.append((t, size, "back"))
             continue
 
         x = x_cursor + sz_w/2
@@ -256,11 +262,34 @@ def _layout_assemblies(types: list[str], bounds: dict, lib: dict) -> list[tuple[
         entry = lib.get(t, {})
         size = list(entry.get("default_size", [1.6, 0.9, 0.85]))
         sz_w, sz_d, sz_h = size
+        # Phase 12.1 · 防溢墙
+        if x_cursor + sz_w > w/2 - MARGIN:
+            overflow_to_side.append((t, size, "front"))
+            continue
         x = x_cursor + sz_w/2
         y = -d/2 + MARGIN + sz_d/2
         z = 0
         placed.append((t, [round(x, 2), round(y, 2), round(z, 2)], size, [0, 0, 0]))
         x_cursor += sz_w + GAP
+
+    # Phase 12.1 · 后/前墙放不下的家具 → 移到东/西侧墙(rotate 90°)
+    # 家具旋转 90°(rot z=90 / 270)后,size[0] 沿 y,size[1] 沿 x
+    side_wall_y_cursors = {"east": -d/2 + MARGIN, "west": -d/2 + MARGIN}
+    for t, size, _origin_wall in overflow_to_side:
+        sz_w, sz_d, sz_h = size
+        # 选 east(+x)优先 · 挪满后退 west
+        for wall_name, x_sign in (("east", 1), ("west", -1)):
+            y_c = side_wall_y_cursors[wall_name]
+            if y_c + sz_w > d/2 - MARGIN:
+                continue  # 该侧墙也满了 · 跳过
+            # rotated 90° → 占 y 方向 sz_w · 占 x 方向 sz_d
+            x = (w/2 - MARGIN - sz_d/2) * x_sign
+            y = y_c + sz_w/2
+            z = 0
+            rot = [0, 0, 90 if x_sign > 0 else -90]
+            placed.append((t, [round(x, 2), round(y, 2), round(z, 2)], size, rot))
+            side_wall_y_cursors[wall_name] = y_c + sz_w + GAP
+            break
 
     # 居中
     for i, t in enumerate(center):
@@ -270,35 +299,63 @@ def _layout_assemblies(types: list[str], bounds: dict, lib: dict) -> list[tuple[
         placed.append((t, pos, size, [0, 0, 0]))
 
     # Phase 9.2 · 往每个主家具加装饰小物（书/花瓶/杯等）· 推动 spec L398 "60+ objects" 接近达成
-    # 每个已 placed 的 assembly 带 2-3 个装饰 · 总数 ~8 主 × 2.5 = 20 加到 clutter
+    # Phase 12.1 · 2026-05-07 修堆叠 bug:
+    #   旧 `offx = (k - n_decor/2 + 0.5) * 0.3` spread 固定 0.3m × n_decor,
+    #   closet n_decor=8 → 2.4m spread,但 closet 只 1.2m 宽 → decor 横向溢出柜外!
+    #   修:① 用 2D grid 放 ② spread 限制在 (psize - dsize - 0.1) 主家具内
+    #     ③ bed/sofa 类不放 picture_frame(应挂墙)· 床上只该放枕头被子
+    import math as _m
     clutter = []
-    _DECOR_SIZES = [  # 小物件 default_size · 米
+    _DECOR_TABLETOP = [  # 桌面/架子/柜顶安全的 decor
         ("book", [0.18, 0.12, 0.03]),
         ("vase", [0.12, 0.12, 0.25]),
         ("cup", [0.08, 0.08, 0.09]),
         ("plant_small", [0.2, 0.2, 0.35]),
         ("picture_frame", [0.25, 0.04, 0.35]),
     ]
+    _DECOR_SOFT = [  # 床/沙发软装(不含立式 picture_frame / vase)
+        ("book", [0.18, 0.12, 0.03]),
+        ("plant_small", [0.2, 0.2, 0.35]),
+    ]
     decor_idx = 0
-    for pt, ppos, psize, _ in placed:
+    for pt, ppos, psize, _rot in placed:
         # Phase 9.2 · 更激进 · spec L398 要 60+ objects
         if pt in ("desk_standard", "table_coffee", "table_dining"):
-            n_decor = 6   # 桌面 · 书 + 杯 + 小盆栽 + 相框 + etc
+            n_decor = 6
+            decor_pool = _DECOR_TABLETOP
         elif pt in ("shelf_open", "closet_tall"):
-            n_decor = 8   # 架子 · 满格书
+            n_decor = 8
+            decor_pool = _DECOR_TABLETOP
         elif pt in ("sofa_2seat", "sofa_3seat", "bed_queen"):
-            n_decor = 2   # 抱枕等
+            n_decor = 2
+            decor_pool = _DECOR_SOFT  # Phase 12.1 · 床/沙发不放立式 picture_frame
         elif pt in ("chair_standard", "chair_lounge", "lamp_floor"):
-            n_decor = 1   # 配一本书或小物
+            n_decor = 1
+            decor_pool = _DECOR_TABLETOP
         else:
             n_decor = 0
+            decor_pool = _DECOR_TABLETOP
+        if n_decor == 0:
+            continue
+        # Phase 12.1 · 2D grid 放 · cols 按 主家具长宽比例选
+        ratio = psize[0] / max(psize[1], 0.1)
+        cols = max(1, min(n_decor, round(_m.sqrt(n_decor * ratio))))
+        rows = _m.ceil(n_decor / cols)
         for k in range(n_decor):
-            dtype, dsize = _DECOR_SIZES[decor_idx % len(_DECOR_SIZES)]
+            dtype, dsize = decor_pool[decor_idx % len(decor_pool)]
             decor_idx += 1
-            # 放在主家具顶上（z = 主家具高度 + decor/2）· x/y 偏移一点
-            offx = (k - n_decor/2 + 0.5) * 0.3
-            decor_pos = [round(ppos[0] + offx, 2), round(ppos[1], 2),
-                         round(psize[2] + dsize[2]/2, 2)]
+            col = k % cols
+            row = k // cols
+            # spread 限制在主家具内(留 5cm 边),不溢出
+            spread_x = max(psize[0] - dsize[0] - 0.1, 0.0)
+            spread_y = max(psize[1] - dsize[1] - 0.1, 0.0)
+            offx = ((col + 0.5) / cols - 0.5) * spread_x if cols > 1 else 0.0
+            offy = ((row + 0.5) / rows - 0.5) * spread_y if rows > 1 else 0.0
+            decor_pos = [
+                round(ppos[0] + offx, 2),
+                round(ppos[1] + offy, 2),
+                round(psize[2] + dsize[2] / 2, 2),
+            ]
             clutter.append((dtype, decor_pos, dsize, [0, 0, 0]))
 
     # 角落
