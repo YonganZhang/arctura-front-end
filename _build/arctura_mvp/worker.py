@@ -142,7 +142,29 @@ def run_one(job: dict):
     current_step = "init"  # 给 fatal handler 报"挂在哪一步"
 
     def on_event(evt, data):
+        # Phase 12.2 · 一劳永逸日志:既 push KV(SSE 给前端) · 也 print stdout(systemd journal)
+        # 所有 10 类事件 (artifact_start/_done/_skipped/_fail · blob_uploaded · materialized · ...) 自动获得 journal log
+        # 用户报"prod 不对" → journalctl --user -u arctura-worker | grep slug 5 秒定位
         push_event(job_id, evt, data)
+        # journal-friendly 一行格式 · grep 友好
+        try:
+            d = data or {}
+            name = d.get("name") or d.get("artifact") or ""
+            timing = d.get("timing_ms")
+            status_bits = []
+            if name: status_bits.append(f"name={name}")
+            if timing is not None: status_bits.append(f"{timing}ms")
+            if "reason" in d: status_bits.append(f"reason={d['reason'][:80]}")
+            if "output_path" in d: status_bits.append(f"out={Path(d['output_path']).name}")
+            if "engine" in d: status_bits.append(f"engine={d['engine']}")
+            if "error" in d:
+                err = d["error"] if isinstance(d["error"], str) else (d["error"] or {}).get("message", "?")
+                status_bits.append(f"err={str(err)[:120]}")
+            tail = " · ".join(status_bits) or json.dumps(d, ensure_ascii=False)[:120]
+            print(f"[evt] {evt} · slug={slug} · {tail}")
+        except Exception as _log_err:
+            # 日志格式化失败不该挂 worker · 静默吞
+            print(f"[evt] {evt} · slug={slug} · (log fmt err: {_log_err})", file=sys.stderr)
 
     _set_job_status(job_id, "running", {"started_at": time.time()})
 
