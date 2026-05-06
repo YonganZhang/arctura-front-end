@@ -2,6 +2,12 @@
 // POST /api/chat
 // body: { model: string, messages: [{role, content}], system?: string, max_tokens?: number }
 // response: { text: string, model: string, usage?: {...} }
+//
+// @deprecated 2026-05-06 · PolyU 接入深扫发现 codebase 0 fetch 调用
+//   被 /api/chat-edit (Plan mode 对话编辑) + /api/brief/chat (Brief SSE) 取代
+//   保留是因为可能有外部 user / 第三方在调 prod 端点(无法从 codebase 验证)
+//   handler 加 console.warn 让 Vercel logs 显出谁在调,观察 1 周无投诉再彻底删
+//   计划:观察期至 2026-05-13,无外部调用记录则 git rm + 改 Vercel 配置返 410 Gone
 
 export const config = { runtime: 'edge' };
 
@@ -13,6 +19,11 @@ function usesCompletionTokens(model) {
 }
 
 export default async function handler(req) {
+  // Deprecation telemetry · 让 Vercel logs 显出谁在调
+  const ua = req.headers.get('user-agent') || 'unknown';
+  const referer = req.headers.get('referer') || 'no-referer';
+  console.warn(`[DEPRECATED /api/chat] ua="${ua}" referer="${referer}" method=${req.method}`);
+
   if (req.method !== 'POST') {
     return new Response(JSON.stringify({ error: 'POST only' }), {
       status: 405,
