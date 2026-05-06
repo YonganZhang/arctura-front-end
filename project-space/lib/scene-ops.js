@@ -687,24 +687,3 @@ export function applyOps(scene, ops) {
   return { newScene, applied, rejected, derived };
 }
 
-// ───────── human-readable summary for UI ─────────
-
-export function summarizeOp(applied) {
-  const { op } = applied;
-  switch (op.op) {
-    case "move_object":    return `移动 ${op.id || op.id_or_name}`;
-    case "rotate_object":  return `旋转 ${op.id || op.id_or_name}`;
-    case "resize_object":  return `调整尺寸 ${op.id || op.id_or_name}`;
-    case "remove_object":  return `删除 ${op.id || op.id_or_name}`;
-    case "add_object":     return `添加 ${op.type}`;
-    case "move_wall":      return `移动墙 ${op.id}`;
-    case "resize_wall":    return `调整墙 ${op.id}`;
-    case "add_opening":    return `加 ${op.type} 到 ${op.wall_id}`;
-    case "remove_opening": return `删 opening ${op.id}`;
-    case "add_light":      return `加 ${op.type} 灯`;
-    case "change_light":   return `改灯光 ${op.id || op.id_or_name}`;
-    case "remove_light":   return `删灯 ${op.id || op.id_or_name}`;
-    case "change_material":return `改材质 ${op.target}`;
-    default:               return op.op;
-  }
-}
