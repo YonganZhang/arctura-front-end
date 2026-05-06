@@ -1,4 +1,4 @@
-"""MVP 生成 worker · 本机 tencent-hk 跑（systemd 或手动）
+"""MVP 生成 worker · PolyU 节点 systemd 常驻(2026-05-07 起 · tencent-hk 已 stop+disable backup)
 
 流程:
   1. brpop jobs:queue · 拿 job
@@ -10,9 +10,19 @@
 job 格式:
   {id, slug, tier, variant_count, render_engine?, queued_at}
 
-运行:
+部署 (PolyU):
+  systemd unit: ~/.config/systemd/user/arctura-worker.service
+  enable + start: systemctl --user enable --now arctura-worker
+  查日志: journalctl --user -u arctura-worker -f
+  重启: systemctl --user restart arctura-worker(每次 git pull 后跑)
+
+手动跑:
   source ~/.arctura-env
   python3 -m _build.arctura_mvp.worker
+
+诊断"prod 数据看着不对" → 看 worker git_rev:
+  - journalctl --user -u arctura-worker | grep 'git_rev'
+  - 或 redis-cli get worker:<host>:heartbeat → JSON.git_rev
 """
 from __future__ import annotations
 import json

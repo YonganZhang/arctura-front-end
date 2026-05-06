@@ -2,7 +2,12 @@
 
 ## arctura-worker.service
 
-MVP 生成 worker 的 systemd user 单元 · 在本机（如 tencent-hk）常驻跑。
+MVP 生成 worker 的 systemd user 单元 · 当前在 **PolyU 香港机**(P0 主控)常驻跑(2026-05-07 起)。
+
+### 部署历史
+- 初始: tencent-hk(腾讯云香港机, P1)启动 worker(2026-04-28)
+- 2026-05-07 PolyU 接管: PolyU systemctl enable + start · tencent-hk stop + disable(unit 留 backup)
+- 部署链路: cc 在 PolyU 改 → git push → Vercel auto-deploy + 本机 git pull + systemctl restart 一气呵成
 
 ### 安装（每台 worker 机跑一次）
 
