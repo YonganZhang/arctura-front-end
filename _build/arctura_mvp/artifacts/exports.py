@@ -12,6 +12,7 @@ LIGHT 不产 DXF（需 Pascal Editor · P2 建筑级）· 不产 真 IFC4（enri
 """
 from __future__ import annotations
 import json
+import os
 import shutil
 import subprocess
 import time
@@ -27,7 +28,29 @@ _BLENDER_HARNESS = CLI_ANYTHING_ROOT / "blender" / "agent-harness"
 if _BLENDER_HARNESS.exists() and str(_BLENDER_HARNESS) not in sys.path:
     sys.path.insert(0, str(_BLENDER_HARNESS))
 
-_BLENDER = Path.home() / ".local" / "blender" / "blender-4.2.3-linux-x64" / "blender"
+
+def _find_blender() -> Path:
+    """Phase 12.2 · 动态找 Blender · 不硬编码 tencent-hk 旧路径
+
+    优先级:
+      1. shutil.which("blender")  ← PATH(含 /usr/local/bin/blender 软链)
+      2. $BLENDER env var
+      3. PolyU 默认 /mnt/data/yongan/.local/blender-4.5/blender
+    """
+    p = shutil.which("blender")
+    if p:
+        return Path(p)
+    env_p = os.environ.get("BLENDER")
+    if env_p and Path(env_p).exists():
+        return Path(env_p)
+    polyu_default = Path("/mnt/data/yongan/.local/blender-4.5/blender")
+    if polyu_default.exists():
+        return polyu_default
+    # 占位 · 让 .exists() 返 False · 触发 skipped
+    return Path("/nonexistent/blender")
+
+
+_BLENDER = _find_blender()
 
 
 def _build_blender_script(scene: dict, out_dir: Path, slug: str) -> str:

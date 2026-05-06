@@ -384,8 +384,28 @@ def main_loop(max_iter: int = None):
                 time.sleep(POLL_INTERVAL)
                 continue
             job = json.loads(raw)
-            print(f"[worker] picked job: {job.get('id')} · {job.get('slug')} · tier={job.get('tier')}")
-            run_one(job)
+            job_id = job.get('id')
+            slug = job.get('slug')
+            tier = job.get('tier')
+            t_pick = time.time()
+            print(f"[worker] picked job: {job_id} · {slug} · tier={tier}")
+            try:
+                run_one(job)
+                # Phase 12.2 · 加 done 日志 · 让"job 卡住" 能立即定位
+                # 读最终 state(可能 live / live_partial / generating_failed)
+                try:
+                    final_state = "unknown"
+                    p = kv.get(K.project(slug))
+                    if p:
+                        final_state = json.loads(p).get("state", "unknown")
+                except Exception:
+                    pass
+                dur = int(time.time() - t_pick)
+                print(f"[worker] done job: {job_id} · {slug} · final_state={final_state} · {dur}s")
+            except Exception as run_err:
+                dur = int(time.time() - t_pick)
+                print(f"[worker] FAIL job: {job_id} · {slug} · {dur}s · err={run_err}", file=sys.stderr)
+                # 不 raise · 让 main_loop 继续拿下一 job
         except KeyboardInterrupt:
             print("[worker] stopped by user"); break
         except Exception as e:
