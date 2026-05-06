@@ -1,7 +1,7 @@
 // KV key 命名单一真源 · JS Edge 侧
 //
 // 对称镜像见 _build/arctura_mvp/store/keys.py（Python 侧）· 改一边必须改另一边。
-// 有双端 snapshot 测试（_tests/kv-keys-cross-lang.spec.mjs）保护。
+// sync 验证:本文件 17 K.* · keys.py 17 def · 双端清单一致。
 
 export const K = {
   project:          (slug) => `project:${slug}`,

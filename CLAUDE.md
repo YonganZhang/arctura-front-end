@@ -76,10 +76,12 @@ brief
 - `_build/arctura_mvp/schemas/state-machine.json` + `api/_shared/state-machine.json`
 - `_build/arctura_mvp/store/keys.py` (Python K.xxx) + `api/_shared/kv-keys.js` (JS K.xxx)
 
-### 测试（Phase 7.1 · 2026-04-23）
-- 单元：`npm run test:unit` · pytest **78 test** · 0.24s · 覆盖 tiers / state / brief_engine / _core / cross-lang / **scene generator / artifacts meta / enqueue_job**
-- E2E：`npm test` · Playwright Wizard 4 + Phase6D 4 = 8 test
-- 全量：`npm run test:all`
+### 测试（Phase 12 · 2026-05-06 PolyU 接入深扫核对）
+- 单元：`npm run test:unit` · pytest **256 test**(248 pass + 8 skipped) · 覆盖 tiers / state / brief_engine / _core / cross-lang / scene generator / artifacts meta / enqueue_job / derive / overrides / palette / resolver
+- JS 单元：`npm run test:js-unit` · **102 test**(`_tests/unit/*.test.mjs`) + `project-space/lib/*.test.mjs` 88 test 单跑(漏在 test:all 外)
+- E2E：`npm test` · Playwright **smoke 111** + chat 8 + Wizard 3 + Phase6D 4 + phase94 5 + scene 3
+- 全量：`npm run test:all`(unit + js-unit + smoke + chat 共 469 真测,不含 88 漏跑)
+- 24 模块烟雾：`bash wiki-methodology/modules/_runners/run-all-smoke.sh` · 25/25
 
 ### MCP Server（Phase 7.1 · 真接 worker）
 - `_build/arctura_mvp/mcp_server.py` · 9 tools · stdio JSON-RPC 2.0

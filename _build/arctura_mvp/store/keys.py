@@ -1,6 +1,7 @@
 """KV key 命名单一真源 · Python 侧
 
-对称镜像见 api/_shared/kv-keys.js（JS Edge 侧）· 改这里必须改那里 · 有双端 snapshot 测试保护。
+对称镜像见 api/_shared/kv-keys.js（JS Edge 侧）· 改这里必须改那里。
+sync 验证:本文件 17 def · kv-keys.js 17 K.* · 双端清单一致。
 """
 from __future__ import annotations
 

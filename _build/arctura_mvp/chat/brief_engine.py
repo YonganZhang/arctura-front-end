@@ -51,16 +51,6 @@ def _path_get(obj: dict, path) -> object:
     return cur
 
 
-def _path_set(obj: dict, path, value):
-    if isinstance(path, str):
-        obj[path] = value
-        return
-    cur = obj
-    for k in path[:-1]:
-        cur = cur.setdefault(k, {})
-    cur[path[-1]] = value
-
-
 def _nonempty(v) -> bool:
     if v is None:
         return False
