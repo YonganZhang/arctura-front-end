@@ -76,7 +76,7 @@ def test_p4_render_path_a_triggers_v4(tmp_path, monkeypatch):
         )
         # 也写个假 room.json 让 v4 看到 LIGHT 已 done
         (tmp_path / "room.json").write_text("{}")
-        res = scene_formal.produce({"project": project, "sb_dir": tmp_path})
+        res = scene_formal.produce({"project": project, "sb_dir": tmp_path, "fe_root": tmp_path})
         # 即便 mock · v4 路径触发也行(allow done OR error)
         assert (res.meta or {}).get("mode") in ("v4_path_a", "v3_golden_reuse")
 
@@ -270,6 +270,6 @@ def test_p5_env_path_a_triggers_v4(tmp_path, monkeypatch):
         slug="test-env-v4", display_name="env", scene={}, artifacts={},
     )
     (tmp_path / "room.json").write_text("{}")
-    res = scene_formal.produce({"project": project, "sb_dir": tmp_path})
+    res = scene_formal.produce({"project": project, "sb_dir": tmp_path, "fe_root": tmp_path})
     # env 路径触发即 OK
     assert (res.meta or {}).get("mode") in ("v4_path_a", "v3_golden_reuse")

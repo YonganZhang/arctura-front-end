@@ -297,11 +297,17 @@ def produce(ctx, *, on_event: Optional[Callable] = None) -> ArtifactResult:
         or getattr(project, "render_engine", None) == "path_a"
     )
     if path_a_requested:
-        from ..teacher_authority.mesh_library_runner import run_path_a
-        # 先确保 LIGHT scene 已写 room.json + _render_script.py(老师 mesh-library 入口需要)
-        from .scene import produce as light_produce
-        light_res = light_produce(ctx, on_event=on_event)
-        if light_res.status == "done":
+        try:
+            from ..teacher_authority.mesh_library_runner import run_path_a
+            from .scene import produce as light_produce
+            light_res = light_produce(ctx, on_event=on_event)
+            if light_res.status != "done":
+                return ArtifactResult(
+                    name="scene", status="error",
+                    timing_ms=int((time.time() - t0) * 1000),
+                    error={"name": "path_a_light_prereq_fail",
+                           "message": f"path_a 前置 LIGHT scene 未 done · light_status={light_res.status} · light_reason={getattr(light_res, 'reason', None)}"},
+                )
             summary = run_path_a(sb_dir,
                                  use_clip=(project.brief or {}).get("use_clip", False),
                                  with_qa_vision=(project.brief or {}).get("tier") in ("full", "selection"))
@@ -317,10 +323,21 @@ def produce(ctx, *, on_event: Optional[Callable] = None) -> ArtifactResult:
                     "mode": "v4_path_a",
                     "renders_count": len(renders),
                     "path_a_summary": summary,
-                    "policy": "v4 · 老师 mesh-library Path A 真实家具(room_to_room_v2 → layout_validate → render_multi_assets → validate_reports[+ qa_vision])",
+                    "policy": "v4 · 老师 mesh-library Path A 真实家具",
                 },
                 error=None if summary["ok"] else {"name": "path_a_step_fail",
-                                                    "trace_tail": f"fatal_at={summary['fatal_at']}"},
+                                                  "message": f"fatal_at={summary.get('fatal_at')} · steps_count={summary.get('steps_count')}",
+                                                  "trace_tail": f"fatal_at={summary.get('fatal_at')}"},
+            )
+        except Exception as e:
+            import traceback
+            tb_tail = "\n".join(traceback.format_exc().splitlines()[-8:])
+            return ArtifactResult(
+                name="scene", status="error",
+                timing_ms=int((time.time() - t0) * 1000),
+                error={"name": type(e).__name__,
+                       "message": f"path_a 异常 · {type(e).__name__}: {str(e)[:200]}",
+                       "trace_tail": tb_tail},
             )
 
     if _BLENDER is None or not _BLENDER.exists():
