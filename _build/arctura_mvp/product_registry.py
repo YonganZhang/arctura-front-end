@@ -99,6 +99,7 @@ _PRODUCTS_LIST: list[ProductSpec] = [
         key="renders", id=4, name="渲染 × 8", lang_hint_en="Renders × 8",
         tiers=["concept", "deliver", "quote", "full", "select"],
         light_producer="renders",
+        formal_producer="renders_formal",  # Phase 12.D.2 · 读 scene_formal 已生成 8 PNG
         full_pipeline="P1/P2 Blender Eevee · + P4 AI 增强（可选）",
         spec_ref="L399",
         depends_on=["scene"],
