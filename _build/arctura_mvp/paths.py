@@ -31,11 +31,34 @@ MONOREPO_ROOT = REPO_ROOT.parent                     # Building-CLI-Anything/
 CLI_ANYTHING_ROOT = MONOREPO_ROOT / "CLI-Anything"
 STARTUP_BUILDING_ROOT = MONOREPO_ROOT / "StartUP-Building"
 
-# StartUP-Building/playbooks/ 下的资源
+# StartUP-Building/playbooks/ 下的资源(Phase 12.末.G · v2 codemap 真接 SSOT)
 PLAYBOOKS_ROOT = STARTUP_BUILDING_ROOT / "playbooks"
 PLAYBOOKS_SCRIPTS = PLAYBOOKS_ROOT / "scripts"
-PLAYBOOKS_SCHEMAS = PLAYBOOKS_ROOT / "schemas"
-PLAYBOOKS_DEFAULTS = PLAYBOOKS_ROOT / "defaults"
+PLAYBOOKS_SCHEMAS = PLAYBOOKS_ROOT / "schemas"      # 3 schema · brief-interior/architecture/project
+PLAYBOOKS_DEFAULTS = PLAYBOOKS_ROOT / "defaults"    # 4 SSOT · hk_market/region-code-map/comparison-cameras/site-entourage-catalog
+PLAYBOOKS_PROMPTS = PLAYBOOKS_ROOT / "prompts"      # 5 LLM 模板 · brief-intake/asset-intake
+PLAYBOOKS_TEMPLATES = PLAYBOOKS_ROOT / "templates"  # _render_script_footer.py 等
+
+# 老师真权威子模块(playbooks/scripts 下)· 按需 sys.path import
+PLAYBOOKS_SCRIPTS_SUBDIRS = [
+    "ab-comparison", "ai_render", "asset-intake", "brief-intake",
+    "case-study", "mesh-library", "site-entourage",
+]
+
+# StartUP-Building 顶层产物(全局聚合)
+STUDIO_DEMO_ROOT = STARTUP_BUILDING_ROOT / "studio-demo"
+STUDIO_DEMO_MVP_DIR = STUDIO_DEMO_ROOT / "mvp"        # 42 interior MVP
+STUDIO_DEMO_ARCH_DIR = STUDIO_DEMO_ROOT / "arch-mvp"  # 18 architecture MVP
+
+# 资产源(Path A · 不进 git · symlink/lazy-read)
+ASSETS_FURNITURE_ROOT = STARTUP_BUILDING_ROOT / "assets-furniture"
+BIM_CATALOG_JSON = ASSETS_FURNITURE_ROOT / "manifests" / "bim-catalog.json"
+BIM_CATALOG_EMBEDDINGS = ASSETS_FURNITURE_ROOT / "manifests" / "bim-catalog-embeddings.npz"
+
+# 老师 .claude/skills(项目级 skill)
+TEACHER_SKILLS_ROOT = STARTUP_BUILDING_ROOT / ".claude" / "skills"
+TEACHER_MARP_DECK_SKILL = TEACHER_SKILLS_ROOT / "marp-deck"
+TEACHER_CLIENT_PORTAL_SKILL = TEACHER_SKILLS_ROOT / "client-portal"
 
 # CLI-Anything agent-harness 入口（pip install -e 后从这里 import）
 CLI_HARNESS_ROOTS = {
@@ -77,6 +100,16 @@ def verify_paths() -> dict:
         "PLAYBOOKS_SCRIPTS": PLAYBOOKS_SCRIPTS.exists(),
         "PLAYBOOKS_SCHEMAS": PLAYBOOKS_SCHEMAS.exists(),
         "PLAYBOOKS_DEFAULTS": PLAYBOOKS_DEFAULTS.exists(),
+        "PLAYBOOKS_PROMPTS": PLAYBOOKS_PROMPTS.exists(),
+        "PLAYBOOKS_TEMPLATES": PLAYBOOKS_TEMPLATES.exists(),
+        "STUDIO_DEMO_MVP_DIR": STUDIO_DEMO_MVP_DIR.exists(),
+        "STUDIO_DEMO_ARCH_DIR": STUDIO_DEMO_ARCH_DIR.exists(),
+        "ASSETS_FURNITURE_ROOT": ASSETS_FURNITURE_ROOT.exists(),
+        "BIM_CATALOG_JSON": BIM_CATALOG_JSON.exists(),
+        "BIM_CATALOG_EMBEDDINGS": BIM_CATALOG_EMBEDDINGS.exists(),
+        "TEACHER_MARP_DECK_SKILL": TEACHER_MARP_DECK_SKILL.exists(),
+        "TEACHER_CLIENT_PORTAL_SKILL": TEACHER_CLIENT_PORTAL_SKILL.exists(),
+        **{f"PLAYBOOK_SUB_{s}": (PLAYBOOKS_SCRIPTS / s).exists() for s in PLAYBOOKS_SCRIPTS_SUBDIRS},
         **{f"HARNESS_{k}": v.exists() for k, v in CLI_HARNESS_ROOTS.items()},
     }
 

@@ -110,6 +110,17 @@ def _derived_metrics_from_editable(editable: dict, brief: dict) -> dict:
     # 单方价 (HK$/m²) · 走 resolver 注册表（Phase 11.7 修同类塌缩 · LLM 写 "Singapore" 不再 fallback HK）
     region_canonical = get_resolver("region").resolve_first(region_raw)
     cost_per_m2 = COST_PER_M2_BY_REGION[region_canonical]
+    # Phase 12.末.G · region=HK 时叠加老师 hk_market.json 业态修正(15 业态 · low/mid/high)
+    if region_canonical == "HK":
+        business_type = editable.get("business_type") or editable.get("space_type")
+        if business_type:
+            try:
+                from ..teacher_authority.ssot import hk_budget_per_m2
+                teacher_price = hk_budget_per_m2(business_type, "mid")
+                if teacher_price:
+                    cost_per_m2 = teacher_price  # 老师 SSOT 优先
+            except Exception:
+                pass
     cost_total = round(area * cost_per_m2)
     co2 = round(eui * area * 0.4 / 1000, 2)   # CO2 ton/yr (HK 排放因子 0.4)
 
