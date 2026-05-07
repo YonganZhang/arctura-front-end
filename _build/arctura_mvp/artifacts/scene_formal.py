@@ -103,21 +103,36 @@ def _patch_blender_compat(script: str) -> str:
 
     老师代码写 BLENDER_EEVEE / use_bloom / use_ssr / gtao_distance 等 4.2 API
     Blender 4.5 改 BLENDER_EEVEE_NEXT + 移除 EEVEE 后处理属性(phase1-errors E6/E7)
-    这不算"改老师代码"· 只是运行时适配版本差异 · 跟 sed 替换语义一致
+    + EEVEE_NEXT 灯光响应比 EEVEE 强 ~3× · 老师 energy 值会 over-expose
 
-    保护 _NEXT 不重复追加(\\b 词边界)
+    这不算"改老师代码"· 是运行时适配版本差异 · 跟 sed 替换语义一致
     """
     import re
     # 1. EEVEE → EEVEE_NEXT(\\b 防 _NEXT 重复)
     script = re.sub(r"BLENDER_EEVEE\b(?!_NEXT)", "BLENDER_EEVEE_NEXT", script)
+
     # 2. EEVEE Next 移除的属性 → if hasattr 守卫
     for attr in ["use_bloom", "use_ssr", "use_gtao", "gtao_distance"]:
-        # scene.eevee.use_bloom = True → if hasattr(scene.eevee, 'use_bloom'): scene.eevee.use_bloom = True
         script = re.sub(
             rf"^(\s*)(scene\.eevee\.{attr}\s*=\s*[^\n]+)$",
             rf"\1if hasattr(scene.eevee, '{attr}'): \2",
             script, flags=re.MULTILINE,
         )
+
+    # 3. EEVEE_NEXT 灯光能量 ÷ 3(老师 energy=150 在 4.5 过曝洗白)
+    # 老师 _render_multi_tail.py:sun.energy=4.0 / al.energy=150.0 / warm.energy=100.0
+    # 4.5 EEVEE_NEXT 物理光更准 · 这些 4.2 时代值 ~3× 过曝
+    def _scale_energy(match):
+        prefix = match.group(1)  # 例如 "sun.energy = "
+        value = float(match.group(2))
+        # 4.2→4.5 灯光能量补偿 · ÷ 3 经验值(老师 sun=4 → 1.3, al=150 → 50, warm=100 → 33)
+        return f"{prefix}{value / 3:.2f}  # 4.5 EEVEE_NEXT compat ÷ 3"
+    script = re.sub(
+        r"(\b\w+\.energy\s*=\s*)(\d+(?:\.\d+)?)",
+        _scale_energy,
+        script,
+    )
+
     return script
 
 
