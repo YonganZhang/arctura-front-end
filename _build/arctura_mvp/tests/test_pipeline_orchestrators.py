@@ -212,6 +212,89 @@ def test_r12_p0_unknown_kind(tmp_path):
     assert not r["ok"]
 
 
+# ── R13 · 阶段 4 · spec_enforcer 真 enforce ────────────────
+def test_r13_enforce_full_tier_empty_dir(tmp_path):
+    """空 mvp dir · enforce 应返 missing 多项 + ok=False"""
+    from _build.arctura_mvp.teacher_authority.spec_enforcer import enforce_full_tier_completeness
+    r = enforce_full_tier_completeness(tmp_path)
+    assert not r["ok"]
+    assert len(r["missing"]) > 5
+
+
+def test_r13_enforce_render_count_path_a():
+    """Path A 必 6 张 · 路径 spec lock"""
+    from _build.arctura_mvp.teacher_authority.spec_enforcer import enforce_render_count
+    import tempfile
+    with tempfile.TemporaryDirectory() as d:
+        # 0 张 PNG · Path A 应 fail
+        r = enforce_render_count(Path(d), "path_a")
+        assert not r["ok"]
+        assert r["expected"] == 6
+
+
+def test_r13_enforce_compliance_code():
+    """5 法规 enforce + EUI advisory"""
+    from _build.arctura_mvp.teacher_authority.spec_enforcer import enforce_compliance_code
+    r_ok = enforce_compliance_code("HK")
+    assert r_ok["ok"] and r_ok["is_advisory"]
+    r_bad = enforce_compliance_code("FAKE")
+    assert not r_bad["ok"]
+
+
+def test_r13_enforce_change_category():
+    """老师 15 客户改类 enforce"""
+    from _build.arctura_mvp.teacher_authority.spec_enforcer import enforce_change_category
+    assert enforce_change_category("材质/颜色")["ok"]
+    assert enforce_change_category("房间尺寸")["ok"]
+    assert not enforce_change_category("乱写的类别")["ok"]
+
+
+# ── R14 · chat-edit smart rerun(老师 change-impact 接 op)───
+def test_r14_smart_rerun_for_op_color():
+    """客户改 set_palette → must_artifacts: renders + energy_report + case_study"""
+    from _build.arctura_mvp.teacher_authority.chat_edit_smart_rerun import (
+        smart_rerun_for_chat_edit,
+    )
+    r = smart_rerun_for_chat_edit({"type": "set_palette", "value": ["#fff"]})
+    assert r["category"] == "材质/颜色"
+    assert "renders" in r["must_artifacts"]
+
+
+def test_r14_smart_rerun_for_op_room_size():
+    """客户改 set_area_sqm → must_artifacts: 多个(scene/renders/floorplan/exports/energy_report)"""
+    from _build.arctura_mvp.teacher_authority.chat_edit_smart_rerun import (
+        smart_rerun_for_chat_edit,
+    )
+    r = smart_rerun_for_chat_edit({"type": "set_area_sqm", "value": 100})
+    assert r["category"] == "房间尺寸"
+    must = r["must_artifacts"]
+    assert "scene" in must
+    assert "renders" in must
+    assert "floorplan" in must
+    assert "energy_report" in must
+
+
+def test_r14_smart_rerun_unknown_op_default_full():
+    """未知 op 类 → 保守默认全重跑(_warning 标记)"""
+    from _build.arctura_mvp.teacher_authority.chat_edit_smart_rerun import (
+        smart_rerun_for_chat_edit,
+    )
+    r = smart_rerun_for_chat_edit({"type": "unknown_op_xyz"})
+    assert "_warning" in r
+    assert r["category"] is None
+
+
+# ── R15 · drift_detector 真追老师 git ──────────────────────
+def test_r15_drift_detector_reads_teacher_git():
+    from _build.arctura_mvp.teacher_authority.drift_detector import detect_drift
+    r = detect_drift()
+    if not r["current_head"]:
+        pytest.skip("老师 git 不可达")
+    assert r["current_head"]
+    assert "recent_commits" in r
+    assert r["zhiling_specs_count"] >= 30  # 老师 33 spec
+
+
 def test_r5_dispatcher_no_decks_dir(tmp_path):
     """无 decks/ 应返 error"""
     from _build.arctura_mvp.teacher_authority.stakeholder_dispatcher import (
