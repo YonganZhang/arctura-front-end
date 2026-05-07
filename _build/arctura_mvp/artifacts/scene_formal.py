@@ -1,25 +1,18 @@
-"""scene_formal · Phase 12.D.1 · 真接老师 Blender pipeline
+"""scene_formal · Phase 12.Z · 100% 用老师 _render_script.py 作权威
 
-跟 LIGHT scene.py 的关系:
-  - LIGHT scene.py → 跑 brief→objects/lights/materials 几何(快 · prod 默认)
-  - scene_formal.py → 在 LIGHT 几何之上跑 Blender headless 真渲染
-                    → 输出 8 张 PNG + 9 字段 room.json(对齐老师 studio-demo 标准)
+用户原话:"100% 以我老师的代码为权威 · 有些文件直接复制他的来用就行了"
+Codex 洞察:"FORMAL SSIM 0.80 = 没真正执行老师 _render_script.py · 必须真用老师 family-parts geometry"
 
-老师真 pipeline 参考:
-  .claude/skills/marp-deck/scripts/_render_multi_tail.py(8 视角 cameras 模板)
-  本仓 _build/arctura_mvp/artifacts/exports.py::_build_blender_script(已有 scene→Blender)
+实现:
+  1. 按 brief.space.type 选 teacher_authority/render_scripts/<closest_mvp>.py 作 scene 几何 head
+  2. 读 teacher_authority/marp_deck_scripts/_render_multi_tail.py 作 cameras + render tail
+  3. 模仿老师 setup_mvp_render.py 流程:截 head 在 '# ── Cameras' 标记前 + 拼 tail(替换 ROOM_LEN/WID/HT/RENDER_DIR)
+  4. blender --background --python · 真跑老师风格 family-parts geometry
+  5. 输出真 8 PNG(每个家具是 multi-cube 拼接 · 跟老师真样品 SSIM 期望 ≥ 0.85)
 
-工作流:
-  1. brief + LIGHT scene generator 拿到 scene dict
-  2. 复用 exports._build_blender_script 生成 scene 几何 Blender 脚本
-  3. 加 _render_multi_tail 风格的 8 视角 cameras + 渲染命令
-  4. blender --background --python <script>(真跑 · 预估 5-15 min)
-  5. 输出 8 张 PNG 到 sb_dir/renders/ + 9 字段 room.json 到 sb_dir/
-
-依赖:
-  - Blender 4.5.9+(/usr/local/bin/blender 软链 + ~/.arctura-env PATH)
-  - exports._build_blender_script(已存在)
-  - scene generator(LIGHT 模式)输出 scene dict
+跟旧 scene_formal 区别:
+  - 旧:LIGHT scene → exports._build_blender_script 写 1 cube/家具 → 跟老师 family-parts 差远
+  - 新:**直接用老师 _render_script.py**(已含 Desk + DeskLegL + DeskLegR + Chair + ChairBack + ArmChair 等真 family-parts)
 """
 from __future__ import annotations
 import json
@@ -28,13 +21,41 @@ import shutil
 import subprocess
 import time
 from pathlib import Path
-from typing import Callable, Optional
+from typing import Callable, Optional, Tuple
 
 from ..types import ArtifactResult
 
 
+# 老师权威文件目录
+_AUTHORITY_DIR = Path(__file__).parent.parent / "teacher_authority"
+_RENDER_SCRIPTS_DIR = _AUTHORITY_DIR / "render_scripts"
+_TAIL_PATH = _AUTHORITY_DIR / "marp_deck_scripts" / "_render_multi_tail.py"
+
+
+# brief.space.type → 5 个老师真 MVP template 之一 · 选最近的
+_TYPE_TO_TEMPLATE = {
+    # 直接 enum 命中
+    "study":       "01-study-room",
+    "cafe":        "03-coffee-shop",
+    "fitness":     "05-fitness-studio",
+    "office":      "13-ai-startup-office",
+    "bedroom":     "01-study-room",  # 卧室借书房 layout(都有桌椅 · 家具规模相近)
+    "living_room": "13-ai-startup-office",  # 客厅借办公室(沙发椅/桌)
+    "dining":      "03-coffee-shop",  # 餐厅借咖啡店(桌椅 + 吧台)
+    "retail":      "03-coffee-shop",  # 零售借咖啡店(展示柜)
+    "gallery":     "13-ai-startup-office",  # 画廊借开放办公区
+    "clinic":      "13-ai-startup-office",  # 诊所借办公(基础桌椅 + 设备区)
+    "multipurpose": "13-ai-startup-office",  # 多功能借开放办公
+    # 中文 fallback
+    "书房":        "01-study-room",
+    "咖啡":        "03-coffee-shop",
+    "健身":        "05-fitness-studio",
+    "办公":        "13-ai-startup-office",
+    "卧室":        "01-study-room",
+}
+
+
 def _find_blender() -> Optional[Path]:
-    """同 exports.py · 三级 fallback 找 Blender"""
     p = shutil.which("blender")
     if p:
         return Path(p)
@@ -50,162 +71,101 @@ def _find_blender() -> Optional[Path]:
 _BLENDER = _find_blender()
 
 
-# 8 视角 camera 模板(参考 _render_multi_tail.py · 老师标准)
-# (name, location_factor, target_factor, lens, is_ortho, hide_ceiling, hide_walls)
-SHOTS_TEMPLATE = """
-# ── Lights + Cameras · 8 视角 · 参考老师 _render_multi_tail.py ─────────────────
-# Phase 12.D.1 fix: exports.py 脚本是 export 专用不加灯 · 这里补 SunMain + ceiling AREA + WarmAccent
-import mathutils
-import math as _m
-from pathlib import Path
+def _select_template(brief: dict) -> Tuple[Path, str]:
+    """根据 brief.space.type 选 5 个老师真 MVP template 之一
 
-# 用 bpy_scene 别名(exports.py 脚本里 scene 是 dict from json.loads · 避免冲突)
-bpy_scene = bpy.context.scene
+    返 (template_path, mvp_slug)
+    """
+    space = brief.get("space") or {}
+    space_type = (space.get("type") or "").lower().strip()
+    # 兼容老师 brief schema(room.type 而不是 space.type)
+    if not space_type:
+        room = brief.get("room") or {}
+        space_type = (room.get("type") or "").lower().strip()
 
-# 调暗 world ambient(老师标准)
-_world = bpy.data.worlds.get('World')
-if _world and _world.node_tree:
-    _bg = _world.node_tree.nodes.get('Background')
-    if _bg:
-        _bg.inputs[0].default_value = (0.45, 0.48, 0.52, 1.0)
-        _bg.inputs[1].default_value = 0.8
+    # 严格匹配 enum / 中文
+    template_slug = _TYPE_TO_TEMPLATE.get(space_type, "01-study-room")  # 默认 study
 
-# Sun 主光
-_sun = bpy.data.lights.new(name='SunMain', type='SUN')
-_sun.energy = 4.0
-_sun.color = (1.0, 0.96, 0.9)
-_sun.angle = 0.05
-_sun_obj = bpy.data.objects.new('SunMain', _sun)
-bpy.context.collection.objects.link(_sun_obj)
-_sun_obj.location = (ROOM_LEN * 0.4, -ROOM_WID * 0.5, ROOM_HT * 4)
-_sun_obj.rotation_euler = (_m.radians(35.0), _m.radians(15.0), _m.radians(-30.0))
+    # 部分关键词 fallback
+    if template_slug == "01-study-room" and space_type:
+        if any(k in space_type for k in ["cafe", "coffee", "咖啡"]):
+            template_slug = "03-coffee-shop"
+        elif any(k in space_type for k in ["fit", "gym", "健身"]):
+            template_slug = "05-fitness-studio"
+        elif any(k in space_type for k in ["office", "办公", "校长"]):
+            template_slug = "13-ai-startup-office"
 
-# Ceiling grid 6 灯(3×2)
-for _fx in [-0.35, 0.0, 0.35]:
-    for _fy in [-0.3, 0.3]:
-        _al = bpy.data.lights.new(name=f'Ceil_{_fx}_{_fy}', type='AREA')
-        _al.energy = 150.0
-        _al.color = (1.0, 0.97, 0.93)
-        _al.size = 1.5
-        _al_obj = bpy.data.objects.new(f'Ceil_{_fx}_{_fy}', _al)
-        bpy.context.collection.objects.link(_al_obj)
-        _al_obj.location = (ROOM_LEN * _fx, ROOM_WID * _fy, ROOM_HT - 0.15)
+    return _RENDER_SCRIPTS_DIR / f"{template_slug}.py", template_slug
 
-# 暖色辅光
-_warm = bpy.data.lights.new(name='WarmAccent', type='AREA')
-_warm.energy = 100.0
-_warm.color = (1.0, 0.82, 0.55)
-_warm.size = 1.0
-_warm_obj = bpy.data.objects.new('WarmAccent', _warm)
-bpy.context.collection.objects.link(_warm_obj)
-_warm_obj.location = (ROOM_LEN * 0.3, ROOM_WID * 0.4, ROOM_HT - 0.4)
 
-# 渲染设置(EEVEE_NEXT)
-bpy_scene.render.engine = 'BLENDER_EEVEE_NEXT'
-bpy_scene.eevee.taa_render_samples = 64
-bpy_scene.view_settings.view_transform = 'Filmic'
-bpy_scene.view_settings.look = 'Medium Contrast'
-bpy_scene.view_settings.exposure = -0.5
+def _patch_blender_compat(script: str) -> str:
+    """运行时兼容 patch · Blender 4.5 vs 老师 4.2 时代
 
-HX = ROOM_LEN / 2 - 0.6
-HY = ROOM_WID / 2 - 0.6
+    老师代码写 BLENDER_EEVEE / use_bloom / use_ssr / gtao_distance 等 4.2 API
+    Blender 4.5 改 BLENDER_EEVEE_NEXT + 移除 EEVEE 后处理属性(phase1-errors E6/E7)
+    这不算"改老师代码"· 只是运行时适配版本差异 · 跟 sed 替换语义一致
 
-SHOTS = [
-    ('01_hero_corner',   ( HX, -HY, 2.2),                   (-HX*0.5,  HY*0.4, 1.0), 22, False, False, []),
-    ('02_reception',     (-HX,  HY*0.6, 1.7),               (-HX*0.4,  HY*0.1, 1.2), 28, False, False, []),
-    ('03_main_zone',     ( HX*0.7,  HY*0.7, 1.7),           (0.0, -HY*0.1, 1.0),     28, False, False, []),
-    ('04_feature_zone',  ( HX*0.9, -HY*0.3, 1.7),           ( HX*0.5,  HY*0.3, 1.2), 24, False, False, []),
-    ('05_lounge_zone',   (-HX*0.4,  HY, 1.7),               ( HX*0.7, -HY*0.7, 1.0), 28, False, False, []),
-    ('06_back_corner',   ( HX*0.2, -HY, 1.7),               (-HX*0.5, -HY*0.7, 1.4), 35, False, False, []),
-    ('07_top_ortho',     ( 0.0,  0.0, ROOM_HT * 4),         (0.0, 0.0, 0.0),         None, True, True, []),
-    ('08_birds_eye_3d',  (-ROOM_LEN, -ROOM_WID, ROOM_HT*3), (0.0, 0.0, 0.5),         35, False, True, []),
-]
+    保护 _NEXT 不重复追加(\\b 词边界)
+    """
+    import re
+    # 1. EEVEE → EEVEE_NEXT(\\b 防 _NEXT 重复)
+    script = re.sub(r"BLENDER_EEVEE\b(?!_NEXT)", "BLENDER_EEVEE_NEXT", script)
+    # 2. EEVEE Next 移除的属性 → if hasattr 守卫
+    for attr in ["use_bloom", "use_ssr", "use_gtao", "gtao_distance"]:
+        # scene.eevee.use_bloom = True → if hasattr(scene.eevee, 'use_bloom'): scene.eevee.use_bloom = True
+        script = re.sub(
+            rf"^(\s*)(scene\.eevee\.{attr}\s*=\s*[^\n]+)$",
+            rf"\1if hasattr(scene.eevee, '{attr}'): \2",
+            script, flags=re.MULTILINE,
+        )
+    return script
 
-def look_at(cam_obj, target):
-    direction = mathutils.Vector(target) - mathutils.Vector(cam_obj.location)
-    rot_quat = direction.to_track_quat('-Z', 'Y')
-    cam_obj.rotation_euler = rot_quat.to_euler()
 
-# Phase 12.D.1 fix · exports.py 脚本里 scene 是 dict(json.loads)· 用 bpy_scene 避冲突
-bpy_scene = bpy.context.scene
-bpy_scene.render.image_settings.file_format = 'PNG'
-bpy_scene.render.resolution_x = 1600
-bpy_scene.render.resolution_y = 1000
+def _build_render_multi_py(template_path: Path, room_dims: dict, render_dir: Path) -> str:
+    """模仿老师 setup_mvp_render.py 流程拼 head + tail · 100% 复用老师代码
 
-RENDER_DIR = Path(r'__RENDER_DIR_PLACEHOLDER__')
-RENDER_DIR.mkdir(parents=True, exist_ok=True)
-
-for name, loc, target, lens, is_ortho, hide_ceil, hide_walls in SHOTS:
-    cam_data = bpy.data.cameras.new(name=f'Cam_{name}')
-    if is_ortho:
-        cam_data.type = 'ORTHO'
-        cam_data.ortho_scale = max(ROOM_LEN, ROOM_WID) * 1.1
+    head = 老师 _render_script.py 截到 '# ── Cameras' 标记前(scene 几何)
+    tail = 老师 _render_multi_tail.py 替换 ROOM_LEN/WID/HT/RENDER_DIR
+    + Blender 4.5 兼容 patch(EEVEE → EEVEE_NEXT · phase1-errors E6 同款)
+    """
+    # 1. read head(老师 scene 几何 · 不改)
+    src_lines = template_path.read_text().splitlines()
+    cut = next((i for i, ln in enumerate(src_lines) if ln.startswith("# ── Cameras")), None)
+    if cut is None:
+        head = template_path.read_text()
     else:
-        cam_data.type = 'PERSP'
-        cam_data.lens = lens
-        cam_data.sensor_width = 36.0
-    cam_data.clip_start = 0.05
-    cam_data.clip_end = 200.0
-    cam_obj = bpy.data.objects.new(f'Cam_{name}', cam_data)
-    bpy.context.collection.objects.link(cam_obj)
-    cam_obj.location = loc
-    look_at(cam_obj, target)
-    bpy_scene.camera = cam_obj
-    out = RENDER_DIR / f'{name}.png'
-    bpy_scene.render.filepath = str(out)
-    bpy.ops.render.render(write_still=True)
-    print(f'[FORMAL_RENDER_OK] {out}')
+        head = "\n".join(src_lines[:cut]) + "\n"
 
-print('FORMAL_RENDER_DONE')
-"""
+    # 2. read tail(老师 cameras + 渲染 · 不改)
+    tail_template = _TAIL_PATH.read_text()
 
+    # 3. 替换 ROOM_LEN / ROOM_WID / ROOM_HT / RENDER_DIR
+    L = room_dims.get("length", 5.0)
+    W = room_dims.get("width", 4.0)
+    H = room_dims.get("height", 2.8)
+    tail = (tail_template
+            .replace("__ROOM_LEN__", str(L))
+            .replace("__ROOM_WID__", str(W))
+            .replace("__ROOM_HT__", str(H))
+            .replace("__RENDER_DIR__", str(render_dir)))
 
-def _build_render_script(scene: dict, render_dir: Path, slug: str) -> str:
-    """生成完整 Blender 渲染脚本(scene 几何 + 8 视角 cameras)"""
-    # 复用 exports._build_blender_script 拿 scene 几何部分
-    from .exports import _build_blender_script
-    geom_script = _build_blender_script(scene, render_dir, slug)
-
-    # 但 exports 的脚本最后调 export(GLB/OBJ/FBX) · 我们截掉那部分,加渲染
-    # 找第一个 'EXPORTS_OK' 或 export 调用行,只保留前面 scene 部分
-    cut_markers = ["bpy.ops.export_scene.gltf", "bpy.ops.wm.obj_export", "bpy.ops.export_scene.fbx"]
-    cut_idx = None
-    for marker in cut_markers:
-        if marker in geom_script:
-            cut_idx = geom_script.find(marker)
-            # 退回到 # ── Export 注释行
-            export_section = geom_script.rfind("# ──", 0, cut_idx)
-            if export_section >= 0:
-                cut_idx = export_section
-            break
-    geom_only = geom_script[:cut_idx] if cut_idx else geom_script
-
-    # 拿 bounds
-    bounds = scene.get("bounds", {"w": 6, "d": 5, "h": 3})
-    room_len = bounds.get("w", 6)
-    room_wid = bounds.get("d", 5)
-    room_ht = bounds.get("h", 3)
-
-    # 房间尺寸常量(SHOTS 用)
-    dims_block = f"\nROOM_LEN = {room_len}\nROOM_WID = {room_wid}\nROOM_HT = {room_ht}\n"
-
-    # cameras + 渲染部分
-    render_block = SHOTS_TEMPLATE.replace("__RENDER_DIR_PLACEHOLDER__", str(render_dir))
-
-    return geom_only + dims_block + render_block
+    # 4. 拼 + Blender 4.5 兼容 patch
+    full_script = head + tail
+    return _patch_blender_compat(full_script)
 
 
-def _scene_to_room_json(scene: dict, name: str) -> dict:
-    """LIGHT scene dict → 9 字段 room.json(对齐老师 studio-demo 标准)
+def _scene_to_room_json(scene: dict, name: str, template_slug: str) -> dict:
+    """LIGHT scene dict + template 信息 → 9 字段 room.json(对齐老师 standard)
 
-    老师 keys: cameras / collections / lights / materials / metadata / name / objects / render / scene / version / world
+    Phase 12.Z:metadata 标 template_source 真权威(老师 mvp slug)
     """
     return {
         "version": "1.0",
         "name": name,
         "metadata": {
-            "generated_by": "scene_formal · Phase 12.D.1",
+            "generated_by": "scene_formal · Phase 12.Z · 100% 老师权威",
             "generated_at": time.strftime("%Y-%m-%dT%H:%M:%S"),
+            "template_source": f"teacher_authority/render_scripts/{template_slug}.py",
             "schema": "老师 studio-demo/mvp/<slug>/room.json 兼容",
         },
         "scene": {
@@ -222,74 +182,108 @@ def _scene_to_room_json(scene: dict, name: str) -> dict:
         },
         "world": {
             "background_color": [0.05, 0.05, 0.05],
-            "hdri": scene.get("env", {}).get("hdri"),
+            "hdri": (scene.get("env") or {}).get("hdri") if scene else None,
         },
-        "objects": scene.get("objects", []),
-        "lights": scene.get("lights", []),
-        "materials": scene.get("materials", {}),
-        "cameras": [{"name": s, "render_path": f"renders/{s}.png"}
-                    for s in ["01_hero_corner", "02_reception", "03_main_zone", "04_feature_zone",
-                             "05_lounge_zone", "06_back_corner", "07_top_ortho", "08_birds_eye_3d"]],
-        "collections": [{"name": "Default", "objects": [o.get("id") for o in scene.get("objects", [])]}],
+        "objects": scene.get("objects", []) if scene else [],
+        "lights": scene.get("lights", []) if scene else [],
+        "materials": scene.get("materials", {}) if scene else {},
+        "cameras": [
+            {"name": s, "render_path": f"renders/{s}.png"}
+            for s in [
+                "01_hero_corner", "02_reception", "03_main_zone", "04_feature_zone",
+                "05_lounge_zone", "06_back_corner", "07_top_ortho", "08_birds_eye_3d",
+            ]
+        ],
+        "collections": [{"name": "Default", "objects": [
+            o.get("id") for o in (scene.get("objects", []) if scene else [])
+        ]}],
     }
 
 
 def produce(ctx, *, on_event: Optional[Callable] = None) -> ArtifactResult:
-    """scene_formal · 真跑 Blender headless 渲染 + 输出 9 字段 room.json
+    """scene_formal · Phase 12.Z · 100% 用老师 _render_script.py + _render_multi_tail.py
 
-    依赖 ctx:
-      - project (含 scene · brief)
-      - sb_dir(StartUP-Building/studio-demo/mvp/<slug>/)
+    老师权威路径:teacher_authority/{render_scripts,marp_deck_scripts}/
     """
     t0 = time.time()
     project = ctx.get("project")
     sb_dir = Path(ctx.get("sb_dir") or ".")
 
-    if not project or not project.scene:
+    if not project or not project.brief:
         return ArtifactResult(
             name="scene", status="skipped",
             timing_ms=int((time.time() - t0) * 1000),
-            reason="project 或 scene 缺 · scene_formal 需要 LIGHT scene generator 先跑",
+            reason="brief 缺",
         )
 
     if _BLENDER is None or not _BLENDER.exists():
-        # Blender 不可用 · 降级到 LIGHT scene · 标 _degraded_from
         if on_event:
             on_event("artifact_degrade", {
                 "name": "scene", "from": "formal", "to": "fast",
-                "reason": "Blender 未装 · 降级 LIGHT scene generator",
+                "reason": "Blender 未装",
             })
         from .scene import produce as light_produce
-        result = light_produce(ctx, on_event=on_event)
-        if hasattr(result, "_degraded_from"):
-            result._degraded_from = "formal"
-        return result
+        return light_produce(ctx, on_event=on_event)
+
+    # 1. 选老师真 MVP template
+    template_path, template_slug = _select_template(project.brief)
+    if not template_path.exists():
+        return ArtifactResult(
+            name="scene", status="error",
+            timing_ms=int((time.time() - t0) * 1000),
+            error={"name": "template_missing", "trace_tail": f"老师 template 缺: {template_path}"},
+        )
 
     if on_event:
-        on_event("blender_start", {"engine": "EEVEE", "blender_path": str(_BLENDER)})
+        on_event("teacher_template_selected", {
+            "template": str(template_path),
+            "mvp_slug": template_slug,
+            "policy": "100% 老师 _render_script.py 作权威 · brief.space.type 选最近 MVP",
+        })
 
-    # 1. 准备 render_dir + script
+    # 2. 拿房间尺寸
+    space = project.brief.get("space") or {}
+    dims = space.get("dimensions_m") or {}
+    if not dims:
+        # 从 area_sqm 推(L=sqrt(area*1.25), W=area/L)
+        area = float(space.get("area_sqm") or 25)
+        L = round((area * 1.25) ** 0.5, 1)
+        W = round(area / L, 1)
+        H = 3.0 if area >= 25 else 2.8
+        dims = {"length": L, "width": W, "height": H}
+
+    if on_event:
+        on_event("blender_start", {
+            "engine": "EEVEE_NEXT",
+            "blender_path": str(_BLENDER),
+            "room_dims": dims,
+        })
+
+    # 3. 拼 _render_multi.py(老师 setup_mvp_render.py 风格 · 100% 复用)
     render_dir = sb_dir / "renders"
     render_dir.mkdir(parents=True, exist_ok=True)
-    script = _build_render_script(project.scene, render_dir, project.slug)
+    script = _build_render_multi_py(template_path, dims, render_dir)
     script_path = sb_dir / "_render_multi.py"
     script_path.write_text(script, encoding="utf-8")
 
-    # 2. blender --background --python
+    # 4. blender headless · 真跑老师 family-parts geometry
     try:
         proc = subprocess.run(
             [str(_BLENDER), "-b", "-P", str(script_path)],
-            capture_output=True, text=True, timeout=900,  # 15 min 上限
+            capture_output=True, text=True, timeout=900,
         )
     except subprocess.TimeoutExpired:
         return ArtifactResult(
             name="scene", status="error",
             timing_ms=int((time.time() - t0) * 1000),
-            error={"name": "blender_timeout", "trace_tail": "exceed 900s · scene_formal 渲染超时"},
+            error={"name": "blender_timeout", "trace_tail": "exceed 900s"},
         )
 
-    if "FORMAL_RENDER_DONE" not in proc.stdout:
-        # 看具体哪步失败
+    # 老师 _render_multi_tail.py 输出 [OK] <png> · 看是否真渲染
+    has_ok = "[OK]" in proc.stdout
+    rendered_pngs = sorted(render_dir.glob("*.png"))
+
+    if not has_ok and not rendered_pngs:
         return ArtifactResult(
             name="scene", status="error",
             timing_ms=int((time.time() - t0) * 1000),
@@ -299,17 +293,19 @@ def produce(ctx, *, on_event: Optional[Callable] = None) -> ArtifactResult:
             },
         )
 
-    # 3. 写 9 字段 room.json
-    room_data = _scene_to_room_json(project.scene, project.display_name or project.slug)
+    # 5. 写 9 字段 room.json(metadata 标 template_source · 真老师权威 audit)
+    # scene dict 由 LIGHT scene 提供(因为 brief.must_have / functional_zones 信息驱动 cameras 角度等)
+    # 但**真 geometry 来自老师 template**
+    light_scene = project.scene or {}
+    room_data = _scene_to_room_json(light_scene, project.display_name or project.slug, template_slug)
     room_path = sb_dir / "room.json"
     room_path.write_text(json.dumps(room_data, ensure_ascii=False, indent=2))
 
-    # 4. 验产物
-    rendered_pngs = sorted(render_dir.glob("*.png"))
     if on_event:
         on_event("blender_done", {
             "renders_count": len(rendered_pngs),
             "room_json_path": str(room_path),
+            "template_used": template_slug,
         })
 
     return ArtifactResult(
@@ -318,8 +314,9 @@ def produce(ctx, *, on_event: Optional[Callable] = None) -> ArtifactResult:
         output_path=str(room_path),
         meta={
             "engine": "formal",
+            "template_source": f"teacher_authority/render_scripts/{template_slug}.py",
             "renders_count": len(rendered_pngs),
             "blender_version": "4.5.9",
-            "room_json_keys": list(room_data.keys()),
+            "policy": "100% 老师 _render_script.py 真权威 · 不再 LIGHT box geometry",
         },
     )
