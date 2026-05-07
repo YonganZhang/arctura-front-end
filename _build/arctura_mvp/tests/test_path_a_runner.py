@@ -195,6 +195,53 @@ def test_p14_render_from_json_runner_exists():
     assert info["blender_available"]
 
 
+def test_p15_spec_lock_stakeholder_hero():
+    """8 stakeholder → 老师真 hero image · 锁住老师 SKILL.md L60-90"""
+    from _build.arctura_mvp.teacher_authority.spec_lock import (
+        STAKEHOLDER_HERO_IMAGE, get_stakeholder_hero,
+    )
+    assert len(STAKEHOLDER_HERO_IMAGE) == 8
+    assert get_stakeholder_hero("client") == "renders/01_hero_corner.png"
+    assert get_stakeholder_hero("investor") == "renders/08_birds_eye_3d.png"
+    assert get_stakeholder_hero("contractor") == "floorplan.png"
+
+
+def test_p15_spec_lock_render_path_counts():
+    """Path A=6 / Path B=8 · 老师 CLAUDE.md L521 + 实际产物"""
+    from _build.arctura_mvp.teacher_authority.spec_lock import (
+        RENDER_PATH_SPEC, expected_render_count,
+    )
+    assert expected_render_count("path_a") == 6
+    assert expected_render_count("path_b") == 8
+    assert expected_render_count("path_b_sdxl") == 8
+
+
+def test_p15_spec_lock_compliance_v2():
+    """P8 v2 · EUI advisory · 5 法规"""
+    from _build.arctura_mvp.teacher_authority.spec_lock import (
+        COMPLIANCE_CODES, EUI_IS_ADVISORY,
+    )
+    assert "HK" in COMPLIANCE_CODES and "ASHRAE" in COMPLIANCE_CODES
+    assert EUI_IS_ADVISORY is True  # 老师 v2 禁当硬指标
+
+
+def test_p15_full_tier_completeness_check(tmp_path):
+    """老师 verify_mvp_exports 的 Python 简化版 · 空 mvp 应返大量 missing"""
+    from _build.arctura_mvp.teacher_authority.spec_lock import is_full_tier_complete
+    r = is_full_tier_complete(tmp_path)
+    assert not r["ok"]
+    assert len(r["missing"]) > 10  # 空 dir 应大量缺
+    assert "brief" in r["missing"]
+
+
+def test_p15_15_change_categories():
+    """老师 change-impact-matrix 真 15 类"""
+    from _build.arctura_mvp.teacher_authority.spec_lock import CLIENT_CHANGE_CATEGORIES
+    assert len(CLIENT_CHANGE_CATEGORIES) == 15
+    assert "材质/颜色" in CLIENT_CHANGE_CATEGORIES
+    assert "房间尺寸" in CLIENT_CHANGE_CATEGORIES
+
+
 def test_p10_arch_mvp_v3_dual_source():
     from _build.arctura_mvp.teacher_authority.v3_reuse import (
         _resolve_src_dir, _TEACHER_ARCH_MVPS, is_arch_slug,
