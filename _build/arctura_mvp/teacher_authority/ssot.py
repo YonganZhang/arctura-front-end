@@ -131,7 +131,80 @@ def bim_catalog() -> dict:
     return json.loads(BIM_CATALOG_JSON.read_text())
 
 
+# ───────── mesh-library 真 import 通路(Path A 真实家具) ─────────
+
+def import_mesh_library() -> dict:
+    """加 mesh-library/site-entourage 等老师子目录到 sys.path · 返已可用模块状态
+
+    使用:
+        modules = import_mesh_library()
+        if modules['room_to_room_v2']:
+            from room_to_room_v2 import migrate_room  # 老师真函数
+    """
+    from ..paths import PLAYBOOKS_SCRIPTS, ensure_playbook_script_subdir_on_path
+    out = {}
+    for sub in ["mesh-library", "site-entourage", "asset-intake", "brief-intake"]:
+        try:
+            ensure_playbook_script_subdir_on_path(sub)
+            out[sub] = "on_path"
+        except Exception as e:
+            out[sub] = f"err: {e}"
+    return out
+
+
+def mesh_library_scripts() -> list[str]:
+    """老师 mesh-library 20 真脚本清单 · 用于 dispatch / 验证"""
+    from ..paths import PLAYBOOKS_SCRIPTS
+    p = PLAYBOOKS_SCRIPTS / "mesh-library"
+    if not p.exists():
+        return []
+    return sorted([f.stem for f in p.glob("*.py") if not f.name.startswith("_")])
+
+
+def has_clip_embeddings() -> bool:
+    """老师 BIM catalog CLIP embeddings 是否存在(Path A --use-clip 必需)"""
+    from ..paths import BIM_CATALOG_EMBEDDINGS
+    return BIM_CATALOG_EMBEDDINGS.exists()
+
+
+# ───────── client-portal skill 真触发器 ─────────
+
+def teacher_client_portal_generate(mvp_dir: "Path", *, no_server: bool = True) -> dict:
+    """调老师 client-portal skill generate_portal.py · 真生成 portal.html + _server.py
+
+    生成内容:Fabric.js 2D 编辑器 + 3D viewer + render gallery + BOQ + 合规 + AI voice/text 编辑
+    """
+    import subprocess, sys
+    from ..paths import TEACHER_CLIENT_PORTAL_SKILL
+    gen = TEACHER_CLIENT_PORTAL_SKILL / "scripts" / "generate_portal.py"
+    if not gen.exists():
+        return {"_error": f"老师 generate_portal.py 缺: {gen}"}
+    cmd = [sys.executable, str(gen), str(mvp_dir)]
+    if no_server:
+        cmd.append("--no-server")
+    try:
+        proc = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
+        return {
+            "returncode": proc.returncode,
+            "portal_html_exists": (mvp_dir / "portal.html").exists(),
+            "stdout_tail": (proc.stdout or "")[-300:],
+            "stderr_tail": (proc.stderr or "")[-300:],
+        }
+    except Exception as e:
+        return {"_error": str(e)[:200]}
+
+
 # ───────── 自检 ─────────
+
+def verify_mesh_library() -> dict:
+    """mesh-library 20 脚本 + CLIP 资源自检"""
+    return {
+        "scripts_count": len(mesh_library_scripts()),
+        "scripts": mesh_library_scripts(),
+        "clip_embeddings_exist": has_clip_embeddings(),
+        "imports": import_mesh_library(),
+    }
+
 
 def verify_ssot() -> dict:
     """检查所有 SSOT 是否可读 · 调试用"""

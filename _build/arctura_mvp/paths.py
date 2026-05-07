@@ -64,11 +64,14 @@ TEACHER_CLIENT_PORTAL_SKILL = TEACHER_SKILLS_ROOT / "client-portal"
 CLI_HARNESS_ROOTS = {
     "blender": CLI_ANYTHING_ROOT / "blender" / "agent-harness",
     "openstudio": CLI_ANYTHING_ROOT / "openstudio" / "agent-harness",
+    "libreoffice": CLI_ANYTHING_ROOT / "libreoffice" / "agent-harness",
+    # Phase 12.末.G 新装(pip install -e --user)
     "llm-intake": CLI_ANYTHING_ROOT / "llm-intake" / "agent-harness",
     "image-grid": CLI_ANYTHING_ROOT / "image-grid" / "agent-harness",
     "comfyui": CLI_ANYTHING_ROOT / "comfyui" / "agent-harness",
-    "libreoffice": CLI_ANYTHING_ROOT / "libreoffice" / "agent-harness",
     "inkscape": CLI_ANYTHING_ROOT / "inkscape" / "agent-harness",
+    "chromadb": CLI_ANYTHING_ROOT / "chromadb" / "agent-harness",
+    "Pascal": CLI_ANYTHING_ROOT / "Pascal" / "agent-harness",
 }
 
 

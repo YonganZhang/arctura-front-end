@@ -112,3 +112,42 @@ def test_s5_playbook_subdirs_all_exist():
     missing = [k for k, v in p.items() if k.startswith("PLAYBOOK_SUB_") and not v]
     assert sub_keys, "PLAYBOOK_SUB_* 注册为空 · 检查 PLAYBOOKS_SCRIPTS_SUBDIRS"
     assert not missing, f"老师 subdirs 缺: {missing}"
+
+
+# ── S6 · mesh-library 20 脚本 + CLIP + 6 CLI harness ────────
+def test_s6_mesh_library_20_scripts():
+    """老师 mesh-library 20 真脚本必齐 + CLIP embeddings 存在"""
+    info = ssot.verify_mesh_library()
+    assert info["scripts_count"] == 20, f"应 20 个 · 实 {info['scripts_count']}"
+    must_have = {"room_to_room_v2", "build_clip_embeddings", "clip_query",
+                 "qa_vision", "lint_render_script", "verify_scene_dims",
+                 "layout_validate", "render_assets", "render_multi_assets",
+                 "export_ifc4_scene", "boq_from_ifc_furniture", "validate_reports"}
+    have = set(info["scripts"])
+    assert must_have <= have, f"核心缺: {must_have - have}"
+    assert info["clip_embeddings_exist"], "BIM catalog CLIP embeddings 缺(--use-clip 失效)"
+
+
+def test_s6_mesh_library_subdirs_imports():
+    """4 老师子目录全 on sys.path"""
+    info = ssot.verify_mesh_library()
+    for sub in ["mesh-library", "site-entourage", "asset-intake", "brief-intake"]:
+        assert info["imports"][sub] == "on_path", f"{sub}: {info['imports'][sub]}"
+
+
+def test_s6_cli_harness_importable():
+    """6 个 Phase 12.末.G 新装 harness 可 import"""
+    import_results = {}
+    for name, mod in [("inkscape", "cli_anything.inkscape"),
+                      ("llm-intake", "cli_anything.llm_intake"),
+                      ("image-grid", "cli_anything.image_grid"),
+                      ("chromadb", "cli_anything.chromadb"),
+                      ("comfyui", "cli_anything.comfyui"),
+                      ("Pascal", "cli_anything.pascal")]:
+        try:
+            __import__(mod)
+            import_results[name] = True
+        except ImportError as e:
+            import_results[name] = f"ImportError: {str(e)[:80]}"
+    failed = {k: v for k, v in import_results.items() if v is not True}
+    assert not failed, f"6 harness 应全可 import · 失败:{failed}"
