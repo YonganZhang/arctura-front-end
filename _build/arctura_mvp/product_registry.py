@@ -90,6 +90,7 @@ _PRODUCTS_LIST: list[ProductSpec] = [
         key="floorplan", id=5, name="平面图", lang_hint_en="Floorplan",
         tiers=["concept", "deliver", "quote", "full", "select"],
         light_producer="floorplan",
+        formal_producer="floorplan_formal",  # Phase 12.D.9 · LIGHT + 老师 fix_svg_text_zorder.py
         full_pipeline="P1/P2 floorplan SVG (含中文标注+面积+比例尺)",
         spec_ref="L400",
         depends_on=["scene"],
@@ -156,6 +157,7 @@ _PRODUCTS_LIST: list[ProductSpec] = [
         key="variants", id=None, name="3 方案对比", lang_hint_en="A/B/C Variants",
         tiers=["select"],
         light_producer="variants",
+        formal_producer="variants_formal",  # Phase 12.D.7 · playbooks/scripts/ab-comparison/run_ab.py
         full_pipeline="P10 A/B/C comparison",
         spec_ref="L407-420",
         depends_on=["scene", "brief"],
@@ -167,6 +169,7 @@ _PRODUCTS_LIST: list[ProductSpec] = [
         key="case_study", id=15, name="Case Study 素材", lang_hint_en="Case Study",
         tiers=["full", "select"],
         light_producer="case_study",
+        formal_producer="case_study_formal",  # Phase 12.D.6 · playbooks/scripts/case-study/run_one.py
         full_pipeline="P11 Case Study Auto-Gen",
         spec_ref="L405",
         depends_on=["brief", "scene"],
