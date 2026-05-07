@@ -26,7 +26,12 @@
     "mep_brief.cooling_capacity_kw",
     "mep_brief.equipment_subtype",
     "space.frontage_m",
-    "space.existing_condition"
+    "space.existing_condition",
+    "compliance",
+    "envelope",
+    "openings",
+    "mep_brief",
+    "budget_rmb"
   ],
   "completeness_weights": {
     "must_fill": 0.6,

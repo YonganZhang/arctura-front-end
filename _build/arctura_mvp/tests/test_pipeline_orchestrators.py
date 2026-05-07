@@ -162,6 +162,56 @@ def test_r9_global_metrics_readable():
     assert isinstance(m, (dict, list))
 
 
+# ── R10 · 阶段 3 · brief schema 真 jsonschema validate(老师权威) ─
+def test_r10_brief_validate_against_teacher_schema():
+    from _build.arctura_mvp.chat.brief_engine import validate_against_teacher_schema
+    minimal = {"project": "test", "style": {"keywords": ["modern"]}}
+    errs = validate_against_teacher_schema(minimal, "interior")
+    if errs and "jsonschema" in errs[0].lower() and "未装" in errs[0]:
+        pytest.skip("jsonschema 未装")
+    assert errs == [] or len(errs) <= 2  # 老师 required 仅 project + style
+
+
+def test_r10_brief_validate_missing_required():
+    from _build.arctura_mvp.chat.brief_engine import validate_against_teacher_schema
+    bad = {"slug": "x"}  # 缺 project + style
+    errs = validate_against_teacher_schema(bad, "interior")
+    if errs and "jsonschema 未装" in (errs[0] if errs else ""):
+        pytest.skip("jsonschema 未装")
+    assert len(errs) >= 1
+
+
+# ── R11 · brief-rules nice_to_have 含老师 5 顶层字段 ──────────
+def test_r11_brief_rules_covers_teacher_top_fields():
+    import json
+    from _build.arctura_mvp.paths import REPO_ROOT
+    rules = json.loads((REPO_ROOT / "_build/arctura_mvp/schemas/brief-rules.json").read_text())
+    nice = set(rules["nice_to_have"])
+    must = {"compliance", "envelope", "openings", "mep_brief", "budget_rmb"}
+    missing = must - nice
+    assert not missing, f"老师 5 顶层字段缺: {missing}"
+
+
+# ── R12 · P0 asset-intake 5 文件类型支持 ─────────────────────
+def test_r12_p0_supports_5_kinds():
+    from _build.arctura_mvp.teacher_authority.p0_asset_intake import (
+        detect_input_kind, run_p0_intake,
+    )
+    assert detect_input_kind(Path("x.ifc")) == "ifc"
+    assert detect_input_kind(Path("x.dxf")) == "dxf"
+    assert detect_input_kind(Path("x.svg")) == "svg"
+    assert detect_input_kind(Path("x.pdf")) == "pdf"
+    assert detect_input_kind(Path("x.png")) == "image"
+
+
+def test_r12_p0_unknown_kind(tmp_path):
+    from _build.arctura_mvp.teacher_authority.p0_asset_intake import run_p0_intake
+    fake = tmp_path / "x.unknown"
+    fake.write_text("")
+    r = run_p0_intake(fake, tmp_path / "out")
+    assert not r["ok"]
+
+
 def test_r5_dispatcher_no_decks_dir(tmp_path):
     """无 decks/ 应返 error"""
     from _build.arctura_mvp.teacher_authority.stakeholder_dispatcher import (

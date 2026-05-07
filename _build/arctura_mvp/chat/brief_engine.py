@@ -84,6 +84,19 @@ def missing_must_fields(brief: dict) -> list[str]:
     return out
 
 
+def validate_against_teacher_schema(brief: dict,
+                                     scenario: str = "interior") -> list[str]:
+    """阶段 3 · 真用老师 brief-{interior,architecture}.schema.json 校验
+    返错误列表(空 = 通过)· advisory 不阻断流程
+    """
+    schema_name = f"brief-{scenario}"  # brief-interior 或 brief-architecture
+    try:
+        from ..teacher_authority.ssot import validate_brief
+        return validate_brief(brief, schema_name)
+    except Exception as e:
+        return [f"老师 schema validate 失败: {str(e)[:120]}"]
+
+
 # ───── LLM prompt ─────
 
 def _resolve_system_prompt():
