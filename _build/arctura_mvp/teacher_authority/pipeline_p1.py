@@ -139,7 +139,7 @@ def run_p1_pipeline(
                       [_PY, str(gen_moodboard), str(mvp_dir)],
                       timeout=60, on_event=on_event))
 
-    # Step 4a: Static lint MANDATORY GATE
+    # Step 4a: Static lint MANDATORY GATE(在跑 Blender 前)
     lint_step = _run("step4a_lint_render_script_GATE",
                      [_PY, str(_MESH_LIB / "lint_render_script.py"), str(mvp_dir)],
                      timeout=10, blocking=True, is_gate=True, on_event=on_event)
@@ -147,8 +147,56 @@ def run_p1_pipeline(
     if not lint_step.ok:
         return _summary(steps, gate_failures, fatal_at="step4a_lint", t_start=t_start, tier=tier, render_path=render_path)
 
-    # Step 4b: Scene-dim MANDATORY GATE
+    # Step 4 ⭐ 真跑 _render_script.py(老师 spec L4 · 我们之前漏了这步)
+    # 老师 P1 spec:Build Blender scene → 导出 .obj + 8 视角 renders/
+    # 4b scene-dim gate 必须在这之后(它读 .obj 实测 bbox)
     blender = _find_blender()
+    render_script = mvp_dir / "_render_script.py"
+    if blender and render_script.exists():
+        # ⚠ 老师 _render_script.py 兼容 patch:
+        #   1. Blender 4.2 EEVEE → 4.5 EEVEE_NEXT(scene_formal._patch_blender_compat)
+        #   2. Mac 硬编码路径 /Users/kaku/Desktop/Work/StartUP-Building/studio-demo/mvp/<slug>/ → 当前 mvp_dir
+        from ..artifacts.scene_formal import _patch_blender_compat
+        import re
+        try:
+            text = render_script.read_text(encoding="utf-8")
+            text = _patch_blender_compat(text)
+            # 替换老师 Mac 硬编码路径 → 我们 mvp_dir
+            mac_prefix_pattern = r"/Users/kaku/Desktop/Work/StartUP-Building/studio-demo/(?:mvp|arch-mvp)/[a-zA-Z0-9_-]+/?"
+            text = re.sub(mac_prefix_pattern, str(mvp_dir) + "/", text)
+            # ⭐ append 老师 _render_script_footer.py(OBJ/GLB/FBX export · 老师 03 没粘)
+            from ..paths import PLAYBOOKS_TEMPLATES
+            footer_path = PLAYBOOKS_TEMPLATES / "_render_script_footer.py"
+            if footer_path.exists():
+                slug = mvp_dir.name
+                footer_text = footer_path.read_text(encoding="utf-8")
+                footer_text = footer_text.replace("<SLUG>", slug)
+                # footer 假定 `OUT` 变量已定义 · 我们注入
+                inject = f"\n\n# ── Phase 1.D · 自动 append 老师 footer(OBJ/GLB/FBX export)──\nimport os\nOUT = r'{str(mvp_dir)}'\n\n"
+                text = text + inject + footer_text
+            patched_path = mvp_dir / "_render_script_patched.py"
+            patched_path.write_text(text, encoding="utf-8")
+            run_target = patched_path
+        except Exception:
+            run_target = render_script
+        build_step = _run("step4_build_blender_scene",
+                          [blender, "-b", "--python", str(run_target)],
+                          timeout=600, on_event=on_event)
+        add_step(build_step)
+        # ⭐ 4.5 ensure exports/*.obj 存在(verify_scene_dims 只找 exports/*.obj · 老师 footer 写到根 scene.obj)
+        scene_obj = mvp_dir / "scene.obj"
+        exports_dir = mvp_dir / "exports"
+        if scene_obj.exists() and not list(exports_dir.glob("*.obj")) if exports_dir.exists() else True:
+            try:
+                exports_dir.mkdir(exist_ok=True)
+                target = exports_dir / f"{mvp_dir.name}.obj"
+                if not target.exists():
+                    shutil.copy2(scene_obj, target)
+            except Exception:
+                pass
+        # 不 blocking · 部分 MVP 老师 _render_script.py 自己有 issue · 但 4b gate 会拦
+
+    # Step 4b: Scene-dim MANDATORY GATE(在 _render_script.py 跑完 + .obj 导出之后)
     if blender:
         scene_dim_step = _run("step4b_scene_dim_GATE",
                               [blender, "-b", "--python", str(_MESH_LIB / "verify_scene_dims.py"), "--", str(mvp_dir)],
