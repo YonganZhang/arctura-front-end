@@ -1,0 +1,260 @@
+{
+  "meta": {
+    "name": "03-coffee-shop",
+    "version": "0.1.0",
+    "created": "2026-04-16T19:46:31",
+    "modified": "2026-04-16T19:46:34"
+  },
+  "brief_path": "/Users/kaku/Desktop/Work/StartUP-Building/studio-demo/mvp/03-coffee-shop/brief.json",
+  "weather_file": "/Users/kaku/Desktop/Work/CLI-Anything/openstudio/agent-harness/cli_anything/openstudio/data/weather/HKG_Hong.Kong.Intl.AP.epw",
+  "thermal_model": {
+    "building_type": "residential",
+    "orientation_deg": 0,
+    "geometry": {
+      "length_m": 10.0,
+      "width_m": 8.0,
+      "floors": 1,
+      "floor_heights_m": {
+        "F1": 3.5
+      },
+      "total_height_m": 3.5
+    },
+    "zones": [
+      {
+        "name": "F1_zone",
+        "floor": "F1",
+        "area_m2": 6.0,
+        "height_m": 3.5,
+        "zone_type": "general"
+      },
+      {
+        "name": "F1_zone_2",
+        "floor": "F1",
+        "area_m2": 14.0,
+        "height_m": 3.5,
+        "zone_type": "general"
+      },
+      {
+        "name": "F1_4_2",
+        "floor": "F1",
+        "area_m2": 20.0,
+        "height_m": 3.5,
+        "zone_type": "general"
+      },
+      {
+        "name": "F1_zone_3",
+        "floor": "F1",
+        "area_m2": 12.0,
+        "height_m": 3.5,
+        "zone_type": "general"
+      },
+      {
+        "name": "F1_zone_4",
+        "floor": "F1",
+        "area_m2": 10.0,
+        "height_m": 3.5,
+        "zone_type": "general"
+      },
+      {
+        "name": "F1_zone_5",
+        "floor": "F1",
+        "area_m2": 12.0,
+        "height_m": 3.5,
+        "zone_type": "general"
+      },
+      {
+        "name": "F1_bathroom",
+        "floor": "F1",
+        "area_m2": 4.0,
+        "height_m": 3.5,
+        "zone_type": "bathroom"
+      },
+      {
+        "name": "F1_zone_6",
+        "floor": "F1",
+        "area_m2": 2.0,
+        "height_m": 3.5,
+        "zone_type": "general"
+      }
+    ],
+    "constructions": {
+      "exterior_wall": {
+        "name": "ExteriorWall",
+        "layers": [
+          {
+            "material": "Plaster_Interior",
+            "thickness_m": 0.02,
+            "conductivity": 0.8,
+            "density": 1600,
+            "specific_heat": 1000
+          },
+          {
+            "material": "Block",
+            "thickness_m": 0.2,
+            "conductivity": 0.58,
+            "density": 1400,
+            "specific_heat": 1000
+          },
+          {
+            "material": "EPS_Insulation",
+            "thickness_m": 0.05,
+            "conductivity": 0.04,
+            "density": 25,
+            "specific_heat": 1400
+          },
+          {
+            "material": "Render_Exterior",
+            "thickness_m": 0.01,
+            "conductivity": 0.9,
+            "density": 1800,
+            "specific_heat": 1000
+          }
+        ],
+        "u_value": 0.555
+      },
+      "window": {
+        "name": "ExteriorWindow",
+        "u_value": 2.0,
+        "shgc": 0.6,
+        "visible_transmittance": 0.75,
+        "frame_type": "aluminum"
+      },
+      "roof": {
+        "name": "Roof",
+        "layers": [
+          {
+            "material": "Waterproof_Membrane",
+            "thickness_m": 0.005,
+            "conductivity": 0.23,
+            "density": 1100,
+            "specific_heat": 1000
+          },
+          {
+            "material": "Screed_Slope",
+            "thickness_m": 0.04,
+            "conductivity": 1.4,
+            "density": 2000,
+            "specific_heat": 1000
+          },
+          {
+            "material": "XPS_Insulation",
+            "thickness_m": 0.06,
+            "conductivity": 0.035,
+            "density": 35,
+            "specific_heat": 1400
+          },
+          {
+            "material": "Concrete_Slab",
+            "thickness_m": 0.12,
+            "conductivity": 1.4,
+            "density": 2400,
+            "specific_heat": 920
+          },
+          {
+            "material": "Plaster_Ceiling",
+            "thickness_m": 0.015,
+            "conductivity": 0.8,
+            "density": 1600,
+            "specific_heat": 1000
+          }
+        ],
+        "u_value": 0.498
+      },
+      "interior_wall": {
+        "name": "InteriorWall",
+        "layers": [
+          {
+            "material": "Plaster",
+            "thickness_m": 0.015,
+            "conductivity": 0.8
+          },
+          {
+            "material": "Brick_120mm",
+            "thickness_m": 0.12,
+            "conductivity": 0.58
+          },
+          {
+            "material": "Plaster",
+            "thickness_m": 0.015,
+            "conductivity": 0.8
+          }
+        ],
+        "u_value": 2.2
+      },
+      "floor": {
+        "name": "ConcreteFloor",
+        "layers": [
+          {
+            "material": "Tile",
+            "thickness_m": 0.01,
+            "conductivity": 1.0
+          },
+          {
+            "material": "Screed",
+            "thickness_m": 0.05,
+            "conductivity": 1.4
+          },
+          {
+            "material": "Concrete_120mm",
+            "thickness_m": 0.12,
+            "conductivity": 1.4
+          }
+        ],
+        "u_value": 2.8
+      }
+    },
+    "hvac": {
+      "type": "ideal_loads",
+      "fresh_air": false,
+      "description": "",
+      "heating_setpoint_c": 20.0,
+      "cooling_setpoint_c": 26.0,
+      "cooling_capacity_kw": 6.4,
+      "equipment_subtype": "unitary_ac_cooling_only"
+    },
+    "schedules": {
+      "occupancy": {
+        "type": "general",
+        "weekday": "8-20",
+        "weekend": "9-18"
+      },
+      "lighting": {
+        "wperm2": 8.0,
+        "weekday": "7-21",
+        "weekend": "8-19"
+      },
+      "equipment": {
+        "wperm2": 5.0,
+        "schedule": "general"
+      },
+      "ventilation": {
+        "ach": 0.7
+      }
+    },
+    "envelope": {
+      "wwr": 0.3
+    }
+  },
+  "simulation": {
+    "status": "completed",
+    "last_run": "2026-04-16T19:46:34",
+    "output_dir": "/Users/kaku/Desktop/Work/StartUP-Building/studio-demo/mvp/03-coffee-shop/energy/ep_output",
+    "idf_path": "/Users/kaku/Desktop/Work/StartUP-Building/studio-demo/mvp/03-coffee-shop/energy/ep_output/in.idf"
+  },
+  "results": {
+    "status": "completed",
+    "eui_kwh_m2_yr": 130.49,
+    "total_site_energy_kwh": 10438.9,
+    "total_heating_kwh": null,
+    "total_cooling_kwh": null,
+    "total_lighting_kwh": null,
+    "total_equipment_kwh": null,
+    "peak_heating_w": null,
+    "peak_cooling_w": null,
+    "floor_area_m2": 80.0,
+    "warnings": 21,
+    "severe_errors": 0,
+    "monthly_heating_kwh": [],
+    "monthly_cooling_kwh": []
+  }
+}

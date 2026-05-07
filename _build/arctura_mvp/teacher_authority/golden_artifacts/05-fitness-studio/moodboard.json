@@ -1,0 +1,150 @@
+{
+  "canvas": {
+    "background": "#ffffff",
+    "color_mode": "RGB",
+    "dpi": 72,
+    "height": 900,
+    "width": 1600
+  },
+  "guides": [],
+  "layers": [
+    {
+      "blend_mode": "normal",
+      "draw_ops": [
+        {
+          "fill": "#1A1A1C",
+          "outline": null,
+          "type": "rect",
+          "width": 1,
+          "x1": 0,
+          "x2": 1600,
+          "y1": 720,
+          "y2": 900
+        }
+      ],
+      "fill": "#1A1A1C",
+      "filters": [],
+      "height": 900,
+      "id": 2,
+      "name": "swatches",
+      "offset_x": 0,
+      "offset_y": 0,
+      "opacity": 1.0,
+      "type": "solid",
+      "visible": true,
+      "width": 1600
+    },
+    {
+      "blend_mode": "normal",
+      "color": "#EDE8DE",
+      "fill": "#1A1A1C",
+      "filters": [],
+      "font": "Arial",
+      "font_size": 18,
+      "height": 900,
+      "id": 1,
+      "name": "title",
+      "offset_x": 1080,
+      "offset_y": 660,
+      "opacity": 1.0,
+      "text": "DEEP-RED #A23B30",
+      "type": "text",
+      "visible": true,
+      "width": 1600
+    },
+    {
+      "blend_mode": "normal",
+      "draw_ops": [
+        {
+          "fill": "#1A1A1C",
+          "outline": null,
+          "type": "rect",
+          "width": 1,
+          "x1": 60,
+          "x2": 540,
+          "y1": 60,
+          "y2": 360
+        },
+        {
+          "fill": "#C8CDD2",
+          "outline": null,
+          "type": "rect",
+          "width": 1,
+          "x1": 560,
+          "x2": 1040,
+          "y1": 60,
+          "y2": 360
+        },
+        {
+          "fill": "#E5C547",
+          "outline": null,
+          "type": "rect",
+          "width": 1,
+          "x1": 1060,
+          "x2": 1540,
+          "y1": 60,
+          "y2": 360
+        },
+        {
+          "fill": "#8B6F4E",
+          "outline": null,
+          "type": "rect",
+          "width": 1,
+          "x1": 60,
+          "x2": 540,
+          "y1": 380,
+          "y2": 680
+        },
+        {
+          "fill": "#EDE8DE",
+          "outline": null,
+          "type": "rect",
+          "width": 1,
+          "x1": 560,
+          "x2": 1040,
+          "y1": 380,
+          "y2": 680
+        },
+        {
+          "fill": "#A23B30",
+          "outline": null,
+          "type": "rect",
+          "width": 1,
+          "x1": 1060,
+          "x2": 1540,
+          "y1": 380,
+          "y2": 680
+        },
+        {
+          "fill": "#E5C547",
+          "outline": null,
+          "type": "rect",
+          "width": 1,
+          "x1": 60,
+          "x2": 1540,
+          "y1": 55,
+          "y2": 60
+        }
+      ],
+      "fill": "#1A1A1C",
+      "filters": [],
+      "height": 900,
+      "id": 0,
+      "name": "bg",
+      "offset_x": 0,
+      "offset_y": 0,
+      "opacity": 1.0,
+      "type": "solid",
+      "visible": true,
+      "width": 1600
+    }
+  ],
+  "metadata": {
+    "created": "2026-04-15T09:33:39.023747",
+    "modified": "2026-04-15T09:33:59.705601",
+    "software": "gimp-cli 1.0"
+  },
+  "name": "untitled",
+  "selection": null,
+  "version": "1.0"
+}

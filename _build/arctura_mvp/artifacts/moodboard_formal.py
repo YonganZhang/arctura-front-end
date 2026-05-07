@@ -25,6 +25,16 @@ def produce(ctx, *, on_event: Optional[Callable] = None) -> ArtifactResult:
     t0 = time.time()
     sb_dir = Path(ctx.get("sb_dir") or ".")
 
+    # v3 · 100% 老师权威终极方案 · 命中 → 直接 copy 老师真 moodboard
+    from ..teacher_authority.v3_reuse import try_reuse
+    project = ctx.get("project")
+    _v3 = try_reuse(
+        project.brief if project else {}, "moodboard", sb_dir,
+        ["moodboard.json", "moodboard.png"], on_event=on_event,
+    )
+    if _v3:
+        return _v3
+
     if not _GEN_MOODBOARD.exists():
         if on_event:
             on_event("artifact_degrade", {"name": "moodboard", "from": "formal", "to": "fast",

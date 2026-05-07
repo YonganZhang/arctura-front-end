@@ -1,0 +1,230 @@
+{
+  "canvas": {
+    "background": "#ffffff",
+    "color_mode": "RGB",
+    "dpi": 72,
+    "height": 900,
+    "width": 1800
+  },
+  "guides": [],
+  "layers": [
+    {
+      "blend_mode": "normal",
+      "color": "#8B6F4E",
+      "filters": [],
+      "font": "Arial",
+      "font_size": 22,
+      "height": 900,
+      "id": 8,
+      "name": "Sub",
+      "offset_x": 60,
+      "offset_y": 760,
+      "opacity": 1.0,
+      "text": "Terrazzo . Warm Wood . Black Metal . Cream . Brass . Foliage",
+      "type": "text",
+      "visible": true,
+      "width": 1800
+    },
+    {
+      "blend_mode": "normal",
+      "color": "#2B2B2D",
+      "filters": [],
+      "font": "Arial",
+      "font_size": 52,
+      "height": 900,
+      "id": 7,
+      "name": "Title",
+      "offset_x": 60,
+      "offset_y": 80,
+      "opacity": 1.0,
+      "text": "Coffee Lab | Industrial Wood + Japandi Palette v1",
+      "type": "text",
+      "visible": true,
+      "width": 1800
+    },
+    {
+      "blend_mode": "normal",
+      "draw_ops": [
+        {
+          "fill": "#3F6B3C",
+          "outline": null,
+          "type": "rect",
+          "width": 1,
+          "x1": 1510,
+          "x2": 1770,
+          "y1": 220,
+          "y2": 700
+        }
+      ],
+      "fill": "transparent",
+      "filters": [],
+      "height": 900,
+      "id": 6,
+      "name": "Sw5",
+      "offset_x": 0,
+      "offset_y": 0,
+      "opacity": 1.0,
+      "source": null,
+      "type": "image",
+      "visible": true,
+      "width": 1800
+    },
+    {
+      "blend_mode": "normal",
+      "draw_ops": [
+        {
+          "fill": "#B89968",
+          "outline": null,
+          "type": "rect",
+          "width": 1,
+          "x1": 1220,
+          "x2": 1480,
+          "y1": 220,
+          "y2": 700
+        }
+      ],
+      "fill": "transparent",
+      "filters": [],
+      "height": 900,
+      "id": 5,
+      "name": "Sw4",
+      "offset_x": 0,
+      "offset_y": 0,
+      "opacity": 1.0,
+      "source": null,
+      "type": "image",
+      "visible": true,
+      "width": 1800
+    },
+    {
+      "blend_mode": "normal",
+      "draw_ops": [
+        {
+          "fill": "#EDE8DE",
+          "outline": null,
+          "type": "rect",
+          "width": 1,
+          "x1": 930,
+          "x2": 1190,
+          "y1": 220,
+          "y2": 700
+        }
+      ],
+      "fill": "transparent",
+      "filters": [],
+      "height": 900,
+      "id": 4,
+      "name": "Sw3",
+      "offset_x": 0,
+      "offset_y": 0,
+      "opacity": 1.0,
+      "source": null,
+      "type": "image",
+      "visible": true,
+      "width": 1800
+    },
+    {
+      "blend_mode": "normal",
+      "draw_ops": [
+        {
+          "fill": "#2B2B2D",
+          "outline": null,
+          "type": "rect",
+          "width": 1,
+          "x1": 640,
+          "x2": 900,
+          "y1": 220,
+          "y2": 700
+        }
+      ],
+      "fill": "transparent",
+      "filters": [],
+      "height": 900,
+      "id": 3,
+      "name": "Sw2",
+      "offset_x": 0,
+      "offset_y": 0,
+      "opacity": 1.0,
+      "source": null,
+      "type": "image",
+      "visible": true,
+      "width": 1800
+    },
+    {
+      "blend_mode": "normal",
+      "draw_ops": [
+        {
+          "fill": "#8B6F4E",
+          "outline": null,
+          "type": "rect",
+          "width": 1,
+          "x1": 350,
+          "x2": 610,
+          "y1": 220,
+          "y2": 700
+        }
+      ],
+      "fill": "transparent",
+      "filters": [],
+      "height": 900,
+      "id": 2,
+      "name": "Sw1",
+      "offset_x": 0,
+      "offset_y": 0,
+      "opacity": 1.0,
+      "source": null,
+      "type": "image",
+      "visible": true,
+      "width": 1800
+    },
+    {
+      "blend_mode": "normal",
+      "draw_ops": [
+        {
+          "fill": "#D4CFC2",
+          "outline": null,
+          "type": "rect",
+          "width": 1,
+          "x1": 60,
+          "x2": 320,
+          "y1": 220,
+          "y2": 700
+        }
+      ],
+      "fill": "transparent",
+      "filters": [],
+      "height": 900,
+      "id": 1,
+      "name": "Sw0",
+      "offset_x": 0,
+      "offset_y": 0,
+      "opacity": 1.0,
+      "source": null,
+      "type": "image",
+      "visible": true,
+      "width": 1800
+    },
+    {
+      "blend_mode": "normal",
+      "fill": "#EDE8DE",
+      "filters": [],
+      "height": 900,
+      "id": 0,
+      "name": "BG",
+      "offset_x": 0,
+      "offset_y": 0,
+      "opacity": 1.0,
+      "type": "solid",
+      "visible": true,
+      "width": 1800
+    }
+  ],
+  "metadata": {
+    "created": "2026-04-14T23:55:21.692160",
+    "modified": "2026-04-14T23:55:22.283594",
+    "software": "gimp-cli 1.0"
+  },
+  "name": "untitled",
+  "selection": null,
+  "version": "1.0"
+}

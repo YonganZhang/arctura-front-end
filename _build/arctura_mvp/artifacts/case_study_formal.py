@@ -15,6 +15,20 @@ def produce(ctx, *, on_event: Optional[Callable] = None) -> ArtifactResult:
     t0 = time.time()
     if on_event:
         on_event("case_study_formal_start", {"script": "playbooks/scripts/case-study/run_one.py"})
+
+    # v3 · 100% 老师权威 · 命中 → 直接 copy 老师 3 真 case-study md
+    from pathlib import Path as _Path
+    from ..teacher_authority.v3_reuse import try_reuse
+    project = ctx.get("project")
+    sb_dir = _Path(ctx.get("sb_dir") or ".")
+    _v3 = try_reuse(
+        project.brief if project else {}, "case_study", sb_dir,
+        ["case_study/impact.md", "case_study/portfolio.md", "case_study/sales.md"],
+        target_subdir="case-study", on_event=on_event,
+    )
+    if _v3:
+        return _v3
+
     # 把老师 case-study 加 sys.path · 真 import
     ensure_playbook_script_subdir_on_path("case-study")
     try:

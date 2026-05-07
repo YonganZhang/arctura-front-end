@@ -10,6 +10,18 @@ from ..paths import PLAYBOOKS_SCRIPTS
 def produce(ctx, *, on_event: Optional[Callable] = None) -> ArtifactResult:
     if on_event:
         on_event("floorplan_formal_start", {})
+
+    # v3 · 100% 老师权威 · 命中 → 直接 copy 老师真 floorplan.{svg,png}
+    from ..teacher_authority.v3_reuse import try_reuse
+    sb_dir = Path(ctx.get("sb_dir") or ".")
+    project = ctx.get("project")
+    _v3 = try_reuse(
+        project.brief if project else {}, "floorplan", sb_dir,
+        ["floorplan.svg", "floorplan.png"], on_event=on_event,
+    )
+    if _v3:
+        return _v3
+
     # LIGHT 先跑产 SVG
     from .floorplan import produce as _light_produce
     result = _light_produce(ctx, on_event=on_event)

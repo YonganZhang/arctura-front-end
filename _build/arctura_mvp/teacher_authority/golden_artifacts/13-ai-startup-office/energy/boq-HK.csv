@@ -1,0 +1,22 @@
+Category,Description,Material,Qty,Unit,Unit Price,Total,Currency
+slab,F1 Floor Slab — RC slab (120mm) incl. formwork + rebar,Concrete_C30,116.0,m2,1200,139200.0,HKD
+wall,F1 Exterior Walls — Common brick wall (200mm) incl. render,Brick_Common,138.0,m2,850,117300.0,HKD
+wall,F1 Interior Partitions — Gypsum board partition (double-sided),Gypsum_Board,64.8,m2,420,27216.0,HKD
+window,F1 Windows — Thermal-break aluminum + Low-E double glazing,Glass_Double_LowE,41.4,m2,3800,157320.0,HKD
+door,F1 Doors — Solid wood door (900mm) + frame + hardware,Wood_Door,9,ea,8500,76500,HKD
+finish,F1_LOGO Floor Finish — Ceramic tile floor (supply + install),Ceramic_Tile,10.0,m2,380,3800.0,HKD
+finish,F1_10 Floor Finish — Ceramic tile floor (supply + install),Ceramic_Tile,45.0,m2,380,17100.0,HKD
+finish,F1_GPU Floor Finish — Ceramic tile floor (supply + install),Ceramic_Tile,10.0,m2,380,3800.0,HKD
+finish,F1_meeting Floor Finish — Ceramic tile floor (supply + install),Ceramic_Tile,18.0,m2,380,6840.0,HKD
+finish,F1_2 Floor Finish — Ceramic tile floor (supply + install),Ceramic_Tile,3.0,m2,380,1140.0,HKD
+finish,F1_zone Floor Finish — Ceramic tile floor (supply + install),Ceramic_Tile,8.0,m2,380,3040.0,HKD
+finish,F1_zone_2 Floor Finish — Ceramic tile floor (supply + install),Ceramic_Tile,12.0,m2,380,4560.0,HKD
+finish,F1_bathroom Floor Finish — Ceramic tile floor (supply + install),Ceramic_Tile,6.0,m2,380,2280.0,HKD
+finish,F1_zone_3 Floor Finish — Ceramic tile floor (supply + install),Ceramic_Tile,4.0,m2,380,1520.0,HKD
+roof,Roof — RC roof slab + waterproofing + insulation,Concrete_C30,130.0,m2,1500,195000.0,HKD
+
+,,,,,,Subtotal,756616.0
+,,,,,,MEP (25%),189154.0
+,,,,,,Prelim (12%),90793.92
+,,,,,,Contingency (10%),103656.39
+,,,,,,Grand Total,1140220.31

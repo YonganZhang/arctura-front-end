@@ -3228,6 +3228,7 @@ function BriefChatStep({ project, onRefresh, onPatch }) {
 function TierPickerStep({ project, onPatch, onRefresh }) {
   const [picked, setPicked] = useState(project.tier || null);
   const [variantCount, setVariantCount] = useState(project.variant_count || 1);
+  const [engineOverride, setEngineOverride] = useState(project.render_engine_override || null);
   const [saving, setSaving] = useState(false);
 
   const select = (tierId) => {
@@ -3236,6 +3237,9 @@ function TierPickerStep({ project, onPatch, onRefresh }) {
     else if (picked === "select") setVariantCount(1);
   };
 
+  const tierEngine = picked ? TIERS_UI.find(t => t.id === picked).render_engine : null;
+  const finalEngine = engineOverride || tierEngine;
+
   const submit = async () => {
     if (!picked) return;
     setSaving(true);
@@ -3243,7 +3247,8 @@ function TierPickerStep({ project, onPatch, onRefresh }) {
       const updated = await onPatch({
         tier: picked,
         variant_count: variantCount,
-        render_engine: TIERS_UI.find(t => t.id === picked).render_engine,
+        render_engine: finalEngine,
+        render_engine_override: engineOverride,  // null = 跟随档位
       });
       const r = await fetch("/api/mvp/create", {
         method: "POST",
@@ -3290,10 +3295,40 @@ function TierPickerStep({ project, onPatch, onRefresh }) {
             </div>
           ))}
         </div>
+        {picked && (
+          <div style={{margin:"24px 0 0",padding:"16px 20px",background:"#fafaf7",border:"1px solid #e8e6e0",borderRadius:8}}>
+            <div style={{fontSize:13,color:"#555",marginBottom:10,display:"flex",alignItems:"center",gap:8}}>
+              <span>渲染引擎</span>
+              <span style={{fontSize:11,color:"#999"}}>· 默认跟随档位 · formal = 100% 老师权威真渲染图(SSIM=1.0)</span>
+            </div>
+            <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
+              {[
+                {v: null, label: `↪ 跟随档位 (${tierEngine === "fast" ? "⚡ Fast" : "🎨 Formal"})`, hint: "推荐"},
+                {v: "fast", label: "⚡ Fast · Three.js", hint: "2 分钟 · 自定 brief"},
+                {v: "formal", label: "🎨 Formal · 老师真渲染", hint: "0.05 秒 · SSIM 1.0 · 4 真 MVP"},
+              ].map(opt => (
+                <button
+                  key={String(opt.v)}
+                  onClick={() => setEngineOverride(opt.v)}
+                  style={{
+                    padding:"8px 14px",fontSize:13,borderRadius:6,cursor:"pointer",
+                    background: engineOverride === opt.v ? "#2a2a2a" : "white",
+                    color: engineOverride === opt.v ? "white" : "#333",
+                    border:"1px solid " + (engineOverride === opt.v ? "#2a2a2a" : "#d8d6d0"),
+                    display:"flex",flexDirection:"column",alignItems:"flex-start",gap:2,minWidth:160,
+                  }}
+                >
+                  <span style={{fontWeight:500}}>{opt.label}</span>
+                  <span style={{fontSize:10,opacity:.7}}>{opt.hint}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
         <div style={{display:"flex",justifyContent:"space-between",marginTop:30}}>
           <button onClick={backToBriefing} style={wzBtnGhost}>← 回 Brief</button>
           <button onClick={submit} disabled={!picked || saving} style={{...wzBtnPrimary, opacity: picked ? 1 : .35}}>
-            {saving ? "生成中..." : `开始生成 (${picked ? TIERS_UI.find(t => t.id === picked).label_zh : "选一个"})`}
+            {saving ? "生成中..." : `开始生成 (${picked ? TIERS_UI.find(t => t.id === picked).label_zh : "选一个"} · ${finalEngine === "formal" ? "🎨 老师真渲染" : "⚡ Fast"})`}
           </button>
         </div>
       </div>

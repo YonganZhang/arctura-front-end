@@ -1,0 +1,159 @@
+{
+  "version": "1.0",
+  "name": "untitled",
+  "canvas": {
+    "width": 1600,
+    "height": 900,
+    "color_mode": "RGB",
+    "background": "#ffffff",
+    "dpi": 72
+  },
+  "layers": [
+    {
+      "id": 5,
+      "name": "Title",
+      "type": "text",
+      "width": 1600,
+      "height": 900,
+      "visible": true,
+      "opacity": 1.0,
+      "blend_mode": "normal",
+      "offset_x": 80,
+      "offset_y": 80,
+      "filters": [],
+      "text": "Minimalist Japandi Study | Palette v1",
+      "font": "Arial",
+      "font_size": 52,
+      "color": "#2C3539"
+    },
+    {
+      "id": 4,
+      "name": "Swatch4",
+      "type": "image",
+      "width": 1600,
+      "height": 900,
+      "visible": true,
+      "opacity": 1.0,
+      "blend_mode": "normal",
+      "offset_x": 0,
+      "offset_y": 0,
+      "filters": [],
+      "source": null,
+      "fill": "transparent",
+      "draw_ops": [
+        {
+          "type": "rect",
+          "x1": 1160,
+          "y1": 200,
+          "x2": 1520,
+          "y2": 700,
+          "fill": "#F5F1E8",
+          "outline": null,
+          "width": 1
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Swatch3",
+      "type": "image",
+      "width": 1600,
+      "height": 900,
+      "visible": true,
+      "opacity": 1.0,
+      "blend_mode": "normal",
+      "offset_x": 0,
+      "offset_y": 0,
+      "filters": [],
+      "source": null,
+      "fill": "transparent",
+      "draw_ops": [
+        {
+          "type": "rect",
+          "x1": 800,
+          "y1": 200,
+          "x2": 1120,
+          "y2": 700,
+          "fill": "#2C3539",
+          "outline": null,
+          "width": 1
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Swatch2",
+      "type": "image",
+      "width": 1600,
+      "height": 900,
+      "visible": true,
+      "opacity": 1.0,
+      "blend_mode": "normal",
+      "offset_x": 0,
+      "offset_y": 0,
+      "filters": [],
+      "source": null,
+      "fill": "transparent",
+      "draw_ops": [
+        {
+          "type": "rect",
+          "x1": 440,
+          "y1": 200,
+          "x2": 760,
+          "y2": 700,
+          "fill": "#8B6F47",
+          "outline": null,
+          "width": 1
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "name": "Swatch1",
+      "type": "image",
+      "width": 1600,
+      "height": 900,
+      "visible": true,
+      "opacity": 1.0,
+      "blend_mode": "normal",
+      "offset_x": 0,
+      "offset_y": 0,
+      "filters": [],
+      "source": null,
+      "fill": "transparent",
+      "draw_ops": [
+        {
+          "type": "rect",
+          "x1": 80,
+          "y1": 200,
+          "x2": 400,
+          "y2": 700,
+          "fill": "#E8DCC8",
+          "outline": null,
+          "width": 1
+        }
+      ]
+    },
+    {
+      "id": 0,
+      "name": "BG",
+      "type": "solid",
+      "width": 1600,
+      "height": 900,
+      "visible": true,
+      "opacity": 1.0,
+      "blend_mode": "normal",
+      "offset_x": 0,
+      "offset_y": 0,
+      "filters": [],
+      "fill": "#F5F1E8"
+    }
+  ],
+  "selection": null,
+  "guides": [],
+  "metadata": {
+    "created": "2026-04-14T21:54:23.252746",
+    "modified": "2026-04-14T21:54:23.602616",
+    "software": "gimp-cli 1.0"
+  }
+}

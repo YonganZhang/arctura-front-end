@@ -1,0 +1,247 @@
+{
+  "canvas": {
+    "background": "#ffffff",
+    "color_mode": "RGB",
+    "dpi": 72,
+    "height": 900,
+    "width": 1800
+  },
+  "guides": [],
+  "layers": [
+    {
+      "blend_mode": "normal",
+      "color": "#2E5454",
+      "filters": [],
+      "font": "Arial",
+      "font_size": 18,
+      "height": 900,
+      "id": 9,
+      "name": "Dedi",
+      "offset_x": 60,
+      "offset_y": 800,
+      "opacity": 1.0,
+      "text": "\u81f4\u656c\u4e1a\u4e3b \u00b7 made with love \u00b7 Studio Copilot v3",
+      "type": "text",
+      "visible": true,
+      "width": 1800
+    },
+    {
+      "blend_mode": "normal",
+      "color": "#8B6F4E",
+      "filters": [],
+      "font": "Arial",
+      "font_size": 22,
+      "height": 900,
+      "id": 8,
+      "name": "Sub",
+      "offset_x": 60,
+      "offset_y": 760,
+      "opacity": 1.0,
+      "text": "Concrete . Warm Wood . Deep Teal . Soft White . Lime . Charcoal",
+      "type": "text",
+      "visible": true,
+      "width": 1800
+    },
+    {
+      "blend_mode": "normal",
+      "color": "#2A2A2C",
+      "filters": [],
+      "font": "Arial",
+      "font_size": 48,
+      "height": 900,
+      "id": 7,
+      "name": "Title",
+      "offset_x": 60,
+      "offset_y": 80,
+      "opacity": 1.0,
+      "text": "Stack Lab | AI Startup Office \u00b7 Tech-Loft Palette v1",
+      "type": "text",
+      "visible": true,
+      "width": 1800
+    },
+    {
+      "blend_mode": "normal",
+      "draw_ops": [
+        {
+          "fill": "#2A2A2C",
+          "outline": null,
+          "type": "rect",
+          "width": 1,
+          "x1": 1510,
+          "x2": 1770,
+          "y1": 220,
+          "y2": 700
+        }
+      ],
+      "fill": "transparent",
+      "filters": [],
+      "height": 900,
+      "id": 6,
+      "name": "Sw5",
+      "offset_x": 0,
+      "offset_y": 0,
+      "opacity": 1.0,
+      "source": null,
+      "type": "image",
+      "visible": true,
+      "width": 1800
+    },
+    {
+      "blend_mode": "normal",
+      "draw_ops": [
+        {
+          "fill": "#A8C947",
+          "outline": null,
+          "type": "rect",
+          "width": 1,
+          "x1": 1220,
+          "x2": 1480,
+          "y1": 220,
+          "y2": 700
+        }
+      ],
+      "fill": "transparent",
+      "filters": [],
+      "height": 900,
+      "id": 5,
+      "name": "Sw4",
+      "offset_x": 0,
+      "offset_y": 0,
+      "opacity": 1.0,
+      "source": null,
+      "type": "image",
+      "visible": true,
+      "width": 1800
+    },
+    {
+      "blend_mode": "normal",
+      "draw_ops": [
+        {
+          "fill": "#F0EDE5",
+          "outline": null,
+          "type": "rect",
+          "width": 1,
+          "x1": 930,
+          "x2": 1190,
+          "y1": 220,
+          "y2": 700
+        }
+      ],
+      "fill": "transparent",
+      "filters": [],
+      "height": 900,
+      "id": 4,
+      "name": "Sw3",
+      "offset_x": 0,
+      "offset_y": 0,
+      "opacity": 1.0,
+      "source": null,
+      "type": "image",
+      "visible": true,
+      "width": 1800
+    },
+    {
+      "blend_mode": "normal",
+      "draw_ops": [
+        {
+          "fill": "#2E5454",
+          "outline": null,
+          "type": "rect",
+          "width": 1,
+          "x1": 640,
+          "x2": 900,
+          "y1": 220,
+          "y2": 700
+        }
+      ],
+      "fill": "transparent",
+      "filters": [],
+      "height": 900,
+      "id": 3,
+      "name": "Sw2",
+      "offset_x": 0,
+      "offset_y": 0,
+      "opacity": 1.0,
+      "source": null,
+      "type": "image",
+      "visible": true,
+      "width": 1800
+    },
+    {
+      "blend_mode": "normal",
+      "draw_ops": [
+        {
+          "fill": "#8B6F4E",
+          "outline": null,
+          "type": "rect",
+          "width": 1,
+          "x1": 350,
+          "x2": 610,
+          "y1": 220,
+          "y2": 700
+        }
+      ],
+      "fill": "transparent",
+      "filters": [],
+      "height": 900,
+      "id": 2,
+      "name": "Sw1",
+      "offset_x": 0,
+      "offset_y": 0,
+      "opacity": 1.0,
+      "source": null,
+      "type": "image",
+      "visible": true,
+      "width": 1800
+    },
+    {
+      "blend_mode": "normal",
+      "draw_ops": [
+        {
+          "fill": "#B5B0A8",
+          "outline": null,
+          "type": "rect",
+          "width": 1,
+          "x1": 60,
+          "x2": 320,
+          "y1": 220,
+          "y2": 700
+        }
+      ],
+      "fill": "transparent",
+      "filters": [],
+      "height": 900,
+      "id": 1,
+      "name": "Sw0",
+      "offset_x": 0,
+      "offset_y": 0,
+      "opacity": 1.0,
+      "source": null,
+      "type": "image",
+      "visible": true,
+      "width": 1800
+    },
+    {
+      "blend_mode": "normal",
+      "fill": "#F0EDE5",
+      "filters": [],
+      "height": 900,
+      "id": 0,
+      "name": "BG",
+      "offset_x": 0,
+      "offset_y": 0,
+      "opacity": 1.0,
+      "type": "solid",
+      "visible": true,
+      "width": 1800
+    }
+  ],
+  "metadata": {
+    "created": "2026-04-15T09:57:49.130978",
+    "modified": "2026-04-15T09:57:49.821194",
+    "software": "gimp-cli 1.0"
+  },
+  "name": "untitled",
+  "selection": null,
+  "version": "1.0"
+}
