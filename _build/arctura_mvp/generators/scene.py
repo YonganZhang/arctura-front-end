@@ -524,11 +524,13 @@ def build_scene_from_brief(brief: dict, slug: str) -> dict:
     # 4. 布局 + 生成 objects/assemblies
     placed = _layout_assemblies(types, bounds, lib)
     objects, assemblies = [], []
+    # Phase 12.D 修材质全白 bug:每个 type 自己作 material_id · 后面 materials dict 加该 type entry
     for i, (t, pos, size, rot) in enumerate(placed, 1):
         entry = lib.get(t, {})
         obj_id = f"obj_{t}_{i}"
         asm_id = f"asm_{t}_{i}"
-        mat_id = entry.get("default_material_id") or "default"
+        # 优先 default_material_id(palette 名)· 否则用 type 作 mat_id(后面给它加 base_color)
+        mat_id = entry.get("default_material_id") or t
         label_en = entry.get("label_en", t)
         label_zh = entry.get("label_zh", t)
         objects.append({
@@ -567,6 +569,22 @@ def build_scene_from_brief(brief: dict, slug: str) -> dict:
                 materials[k] = {**materials.get(k, {}), **v}
             elif isinstance(v, str):
                 materials.setdefault(k, {})["base_color"] = v
+
+    # Phase 12.D 修材质全白:每个 type 加 entry · base_color = furniture-library default_color
+    # 之前 17/17 obj.material_id="default"(浅米几乎白)→ Blender 渲染一片白
+    # 现在 mat_id=type · 这里给 materials 字典加 type entry
+    for obj in objects:
+        t = obj["type"]
+        if t in materials:
+            continue  # 已有(palette preset 同名)· 不覆盖
+        entry = lib.get(t, {})
+        color = entry.get("default_color", "#A89888")  # 中度灰褐 · 兜底
+        materials[t] = {
+            "base_color": color,
+            "roughness": 0.65,
+            "metallic": 0.0,
+            "label": entry.get("label_en", t),
+        }
 
     # 7. 组装最终 scene
     return {
