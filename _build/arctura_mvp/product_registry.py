@@ -79,6 +79,7 @@ _PRODUCTS_LIST: list[ProductSpec] = [
         tiers=["concept", "deliver", "quote", "full", "select"],
         kind="slow_artifact",
         light_producer="moodboard",
+        formal_producer="moodboard_formal",  # Phase 12.D.8 · 真接老师 gen_moodboard.py
         full_pipeline="P1/P2 moodboard step",
         spec_ref="L397",
         depends_on=["brief"],
@@ -110,6 +111,7 @@ _PRODUCTS_LIST: list[ProductSpec] = [
         key="deck_client", id=6, name="方案 PPT", lang_hint_en="Client Deck (Marp)",
         tiers=["deliver", "quote", "full", "select"],
         light_producer="deck_client",   # ✅ Phase 9 · 接 marp CLI · 产 .pptx + .pdf
+        formal_producer="deck_client_formal",  # Phase 12.D.4 · 老师 marp-deck/templates 8 stakeholder
         full_pipeline="P1/P2 deck step · Marp CLI + .claude/skills/marp-deck (full 8 stakeholder)",
         spec_ref="L401",
         depends_on=["brief", "scene", "renders"],
@@ -120,6 +122,7 @@ _PRODUCTS_LIST: list[ProductSpec] = [
         key="client_readme", id=7, name="客户文档", lang_hint_en="CLIENT-README",
         tiers=["deliver", "quote", "full", "select"],
         light_producer="client_readme",
+        formal_producer="client_readme_formal",  # Phase 12.D.5 · 复用 LIGHT(已接 templates/)
         full_pipeline="P1/P2 README step · templates/client-readme-template.md",
         spec_ref="L402",
         depends_on=["brief", "scene"],
