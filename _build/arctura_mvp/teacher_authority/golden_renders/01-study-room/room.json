@@ -1,0 +1,1011 @@
+{
+  "cameras": [
+    {
+      "clip_end": 1000.0,
+      "clip_start": 0.1,
+      "dof_aperture": 2.8,
+      "dof_enabled": false,
+      "dof_focus_distance": 10.0,
+      "focal_length": 24.0,
+      "id": 0,
+      "is_active": true,
+      "location": [
+        3.8,
+        -3.2,
+        1.7
+      ],
+      "name": "Camera",
+      "rotation": [
+        78.0,
+        0.0,
+        55.0
+      ],
+      "sensor_width": 36.0,
+      "type": "PERSP"
+    }
+  ],
+  "collections": [
+    {
+      "id": 0,
+      "name": "Collection",
+      "objects": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20
+      ],
+      "visible": true
+    }
+  ],
+  "lights": [
+    {
+      "angle": 0.00918,
+      "color": [
+        1.0,
+        0.95,
+        0.85
+      ],
+      "id": 0,
+      "location": [
+        0.0,
+        0.0,
+        3.0
+      ],
+      "name": "Sun",
+      "power": 3.0,
+      "rotation": [
+        -40.0,
+        15.0,
+        -30.0
+      ],
+      "type": "SUN"
+    },
+    {
+      "color": [
+        1.0,
+        0.95,
+        0.85
+      ],
+      "id": 1,
+      "location": [
+        0.0,
+        -1.5,
+        2.6
+      ],
+      "name": "Area",
+      "power": 100.0,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "shape": "RECTANGLE",
+      "size": 1.0,
+      "size_y": 1.0,
+      "type": "AREA"
+    },
+    {
+      "color": [
+        1.0,
+        0.8,
+        0.5
+      ],
+      "id": 2,
+      "location": [
+        2.3,
+        -1.5,
+        1.7
+      ],
+      "name": "Point",
+      "power": 60.0,
+      "radius": 0.25,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "type": "POINT"
+    }
+  ],
+  "materials": [
+    {
+      "alpha": 1.0,
+      "color": [
+        0.55,
+        0.42,
+        0.28,
+        1.0
+      ],
+      "emission_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "emission_strength": 0.0,
+      "id": 0,
+      "metallic": 0.0,
+      "name": "WoodFloor",
+      "roughness": 0.55,
+      "specular": 0.5,
+      "type": "principled",
+      "use_backface_culling": false
+    },
+    {
+      "alpha": 1.0,
+      "color": [
+        0.92,
+        0.88,
+        0.82,
+        1.0
+      ],
+      "emission_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "emission_strength": 0.0,
+      "id": 1,
+      "metallic": 0.0,
+      "name": "Wall",
+      "roughness": 0.9,
+      "specular": 0.5,
+      "type": "principled",
+      "use_backface_culling": false
+    },
+    {
+      "alpha": 1.0,
+      "color": [
+        0.75,
+        0.62,
+        0.45,
+        1.0
+      ],
+      "emission_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "emission_strength": 0.0,
+      "id": 2,
+      "metallic": 0.0,
+      "name": "LightWood",
+      "roughness": 0.6,
+      "specular": 0.5,
+      "type": "principled",
+      "use_backface_culling": false
+    },
+    {
+      "alpha": 1.0,
+      "color": [
+        0.18,
+        0.2,
+        0.22,
+        1.0
+      ],
+      "emission_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "emission_strength": 0.0,
+      "id": 3,
+      "metallic": 0.05,
+      "name": "Charcoal",
+      "roughness": 0.6,
+      "specular": 0.5,
+      "type": "principled",
+      "use_backface_culling": false
+    },
+    {
+      "alpha": 1.0,
+      "color": [
+        0.82,
+        0.75,
+        0.65,
+        1.0
+      ],
+      "emission_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "emission_strength": 0.0,
+      "id": 4,
+      "metallic": 0.0,
+      "name": "Rug",
+      "roughness": 0.95,
+      "specular": 0.5,
+      "type": "principled",
+      "use_backface_culling": false
+    },
+    {
+      "alpha": 1.0,
+      "color": [
+        0.78,
+        0.7,
+        0.58,
+        1.0
+      ],
+      "emission_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "emission_strength": 0.0,
+      "id": 5,
+      "metallic": 0.0,
+      "name": "Fabric",
+      "roughness": 0.98,
+      "specular": 0.5,
+      "type": "principled",
+      "use_backface_culling": false
+    },
+    {
+      "alpha": 1.0,
+      "color": [
+        0.35,
+        0.35,
+        0.38,
+        1.0
+      ],
+      "emission_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "emission_strength": 0.0,
+      "id": 6,
+      "metallic": 0.95,
+      "name": "Metal",
+      "roughness": 0.3,
+      "specular": 0.5,
+      "type": "principled",
+      "use_backface_culling": false
+    },
+    {
+      "alpha": 1.0,
+      "color": [
+        0.95,
+        0.85,
+        0.65,
+        1.0
+      ],
+      "emission_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "emission_strength": 0.0,
+      "id": 7,
+      "metallic": 0.0,
+      "name": "Shade",
+      "roughness": 0.7,
+      "specular": 0.5,
+      "type": "principled",
+      "use_backface_culling": false
+    },
+    {
+      "alpha": 1.0,
+      "color": [
+        0.05,
+        0.1,
+        0.15,
+        1.0
+      ],
+      "emission_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "emission_strength": 0.0,
+      "id": 8,
+      "metallic": 0.2,
+      "name": "Screen",
+      "roughness": 0.3,
+      "specular": 0.5,
+      "type": "principled",
+      "use_backface_culling": false
+    },
+    {
+      "alpha": 1.0,
+      "color": [
+        0.75,
+        0.15,
+        0.15,
+        1.0
+      ],
+      "emission_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "emission_strength": 0.0,
+      "id": 9,
+      "metallic": 0.0,
+      "name": "RedShelf",
+      "roughness": 0.55,
+      "specular": 0.5,
+      "type": "principled",
+      "use_backface_culling": false
+    }
+  ],
+  "metadata": {
+    "created": "2026-04-14T21:55:04.835412",
+    "modified": "2026-04-14T21:56:35.167568",
+    "software": "blender-cli 1.0"
+  },
+  "name": "Study20sqm",
+  "objects": [
+    {
+      "id": 0,
+      "keyframes": [],
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "material": 0,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "plane",
+      "modifiers": [],
+      "name": "Floor",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        2.5,
+        2.0,
+        1.0
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 1,
+      "keyframes": [],
+      "location": [
+        0.0,
+        2.0,
+        1.4
+      ],
+      "material": 1,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "BackWall",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        2.5,
+        0.05,
+        1.4
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 2,
+      "keyframes": [],
+      "location": [
+        -2.5,
+        0.0,
+        1.4
+      ],
+      "material": 1,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "LeftWall",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.05,
+        2.0,
+        1.4
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 3,
+      "keyframes": [],
+      "location": [
+        0.0,
+        1.65,
+        1.2
+      ],
+      "material": 9,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "Bookshelf",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        2.2,
+        0.175,
+        1.2
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 4,
+      "keyframes": [],
+      "location": [
+        0.0,
+        1.55,
+        0.5
+      ],
+      "material": 9,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "Shelf0",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        2.15,
+        0.25,
+        0.02
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 5,
+      "keyframes": [],
+      "location": [
+        0.0,
+        1.55,
+        1.05
+      ],
+      "material": 9,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "Shelf1",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        2.15,
+        0.25,
+        0.02
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 6,
+      "keyframes": [],
+      "location": [
+        0.0,
+        1.55,
+        1.6
+      ],
+      "material": 9,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "Shelf2",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        2.15,
+        0.25,
+        0.02
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 7,
+      "keyframes": [],
+      "location": [
+        0.0,
+        1.55,
+        2.15
+      ],
+      "material": 9,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "Shelf3",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        2.15,
+        0.25,
+        0.02
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 8,
+      "keyframes": [],
+      "location": [
+        -1.4,
+        -0.5,
+        0.75
+      ],
+      "material": 2,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "Desk",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        0.35,
+        0.02
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 9,
+      "keyframes": [],
+      "location": [
+        -2.35,
+        -0.5,
+        0.375
+      ],
+      "material": 6,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "DeskLegL",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.025,
+        0.35,
+        0.375
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 10,
+      "keyframes": [],
+      "location": [
+        -0.45,
+        -0.5,
+        0.375
+      ],
+      "material": 6,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "DeskLegR",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.025,
+        0.35,
+        0.375
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 11,
+      "keyframes": [],
+      "location": [
+        -1.4,
+        -1.0,
+        0.45
+      ],
+      "material": 3,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "Chair",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.25,
+        0.25,
+        0.025
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 12,
+      "keyframes": [],
+      "location": [
+        -1.4,
+        -1.25,
+        0.75
+      ],
+      "material": 3,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "ChairBack",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.25,
+        0.03,
+        0.3
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 13,
+      "keyframes": [],
+      "location": [
+        1.5,
+        -1.2,
+        0.35
+      ],
+      "material": 5,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "ArmChair",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.45,
+        0.4,
+        0.35
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 14,
+      "keyframes": [],
+      "location": [
+        1.5,
+        -1.55,
+        0.8
+      ],
+      "material": 5,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "ArmBack",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.45,
+        0.05,
+        0.45
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 15,
+      "keyframes": [],
+      "location": [
+        2.3,
+        -1.5,
+        0.85
+      ],
+      "material": 6,
+      "mesh_params": {
+        "depth": 2.0,
+        "radius": 1.0,
+        "vertices": 32
+      },
+      "mesh_type": "cylinder",
+      "modifiers": [],
+      "name": "LampPole",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.02,
+        0.02,
+        0.85
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 16,
+      "keyframes": [],
+      "location": [
+        2.3,
+        -1.5,
+        1.75
+      ],
+      "material": 7,
+      "mesh_params": {
+        "depth": 2.0,
+        "radius1": 1.0,
+        "radius2": 0.0,
+        "vertices": 32
+      },
+      "mesh_type": "cone",
+      "modifiers": [],
+      "name": "LampShade",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.18,
+        0.18,
+        0.15
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 17,
+      "keyframes": [],
+      "location": [
+        1.3,
+        -1.0,
+        0.005
+      ],
+      "material": 4,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "plane",
+      "modifiers": [],
+      "name": "Rug",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.9,
+        0.8,
+        1.0
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 18,
+      "keyframes": [],
+      "location": [
+        2.0,
+        1.55,
+        0.5
+      ],
+      "material": 3,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "Cabinet",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.35,
+        0.2,
+        0.5
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 19,
+      "keyframes": [],
+      "location": [
+        -1.4,
+        -0.5,
+        0.78
+      ],
+      "material": 8,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "Laptop",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.15,
+        0.1,
+        0.01
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 20,
+      "keyframes": [],
+      "location": [
+        -1.0,
+        -0.3,
+        1.05
+      ],
+      "material": 8,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "Monitor",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.25,
+        0.02,
+        0.15
+      ],
+      "type": "MESH",
+      "visible": true
+    }
+  ],
+  "render": {
+    "engine": "EEVEE",
+    "film_transparent": false,
+    "output_format": "PNG",
+    "output_path": "./render/",
+    "resolution_percentage": 100,
+    "resolution_x": 1600,
+    "resolution_y": 1000,
+    "samples": 128,
+    "use_denoising": true
+  },
+  "scene": {
+    "fps": 24,
+    "frame_current": 1,
+    "frame_end": 250,
+    "frame_start": 1,
+    "unit_scale": 1.0,
+    "unit_system": "metric"
+  },
+  "version": "1.0",
+  "world": {
+    "background_color": [
+      0.05,
+      0.05,
+      0.05
+    ],
+    "hdri_path": null,
+    "hdri_strength": 1.0,
+    "use_hdri": false
+  }
+}
