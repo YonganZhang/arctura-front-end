@@ -239,7 +239,13 @@ def produce(ctx, *, on_event: Optional[Callable] = None) -> ArtifactResult:
     # SSIM = 1.0(逐字节复用)· 0.1s 完成 · 无需 Blender
     # 用户原话:"100% 以我老师的代码为权威 · 有些文件直接复制他的来用就行"
     # 双源:repo 内 mirror(老 golden_renders 4 + 新 golden_artifacts 4) → fallback startup_building 36
-    if os.environ.get("ARCTURA_FORMAL_USE_GOLDEN", "1") == "1":
+    # ⚠ render_engine=path_a 时跳过 v3 复用 · 走真 mesh-library Path A(用户明选真 AI 设计)
+    user_wants_real_path_a = (
+        getattr(project, "render_engine", None) == "path_a"
+        or (project.brief or {}).get("render_path") == "path_a"
+        or os.environ.get("ARCTURA_PATH_A") == "1"
+    )
+    if not user_wants_real_path_a and os.environ.get("ARCTURA_FORMAL_USE_GOLDEN", "1") == "1":
         from ..teacher_authority.v3_reuse import _resolve_src_dir, _GOLDEN_DIR
         # 先试 v3_reuse 双源(覆盖 36 真 MVP)
         src_dir = _resolve_src_dir(template_slug)
