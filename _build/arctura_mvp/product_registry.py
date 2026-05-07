@@ -67,6 +67,7 @@ _PRODUCTS_LIST: list[ProductSpec] = [
         tiers=["concept", "deliver", "quote", "full", "select"],
         kind="derive_input",
         light_producer="scene",
+        formal_producer="scene_formal",  # Phase 12.D.1 · 真接 Blender headless 8 视角渲染
         full_pipeline="P1 Interior / P2 Architecture",
         spec_ref="L398",
         depends_on=["brief"],
