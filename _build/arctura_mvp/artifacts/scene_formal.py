@@ -238,35 +238,46 @@ def produce(ctx, *, on_event: Optional[Callable] = None) -> ArtifactResult:
     # brief.space.type 命中老师 4 真 MVP → 直接 copy 老师 真 8 PNG + room.json
     # SSIM = 1.0(逐字节复用)· 0.1s 完成 · 无需 Blender
     # 用户原话:"100% 以我老师的代码为权威 · 有些文件直接复制他的来用就行"
+    # 双源:repo 内 mirror(老 golden_renders 4 + 新 golden_artifacts 4) → fallback startup_building 36
     if os.environ.get("ARCTURA_FORMAL_USE_GOLDEN", "1") == "1":
-        gold_dir = _AUTHORITY_DIR / "golden_renders" / template_slug
-        gold_room = gold_dir / "room.json"
-        gold_pngs = sorted(gold_dir.glob("*.png"))
-        if gold_room.exists() and gold_pngs:
-            sb_dir.mkdir(parents=True, exist_ok=True)
-            render_dir = sb_dir / "renders"
-            render_dir.mkdir(parents=True, exist_ok=True)
-            for p in gold_pngs:
-                shutil.copy2(p, render_dir / p.name)
-            shutil.copy2(gold_room, sb_dir / "room.json")
-            if on_event:
-                on_event("teacher_golden_reused", {
-                    "template": template_slug,
-                    "renders_count": len(gold_pngs),
-                    "policy": "v3 · 直接复用老师真 PNG · SSIM=1.0",
-                })
-            return ArtifactResult(
-                name="scene", status="done",
-                timing_ms=int((time.time() - t0) * 1000),
-                output_path=str(sb_dir / "room.json"),
-                meta={
-                    "engine": "formal",
-                    "mode": "v3_golden_reuse",
-                    "template_source": f"teacher_authority/golden_renders/{template_slug}/",
-                    "renders_count": len(gold_pngs),
-                    "ssim_vs_teacher": 1.0,
-                    "policy": "v3 直接复用老师真 PNG(SSIM=1.0) · v2 Blender fallback 仅当 brief 不命中老师 MVP",
-                },
+        from ..teacher_authority.v3_reuse import _resolve_src_dir, _GOLDEN_DIR
+        # 先试 v3_reuse 双源(覆盖 36 真 MVP)
+        src_dir = _resolve_src_dir(template_slug)
+        # 兼容老路径 golden_renders/(初版只 4 MVP)
+        if src_dir is None:
+            legacy = _AUTHORITY_DIR / "golden_renders" / template_slug
+            if legacy.exists():
+                src_dir = legacy
+        if src_dir is not None:
+            gold_room = src_dir / "room.json"
+            gold_pngs = sorted((src_dir / "renders").glob("*.png")) if (src_dir / "renders").exists() else sorted(src_dir.glob("*.png"))
+            if gold_room.exists() and gold_pngs:
+                sb_dir.mkdir(parents=True, exist_ok=True)
+                render_dir = sb_dir / "renders"
+                render_dir.mkdir(parents=True, exist_ok=True)
+                for p in gold_pngs:
+                    shutil.copy2(p, render_dir / p.name)
+                shutil.copy2(gold_room, sb_dir / "room.json")
+                origin = "repo_mirror" if str(src_dir).startswith(str(_GOLDEN_DIR)) or "golden_renders" in str(src_dir) else "startup_building"
+                if on_event:
+                    on_event("teacher_golden_reused", {
+                        "template": template_slug,
+                        "src_origin": origin,
+                        "renders_count": len(gold_pngs),
+                    })
+                return ArtifactResult(
+                    name="scene", status="done",
+                    timing_ms=int((time.time() - t0) * 1000),
+                    output_path=str(sb_dir / "room.json"),
+                    meta={
+                        "engine": "formal",
+                        "mode": "v3_golden_reuse",
+                        "template_slug": template_slug,
+                        "src_origin": origin,
+                        "renders_count": len(gold_pngs),
+                        "ssim_vs_teacher": 1.0,
+                        "policy": f"v3 真复用老师真 PNG({origin}/{template_slug})· SSIM=1.0",
+                    },
             )
         # 命中表里 template_slug 但 golden_renders 子目录缺 → 落 v2 真跑 Blender
 

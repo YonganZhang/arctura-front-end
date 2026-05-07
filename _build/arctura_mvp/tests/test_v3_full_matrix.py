@@ -25,6 +25,8 @@ from _build.arctura_mvp.artifacts.case_study_formal import produce as case_study
 from _build.arctura_mvp.artifacts.client_readme_formal import produce as client_readme
 from _build.arctura_mvp.artifacts.exports_formal import produce as exports
 from _build.arctura_mvp.artifacts.ai_renders_formal import produce as ai_renders
+from _build.arctura_mvp.artifacts.portal_formal import produce as portal
+from _build.arctura_mvp.teacher_authority.v3_reuse import _TEACHER_MVPS
 
 
 _MVP_TYPES = [
@@ -91,6 +93,35 @@ def test_m1b_partial_artifacts_v3(slug, stype, name, fn, mvp_with_truth, tmp_pat
         meta = res.meta or {}
         assert meta.get("mode") == "v3_golden_reuse", \
             f"[{slug}/{name}] 老师真有 → 应 v3 · 实际 mode={meta.get('mode')}"
+
+
+# ── M5 · 36 MVP 双源 v3 覆盖 ─────────────────────────────
+# Phase 12.末.C · 老师真有 36 MVP · brief.space.mvp_slug 直指 → 双源 fallback
+# repo_mirror(4 高频) + startup_building(其余 32) 任一可用都应 v3 命中
+@pytest.mark.parametrize("mvp_slug", _TEACHER_MVPS)
+def test_m5_36mvp_dualsource_scene(mvp_slug, tmp_path):
+    """36 MVP scene · brief.space.mvp_slug 直指 → 必 v3"""
+    project = SimpleNamespace(
+        brief={"space": {"mvp_slug": mvp_slug, "type": "office"}},
+        slug=mvp_slug, display_name=mvp_slug, scene={}, artifacts={},
+    )
+    res = scene({"project": project, "sb_dir": tmp_path})
+    assert res.status == "done"
+    meta = res.meta or {}
+    assert meta.get("mode") == "v3_golden_reuse", \
+        f"[{mvp_slug}] 应 v3 · 实际 mode={meta.get('mode')} · src={meta.get('src_origin')}"
+    assert meta.get("src_origin") in ("repo_mirror", "startup_building")
+
+
+# ── M6 · portal 全局聚合 ─────────────────────────────────
+def test_m6_portal_aggregates_studio_demo(tmp_path):
+    """portal_formal · 复用老师 studio-demo 顶层 5 聚合文件"""
+    project = SimpleNamespace(brief={}, slug="any", display_name="x", scene={}, artifacts={})
+    res = portal({"project": project, "sb_dir": tmp_path})
+    assert res.status == "done"
+    meta = res.meta or {}
+    assert meta.get("mode") == "v3_golden_reuse"
+    assert meta.get("files_count", 0) >= 3  # 至少 ALL-MVPS-* + MVP-SPECS
 
 
 # ── M2 · brief 不命中表 → 不 v3 ─────────────────────────
