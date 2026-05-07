@@ -2873,25 +2873,28 @@ function useWizardProject() {
 function Wizard() {
   const { project, loading, error, refresh, patch } = useWizardProject();
 
-  // Phase 10 · state=live 时 URL 替换为 /project/<slug> 并 reload（进 App tab 视图）
+  // Phase 10 · state=live/partial/generating_failed 时 URL 替换为 /project/<slug> 并 reload(进 App tab 视图)
   //   · 不 reload 的话 Root useEffect 不会重跑 · 拉不到 mvp data
   //   · replaceState + reload = 用户看到 URL 秒变 · 主区切 tab 视图 · 流畅
+  //   · generating_failed 也跳:产物部分有(GLB / 下载等)· 用户应能看部分而不是空白
   useEffect(() => {
-    if (project?.state === "live" || project?.state === "live_partial") {
+    if (project?.state === "live" || project?.state === "live_partial"
+        || project?.state === "generating_failed") {
       window.history.replaceState({}, "", `/project/${project.slug}`);
       window.location.reload();
     }
   }, [project?.state, project?.slug]);
 
   if (loading) return <div style={wzLoading}>准备工作区…</div>;
-  if (error)   return <div style={wzLoading}>出错：{error}<br/><a href="/new" style={{color:"#4a9"}}>重试</a></div>;
+  if (error)   return <div style={wzLoading}>出错:{error}<br/><a href="/new" style={{color:"#4a9"}}>重试</a></div>;
   if (!project) return <div style={wzLoading}>没拿到项目</div>;
 
-  // Step dispatch
+  // Step dispatch · generating_failed 也算到生成 tab(=4)· 让用户至少看到部分产物
   const step = (project.state === "empty" || project.state === "briefing") ? 1
              : project.state === "planning" ? 2
              : project.state === "generating" ? 3
-             : project.state === "live" ? 4 : 0;
+             : (project.state === "live" || project.state === "live_partial"
+                 || project.state === "generating_failed") ? 4 : 0;
 
   return (
     <div style={wzRoot}>

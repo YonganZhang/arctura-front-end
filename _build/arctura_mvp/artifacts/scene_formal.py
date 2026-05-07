@@ -284,9 +284,11 @@ def produce(ctx, *, on_event: Optional[Callable] = None) -> ArtifactResult:
     # ── v4 PATH-A · 老师 mesh-library 真实家具 pipeline ─────────────
     # 触发条件:用户 brief.render_path == "path_a" 或 env ARCTURA_PATH_A=1
     # 不命中 v3(老师 4 真 MVP)时 · 用 LIGHT scene 跑老师 5 步 Path A · 输出 asset 版 6 视角
+    # 触发条件:env / brief.render_path / **project.render_engine='path_a'(prod 真主用)**
     path_a_requested = (
         os.environ.get("ARCTURA_PATH_A") == "1"
         or (project.brief or {}).get("render_path") == "path_a"
+        or getattr(project, "render_engine", None) == "path_a"
     )
     if path_a_requested:
         from ..teacher_authority.mesh_library_runner import run_path_a
