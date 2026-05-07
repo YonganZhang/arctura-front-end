@@ -922,11 +922,16 @@ function Viewer3D() {
         <div>
           <h1 className="view-title">3D Viewer</h1>
           <div className="view-sub">
-            真实渲染图 · {renders.length} 视角
+            ⚠ 当前为<b>多视角图片</b>(无 3D GLB · 不能拖动旋转/隐藏天花板)· {renders.length} 视角
             {variantId && <> · <b>variant: {variantId}</b></>}
             {area ? <> · {area} m²</> : null}
           </div>
         </div>
+      </div>
+      <div style={{padding:"10px 14px", marginBottom:10, background:"#fff7ed", border:"1px solid #fdba74", borderRadius:6, fontSize:12, lineHeight:1.6}}>
+        💡 <b>想要真 3D 模型(可旋转 / 拖拽 / 隐藏天花板)?</b><br/>
+        当前 MVP 用 <b>Formal/Fast 范例模式</b>(复用老师真 PNG · 没生成 GLB)。<br/>
+        新建 MVP 时选 <b>🪑 Path A</b> 或 <b>🎨 Path B+SDXL</b> 引擎 · 真生成 Blender GLB 给客户旋转。
       </div>
       <div style={{position:"relative", background:"var(--bg-1)", border:"1px solid var(--line)", borderRadius:6, overflow:"hidden"}}>
         <div style={{aspectRatio: "16/10", background:"var(--bg-2)", display:"flex", alignItems:"center", justifyContent:"center"}}>
@@ -3297,17 +3302,24 @@ function TierPickerStep({ project, onPatch, onRefresh }) {
         </div>
         {picked && (
           <div style={{margin:"24px 0 0",padding:"16px 20px",background:"#fafaf7",border:"1px solid #e8e6e0",borderRadius:8}}>
-            <div style={{fontSize:13,color:"#555",marginBottom:10,display:"flex",alignItems:"center",gap:8}}>
-              <span>渲染引擎</span>
-              <span style={{fontSize:11,color:"#999"}}>· 默认跟随档位 · formal = 100% 老师权威真渲染图(SSIM=1.0)</span>
+            <div style={{fontSize:13,color:"#555",marginBottom:10}}>
+              <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:6}}>
+                <span style={{fontWeight:500}}>渲染引擎</span>
+                <span style={{fontSize:11,color:"#999"}}>· 决定为你设计的"程度"</span>
+              </div>
+              <div style={{padding:"10px 12px",background:"#fff7ed",border:"1px solid #fdba74",borderRadius:6,fontSize:12,lineHeight:1.5}}>
+                ⚠ <b>请认真选</b>:
+                <br />⚡ <b>Fast / 🎨 Formal</b> = <b>复用老师真范例</b>(秒出 · 系统从老师 36 真 MVP 找最像的 · 不是为你 brief 真设计)
+                <br />🪑 <b>Path A / 🎨 Path B+SDXL</b> = <b>真 AI 为你 brief 设计</b>(5-25 分钟 · GPU 真渲染 · 能拖动 3D 模型)
+              </div>
             </div>
             <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
               {[
-                {v: null,         label: `↪ 跟随档位 (${tierEngine === "fast" ? "⚡ Fast" : "🎨 Formal"})`, hint: "推荐"},
-                {v: "fast",       label: "⚡ Fast · Three.js",          hint: "~2 分钟 · 前端 demo"},
-                {v: "formal",     label: "🎨 Formal · 复用老师真 PNG", hint: "0.05s · SSIM 1.0 · 命中老师 36 真 MVP"},
-                {v: "path_a",     label: "🪑 Path A · 真实家具(老师权威)", hint: "Blender + GLB + CLIP 召回 · ~5 分钟 · 老师 mesh-library"},
-                {v: "path_b_sdxl",label: "🎨 Path B + SDXL · AI 写实化", hint: "Path B 8 张 + SDXL 后处理 · ~25 分钟 · GPU 必需"},
+                {v: null,         label: `↪ 跟随档位 (${tierEngine === "fast" ? "⚡ Fast" : "🎨 Formal"})`, hint: "默认 · 通常是范例预览模式"},
+                {v: "fast",       label: "⚡ Fast · Three.js 范例",       hint: "~2min · 范例预览 · 不真为你 brief 设计"},
+                {v: "formal",     label: "🎨 Formal · 复用老师真 PNG",   hint: "0.05s · 复用老师 36 真 MVP 之一 · 不为你 brief 真设计"},
+                {v: "path_a",     label: "🪑 Path A · 真 AI 为你 brief 设计", hint: "~5min · GPU + Blender + 真 GLB · 3D 可旋转"},
+                {v: "path_b_sdxl",label: "🎨 Path B+SDXL · AI 写实化",   hint: "~25min · 真 SDXL 后处理"},
               ].map(opt => (
                 <button
                   key={String(opt.v)}
