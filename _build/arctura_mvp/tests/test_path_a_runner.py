@@ -82,6 +82,70 @@ def test_p4_render_path_a_triggers_v4(tmp_path, monkeypatch):
 
 
 # ── P5 · ARCTURA_PATH_A=1 env 触发 v4(同上 mock) ──────────────
+# ── P6 · 端到端真跑老师 03-coffee 验证(不需 Blender · 仅 lint + validate) ─
+def test_p6_e2e_lint_render_script_on_teacher_mvp():
+    """跑老师 03-coffee-shop 真目录 · lint_render_script 应通过"""
+    from pathlib import Path
+    from _build.arctura_mvp.teacher_authority.mesh_library_runner import lint_render_script
+    from _build.arctura_mvp.paths import STUDIO_DEMO_MVP_DIR
+    mvp = STUDIO_DEMO_MVP_DIR / "03-coffee-shop"
+    if not mvp.exists():
+        pytest.skip(f"老师 mvp 缺: {mvp}")
+    r = lint_render_script(mvp)
+    assert r.ok, f"老师真 _render_script.py 应 lint 通过 · stderr={r.stderr_tail}"
+
+
+def test_p6_e2e_validate_reports_on_teacher_mvp():
+    """validate_reports 在老师真 03-coffee 上应通过(无 reports 文件时也是 ok)"""
+    from pathlib import Path
+    from _build.arctura_mvp.teacher_authority.mesh_library_runner import validate_reports
+    from _build.arctura_mvp.paths import STUDIO_DEMO_MVP_DIR
+    mvp = STUDIO_DEMO_MVP_DIR / "03-coffee-shop"
+    if not mvp.exists():
+        pytest.skip(f"老师 mvp 缺: {mvp}")
+    r = validate_reports(mvp)
+    assert r.ok
+
+
+# ── P7 · F1 worker_pipeline · 老师 7 步骤可调 ──────────────────
+def test_p7_worker_pipeline_imports():
+    from _build.arctura_mvp.teacher_authority.worker_pipeline import verify_runner
+    info = verify_runner()
+    assert info["openstudio_available"], "cli_anything.openstudio 应可 import(已 pip install -e)"
+    assert info["default_weather_exists"], "老师默认 HK weather epw 应存在"
+
+
+# ── P8 · C3 asset-intake thin runner ────────────────────────────
+def test_p8_asset_intake_clis_exist():
+    from _build.arctura_mvp.teacher_authority.asset_intake_runner import verify_runner
+    info = verify_runner()
+    assert info["dxf_extract"] and info["vision_extract"]
+
+
+# ── P9 · B3 site-entourage thin runner ──────────────────────────
+def test_p9_site_entourage_6_clis_exist():
+    from _build.arctura_mvp.teacher_authority.site_entourage_runner import verify_runner
+    info = verify_runner()
+    must = ["populate_site", "render_entourage", "qa_visualize",
+            "apply_measured_dims", "batch_dryrun", "verify_os3d_orientation"]
+    missing = [k for k in must if not info[k]]
+    assert not missing, f"site-entourage CLI 缺: {missing}"
+
+
+# ── P10 · B1 arch v3 双源(18 真 slug 可达) ──────────────────────
+def test_p10_arch_mvp_v3_dual_source():
+    from _build.arctura_mvp.teacher_authority.v3_reuse import (
+        _resolve_src_dir, _TEACHER_ARCH_MVPS, is_arch_slug,
+    )
+    assert len(_TEACHER_ARCH_MVPS) == 18
+    # 至少 14 个 arch 真目录(老师 16 个 arch-NN + community-fitness + lakeside-retreat)
+    reachable = sum(1 for s in _TEACHER_ARCH_MVPS if _resolve_src_dir(s))
+    assert reachable >= 14, f"应 ≥14 arch 真目录可达 · 实际 {reachable}"
+    # is_arch_slug
+    assert is_arch_slug("arch-01-house")
+    assert not is_arch_slug("01-study-room")
+
+
 def test_p5_env_path_a_triggers_v4(tmp_path, monkeypatch):
     monkeypatch.setenv("ARCTURA_PATH_A", "1")
     fake_summary = {"ok": True, "fatal_at": None, "steps_count": 4,
