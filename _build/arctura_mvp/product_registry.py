@@ -205,7 +205,8 @@ _PRODUCTS_LIST: list[ProductSpec] = [
     ProductSpec(
         key="ai_renders", id=16, name="AI 渲染增强", lang_hint_en="AI Renders",
         tiers=[],                     # addon · 不默认挂档位 · 客户明说"加 AI 渲染"才触发
-        light_producer="ai_renders",  # 但 LIGHT 能产 · 通过 addon 入口调
+        light_producer="ai_renders",
+        formal_producer="ai_renders_formal",  # Phase 12.D.10 · 老师 ai_render/(GPU 待接)  # 但 LIGHT 能产 · 通过 addon 入口调
         full_pipeline="P4 · LIGHT 走 fal.ai fast-sdxl · FULL 走 ComfyUI SDXL + ControlNet depth",
         spec_ref="L93-127 + L376",
         depends_on=["renders"],
