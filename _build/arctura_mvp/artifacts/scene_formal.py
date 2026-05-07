@@ -55,6 +55,7 @@ _BLENDER = _find_blender()
 SHOTS_TEMPLATE = """
 # ── Cameras (auto-scaled to room) · 8 视角 · 参考老师 _render_multi_tail.py ─────
 import mathutils
+from pathlib import Path
 HX = ROOM_LEN / 2 - 0.6
 HY = ROOM_WID / 2 - 0.6
 
@@ -74,9 +75,11 @@ def look_at(cam_obj, target):
     rot_quat = direction.to_track_quat('-Z', 'Y')
     cam_obj.rotation_euler = rot_quat.to_euler()
 
-scene.render.image_settings.file_format = 'PNG'
-scene.render.resolution_x = 1600
-scene.render.resolution_y = 1000
+# Phase 12.D.1 fix · exports.py 脚本里 scene 是 dict(json.loads)· 用 bpy_scene 避冲突
+bpy_scene = bpy.context.scene
+bpy_scene.render.image_settings.file_format = 'PNG'
+bpy_scene.render.resolution_x = 1600
+bpy_scene.render.resolution_y = 1000
 
 RENDER_DIR = Path(r'__RENDER_DIR_PLACEHOLDER__')
 RENDER_DIR.mkdir(parents=True, exist_ok=True)
@@ -96,9 +99,9 @@ for name, loc, target, lens, is_ortho, hide_ceil, hide_walls in SHOTS:
     bpy.context.collection.objects.link(cam_obj)
     cam_obj.location = loc
     look_at(cam_obj, target)
-    scene.camera = cam_obj
+    bpy_scene.camera = cam_obj
     out = RENDER_DIR / f'{name}.png'
-    scene.render.filepath = str(out)
+    bpy_scene.render.filepath = str(out)
     bpy.ops.render.render(write_still=True)
     print(f'[FORMAL_RENDER_OK] {out}')
 
