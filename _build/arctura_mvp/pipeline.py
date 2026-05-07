@@ -91,7 +91,13 @@ def run(project: Project, *,
             skipped.append({"name": artifact_name, "reason": "dry_run"})
             continue
 
-        handler = get_artifact(artifact_name)
+        # Phase 12.4 · pass engine 给 dispatcher · formal 没实装自动降级 fast
+        handler = get_artifact(artifact_name, engine=engine)
+        # 诊断日志 · 让 evidence log / journal 能看出实际用 fast 还是 formal
+        from .artifacts import resolve_artifact_engine
+        producer_name, used_engine = resolve_artifact_engine(artifact_name, engine)
+        emit("artifact_resolved", {"name": artifact_name, "requested": engine, "used": used_engine, "producer": producer_name})
+
         if handler is None:
             # Phase 8 · 从 registry 派生 skeleton · 统一写 _TODO-<name>.md
             from .artifacts import get_unimplemented_fallback
