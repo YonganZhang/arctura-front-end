@@ -53,9 +53,60 @@ _BLENDER = _find_blender()
 # 8 视角 camera 模板(参考 _render_multi_tail.py · 老师标准)
 # (name, location_factor, target_factor, lens, is_ortho, hide_ceiling, hide_walls)
 SHOTS_TEMPLATE = """
-# ── Cameras (auto-scaled to room) · 8 视角 · 参考老师 _render_multi_tail.py ─────
+# ── Lights + Cameras · 8 视角 · 参考老师 _render_multi_tail.py ─────────────────
+# Phase 12.D.1 fix: exports.py 脚本是 export 专用不加灯 · 这里补 SunMain + ceiling AREA + WarmAccent
 import mathutils
+import math as _m
 from pathlib import Path
+
+# 用 bpy_scene 别名(exports.py 脚本里 scene 是 dict from json.loads · 避免冲突)
+bpy_scene = bpy.context.scene
+
+# 调暗 world ambient(老师标准)
+_world = bpy.data.worlds.get('World')
+if _world and _world.node_tree:
+    _bg = _world.node_tree.nodes.get('Background')
+    if _bg:
+        _bg.inputs[0].default_value = (0.45, 0.48, 0.52, 1.0)
+        _bg.inputs[1].default_value = 0.8
+
+# Sun 主光
+_sun = bpy.data.lights.new(name='SunMain', type='SUN')
+_sun.energy = 4.0
+_sun.color = (1.0, 0.96, 0.9)
+_sun.angle = 0.05
+_sun_obj = bpy.data.objects.new('SunMain', _sun)
+bpy.context.collection.objects.link(_sun_obj)
+_sun_obj.location = (ROOM_LEN * 0.4, -ROOM_WID * 0.5, ROOM_HT * 4)
+_sun_obj.rotation_euler = (_m.radians(35.0), _m.radians(15.0), _m.radians(-30.0))
+
+# Ceiling grid 6 灯(3×2)
+for _fx in [-0.35, 0.0, 0.35]:
+    for _fy in [-0.3, 0.3]:
+        _al = bpy.data.lights.new(name=f'Ceil_{_fx}_{_fy}', type='AREA')
+        _al.energy = 150.0
+        _al.color = (1.0, 0.97, 0.93)
+        _al.size = 1.5
+        _al_obj = bpy.data.objects.new(f'Ceil_{_fx}_{_fy}', _al)
+        bpy.context.collection.objects.link(_al_obj)
+        _al_obj.location = (ROOM_LEN * _fx, ROOM_WID * _fy, ROOM_HT - 0.15)
+
+# 暖色辅光
+_warm = bpy.data.lights.new(name='WarmAccent', type='AREA')
+_warm.energy = 100.0
+_warm.color = (1.0, 0.82, 0.55)
+_warm.size = 1.0
+_warm_obj = bpy.data.objects.new('WarmAccent', _warm)
+bpy.context.collection.objects.link(_warm_obj)
+_warm_obj.location = (ROOM_LEN * 0.3, ROOM_WID * 0.4, ROOM_HT - 0.4)
+
+# 渲染设置(EEVEE_NEXT)
+bpy_scene.render.engine = 'BLENDER_EEVEE_NEXT'
+bpy_scene.eevee.taa_render_samples = 64
+bpy_scene.view_settings.view_transform = 'Filmic'
+bpy_scene.view_settings.look = 'Medium Contrast'
+bpy_scene.view_settings.exposure = -0.5
+
 HX = ROOM_LEN / 2 - 0.6
 HY = ROOM_WID / 2 - 0.6
 
