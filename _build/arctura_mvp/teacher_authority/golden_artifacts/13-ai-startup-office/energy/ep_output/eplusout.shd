@@ -1,0 +1,594 @@
+Shadowing Combinations
+..Solar Distribution=FullExteriorWithReflectionsFromExteriorSurfaces
+..In the following, only the first 10 reference surfaces will be shown.
+..But all surfaces are used in the calculations.
+==================================
+Surface=F1_LOGO_SOUTHWALL is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=11
+..Surface=F1_LOGO_NORTHWALL
+..Surface=F1_LOGO_WESTWALL
+..Surface=F1_10_NORTHWALL
+..Surface=F1_GPU_NORTHWALL
+..Surface=F1_MEETING_NORTHWALL
+..Surface=F1_2_NORTHWALL
+..Surface=F1_ZONE_NORTHWALL
+..Surface=F1_ZONE_2_NORTHWALL
+..Surface=F1_BATHROOM_NORTHWALL
+..Surface=F1_ZONE_3_NORTHWALL
+Number of back surfaces=0
+Number of receiving sub surfaces=1
+....Surface=F1_LOGO_SOUTHWINDOW
+==================================
+Surface=F1_LOGO_SOUTHWINDOW is not used as Receiving Surface in calculations.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_LOGO_NORTHWALL is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=11
+..Surface=F1_LOGO_SOUTHWALL
+..Surface=F1_LOGO_WESTWALL
+..Surface=F1_10_SOUTHWALL
+..Surface=F1_GPU_SOUTHWALL
+..Surface=F1_MEETING_SOUTHWALL
+..Surface=F1_2_SOUTHWALL
+..Surface=F1_ZONE_SOUTHWALL
+..Surface=F1_ZONE_2_SOUTHWALL
+..Surface=F1_BATHROOM_SOUTHWALL
+..Surface=F1_ZONE_3_SOUTHWALL
+Number of back surfaces=0
+Number of receiving sub surfaces=1
+....Surface=F1_LOGO_NORTHWINDOW
+==================================
+Surface=F1_LOGO_NORTHWINDOW is not used as Receiving Surface in calculations.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_LOGO_EASTWALL is not used as Receiving Surface in calculations.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_LOGO_WESTWALL is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=19
+..Surface=F1_LOGO_SOUTHWALL
+..Surface=F1_LOGO_NORTHWALL
+..Surface=F1_10_SOUTHWALL
+..Surface=F1_10_NORTHWALL
+..Surface=F1_GPU_SOUTHWALL
+..Surface=F1_GPU_NORTHWALL
+..Surface=F1_MEETING_SOUTHWALL
+..Surface=F1_MEETING_NORTHWALL
+..Surface=F1_2_SOUTHWALL
+..Surface=F1_2_NORTHWALL
+Number of back surfaces=0
+Number of receiving sub surfaces=1
+....Surface=F1_LOGO_WESTWINDOW
+==================================
+Surface=F1_LOGO_WESTWINDOW is not used as Receiving Surface in calculations.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_LOGO_FLOOR is not used as Receiving Surface in calculations.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_LOGO_ROOF is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_10_SOUTHWALL is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=11
+..Surface=F1_LOGO_NORTHWALL
+..Surface=F1_LOGO_WESTWALL
+..Surface=F1_10_NORTHWALL
+..Surface=F1_GPU_NORTHWALL
+..Surface=F1_MEETING_NORTHWALL
+..Surface=F1_2_NORTHWALL
+..Surface=F1_ZONE_NORTHWALL
+..Surface=F1_ZONE_2_NORTHWALL
+..Surface=F1_BATHROOM_NORTHWALL
+..Surface=F1_ZONE_3_NORTHWALL
+Number of back surfaces=0
+Number of receiving sub surfaces=1
+....Surface=F1_10_SOUTHWINDOW
+==================================
+Surface=F1_10_SOUTHWINDOW is not used as Receiving Surface in calculations.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_10_NORTHWALL is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=11
+..Surface=F1_LOGO_SOUTHWALL
+..Surface=F1_LOGO_WESTWALL
+..Surface=F1_10_SOUTHWALL
+..Surface=F1_GPU_SOUTHWALL
+..Surface=F1_MEETING_SOUTHWALL
+..Surface=F1_2_SOUTHWALL
+..Surface=F1_ZONE_SOUTHWALL
+..Surface=F1_ZONE_2_SOUTHWALL
+..Surface=F1_BATHROOM_SOUTHWALL
+..Surface=F1_ZONE_3_SOUTHWALL
+Number of back surfaces=0
+Number of receiving sub surfaces=1
+....Surface=F1_10_NORTHWINDOW
+==================================
+Surface=F1_10_NORTHWINDOW is not used as Receiving Surface in calculations.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_10_EASTWALL is not used as Receiving Surface in calculations.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_10_WESTWALL is not used as Receiving Surface in calculations.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_10_FLOOR is not used as Receiving Surface in calculations.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_10_ROOF is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_GPU_SOUTHWALL is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=11
+..Surface=F1_LOGO_NORTHWALL
+..Surface=F1_LOGO_WESTWALL
+..Surface=F1_10_NORTHWALL
+..Surface=F1_GPU_NORTHWALL
+..Surface=F1_MEETING_NORTHWALL
+..Surface=F1_2_NORTHWALL
+..Surface=F1_ZONE_NORTHWALL
+..Surface=F1_ZONE_2_NORTHWALL
+..Surface=F1_BATHROOM_NORTHWALL
+..Surface=F1_ZONE_3_NORTHWALL
+Number of back surfaces=0
+Number of receiving sub surfaces=1
+....Surface=F1_GPU_SOUTHWINDOW
+==================================
+Surface=F1_GPU_SOUTHWINDOW is not used as Receiving Surface in calculations.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_GPU_NORTHWALL is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=11
+..Surface=F1_LOGO_SOUTHWALL
+..Surface=F1_LOGO_WESTWALL
+..Surface=F1_10_SOUTHWALL
+..Surface=F1_GPU_SOUTHWALL
+..Surface=F1_MEETING_SOUTHWALL
+..Surface=F1_2_SOUTHWALL
+..Surface=F1_ZONE_SOUTHWALL
+..Surface=F1_ZONE_2_SOUTHWALL
+..Surface=F1_BATHROOM_SOUTHWALL
+..Surface=F1_ZONE_3_SOUTHWALL
+Number of back surfaces=0
+Number of receiving sub surfaces=1
+....Surface=F1_GPU_NORTHWINDOW
+==================================
+Surface=F1_GPU_NORTHWINDOW is not used as Receiving Surface in calculations.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_GPU_EASTWALL is not used as Receiving Surface in calculations.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_GPU_WESTWALL is not used as Receiving Surface in calculations.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_GPU_FLOOR is not used as Receiving Surface in calculations.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_GPU_ROOF is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_MEETING_SOUTHWALL is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=11
+..Surface=F1_LOGO_NORTHWALL
+..Surface=F1_LOGO_WESTWALL
+..Surface=F1_10_NORTHWALL
+..Surface=F1_GPU_NORTHWALL
+..Surface=F1_MEETING_NORTHWALL
+..Surface=F1_2_NORTHWALL
+..Surface=F1_ZONE_NORTHWALL
+..Surface=F1_ZONE_2_NORTHWALL
+..Surface=F1_BATHROOM_NORTHWALL
+..Surface=F1_ZONE_3_NORTHWALL
+Number of back surfaces=0
+Number of receiving sub surfaces=1
+....Surface=F1_MEETING_SOUTHWINDOW
+==================================
+Surface=F1_MEETING_SOUTHWINDOW is not used as Receiving Surface in calculations.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_MEETING_NORTHWALL is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=11
+..Surface=F1_LOGO_SOUTHWALL
+..Surface=F1_LOGO_WESTWALL
+..Surface=F1_10_SOUTHWALL
+..Surface=F1_GPU_SOUTHWALL
+..Surface=F1_MEETING_SOUTHWALL
+..Surface=F1_2_SOUTHWALL
+..Surface=F1_ZONE_SOUTHWALL
+..Surface=F1_ZONE_2_SOUTHWALL
+..Surface=F1_BATHROOM_SOUTHWALL
+..Surface=F1_ZONE_3_SOUTHWALL
+Number of back surfaces=0
+Number of receiving sub surfaces=1
+....Surface=F1_MEETING_NORTHWINDOW
+==================================
+Surface=F1_MEETING_NORTHWINDOW is not used as Receiving Surface in calculations.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_MEETING_EASTWALL is not used as Receiving Surface in calculations.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_MEETING_WESTWALL is not used as Receiving Surface in calculations.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_MEETING_FLOOR is not used as Receiving Surface in calculations.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_MEETING_ROOF is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_2_SOUTHWALL is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=11
+..Surface=F1_LOGO_NORTHWALL
+..Surface=F1_LOGO_WESTWALL
+..Surface=F1_10_NORTHWALL
+..Surface=F1_GPU_NORTHWALL
+..Surface=F1_MEETING_NORTHWALL
+..Surface=F1_2_NORTHWALL
+..Surface=F1_ZONE_NORTHWALL
+..Surface=F1_ZONE_2_NORTHWALL
+..Surface=F1_BATHROOM_NORTHWALL
+..Surface=F1_ZONE_3_NORTHWALL
+Number of back surfaces=0
+Number of receiving sub surfaces=1
+....Surface=F1_2_SOUTHWINDOW
+==================================
+Surface=F1_2_SOUTHWINDOW is not used as Receiving Surface in calculations.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_2_NORTHWALL is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=11
+..Surface=F1_LOGO_SOUTHWALL
+..Surface=F1_LOGO_WESTWALL
+..Surface=F1_10_SOUTHWALL
+..Surface=F1_GPU_SOUTHWALL
+..Surface=F1_MEETING_SOUTHWALL
+..Surface=F1_2_SOUTHWALL
+..Surface=F1_ZONE_SOUTHWALL
+..Surface=F1_ZONE_2_SOUTHWALL
+..Surface=F1_BATHROOM_SOUTHWALL
+..Surface=F1_ZONE_3_SOUTHWALL
+Number of back surfaces=0
+Number of receiving sub surfaces=1
+....Surface=F1_2_NORTHWINDOW
+==================================
+Surface=F1_2_NORTHWINDOW is not used as Receiving Surface in calculations.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_2_EASTWALL is not used as Receiving Surface in calculations.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_2_WESTWALL is not used as Receiving Surface in calculations.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_2_FLOOR is not used as Receiving Surface in calculations.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_2_ROOF is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_ZONE_SOUTHWALL is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=11
+..Surface=F1_LOGO_NORTHWALL
+..Surface=F1_LOGO_WESTWALL
+..Surface=F1_10_NORTHWALL
+..Surface=F1_GPU_NORTHWALL
+..Surface=F1_MEETING_NORTHWALL
+..Surface=F1_2_NORTHWALL
+..Surface=F1_ZONE_NORTHWALL
+..Surface=F1_ZONE_2_NORTHWALL
+..Surface=F1_BATHROOM_NORTHWALL
+..Surface=F1_ZONE_3_NORTHWALL
+Number of back surfaces=0
+Number of receiving sub surfaces=1
+....Surface=F1_ZONE_SOUTHWINDOW
+==================================
+Surface=F1_ZONE_SOUTHWINDOW is not used as Receiving Surface in calculations.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_ZONE_NORTHWALL is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=11
+..Surface=F1_LOGO_SOUTHWALL
+..Surface=F1_LOGO_WESTWALL
+..Surface=F1_10_SOUTHWALL
+..Surface=F1_GPU_SOUTHWALL
+..Surface=F1_MEETING_SOUTHWALL
+..Surface=F1_2_SOUTHWALL
+..Surface=F1_ZONE_SOUTHWALL
+..Surface=F1_ZONE_2_SOUTHWALL
+..Surface=F1_BATHROOM_SOUTHWALL
+..Surface=F1_ZONE_3_SOUTHWALL
+Number of back surfaces=0
+Number of receiving sub surfaces=1
+....Surface=F1_ZONE_NORTHWINDOW
+==================================
+Surface=F1_ZONE_NORTHWINDOW is not used as Receiving Surface in calculations.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_ZONE_EASTWALL is not used as Receiving Surface in calculations.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_ZONE_WESTWALL is not used as Receiving Surface in calculations.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_ZONE_FLOOR is not used as Receiving Surface in calculations.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_ZONE_ROOF is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_ZONE_2_SOUTHWALL is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=11
+..Surface=F1_LOGO_NORTHWALL
+..Surface=F1_LOGO_WESTWALL
+..Surface=F1_10_NORTHWALL
+..Surface=F1_GPU_NORTHWALL
+..Surface=F1_MEETING_NORTHWALL
+..Surface=F1_2_NORTHWALL
+..Surface=F1_ZONE_NORTHWALL
+..Surface=F1_ZONE_2_NORTHWALL
+..Surface=F1_BATHROOM_NORTHWALL
+..Surface=F1_ZONE_3_NORTHWALL
+Number of back surfaces=0
+Number of receiving sub surfaces=1
+....Surface=F1_ZONE_2_SOUTHWINDOW
+==================================
+Surface=F1_ZONE_2_SOUTHWINDOW is not used as Receiving Surface in calculations.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_ZONE_2_NORTHWALL is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=11
+..Surface=F1_LOGO_SOUTHWALL
+..Surface=F1_LOGO_WESTWALL
+..Surface=F1_10_SOUTHWALL
+..Surface=F1_GPU_SOUTHWALL
+..Surface=F1_MEETING_SOUTHWALL
+..Surface=F1_2_SOUTHWALL
+..Surface=F1_ZONE_SOUTHWALL
+..Surface=F1_ZONE_2_SOUTHWALL
+..Surface=F1_BATHROOM_SOUTHWALL
+..Surface=F1_ZONE_3_SOUTHWALL
+Number of back surfaces=0
+Number of receiving sub surfaces=1
+....Surface=F1_ZONE_2_NORTHWINDOW
+==================================
+Surface=F1_ZONE_2_NORTHWINDOW is not used as Receiving Surface in calculations.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_ZONE_2_EASTWALL is not used as Receiving Surface in calculations.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_ZONE_2_WESTWALL is not used as Receiving Surface in calculations.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_ZONE_2_FLOOR is not used as Receiving Surface in calculations.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_ZONE_2_ROOF is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_BATHROOM_SOUTHWALL is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=11
+..Surface=F1_LOGO_NORTHWALL
+..Surface=F1_LOGO_WESTWALL
+..Surface=F1_10_NORTHWALL
+..Surface=F1_GPU_NORTHWALL
+..Surface=F1_MEETING_NORTHWALL
+..Surface=F1_2_NORTHWALL
+..Surface=F1_ZONE_NORTHWALL
+..Surface=F1_ZONE_2_NORTHWALL
+..Surface=F1_BATHROOM_NORTHWALL
+..Surface=F1_ZONE_3_NORTHWALL
+Number of back surfaces=0
+Number of receiving sub surfaces=1
+....Surface=F1_BATHROOM_SOUTHWINDOW
+==================================
+Surface=F1_BATHROOM_SOUTHWINDOW is not used as Receiving Surface in calculations.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_BATHROOM_NORTHWALL is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=11
+..Surface=F1_LOGO_SOUTHWALL
+..Surface=F1_LOGO_WESTWALL
+..Surface=F1_10_SOUTHWALL
+..Surface=F1_GPU_SOUTHWALL
+..Surface=F1_MEETING_SOUTHWALL
+..Surface=F1_2_SOUTHWALL
+..Surface=F1_ZONE_SOUTHWALL
+..Surface=F1_ZONE_2_SOUTHWALL
+..Surface=F1_BATHROOM_SOUTHWALL
+..Surface=F1_ZONE_3_SOUTHWALL
+Number of back surfaces=0
+Number of receiving sub surfaces=1
+....Surface=F1_BATHROOM_NORTHWINDOW
+==================================
+Surface=F1_BATHROOM_NORTHWINDOW is not used as Receiving Surface in calculations.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_BATHROOM_EASTWALL is not used as Receiving Surface in calculations.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_BATHROOM_WESTWALL is not used as Receiving Surface in calculations.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_BATHROOM_FLOOR is not used as Receiving Surface in calculations.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_BATHROOM_ROOF is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_ZONE_3_SOUTHWALL is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=11
+..Surface=F1_LOGO_NORTHWALL
+..Surface=F1_LOGO_WESTWALL
+..Surface=F1_10_NORTHWALL
+..Surface=F1_GPU_NORTHWALL
+..Surface=F1_MEETING_NORTHWALL
+..Surface=F1_2_NORTHWALL
+..Surface=F1_ZONE_NORTHWALL
+..Surface=F1_ZONE_2_NORTHWALL
+..Surface=F1_BATHROOM_NORTHWALL
+..Surface=F1_ZONE_3_NORTHWALL
+Number of back surfaces=0
+Number of receiving sub surfaces=1
+....Surface=F1_ZONE_3_SOUTHWINDOW
+==================================
+Surface=F1_ZONE_3_SOUTHWINDOW is not used as Receiving Surface in calculations.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_ZONE_3_NORTHWALL is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=11
+..Surface=F1_LOGO_SOUTHWALL
+..Surface=F1_LOGO_WESTWALL
+..Surface=F1_10_SOUTHWALL
+..Surface=F1_GPU_SOUTHWALL
+..Surface=F1_MEETING_SOUTHWALL
+..Surface=F1_2_SOUTHWALL
+..Surface=F1_ZONE_SOUTHWALL
+..Surface=F1_ZONE_2_SOUTHWALL
+..Surface=F1_BATHROOM_SOUTHWALL
+..Surface=F1_ZONE_3_SOUTHWALL
+Number of back surfaces=0
+Number of receiving sub surfaces=1
+....Surface=F1_ZONE_3_NORTHWINDOW
+==================================
+Surface=F1_ZONE_3_NORTHWINDOW is not used as Receiving Surface in calculations.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_ZONE_3_EASTWALL is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=19
+..Surface=F1_LOGO_SOUTHWALL
+..Surface=F1_LOGO_NORTHWALL
+..Surface=F1_LOGO_WESTWALL
+..Surface=F1_10_SOUTHWALL
+..Surface=F1_10_NORTHWALL
+..Surface=F1_GPU_SOUTHWALL
+..Surface=F1_GPU_NORTHWALL
+..Surface=F1_MEETING_SOUTHWALL
+..Surface=F1_MEETING_NORTHWALL
+..Surface=F1_2_SOUTHWALL
+Number of back surfaces=0
+Number of receiving sub surfaces=1
+....Surface=F1_ZONE_3_EASTWINDOW
+==================================
+Surface=F1_ZONE_3_EASTWINDOW is not used as Receiving Surface in calculations.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_ZONE_3_WESTWALL is not used as Receiving Surface in calculations.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_ZONE_3_FLOOR is not used as Receiving Surface in calculations.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_ZONE_3_ROOF is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0

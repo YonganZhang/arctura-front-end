@@ -1,0 +1,48 @@
+{
+  "project": "独立精品咖啡店 Coffee Lab · v1",
+  "client": "某独立咖啡品牌主理人",
+  "business_model": "第三空间 · 咖啡 + 轻食 + 书",
+  "space": {
+    "type": "临街商铺改造",
+    "area_sqm": 80,
+    "dimensions_m": {"length": 10.0, "width": 8.0, "height": 3.5},
+    "frontage_m": 8.0,
+    "existing_condition": "毛坯 · 商铺临街 · 带独立进出门"
+  },
+  "style": {
+    "keywords": ["industrial-wood", "japandi-minimal", "plant-friendly", "warm-but-crafty"],
+    "palette": {
+      "floor_terrazzo": "#D4CFC2",
+      "wood_warm": "#8B6F4E",
+      "metal_black": "#2B2B2D",
+      "wall_cream": "#EDE8DE",
+      "brass_accent": "#B89968",
+      "foliage_green": "#3F6B3C"
+    },
+    "reference_brands": ["% Arabica", "Blue Bottle", "Fuglen"]
+  },
+  "functional_zones": [
+    {"name": "入口 / 等候", "area_m2": 6, "key_objects": ["长凳", "衣帽架", "地垫"]},
+    {"name": "吧台 / 点单", "area_m2": 14, "key_objects": ["L 型吧台", "咖啡机 La Marzocco", "展示冷柜", "后吧架 3 层"]},
+    {"name": "散座区 (4×2)", "area_m2": 20, "key_objects": ["4 × 圆木桌", "8 × 木椅"]},
+    {"name": "长桌区", "area_m2": 12, "key_objects": ["1 × 4m 长木桌", "8 × 长凳 / 高脚凳"]},
+    {"name": "书架墙", "area_m2": 0, "key_objects": ["5 层展示书架 × 4m"]},
+    {"name": "后厨 / 备餐", "area_m2": 12, "key_objects": ["操作台", "水槽", "冰箱"]},
+    {"name": "卫生间入口", "area_m2": 4, "key_objects": ["洗手台", "隔断"]},
+    {"name": "室内绿植点缀", "area_m2": 2, "key_objects": ["3 × 落地大型盆栽"]}
+  ],
+  "lighting": {
+    "main": "6 × 黄铜吊灯 (Menu TR Bulb 或同类)",
+    "accent": "后吧嵌入式线性灯 + 书架内置灯带",
+    "warmth": "2700 K"
+  },
+  "budget_rmb": 450000,
+  "timeline_weeks": 8,
+  "must_have": [
+    "吧台后墙 4m 书架展示",
+    "至少 30 个稳定座位",
+    "后厨独立且有操作流线",
+    "入口动线不交叉座位区",
+    "符合消防 + 餐饮卫生规范 (出入口 ≥ 2)"
+  ]
+}

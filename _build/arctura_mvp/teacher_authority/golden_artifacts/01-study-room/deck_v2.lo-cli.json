@@ -1,0 +1,78 @@
+{
+  "metadata": {
+    "author": "",
+    "created": "2026-04-14T22:19:47.778291",
+    "description": "",
+    "modified": "2026-04-14T22:19:48.124621",
+    "software": "libreoffice-cli 1.0",
+    "subject": "",
+    "title": ""
+  },
+  "name": "\u4e66\u623f\u6539\u9020 v2",
+  "settings": {
+    "margin_bottom": "2cm",
+    "margin_left": "2cm",
+    "margin_right": "2cm",
+    "margin_top": "2cm",
+    "page_height": "29.7cm",
+    "page_width": "21cm"
+  },
+  "slides": [
+    {
+      "content": "\u5f20\u5148\u751f \u00b7 20\u5e73\u7c73 \u00b7 \u56fe\u6587\u4e00\u4f53\u7248 \u00b7 2026-04-14",
+      "elements": [],
+      "title": "\u4e66\u623f\u6539\u9020\u65b9\u6848 v2"
+    },
+    {
+      "content": "Minimalist Japandi",
+      "elements": [
+        {
+          "archive_name": "Pictures/img_s1_e0.png",
+          "height": "12.5cm",
+          "image_path": "/Users/kaku/Desktop/Work/StartUP-Building/studio-demo/moodboard.png",
+          "text": "",
+          "type": "image",
+          "width": "22cm",
+          "x": "2cm",
+          "y": "4cm"
+        }
+      ],
+      "title": "1. \u98ce\u683c\u8272\u677f"
+    },
+    {
+      "content": "EEVEE / 128 samples",
+      "elements": [
+        {
+          "archive_name": "Pictures/img_s2_e0.png",
+          "height": "13cm",
+          "image_path": "/Users/kaku/Desktop/Work/StartUP-Building/studio-demo/render.png",
+          "text": "",
+          "type": "image",
+          "width": "22cm",
+          "x": "2cm",
+          "y": "4cm"
+        }
+      ],
+      "title": "2. 3D \u65b9\u6848\u6e32\u67d3"
+    },
+    {
+      "content": "5.0m x 4.0m | Scale 1:50",
+      "elements": [
+        {
+          "archive_name": "Pictures/img_s3_e0.png",
+          "height": "13cm",
+          "image_path": "/Users/kaku/Desktop/Work/StartUP-Building/studio-demo/floorplan.png",
+          "text": "",
+          "type": "image",
+          "width": "20cm",
+          "x": "3cm",
+          "y": "4cm"
+        }
+      ],
+      "title": "3. \u5e73\u9762\u5e03\u5c40"
+    }
+  ],
+  "styles": {},
+  "type": "impress",
+  "version": "1.0"
+}

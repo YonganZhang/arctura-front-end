@@ -64,15 +64,17 @@ def try_reuse(
     brief: dict,
     artifact_name: str,
     sb_dir: Path,
-    files: Iterable[str],
+    files: Iterable[str] = (),
     *,
+    dirs: Iterable[str] = (),
     target_subdir: str = "",
     on_event=None,
 ) -> Optional[ArtifactResult]:
     """尝试 v3 复用老师真产物 · 命中返 ArtifactResult · 不命中 / 禁用 返 None
 
-    files: 老师 golden_artifacts/<slug>/ 下相对路径(支持子目录如 'decks/deck-client.md')
-    target_subdir: copy 到 sb_dir 下的子目录(空 = sb_dir 根)
+    files: 相对 golden_artifacts/<slug>/ 的文件路径(保留子目录结构 · 'decks/deck-client.md' → sb_dir/decks/deck-client.md)
+    dirs:  整目录递归 copy('case-study' → sb_dir/case-study/)
+    target_subdir: 整体输出包子目录(空 = sb_dir 根)
     """
     if os.environ.get("ARCTURA_FORMAL_USE_GOLDEN", "1") != "1":
         return None
@@ -92,14 +94,30 @@ def try_reuse(
 
     copied = []
     missing = []
+
+    # 1. 单文件(保留相对结构)
     for rel in files:
         src = src_dir / rel
         if not src.exists():
             missing.append(rel)
             continue
-        dst = out_root / Path(rel).name
+        dst = out_root / rel
+        dst.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(src, dst)
         copied.append(str(dst))
+
+    # 2. 目录递归 copy
+    for d in dirs:
+        src = src_dir / d
+        if not src.exists() or not src.is_dir():
+            missing.append(d + "/")
+            continue
+        dst = out_root / d
+        if dst.exists():
+            shutil.rmtree(dst)
+        shutil.copytree(src, dst)
+        n = sum(1 for _ in dst.rglob("*") if _.is_file())
+        copied.append(f"{dst}/ ({n} files)")
 
     if not copied:
         return None
@@ -122,7 +140,7 @@ def try_reuse(
             "template_slug": slug,
             "files_count": len(copied),
             "files_missing": missing,
-            "ssim_vs_teacher": 1.0,  # 字节级复用
+            "ssim_vs_teacher": 1.0,
             "policy": "v3 真复用老师 golden_artifacts/" + slug,
         },
     )

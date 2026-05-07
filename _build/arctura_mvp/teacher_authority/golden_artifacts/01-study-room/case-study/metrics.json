@@ -1,0 +1,103 @@
+{
+  "id": "01-study-room",
+  "tier": "interior",
+  "scenario_cn": "极简书房改造 v1",
+  "client_type": "张先生",
+  "space": {
+    "type": null,
+    "area_sqm": null,
+    "n_floors": 1,
+    "dimensions_m": {
+      "length": null,
+      "width": null,
+      "height": null
+    }
+  },
+  "style": {
+    "keywords": [
+      "minimalist",
+      "modern",
+      "warm-wood",
+      "japandi"
+    ],
+    "palette_hex": [
+      "#E8DCC8",
+      "#8B6F47",
+      "#2C3539",
+      "#F5F1E8"
+    ]
+  },
+  "brief": {
+    "budget_rmb": 80000,
+    "timeline_weeks": 6,
+    "functional_zones": [],
+    "must_have": []
+  },
+  "deliverables": {
+    "hero_render": "renders/01_hero_corner.png",
+    "renders": [
+      "renders/01_hero_corner.png",
+      "renders/02_reception.png",
+      "renders/03_main_zone.png",
+      "renders/04_feature_zone.png",
+      "renders/05_lounge_zone.png",
+      "renders/06_back_corner.png",
+      "renders/07_top_ortho.png",
+      "renders/08_birds_eye_3d.png",
+      "render.png",
+      "floorplan.png",
+      "moodboard.png"
+    ],
+    "plans_svg": [
+      "floorplan.svg"
+    ],
+    "elevations": [],
+    "sections": [],
+    "exports": [],
+    "n_stakeholder_decks": 8,
+    "blender_objects": 21,
+    "ifc_products": 0,
+    "card_sources": [
+      {
+        "card": "card-1",
+        "source": "renders/02_reception.png",
+        "label": "接待区"
+      },
+      {
+        "card": "card-2",
+        "source": "floorplan.png",
+        "label": "平面图"
+      },
+      {
+        "card": "card-3",
+        "source": "moodboard.png",
+        "label": "色彩参考"
+      },
+      {
+        "card": "card-4",
+        "source": "renders/03_main_zone.png",
+        "label": "主功能区"
+      }
+    ]
+  },
+  "metrics": {
+    "design_duration_min": null,
+    "boq_total_hkd": 253658.24,
+    "boq_total_cny": null,
+    "eui_kwh_m2_yr": 41.25,
+    "compliance_code": "HK",
+    "compliance_pass_rate": "7/8",
+    "co2_saved_t_yr": null
+  },
+  "_coverage": {
+    "brief": true,
+    "renders": true,
+    "plans": true,
+    "exports": false,
+    "decks": true,
+    "energy": true,
+    "boq": true,
+    "compliance": true
+  },
+  "_generated": "2026-04-17T11:36:59+08:00"
+}

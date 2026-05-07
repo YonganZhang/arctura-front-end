@@ -1,0 +1,9 @@
+{
+  "pipeline": "P4-ai-render",
+  "mvp": "03-coffee-shop",
+  "prompt": "industrial wood, japandi minimal, plant friendly, specialty coffee shop interior, terrazzo floor, warm wood, black metal, cream wall, round wooden tables, wooden chairs, bar counter, espresso machine, brass pendant lights, warm 2700K lighting, Arabica aesthetic, professional interior photography, realistic materials, detailed textures, 8k uhd, architectural digest style",
+  "strength": 0.8,
+  "steps": 30,
+  "images_processed": 1,
+  "output_dir": "/Users/kaku/Desktop/Work/StartUP-Building/studio-demo/mvp/03-coffee-shop/renders-ai"
+}

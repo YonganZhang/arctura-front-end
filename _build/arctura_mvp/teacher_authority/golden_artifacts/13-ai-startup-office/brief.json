@@ -1,0 +1,53 @@
+{
+  "project": "Stack Lab · AI Startup 办公室 · v1",
+  "client": "AI 创业团队 (致敬业主)",
+  "business_model": "AI 研发工作室 · 10 工程师 + GPU 服务器室 + 会议/电话亭/休闲",
+  "space": {
+    "type": "Loft 改造",
+    "area_sqm": 130,
+    "dimensions_m": {"length": 13.0, "width": 10.0, "height": 3.0},
+    "frontage_m": 13.0,
+    "existing_condition": "毛坯 loft · 外露管道 · 独立出入口"
+  },
+  "style": {
+    "keywords": ["tech-loft", "plant-rich", "exposed-pipe", "code-cave-lite"],
+    "palette": {
+      "concrete_gray": "#B5B0A8",
+      "warm_wood": "#8B6F4E",
+      "deep_teal": "#2E5454",
+      "soft_white": "#F0EDE5",
+      "lime_green": "#A8C947",
+      "charcoal": "#2A2A2C"
+    },
+    "reference_brands": ["GitHub 办公室", "Stripe HQ", "Figma Loft"]
+  },
+  "functional_zones": [
+    {"name": "入口接待 + LOGO 墙", "area_m2": 10, "key_objects": ["品牌墙", "接待台", "LOGO 背光", "等候长凳"]},
+    {"name": "开放工位 (10 位 · 双屏)", "area_m2": 45, "key_objects": ["10 × 电动升降桌", "10 × 人体工学椅", "20 × 27寸显示器", "工位隔板"]},
+    {"name": "GPU 机柜服务器室", "area_m2": 10, "key_objects": ["3 × 42U 标准机柜", "蓝色 LED accent", "玻璃门", "精密空调"]},
+    {"name": "玻璃会议室 (10 人)", "area_m2": 18, "key_objects": ["玻璃四面隔断", "2.4m 会议桌", "10 × 椅", "75寸大屏", "4m 白板墙"]},
+    {"name": "电话亭 × 2", "area_m2": 3, "key_objects": ["1.2×1.2×2.5 m 隔音亭 × 2", "小桌板", "USB-C hub"]},
+    {"name": "茶水间", "area_m2": 8, "key_objects": ["台面 + 水槽", "咖啡机", "冰箱", "微波炉", "吊柜"]},
+    {"name": "休闲沙发吧 + 桌足球", "area_m2": 12, "key_objects": ["3 座沙发 × 2", "茶几", "桌足球桌", "豆袋"]},
+    {"name": "卫生间", "area_m2": 6, "key_objects": ["马桶", "洗手台", "干区隔断"]},
+    {"name": "室内绿植区", "area_m2": 4, "key_objects": ["5 × 大型盆栽 (榕 / 龟背竹)"]}
+  ],
+  "lighting": {
+    "main": "线性吸顶灯 + 轨道射灯 (4000K)",
+    "accent": "机柜蓝 LED + LOGO 墙背光 + 植物生长灯",
+    "warmth": "4000 K (开放区) / 3500 K (休闲区)"
+  },
+  "budget_rmb": 750000,
+  "timeline_weeks": 8,
+  "must_have": [
+    "10 工位 + 双屏 (显卡开发必备)",
+    "GPU 机柜室独立制冷 + 5 kW 专电 + 玻璃观察门",
+    "玻璃会议室 4 面通透 + 4m 白板墙",
+    "2 个 1.2m 电话亭 (远程会议 / 1v1)",
+    "LOGO 墙可拆换 (品牌迭代快)",
+    "茶水间靠近开放工位便于快速恢复",
+    "5 大型盆栽改善代码工作氛围",
+    "桌足球 = 程序员减压标配"
+  ],
+  "dedication": "致敬业主 — 这是我们为一位 AI 创业者设计的梦想办公室 · made with love by Studio Copilot"
+}

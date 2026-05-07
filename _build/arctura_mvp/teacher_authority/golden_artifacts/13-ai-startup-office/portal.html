@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stack Lab · AI Startup 办公室 · v1 | Arctura Labs</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={theme:{extend:{colors:{brand:{dark:'#1a1a1a',mid:'#2A2A2C'}},fontFamily:{display:['"DM Sans"','system-ui','sans-serif'],body:['"Inter"','system-ui','sans-serif']}}}}</script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;500;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
+  <style>
+    html{scroll-behavior:smooth} body{font-family:'Inter',system-ui,sans-serif}
+    .hero-grad{background:linear-gradient(135deg,#1a1a1a 0%,#B5B0A8 50%,#1a1a1a 100%)}
+    .stat-card{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:20px}
+    .section-bar{width:60px;height:3px;background:#B5B0A8;border-radius:2px;margin-bottom:24px}
+    .nav-link{color:rgba(255,255,255,0.5);transition:color 0.2s;text-decoration:none;font-size:13px}
+    .nav-link:hover{color:#B5B0A8}
+    .gallery-item{cursor:pointer;transition:transform 0.3s,box-shadow 0.3s}
+    .gallery-item:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,0.3)}
+    .tab-btn{padding:8px 20px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid rgba(255,255,255,0.2);background:transparent;color:rgba(255,255,255,0.5);transition:all 0.2s}
+    .tab-btn.active{background:#B5B0A8;color:#fff;border-color:#B5B0A8}
+    .tab-content{display:none}.tab-content.active{display:block}
+    .lightbox{display:none;position:fixed;inset:0;z-index:100;background:rgba(0,0,0,0.92);align-items:center;justify-content:center}
+    .lightbox.active{display:flex}
+    .lightbox img{max-width:90vw;max-height:85vh;border-radius:8px}
+    .lb-close{position:absolute;top:24px;right:32px;color:#fff;font-size:32px;cursor:pointer}
+    .lb-nav{position:absolute;top:50%;transform:translateY(-50%);color:#fff;font-size:48px;cursor:pointer;padding:16px;opacity:0.7}
+    .lb-nav:hover{opacity:1}.lb-prev{left:16px}.lb-next{right:16px}
+  </style>
+</head>
+<body class="bg-brand-dark text-white">
+
+  <!-- NAV -->
+  <nav class="fixed top-0 w-full z-50 bg-brand-dark/80 backdrop-blur-md border-b border-white/5">
+    <div class="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
+      <a href="#" class="flex items-center gap-2.5">
+        <svg width="28" height="28" viewBox="0 0 100 100" fill="none"><circle cx="50" cy="50" r="46" stroke="#2A2A2C" stroke-width="4" fill="none"/><path d="M50 8 C25 8, 8 30, 8 50 C8 70, 25 92, 50 92 C35 80, 28 65, 28 50 C28 35, 35 20, 50 8Z" fill="#5BA693" opacity="0.85"/></svg>
+        <span class="font-display font-bold text-lg">Arctura Labs</span>
+      </a>
+      <div class="hidden md:flex gap-6"><a href="#model" class="nav-link">3D</a> <a href="#renders" class="nav-link">Renders</a> <a href="#drawings" class="nav-link">Drawings</a> <a href="#brief" class="nav-link">Brief</a> <a href="#boq" class="nav-link">BOQ</a> <a href="#compliance" class="nav-link">Compliance</a></div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero-grad pt-28 pb-16">
+    <div class="max-w-6xl mx-auto px-6">
+      <p style="color:#B5B0A8" class="text-sm font-medium tracking-widest uppercase mb-3">Interior Design</p>
+      <h1 class="font-display text-4xl md:text-5xl font-bold leading-tight mb-4">Stack Lab · AI Startup 办公室 · v1</h1>
+      <p class="text-white/50 text-base max-w-xl mb-10">Loft 改造</p>
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <div class="stat-card"><p class="text-white/40 text-xs uppercase mb-1">Area</p><p class="text-2xl font-bold">130<span class="text-base font-normal text-white/50"> m&sup2;</span></p></div>
+<div class="stat-card"><p class="text-white/40 text-xs uppercase mb-1">Budget</p><p class="text-2xl font-bold">HK$750,000</p></div>
+<div class="stat-card"><p class="text-white/40 text-xs uppercase mb-1">Zones</p><p class="text-2xl font-bold">9</p></div>
+      </div>
+    </div>
+  </header>
+
+
+  <section id="model" class="py-16">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="section-bar"></div>
+      <h2 class="font-display text-2xl font-bold mb-2">3D Model</h2>
+      <p class="text-white/40 text-sm mb-8">Drag to rotate / Scroll to zoom</p>
+      <model-viewer src="exports/13-ai-startup-office.glb" alt="3D Model" auto-rotate camera-controls touch-action="pan-y"
+        shadow-intensity="1" environment-image="neutral" camera-orbit="45deg 55deg 30m"
+        style="width:100%;height:500px;border-radius:12px;background:radial-gradient(ellipse at center,#1e293b 0%,#0f172a 100%)">
+        <div slot="poster" class="flex items-center justify-center h-full text-white/30">Loading 3D...</div>
+      </model-viewer>
+    </div>
+  </section>
+
+  <section id="renders" class="py-16 bg-brand-mid/30">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="section-bar"></div>
+      <h2 class="font-display text-2xl font-bold mb-2">Renders</h2>
+      <p class="text-white/40 text-sm mb-8">9 views - click to enlarge</p>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="gallery-item rounded-xl overflow-hidden" onclick="openLB(0)">
+          <img src="renders/01_hero_corner.png" alt="01 Hero Corner" class="w-full aspect-[4/3] object-cover" loading="lazy">
+          <p class="text-xs text-white/40 mt-2 px-1">01 Hero Corner</p>
+        </div>
+        <div class="gallery-item rounded-xl overflow-hidden" onclick="openLB(1)">
+          <img src="renders/02_reception.png" alt="02 Reception" class="w-full aspect-[4/3] object-cover" loading="lazy">
+          <p class="text-xs text-white/40 mt-2 px-1">02 Reception</p>
+        </div>
+        <div class="gallery-item rounded-xl overflow-hidden" onclick="openLB(2)">
+          <img src="renders/03_main_zone.png" alt="03 Main Zone" class="w-full aspect-[4/3] object-cover" loading="lazy">
+          <p class="text-xs text-white/40 mt-2 px-1">03 Main Zone</p>
+        </div>
+        <div class="gallery-item rounded-xl overflow-hidden" onclick="openLB(3)">
+          <img src="renders/04_feature_zone.png" alt="04 Feature Zone" class="w-full aspect-[4/3] object-cover" loading="lazy">
+          <p class="text-xs text-white/40 mt-2 px-1">04 Feature Zone</p>
+        </div>
+        <div class="gallery-item rounded-xl overflow-hidden" onclick="openLB(4)">
+          <img src="renders/05_lounge_zone.png" alt="05 Lounge Zone" class="w-full aspect-[4/3] object-cover" loading="lazy">
+          <p class="text-xs text-white/40 mt-2 px-1">05 Lounge Zone</p>
+        </div>
+        <div class="gallery-item rounded-xl overflow-hidden" onclick="openLB(5)">
+          <img src="renders/06_back_corner.png" alt="06 Back Corner" class="w-full aspect-[4/3] object-cover" loading="lazy">
+          <p class="text-xs text-white/40 mt-2 px-1">06 Back Corner</p>
+        </div>
+        <div class="gallery-item rounded-xl overflow-hidden" onclick="openLB(6)">
+          <img src="renders/07_top_ortho.png" alt="07 Top Ortho" class="w-full aspect-[4/3] object-cover" loading="lazy">
+          <p class="text-xs text-white/40 mt-2 px-1">07 Top Ortho</p>
+        </div>
+        <div class="gallery-item rounded-xl overflow-hidden" onclick="openLB(7)">
+          <img src="renders/08_birds_eye_3d.png" alt="08 Birds Eye 3D" class="w-full aspect-[4/3] object-cover" loading="lazy">
+          <p class="text-xs text-white/40 mt-2 px-1">08 Birds Eye 3D</p>
+        </div>
+        <div class="gallery-item rounded-xl overflow-hidden" onclick="openLB(8)">
+          <img src="moodboard.png" alt="Moodboard" class="w-full aspect-[4/3] object-cover" loading="lazy">
+          <p class="text-xs text-white/40 mt-2 px-1">Moodboard</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="drawings" class="py-16">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="section-bar"></div>
+      <h2 class="font-display text-2xl font-bold mb-6">Drawings</h2>
+      <div class="flex flex-wrap gap-2 mb-8"><button class="tab-btn active" onclick="showTab('floor')">Floor Plans</button></div>
+      <div id="tab-floor" class="tab-content active">
+        <div style="background:#fff;border-radius:12px;overflow:hidden"><img src="floorplan.svg" class="w-full" onerror="this.src=this.src.replace('.svg','.png')"></div></div>
+    </div>
+  </section>
+  <script>
+    function showTab(name) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById('tab-' + name).classList.add('active');
+      event.target.classList.add('active');
+    }
+  </script>
+
+  <!-- BRIEF -->
+  <section id="brief" class="py-16 bg-brand-mid/30">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="section-bar"></div>
+      <h2 class="font-display text-2xl font-bold mb-8">Design Brief</h2>
+      <div class="mb-10">
+        <h3 class="text-sm font-semibold text-white/50 uppercase tracking-wider mb-4">Style & Palette</h3>
+        <div class="flex flex-wrap gap-3 mb-4"><span class="px-3 py-1 rounded-full text-sm" style="background:#B5B0A822;color:#B5B0A8">tech-loft</span> <span class="px-3 py-1 rounded-full text-sm" style="background:#B5B0A822;color:#B5B0A8">plant-rich</span> <span class="px-3 py-1 rounded-full text-sm" style="background:#B5B0A822;color:#B5B0A8">exposed-pipe</span> <span class="px-3 py-1 rounded-full text-sm" style="background:#B5B0A822;color:#B5B0A8">code-cave-lite</span></div>
+        <div class="flex gap-3 items-center"><div style="width:40px;height:40px;border-radius:8px;background:#B5B0A8;border:2px solid rgba(255,255,255,0.1)" title="concrete_gray"></div> <div style="width:40px;height:40px;border-radius:8px;background:#8B6F4E;border:2px solid rgba(255,255,255,0.1)" title="warm_wood"></div> <div style="width:40px;height:40px;border-radius:8px;background:#2E5454;border:2px solid rgba(255,255,255,0.1)" title="deep_teal"></div> <div style="width:40px;height:40px;border-radius:8px;background:#F0EDE5;border:2px solid rgba(255,255,255,0.1)" title="soft_white"></div> <div style="width:40px;height:40px;border-radius:8px;background:#A8C947;border:2px solid rgba(255,255,255,0.1)" title="lime_green"></div> <div style="width:40px;height:40px;border-radius:8px;background:#2A2A2C;border:2px solid rgba(255,255,255,0.1)" title="charcoal"></div></div>
+      </div>
+      <h3 class="text-sm font-semibold text-white/50 uppercase tracking-wider mb-4">Functional Zones</h3>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4"><div class="stat-card"><p class="font-semibold mb-1">入口接待 + LOGO 墙</p><p class="text-white/40 text-sm">10 m&sup2;</p></div>
+<div class="stat-card"><p class="font-semibold mb-1">开放工位 (10 位 · 双屏)</p><p class="text-white/40 text-sm">45 m&sup2;</p></div>
+<div class="stat-card"><p class="font-semibold mb-1">GPU 机柜服务器室</p><p class="text-white/40 text-sm">10 m&sup2;</p></div>
+<div class="stat-card"><p class="font-semibold mb-1">玻璃会议室 (10 人)</p><p class="text-white/40 text-sm">18 m&sup2;</p></div>
+<div class="stat-card"><p class="font-semibold mb-1">电话亭 × 2</p><p class="text-white/40 text-sm">3 m&sup2;</p></div>
+<div class="stat-card"><p class="font-semibold mb-1">茶水间</p><p class="text-white/40 text-sm">8 m&sup2;</p></div>
+<div class="stat-card"><p class="font-semibold mb-1">休闲沙发吧 + 桌足球</p><p class="text-white/40 text-sm">12 m&sup2;</p></div>
+<div class="stat-card"><p class="font-semibold mb-1">卫生间</p><p class="text-white/40 text-sm">6 m&sup2;</p></div>
+<div class="stat-card"><p class="font-semibold mb-1">室内绿植区</p><p class="text-white/40 text-sm">4 m&sup2;</p></div>
+</div>
+    </div>
+  </section>
+
+
+  <section id="boq" class="py-16">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="section-bar"></div>
+      <h2 class="font-display text-2xl font-bold mb-2">Bill of Quantities</h2>
+      <p class="text-white/40 text-sm mb-8">Hong Kong HKD (2024 estimates)</p>
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
+        <div class="stat-card"><p class="text-white/40 text-xs uppercase mb-1">Grand Total</p><p class="text-2xl font-bold" style="color:#B5B0A8">HK$1,140,220</p></div>
+        <div class="stat-card"><p class="text-white/40 text-xs uppercase mb-1">Unit Cost</p><p class="text-2xl font-bold">$9,829<span class="text-base font-normal text-white/50">/m&sup2;</span></p></div>
+        <div class="stat-card"><p class="text-white/40 text-xs uppercase mb-1">Floor Area</p><p class="text-2xl font-bold">116.0<span class="text-base font-normal text-white/50"> m&sup2;</span></p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="compliance" class="py-16 bg-brand-mid/30">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="section-bar"></div>
+      <h2 class="font-display text-2xl font-bold mb-2">Compliance & Energy</h2>
+      <p class="text-white/40 text-sm mb-8">Hong Kong BEEO / BEC 2021</p>
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:32px;padding:24px;border-radius:12px;background:#065f4633;border:1px solid #6ee7b733">
+        <div style="width:64px;height:64px;border-radius:50%;background:#6ee7b722;display:flex;align-items:center;justify-content:center;font-size:28px">&#10003;</div>
+        <div><p style="font-size:24px;font-weight:bold;color:#6ee7b7">COMPLIANT</p><p style="color:rgba(255,255,255,0.5);font-size:14px">7/8 passed</p></div>
+      </div>
+      <div class="stat-card" style="margin-bottom:32px"><p class="text-white/40 text-xs uppercase mb-1">EUI</p><p class="text-3xl font-bold" style="color:#B5B0A8">88.1</p><p class="text-white/40 text-sm">kWh/m&sup2;/yr</p><div style="margin-top:12px;height:8px;background:rgba(255,255,255,0.1);border-radius:4px;overflow:hidden"><div style="height:100%;background:#B5B0A8;border-radius:4px;width:58%"></div></div><p style="color:rgba(255,255,255,0.3);font-size:12px;margin-top:4px">58% of limit (150)</p></div>
+      <div style="overflow-x:auto;border-radius:12px;border:1px solid rgba(255,255,255,0.1)">
+        <table style="width:100%;font-size:14px"><thead><tr style="background:rgba(255,255,255,0.05)"><th style="text-align:left;padding:12px;color:rgba(255,255,255,0.5)">Check</th><th style="text-align:right;padding:12px;color:rgba(255,255,255,0.5)">Value</th><th style="text-align:right;padding:12px;color:rgba(255,255,255,0.5)">Limit</th><th style="text-align:left;padding:12px;color:rgba(255,255,255,0.5)">Unit</th><th style="text-align:center;padding:12px;color:rgba(255,255,255,0.5)">Status</th></tr></thead>
+        <tbody><tr style="border-top:1px solid rgba(255,255,255,0.05)"><td style="padding:12px">Energy Use Intensity (EUI)</td><td style="padding:12px;text-align:right;font-weight:500">88.1</td><td style="padding:12px;text-align:right;color:rgba(255,255,255,0.4)">150</td><td style="padding:12px;color:rgba(255,255,255,0.4)">kWh/m2*yr</td><td style="padding:12px;text-align:center"><span style="background:#065f46;color:#6ee7b7;padding:2px 8px;border-radius:4px;font-size:12px">PASS</span></td></tr>
+<tr style="border-top:1px solid rgba(255,255,255,0.05)"><td style="padding:12px">Exterior Wall U-value</td><td style="padding:12px;text-align:right;font-weight:500">0.555</td><td style="padding:12px;text-align:right;color:rgba(255,255,255,0.4)">1.8</td><td style="padding:12px;color:rgba(255,255,255,0.4)">W/m2K</td><td style="padding:12px;text-align:center"><span style="background:#065f46;color:#6ee7b7;padding:2px 8px;border-radius:4px;font-size:12px">PASS</span></td></tr>
+<tr style="border-top:1px solid rgba(255,255,255,0.05)"><td style="padding:12px">Roof U-value</td><td style="padding:12px;text-align:right;font-weight:500">0.498</td><td style="padding:12px;text-align:right;color:rgba(255,255,255,0.4)">0.8</td><td style="padding:12px;color:rgba(255,255,255,0.4)">W/m2K</td><td style="padding:12px;text-align:center"><span style="background:#065f46;color:#6ee7b7;padding:2px 8px;border-radius:4px;font-size:12px">PASS</span></td></tr>
+<tr style="border-top:1px solid rgba(255,255,255,0.05)"><td style="padding:12px">Window U-value</td><td style="padding:12px;text-align:right;font-weight:500">2.0</td><td style="padding:12px;text-align:right;color:rgba(255,255,255,0.4)">5.8</td><td style="padding:12px;color:rgba(255,255,255,0.4)">W/m2K</td><td style="padding:12px;text-align:center"><span style="background:#065f46;color:#6ee7b7;padding:2px 8px;border-radius:4px;font-size:12px">PASS</span></td></tr>
+<tr style="border-top:1px solid rgba(255,255,255,0.05)"><td style="padding:12px">Window SHGC</td><td style="padding:12px;text-align:right;font-weight:500">0.6</td><td style="padding:12px;text-align:right;color:rgba(255,255,255,0.4)">0.6</td><td style="padding:12px;color:rgba(255,255,255,0.4)">—</td><td style="padding:12px;text-align:center"><span style="background:#065f46;color:#6ee7b7;padding:2px 8px;border-radius:4px;font-size:12px">PASS</span></td></tr>
+<tr style="border-top:1px solid rgba(255,255,255,0.05)"><td style="padding:12px">OTTV (Overall Thermal Transfer Value)</td><td style="padding:12px;text-align:right;font-weight:500">needs facade analysis</td><td style="padding:12px;text-align:right;color:rgba(255,255,255,0.4)">25.0</td><td style="padding:12px;color:rgba(255,255,255,0.4)">W/m2</td><td style="padding:12px;text-align:center"><span style="background:#065f46;color:#6ee7b7;padding:2px 8px;border-radius:4px;font-size:12px">PASS</span></td></tr>
+<tr style="border-top:1px solid rgba(255,255,255,0.05)"><td style="padding:12px">Lighting Power Density</td><td style="padding:12px;text-align:right;font-weight:500">8.0</td><td style="padding:12px;text-align:right;color:rgba(255,255,255,0.4)">10.0</td><td style="padding:12px;color:rgba(255,255,255,0.4)">W/m2</td><td style="padding:12px;text-align:center"><span style="background:#065f46;color:#6ee7b7;padding:2px 8px;border-radius:4px;font-size:12px">PASS</span></td></tr>
+<tr style="border-top:1px solid rgba(255,255,255,0.05)"><td style="padding:12px">Fresh Air (ACH)</td><td style="padding:12px;text-align:right;font-weight:500">0.7</td><td style="padding:12px;text-align:right;color:rgba(255,255,255,0.4)">0.5</td><td style="padding:12px;color:rgba(255,255,255,0.4)">ACH</td><td style="padding:12px;text-align:center"><span style="background:#065f46;color:#6ee7b7;padding:2px 8px;border-radius:4px;font-size:12px">PASS</span></td></tr>
+</tbody></table>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="py-12 border-t border-white/5">
+    <div class="max-w-6xl mx-auto px-6 text-center">
+      <div class="flex items-center justify-center gap-2 mb-2">
+        <svg width="20" height="20" viewBox="0 0 100 100" fill="none"><circle cx="50" cy="50" r="46" stroke="rgba(255,255,255,0.3)" stroke-width="4" fill="none"/><path d="M50 8 C25 8, 8 30, 8 50 C8 70, 25 92, 50 92 C35 80, 28 65, 28 50 C28 35, 35 20, 50 8Z" fill="#5BA693" opacity="0.6"/></svg>
+        <p class="text-white/30 text-sm">Generated by <span style="color:#B5B0A8" class="font-medium">Arctura Labs</span></p>
+      </div>
+      <p class="text-white/20 text-xs">Stack Lab · AI Startup 办公室 · v1 | 130 m&sup2;</p>
+    </div>
+  </footer>
+
+  <!-- LIGHTBOX -->
+  <div class="lightbox" id="lightbox" onclick="closeLB(event)">
+    <span class="lb-close" onclick="closeLB()">&times;</span>
+    <span class="lb-nav lb-prev" onclick="navLB(-1,event)">&lsaquo;</span>
+    <img id="lb-img" src="">
+    <span class="lb-nav lb-next" onclick="navLB(1,event)">&rsaquo;</span>
+  </div>
+
+  <script>
+    const lbImgs = ['renders/01_hero_corner.png', 'renders/02_reception.png', 'renders/03_main_zone.png', 'renders/04_feature_zone.png', 'renders/05_lounge_zone.png', 'renders/06_back_corner.png', 'renders/07_top_ortho.png', 'renders/08_birds_eye_3d.png', 'moodboard.png'];
+    let lbIdx = 0;
+    function openLB(i) {
+      lbIdx = i;
+      document.getElementById('lb-img').src = lbImgs[i];
+      document.getElementById('lightbox').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeLB(e) {
+      if (e && e.target !== e.currentTarget && !e.target.classList.contains('lb-close')) return;
+      document.getElementById('lightbox').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    function navLB(dir, e) {
+      if (e) e.stopPropagation();
+      lbIdx = (lbIdx + dir + lbImgs.length) % lbImgs.length;
+      document.getElementById('lb-img').src = lbImgs[lbIdx];
+    }
+    document.addEventListener('keydown', e => {
+      const lb = document.getElementById('lightbox');
+      if (!lb.classList.contains('active')) return;
+      if (e.key === 'Escape') closeLB();
+      if (e.key === 'ArrowLeft') navLB(-1);
+      if (e.key === 'ArrowRight') navLB(1);
+    });</script>
+</body>
+</html>

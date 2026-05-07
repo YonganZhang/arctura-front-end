@@ -1,0 +1,36 @@
+Program Version,EnergyPlus, Version 26.1.0-6f2e40d102, YMD=2026.04.16 19:46
+1,5,Environment Title[],Latitude[deg],Longitude[deg],Time Zone[],Elevation[m]
+2,8,Day of Simulation[],Month[],Day of Month[],DST Indicator[1=yes 0=no],Hour[],StartMinute[],EndMinute[],DayType
+3,5,Cumulative Day of Simulation[],Month[],Day of Month[],DST Indicator[1=yes 0=no],DayType  ! When Daily Meters Requested
+4,2,Cumulative Days of Simulation[],Month[]  ! When Monthly Meters Requested
+5,1,Cumulative Days of Simulation[] ! When Run Period Meters Requested
+6,1,Calendar Year of Simulation[] ! When Annual Meters Requested
+11,9,Electricity:Facility [J] !Monthly [Value,Min,Day,Hour,Minute,Max,Day,Hour,Minute]
+End of Data Dictionary
+1,ANNUALRUN,  22.31, 113.92,   8.00,   8.50
+4,31, 1
+11,1115423999.9999998,89999.99999999997, 1, 1,10,473999.99999999994, 1, 7,10
+4,59, 2
+11,1012607999.9999999,99999999999999.0, 1, 1,10,-99999999999999.0, 1, 7,10
+4,90, 3
+11,1122047999.9999998,99999999999999.0, 1, 1,10,-99999999999999.0, 1, 7,10
+4,120, 4
+11,1087775999.9999998,99999999999999.0, 1, 1,10,-99999999999999.0, 1, 7,10
+4,151, 5
+11,1115423999.9999998,99999999999999.0, 1, 1,10,-99999999999999.0, 1, 7,10
+4,181, 6
+11,1087775999.9999998,99999999999999.0, 1, 1,10,-99999999999999.0, 1, 7,10
+4,212, 7
+11,1122047999.9999998,99999999999999.0, 1, 1,10,-99999999999999.0, 1, 7,10
+4,243, 8
+11,1115423999.9999998,99999999999999.0, 1, 1,10,-99999999999999.0, 1, 7,10
+4,273, 9
+11,1094399999.9999998,99999999999999.0, 1, 1,10,-99999999999999.0, 1, 7,10
+4,304,10
+11,1115423999.9999998,99999999999999.0, 1, 1,10,-99999999999999.0, 1, 7,10
+4,334,11
+11,1081151999.9999998,99999999999999.0, 1, 1,10,-99999999999999.0, 1, 7,10
+4,365,12
+11,1128671999.9999998,99999999999999.0, 1, 1,10,-99999999999999.0, 1, 7,10
+End of Data
+ Number of Records Written=          12

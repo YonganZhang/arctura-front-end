@@ -142,11 +142,12 @@ _PRODUCTS_LIST: list[ProductSpec] = [
         full_hint="LIGHT 产 project.json + compliance-HK.md + boq-HK.md/csv · EUI 待装 EnergyPlus（~140MB）"
                   "· FULL `cli-anything-openstudio run simulate --weather HKG_Hong.Kong.Intl.AP.epw`",
     ),
-    # #10 · exports · Phase 9 真产（Blender 4.2.3 已装 · GLB/OBJ/FBX）
+    # #10 · exports · Phase 9 真产（Blender 4.2.3 已装 · GLB/OBJ/FBX）+ Phase 12.末.B v3 复用老师真 exports/
     ProductSpec(
         key="exports", id=10, name="BIM 导出（GLB/OBJ/FBX）", lang_hint_en="Exports (GLB/OBJ/FBX)",
         tiers=["full", "select"],
         light_producer="exports",   # ✅ Phase 9 · Blender headless 产 3 格式
+        formal_producer="exports_formal",  # Phase 12.末.B · v3 复用老师 03/05/13 真 5 格式 + dxf
         full_pipeline="P0 IFC enrich + P1/P2 export step · 加 IFC4+DXF 需 Blender-BIM + Pascal",
         spec_ref="L403",
         depends_on=["scene"],

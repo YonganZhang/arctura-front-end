@@ -1,0 +1,13 @@
+{
+  "pipeline": "P4-ai-render",
+  "stack": "L2-C: RealVisXL_V4.0 + depth-sdxl + canny-sdxl + IP-Adapter-plus",
+  "mvp": "03-coffee-shop",
+  "prompt": "industrial wood, japandi minimal, plant friendly, specialty coffee shop interior, terrazzo floor, warm wood, black metal, cream wall, round wooden tables, wooden chairs, bar counter, espresso machine, brass pendant lights, warm 2700K lighting, Arabica aesthetic, professional interior photography, realistic materials, detailed textures, 8k uhd, architectural digest style",
+  "strength": 0.8,
+  "canny_strength": 0.4,
+  "ip_adapter_scale": 0.2,
+  "reference_image": "/Users/kaku/Desktop/Work/StartUP-Building/studio-demo/mvp/03-coffee-shop/moodboard.png",
+  "steps": 30,
+  "images_processed": 1,
+  "output_dir": "/Users/kaku/Desktop/Work/StartUP-Building/studio-demo/mvp/03-coffee-shop/renders-ai-sdxl-l2"
+}

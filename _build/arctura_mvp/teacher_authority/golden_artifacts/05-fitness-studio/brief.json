@@ -1,0 +1,49 @@
+{
+  "project": "精品健身工作室 Lift Studio · v1",
+  "client": "小型精品健身品牌主理人",
+  "business_model": "会员制 · 自由力量 + 团课 + 私教",
+  "space": {
+    "type": "底商改造",
+    "area_sqm": 100,
+    "dimensions_m": {"length": 10.0, "width": 10.0, "height": 3.5},
+    "frontage_m": 10.0,
+    "existing_condition": "毛坯 · 层高 3.5m · 一面全镜墙基础"
+  },
+  "style": {
+    "keywords": ["industrial", "mirror-heavy", "strong-clean", "matte-black"],
+    "palette": {
+      "wall_black": "#1A1A1C",
+      "mirror_silver": "#C8CDD2",
+      "power_yellow": "#E5C547",
+      "warm_wood": "#8B6F4E",
+      "cream": "#EDE8DE",
+      "deep_red": "#A23B30"
+    },
+    "reference_brands": ["Barry's", "Equinox", "SPEEDFIT"]
+  },
+  "functional_zones": [
+    {"name": "入口前台 / 接待", "area_m2": 8, "key_objects": ["前台", "接待椅", "展示墙"]},
+    {"name": "储物柜区 (10 柜)", "area_m2": 6, "key_objects": ["10 × 储物柜", "长凳"]},
+    {"name": "自由力量区", "area_m2": 24, "key_objects": ["3 层哑铃架", "6 × 杠铃", "举重平台"]},
+    {"name": "瑜伽 / 普拉提区", "area_m2": 30, "key_objects": ["6 × 瑜伽垫 2×3 格", "普拉提设备", "木地板"]},
+    {"name": "镜面墙", "area_m2": 0, "key_objects": ["全反射镜面 10m × 2.4m"]},
+    {"name": "卫生间 / 淋浴", "area_m2": 10, "key_objects": ["2 淋浴隔间", "洗手台"]},
+    {"name": "私教咨询角", "area_m2": 8, "key_objects": ["洽谈桌", "2 椅"]},
+    {"name": "设备储藏", "area_m2": 6, "key_objects": ["瑜伽球", "泡沫轴", "弹力带"]}
+  ],
+  "lighting": {
+    "main": "8 × 黑色轨道射灯 (4000 K)",
+    "accent": "镜面墙顶部线性灯带 + 力量区聚光",
+    "warmth": "4000 K (运动冷白)"
+  },
+  "budget_rmb": 350000,
+  "timeline_weeks": 6,
+  "must_have": [
+    "全反射镜面墙（至少 1 面）",
+    "自由力量区与瑜伽区声学分隔",
+    "10 个独立储物柜",
+    "私教咨询角需视觉独立",
+    "瑜伽区木地板铺装",
+    "淋浴独立干湿分离"
+  ]
+}

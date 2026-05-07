@@ -22,6 +22,9 @@ from _build.arctura_mvp.artifacts.floorplan_formal import produce as floorplan
 from _build.arctura_mvp.artifacts.deck_client_formal import produce as deck_client
 from _build.arctura_mvp.artifacts.energy_report_formal import produce as energy_report
 from _build.arctura_mvp.artifacts.case_study_formal import produce as case_study
+from _build.arctura_mvp.artifacts.client_readme_formal import produce as client_readme
+from _build.arctura_mvp.artifacts.exports_formal import produce as exports
+from _build.arctura_mvp.artifacts.ai_renders_formal import produce as ai_renders
 
 
 _MVP_TYPES = [
@@ -30,13 +33,25 @@ _MVP_TYPES = [
     ("05-fitness-studio", "fitness"),
     ("13-ai-startup-office", "office"),
 ]
+# Phase 12.末.B 修漏后矩阵 · 主体 6 artifact 全 MVP 必命中 v3
 _ARTIFACTS = [
-    ("scene", scene, 8),         # min PNG 数(03-coffee 是 10)
+    ("scene", scene, 1),         # 主返 room.json · 文件数语义不同(整 dirs renders/)
     ("moodboard", moodboard, 2), # json + png
-    ("floorplan", floorplan, 2), # svg + png
-    ("deck_client", deck_client, 10),  # 5 stakeholder × (md + pptx)
-    ("energy_report", energy_report, 4),  # project.json + boq.csv + boq.md + compliance.md
-    ("case_study", case_study, 3),  # impact + portfolio + sales md
+    ("floorplan", floorplan, 3), # svg + png + inkscape-cli.json(dxf 03/05/13 才有)
+    ("deck_client", deck_client, 1),  # files 计 1 dir · decks 整目录(9 stakeholder × 2)
+    ("energy_report", energy_report, 1),  # 整 dirs energy/ 含 ep_output 14 文件
+    ("case_study", case_study, 1),  # 整 dirs case-study/ 含 narrative + metrics + thumbs
+]
+
+# 选择性命中 · 不是所有 MVP 都有(老师真 GitHub 状态)
+# (artifact, fn, mvp_with_truth, expected_min_top_files)
+_PARTIAL_ARTIFACTS = [
+    # client_readme: 老师 05/13 真有 · 01/03 没 → 后两 fallback LIGHT(也算正确不挂)
+    ("client_readme", client_readme, {"05-fitness-studio", "13-ai-startup-office"}),
+    # exports: 03/05/13 真有(.glb/.fbx/.ifc/.obj/.mtl + dxf + 3 export script + 1 floorplan.dxf · = 9 文件 + 没整 sub) · 01-study-room 没
+    ("exports", exports, {"03-coffee-shop", "05-fitness-studio", "13-ai-startup-office"}),
+    # ai_renders: 只 03-coffee-shop 真有 SDXL multi-version + compare_*.png
+    ("ai_renders", ai_renders, {"03-coffee-shop"}),
 ]
 
 
@@ -61,6 +76,21 @@ def test_m1_full_matrix_v3_reused(slug, stype, name, fn, min_files, tmp_path):
     files_count = meta.get("files_count") or meta.get("renders_count") or 0
     assert files_count >= min_files, \
         f"[{slug}/{name}] 应 ≥{min_files} 文件 · 实际 {files_count}"
+
+
+# ── M1b · 选择性命中(老师真 GitHub 状态) ────────────────
+@pytest.mark.parametrize("slug,stype", _MVP_TYPES)
+@pytest.mark.parametrize("name,fn,mvp_with_truth", _PARTIAL_ARTIFACTS)
+def test_m1b_partial_artifacts_v3(slug, stype, name, fn, mvp_with_truth, tmp_path):
+    """老师真有的 MVP → v3 命中 · 其他 → 落 fallback(都不应 error/skipped)"""
+    project = _make_project(slug, stype)
+    res = fn({"project": project, "sb_dir": tmp_path})
+    assert res.status in ("done", "skipped"), \
+        f"[{slug}/{name}] 不应 error · 实际 {res.status} {res.error}"
+    if slug in mvp_with_truth:
+        meta = res.meta or {}
+        assert meta.get("mode") == "v3_golden_reuse", \
+            f"[{slug}/{name}] 老师真有 → 应 v3 · 实际 mode={meta.get('mode')}"
 
 
 # ── M2 · brief 不命中表 → 不 v3 ─────────────────────────

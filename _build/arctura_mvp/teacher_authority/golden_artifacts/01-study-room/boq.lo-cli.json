@@ -1,0 +1,279 @@
+{
+  "metadata": {
+    "author": "",
+    "created": "2026-04-14T22:01:06.406651",
+    "description": "",
+    "modified": "2026-04-14T22:01:22.350834",
+    "software": "libreoffice-cli 1.0",
+    "subject": "",
+    "title": ""
+  },
+  "name": "BOQ_\u4e66\u623f\u6539\u9020_v1",
+  "settings": {
+    "margin_bottom": "2cm",
+    "margin_left": "2cm",
+    "margin_right": "2cm",
+    "margin_top": "2cm",
+    "page_height": "29.7cm",
+    "page_width": "21cm"
+  },
+  "sheets": [
+    {
+      "cells": {
+        "A1": {
+          "type": "string",
+          "value": "\u5e8f\u53f7"
+        },
+        "A10": {
+          "type": "string",
+          "value": "9"
+        },
+        "A2": {
+          "type": "string",
+          "value": "1"
+        },
+        "A3": {
+          "type": "string",
+          "value": "2"
+        },
+        "A4": {
+          "type": "string",
+          "value": "3"
+        },
+        "A5": {
+          "type": "string",
+          "value": "4"
+        },
+        "A6": {
+          "type": "string",
+          "value": "5"
+        },
+        "A7": {
+          "type": "string",
+          "value": "6"
+        },
+        "A8": {
+          "type": "string",
+          "value": "7"
+        },
+        "A9": {
+          "type": "string",
+          "value": "8"
+        },
+        "B1": {
+          "type": "string",
+          "value": "\u9879\u76ee"
+        },
+        "B10": {
+          "type": "string",
+          "value": "\u65bd\u5de5\u8f6f\u88c5"
+        },
+        "B11": {
+          "type": "string",
+          "value": "\u5408\u8ba1"
+        },
+        "B2": {
+          "type": "string",
+          "value": "\u6574\u5899\u4e66\u67b6"
+        },
+        "B3": {
+          "type": "string",
+          "value": "\u5de5\u4f5c\u684c+\u6905"
+        },
+        "B4": {
+          "type": "string",
+          "value": "\u9605\u8bfb\u6c99\u53d1"
+        },
+        "B5": {
+          "type": "string",
+          "value": "\u843d\u5730\u706f"
+        },
+        "B6": {
+          "type": "string",
+          "value": "\u50a8\u7269\u67dc"
+        },
+        "B7": {
+          "type": "string",
+          "value": "\u5899\u6f06"
+        },
+        "B8": {
+          "type": "string",
+          "value": "\u6728\u5730\u677f"
+        },
+        "B9": {
+          "type": "string",
+          "value": "\u5730\u6bef"
+        },
+        "C1": {
+          "type": "string",
+          "value": "\u6750\u6599/\u89c4\u683c"
+        },
+        "C10": {
+          "type": "string",
+          "value": "\u6c34\u7535+\u5b89\u88c5"
+        },
+        "C2": {
+          "type": "string",
+          "value": "\u767d\u6a61\u6728"
+        },
+        "C3": {
+          "type": "string",
+          "value": "\u767d\u6a61+\u9ed1\u94a2"
+        },
+        "C4": {
+          "type": "string",
+          "value": "\u7c73\u767d\u9ebb\u5e03"
+        },
+        "C5": {
+          "type": "string",
+          "value": "\u9ec4\u94dc+\u4e9a\u9ebb"
+        },
+        "C6": {
+          "type": "string",
+          "value": "\u70ad\u9ed1\u54d1\u5149"
+        },
+        "C7": {
+          "type": "string",
+          "value": "\u5976\u767d\u73af\u4fdd"
+        },
+        "C8": {
+          "type": "string",
+          "value": "\u6a61\u6728\u591a\u5c42"
+        },
+        "C9": {
+          "type": "string",
+          "value": "\u7f8a\u6bdb"
+        },
+        "D1": {
+          "type": "string",
+          "value": "\u6570\u91cf/\u9762\u79ef"
+        },
+        "D10": {
+          "type": "string",
+          "value": "-"
+        },
+        "D2": {
+          "type": "string",
+          "value": "5.0m \u00d7 2.8m"
+        },
+        "D3": {
+          "type": "string",
+          "value": "1 \u5957"
+        },
+        "D4": {
+          "type": "string",
+          "value": "1 \u5f20"
+        },
+        "D5": {
+          "type": "string",
+          "value": "1 \u4e2a"
+        },
+        "D6": {
+          "type": "string",
+          "value": "1 \u4e2a"
+        },
+        "D7": {
+          "type": "string",
+          "value": "3 \u9762"
+        },
+        "D8": {
+          "type": "string",
+          "value": "20 m\u00b2"
+        },
+        "D9": {
+          "type": "string",
+          "value": "1.5\u00d71.2m"
+        },
+        "E1": {
+          "type": "string",
+          "value": "\u5355\u4ef7"
+        },
+        "E10": {
+          "type": "float",
+          "value": 18000.0
+        },
+        "E2": {
+          "type": "float",
+          "value": 22000.0
+        },
+        "E3": {
+          "type": "float",
+          "value": 6500.0
+        },
+        "E4": {
+          "type": "float",
+          "value": 5800.0
+        },
+        "E5": {
+          "type": "float",
+          "value": 2400.0
+        },
+        "E6": {
+          "type": "float",
+          "value": 4500.0
+        },
+        "E7": {
+          "type": "float",
+          "value": 3200.0
+        },
+        "E8": {
+          "type": "float",
+          "value": 600.0
+        },
+        "E9": {
+          "type": "float",
+          "value": 3500.0
+        },
+        "F1": {
+          "type": "string",
+          "value": "\u91d1\u989d(\u00a5)"
+        },
+        "F10": {
+          "type": "float",
+          "value": 18000.0
+        },
+        "F11": {
+          "formula": "SUM(F2:F10)",
+          "type": "string",
+          "value": "=SUM(F2:F10)"
+        },
+        "F2": {
+          "type": "float",
+          "value": 22000.0
+        },
+        "F3": {
+          "type": "float",
+          "value": 6500.0
+        },
+        "F4": {
+          "type": "float",
+          "value": 5800.0
+        },
+        "F5": {
+          "type": "float",
+          "value": 2400.0
+        },
+        "F6": {
+          "type": "float",
+          "value": 4500.0
+        },
+        "F7": {
+          "type": "float",
+          "value": 3200.0
+        },
+        "F8": {
+          "type": "float",
+          "value": 12000.0
+        },
+        "F9": {
+          "type": "float",
+          "value": 3500.0
+        }
+      },
+      "name": "Sheet1"
+    }
+  ],
+  "styles": {},
+  "type": "calc",
+  "version": "1.0"
+}

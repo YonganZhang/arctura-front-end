@@ -1,0 +1,70 @@
+Shadowing Combinations
+..Solar Distribution=FullExteriorWithReflectionsFromExteriorSurfaces
+..In the following, only the first 10 reference surfaces will be shown.
+..But all surfaces are used in the calculations.
+==================================
+Surface=F1_STUDY_SOUTHWALL is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=3
+..Surface=F1_STUDY_NORTHWALL
+..Surface=F1_STUDY_EASTWALL
+..Surface=F1_STUDY_WESTWALL
+Number of back surfaces=0
+Number of receiving sub surfaces=1
+....Surface=F1_STUDY_SOUTHWINDOW
+==================================
+Surface=F1_STUDY_SOUTHWINDOW is not used as Receiving Surface in calculations.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_STUDY_NORTHWALL is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=3
+..Surface=F1_STUDY_SOUTHWALL
+..Surface=F1_STUDY_EASTWALL
+..Surface=F1_STUDY_WESTWALL
+Number of back surfaces=0
+Number of receiving sub surfaces=1
+....Surface=F1_STUDY_NORTHWINDOW
+==================================
+Surface=F1_STUDY_NORTHWINDOW is not used as Receiving Surface in calculations.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_STUDY_EASTWALL is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=3
+..Surface=F1_STUDY_SOUTHWALL
+..Surface=F1_STUDY_NORTHWALL
+..Surface=F1_STUDY_WESTWALL
+Number of back surfaces=0
+Number of receiving sub surfaces=1
+....Surface=F1_STUDY_EASTWINDOW
+==================================
+Surface=F1_STUDY_EASTWINDOW is not used as Receiving Surface in calculations.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_STUDY_WESTWALL is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=3
+..Surface=F1_STUDY_SOUTHWALL
+..Surface=F1_STUDY_NORTHWALL
+..Surface=F1_STUDY_EASTWALL
+Number of back surfaces=0
+Number of receiving sub surfaces=1
+....Surface=F1_STUDY_WESTWINDOW
+==================================
+Surface=F1_STUDY_WESTWINDOW is not used as Receiving Surface in calculations.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_STUDY_FLOOR is not used as Receiving Surface in calculations.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=F1_STUDY_ROOF is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0

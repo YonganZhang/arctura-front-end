@@ -1,0 +1,98 @@
+{
+  "metadata": {
+    "author": "",
+    "created": "2026-04-15T00:00:34.639392",
+    "description": "",
+    "modified": "2026-04-15T00:00:35.150768",
+    "software": "libreoffice-cli 1.0",
+    "subject": "",
+    "title": ""
+  },
+  "name": "Coffee Lab v1",
+  "settings": {
+    "margin_bottom": "2cm",
+    "margin_left": "2cm",
+    "margin_right": "2cm",
+    "margin_top": "2cm",
+    "page_height": "29.7cm",
+    "page_width": "21cm"
+  },
+  "slides": [
+    {
+      "content": "\u72ec\u7acb\u7cbe\u54c1\u5496\u5561\u5e97 \u00b7 80m\u00b2 \u00b7 \u5de5\u4e1a\u6728 + Japandi \u00b7 \u9884\u7b97 45\u4e07 \u00b7 \u5de5\u671f 8 \u5468",
+      "elements": [],
+      "title": "Coffee Lab \u65b9\u6848 v1"
+    },
+    {
+      "content": "Industrial Wood + Japandi Minimal \u00b7 2700K \u6696\u5149",
+      "elements": [
+        {
+          "archive_name": "Pictures/img_s1_e0.png",
+          "height": "12.5cm",
+          "image_path": "/Users/kaku/Desktop/Work/StartUP-Building/studio-demo/mvp/03-coffee-shop/moodboard.png",
+          "text": "",
+          "type": "image",
+          "width": "22cm",
+          "x": "2cm",
+          "y": "4cm"
+        }
+      ],
+      "title": "1. \u98ce\u683c & 6 \u8272\u8c03\u8272\u677f"
+    },
+    {
+      "content": "78 \u7269\u4f53 \u00b7 \u9ec4\u94dc\u540a\u706f + \u957f\u684c + \u4e66\u5899 \u00b7 2.6 \u79d2\u51fa\u56fe",
+      "elements": [
+        {
+          "archive_name": "Pictures/img_s2_e0.png",
+          "height": "13cm",
+          "image_path": "/Users/kaku/Desktop/Work/StartUP-Building/studio-demo/mvp/03-coffee-shop/render.png",
+          "text": "",
+          "type": "image",
+          "width": "22cm",
+          "x": "2cm",
+          "y": "4cm"
+        }
+      ],
+      "title": "2. 3D \u65b9\u6848\u6e32\u67d3 (EEVEE)"
+    },
+    {
+      "content": "\u5165\u53e3 + \u5427\u53f0 + 4 \u6563\u5ea7 + \u957f\u684c + \u4e66\u5899 + \u53a8\u623f + WC + \u7eff\u690d | 16 \u5ea7\u4f4d",
+      "elements": [
+        {
+          "archive_name": "Pictures/img_s3_e0.png",
+          "height": "13cm",
+          "image_path": "/Users/kaku/Desktop/Work/StartUP-Building/studio-demo/mvp/03-coffee-shop/floorplan.png",
+          "text": "",
+          "type": "image",
+          "width": "22cm",
+          "x": "2cm",
+          "y": "4cm"
+        }
+      ],
+      "title": "3. 8 \u5206\u533a\u5e73\u9762\u5e03\u5c40"
+    },
+    {
+      "content": "\u5ea7\u4f4d\u5bb9\u91cf:\n  \u6563\u5ea7 8 \u4eba (4 \u684c x 2 \u5ea7) - \u79c1\u5bc6\u5c0f\u805a\n  \u957f\u684c 8 \u4eba (4m \u5171\u4eab) - \u5355\u4eba\u529e\u516c / \u60c5\u4fa3\u7ea6\u4f1a\n  \u603b\u8ba1 16 \u5ea7 (\u7b26\u5408 80m\u00b2 \u7cbe\u54c1\u5496\u5561\u884c\u4e1a\u6807\u51c6 1:5)\n\n\u6838\u5fc3\u52a8\u7ebf:\n  \u5ba2\u4eba: \u5165\u53e3 -> \u5427\u53f0\u70b9\u5355 -> \u53d6\u9910 -> \u5ea7\u4f4d\n  \u5458\u5de5: \u540e\u53a8 -> \u5427\u53f0 -> \u6e05\u6d01\n  \u4e24\u6761\u52a8\u7ebf\u4ec5\u5728\u5427\u53f0\u4ea4\u53c9, \u7b26\u5408\u9910\u996e\u6d41\u7a0b\u8981\u6c42",
+      "elements": [],
+      "title": "4. \u5ea7\u4f4d & \u52a8\u7ebf\u8bbe\u8ba1"
+    },
+    {
+      "content": "\u4e3b\u7ed3\u6784/\u88c5\u4fee:\n  \u6c34\u78e8\u77f3\u5730\u9762 80m\u00b2 + \u5899\u6f06 + \u540a\u9876:     \u00a585,000\n  L \u578b\u5b9a\u5236\u5427\u53f0 + \u540e\u5427 5m:              \u00a565,000\n  \u4e66\u5899 4m (5 \u5c42 + \u5185\u5d4c\u706f\u5e26):           \u00a538,000\n  \u536b\u751f\u95f4\u9694\u65ad + \u57fa\u7840:                   \u00a518,000\n\n\u5bb6\u5177:\n  4 x \u5706\u6728\u684c + 8 \u6905 (\u539f\u6728 + \u9ed1\u91d1\u5c5e):    \u00a522,000\n  1 x 4m \u957f\u6728\u684c + 8 \u9ad8\u811a\u51f3:            \u00a528,000\n  \u5165\u53e3\u957f\u51f3 + \u8863\u5e3d\u67b6:                   \u00a56,500\n\n\u8bbe\u5907:\n  La Marzocco \u5496\u5561\u673a + \u78e8\u8c46:           \u00a585,000\n  \u5c55\u793a\u51b7\u67dc + \u540e\u53a8\u51b0\u7bb1 + \u6c34\u69fd:          \u00a545,000\n  6 x \u9ec4\u94dc\u540a\u706f (Menu \u540c\u7c7b):            \u00a518,000\n  \u7ebf\u6027\u706f + \u4e66\u67b6\u706f\u5e26:                   \u00a58,500\n\n\u8f6f\u88c5 + \u7eff\u690d + \u65bd\u5de5:                    \u00a531,000\n\u5408\u8ba1:                                \u00a5450,000 (\u9884\u7b97\u5185)",
+      "elements": [],
+      "title": "5. BOQ \u6982\u7b97 (\u00a5450,000)"
+    },
+    {
+      "content": "W1: \u6df1\u5316\u8bbe\u8ba1 + \u6750\u6599\u9009\u6837 + \u6d88\u9632\u5ba1\u6279\u51c6\u5907\nW2: \u6bdb\u576f\u62c6\u6539 + \u6c34\u7535\u6539\u9020 + \u6d88\u9632\u7ba1\u8def\nW3: \u5730\u9762\u6c34\u78e8\u77f3 + \u5899\u9762\u57fa\u7840\nW4: \u5b9a\u5236\u5bb6\u5177\u751f\u4ea7 (\u5427\u53f0 + \u4e66\u5899 + \u957f\u684c)\nW5: \u5899\u6f06 + \u5730\u9762\u5b8c\u5de5 + \u540a\u9876\u5b89\u88c5\nW6: \u5427\u53f0\u5b89\u88c5 + \u53a8\u623f\u8bbe\u5907\u8fdb\u573a + AV \u5e03\u7ebf\nW7: \u5bb6\u5177\u8fdb\u573a + \u706f\u5177\u5b89\u88c5 + \u7eff\u690d\nW8: \u8f6f\u88c5\u8c03\u8bd5 + \u6e05\u6d01 + \u9884\u5f00\u4e1a\u6d4b\u8bd5",
+      "elements": [],
+      "title": "6. 8 \u5468\u5de5\u671f\u8ba1\u5212"
+    },
+    {
+      "content": "\u5f85\u5ba2\u6237\u51b3\u7b56:\n  - \u5427\u53f0\u662f\u5426\u505a\u5f27\u5f62\u5bfc\u89d2 (\u65b9\u6848 A: \u76f4\u89d2 / \u65b9\u6848 B: R40 \u5f27\u5f62 +\u00a58,000)\n  - \u957f\u684c\u6750\u8d28 (\u65b9\u6848 A: \u767d\u6a61 / \u65b9\u6848 B: \u80e1\u6843)\n  - \u4e66\u5899\u662f\u5426\u9700\u8981\u6ed1\u52a8\u68af (+\u00a54,500)\n  - \u7a97\u8fb9\u662f\u5426\u52a0\u5427\u53f0 (+\u00a512,000, 3-4 \u5ea7)\n\n\u7b7e\u5355\u540e\u5373\u53ef\u542f\u52a8:\n  1. Pascal Editor \u5bfc\u51fa\u65bd\u5de5 IFC (Revit \u534f\u4f5c)\n  2. Inkscape \u5bfc\u51fa DXF \u65bd\u5de5\u56fe (AutoCAD)\n  3. Blender \u5bfc\u51fa GLB (\u7532\u65b9 AR/Sketchfab \u9884\u89c8)\n\n\u672c\u65b9\u6848\u7531 Studio Copilot \u81ea\u52a8\u751f\u6210, 8 \u9875 deck + \u5e73\u9762 + 3D + 5 \u79cd\u65bd\u5de5\u683c\u5f0f,\n\u8017\u65f6 < 20 \u5206\u949f.",
+      "elements": [],
+      "title": "7. \u4e0b\u4e00\u6b65 & \u5f85\u5ba2\u6237\u786e\u8ba4"
+    }
+  ],
+  "styles": {},
+  "type": "impress",
+  "version": "1.0"
+}

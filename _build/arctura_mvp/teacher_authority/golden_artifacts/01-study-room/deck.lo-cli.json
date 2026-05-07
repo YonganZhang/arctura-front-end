@@ -1,0 +1,65 @@
+{
+  "metadata": {
+    "author": "",
+    "created": "2026-04-14T22:00:16.649106",
+    "description": "",
+    "modified": "2026-04-14T22:00:29.627807",
+    "software": "libreoffice-cli 1.0",
+    "subject": "",
+    "title": ""
+  },
+  "name": "\u4e66\u623f\u6539\u9020\u65b9\u6848 v1",
+  "settings": {
+    "margin_bottom": "2cm",
+    "margin_left": "2cm",
+    "margin_right": "2cm",
+    "margin_top": "2cm",
+    "page_height": "29.7cm",
+    "page_width": "21cm"
+  },
+  "slides": [
+    {
+      "content": "\u5f20\u5148\u751f \u00b7 20\u5e73\u7c73 \u00b7 \u6781\u7b80\u6696\u6728 \u00b7 \u9884\u7b97 8\u4e07\n\nStudio Copilot | \u81ea\u52a8\u751f\u6210 | 2026-04-14",
+      "elements": [],
+      "title": "\u4e66\u623f\u6539\u9020\u65b9\u6848 v1"
+    },
+    {
+      "content": "\u7a7a\u95f4: 5.0m \u00d7 4.0m \u00d7 2.8m (20 m\u00b2)\n\u98ce\u683c: Minimalist Japandi \u00b7 \u6696\u6728\u8272 + \u5976\u767d + \u70ad\u9ed1\n\u56db\u5927\u9700\u6c42:\n  \u2022 \u6574\u9762\u4e66\u5899 (\u5bb9\u91cf 500 \u518c)\n  \u2022 \u72ec\u7acb\u5de5\u4f5c\u684c (\u53cc\u5c4f + \u8d44\u6599)\n  \u2022 \u9605\u8bfb\u4f11\u95f2\u89d2 (\u5355\u4eba\u6c99\u53d1 + \u843d\u5730\u706f)\n  \u2022 \u9690\u85cf\u6536\u7eb3 (\u81f3\u5c11 1 \u67dc)\n\u9884\u7b97: \u00a580,000 \u00b7 \u5de5\u671f: 6 \u5468",
+      "elements": [],
+      "title": "1. \u9879\u76ee Brief"
+    },
+    {
+      "content": "\u6838\u5fc3\u8272\u677f (\u8be6\u89c1 moodboard.png):\n  #E8DCC8 \u6696\u7c73\u8272 - \u4e3b\u8272 (\u5899\u9762\u3001\u5730\u6bef)\n  #8B6F47 \u6696\u6728\u8272 - \u526f\u8272 (\u5bb6\u5177\u3001\u4e66\u67b6)\n  #2C3539 \u6df1\u70ad\u8272 - \u70b9\u7f00 (\u50a8\u7269\u67dc\u3001\u6276\u624b\u6905)\n  #F5F1E8 \u5976\u767d\u8272 - \u80cc\u666f (\u5899\u6f06)\n\n\u5173\u952e\u8bcd: japandi \u00b7 minimal \u00b7 warm-wood \u00b7 tactile",
+      "elements": [],
+      "title": "2. \u98ce\u683c & \u8272\u5f69"
+    },
+    {
+      "content": "\u89c1 floorplan.png\n\n\u529f\u80fd\u5206\u533a:\n  \u2022 \u5317\u5899 (5.0m): \u6574\u5899\u4e66\u67b6 + \u6df1\u8272\u50a8\u7269\u67dc\n  \u2022 \u897f\u5899 (4.0m): 2m \u5de5\u4f5c\u684c + \u4eba\u4f53\u5de5\u5b66\u6905\n  \u2022 \u4e1c\u5357\u89d2 (\u534a\u5f84 0.75m): \u9605\u8bfb\u89d2 (\u5355\u4eba\u6c99\u53d1 + \u843d\u5730\u706f + \u5730\u6bef)\n  \u2022 \u4e2d\u592e\u52a8\u7ebf: \u5bbd 1.8m, \u6ee1\u8db3\u53cc\u4eba\u5e76\u884c",
+      "elements": [],
+      "title": "3. \u5e73\u9762\u5e03\u5c40 (Bubble Plan)"
+    },
+    {
+      "content": "\u89c1 render.png\n\n\u89c6\u89d2: \u5165\u6237\u53f3\u524d\u89d2 3/4 \u900f\u89c6\n\u6e32\u67d3: EEVEE real-time (128 samples)\n\u5149\u6e90: \u592a\u9633\u5149 (\u5357) + \u9876\u90e8\u586b\u5149 + \u843d\u5730\u706f\u6696\u5149\n\n\u4e0b\u4e00\u6b65: ComfyUI \u98ce\u683c\u5316 photo-real \u6e32\u67d3",
+      "elements": [],
+      "title": "4. 3D \u65b9\u6848\u6e32\u67d3"
+    },
+    {
+      "content": "\u4e3b\u6750/\u5bb6\u5177\u4f30\u7b97 (\u8be6\u89c1 Calc \u9644\u8868):\n  \u6574\u5899\u4e66\u67b6 (\u767d\u6a61\u6728, 5.0m \u00d7 2.8m)      \u00a522,000\n  \u5de5\u4f5c\u684c + \u6905 (\u767d\u6a61+\u9ed1\u94a2)               \u00a56,500\n  \u9605\u8bfb\u5355\u4eba\u6c99\u53d1 (\u7c73\u767d\u9ebb\u5e03)               \u00a55,800\n  \u843d\u5730\u706f (\u9ec4\u94dc\u6746+\u4e9a\u9ebb\u7f69)                \u00a52,400\n  \u50a8\u7269\u67dc (\u70ad\u9ed1\u54d1\u5149)                     \u00a54,500\n  \u5899\u6f06 (3 \u9762 \u00b7 \u5976\u767d)                    \u00a53,200\n  \u5730\u677f (\u6a61\u6728\u591a\u5c42, 20m\u00b2)                 \u00a512,000\n  \u5730\u6bef (\u7f8a\u6bdb 1.5\u00d71.2m)                  \u00a53,500\n  \u65bd\u5de5 / \u6c34\u7535 / \u8f6f\u88c5                    \u00a518,000\n  \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n  \u5408\u8ba1                                  \u00a577,900 (\u9884\u7b97\u5185)",
+      "elements": [],
+      "title": "5. BOQ \u521d\u7248"
+    },
+    {
+      "content": "W1: \u6df1\u5316\u8bbe\u8ba1 + \u6750\u6599\u9009\u6837 + \u5ba2\u6237\u786e\u8ba4\nW2: \u5899\u9762\u62c6\u6539 + \u6c34\u7535\u6539\u9020\nW3: \u5730\u677f + \u5899\u6f06 + \u57fa\u7840\u88c5\u4fee\nW4: \u4e66\u67b6 + \u50a8\u7269\u67dc \u5b9a\u5236\u5b89\u88c5\nW5: \u5bb6\u5177\u8fdb\u573a + \u706f\u5177\u5b89\u88c5\nW6: \u8f6f\u88c5\u5e03\u7f6e + \u6e05\u6d01\u4ea4\u4ed8",
+      "elements": [],
+      "title": "6. \u5de5\u671f\u8ba1\u5212 (6 \u5468)"
+    },
+    {
+      "content": "\u672c\u7248\u5f85\u5ba2\u6237\u786e\u8ba4:\n  \u2713 \u6574\u4f53\u98ce\u683c\u65b9\u5411\n  \u2713 \u9884\u7b97\u8303\u56f4 (\u00a577,900 / \u00a580,000)\n  \u2713 \u5de5\u671f (6 \u5468)\n\n\u5ba2\u6237\u53cd\u9988\u540e\u81ea\u52a8\u8fed\u4ee3:\n  \u2022 \u66ff\u6362\u6750\u8d28 -> \u91cd\u8dd1 ComfyUI + Blender\n  \u2022 \u8c03\u6574\u5e03\u5c40 -> \u91cd\u8dd1 Inkscape \u5e73\u9762\n  \u2022 \u4e00\u952e\u751f\u6210 v2 \u65b9\u6848\u5305\n\n\u6b64\u65b9\u6848\u7531 Studio Copilot \u81ea\u52a8\u751f\u6210, \u8017\u65f6 < 10 \u5206\u949f.",
+      "elements": [],
+      "title": "7. \u4e0b\u4e00\u6b65 & \u53cd\u9988"
+    }
+  ],
+  "styles": {},
+  "type": "impress",
+  "version": "1.0"
+}

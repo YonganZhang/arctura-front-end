@@ -1,0 +1,85 @@
+Program Version,EnergyPlus, Version 26.1.0-6f2e40d102, YMD=2026.04.16 19:46,
+   ** Warning ** ProcessScheduleInput: Schedule:Compact = RESIDENTIAL_OCCUPANCY
+   **   ~~~   ** has missing day types in Through=12/31
+   **   ~~~   ** Last "For" field=FOR: WEEKENDS HOLIDAYS
+   **   ~~~   ** Missing day types= "SummerDesignDay", "WinterDesignDay", "CustomDay1", "CustomDay2"
+   **   ~~~   ** Missing day types will have 0.0 as Schedule Values
+   ** Warning ** ProcessScheduleInput: Schedule:Compact = RESIDENTIAL_LIGHTING
+   **   ~~~   ** has missing day types in Through=12/31
+   **   ~~~   ** Last "For" field=FOR: WEEKENDS HOLIDAYS
+   **   ~~~   ** Missing day types= "SummerDesignDay", "WinterDesignDay", "CustomDay1", "CustomDay2"
+   **   ~~~   ** Missing day types will have 0.0 as Schedule Values
+   ** Warning ** CheckEnvironmentSpecifications: SimulationControl specified doing design day simulations, but no design environments specified.
+   **   ~~~   ** ...No design environment results produced. For these results, add appropriate SizingPeriod:* objects for your simulation.
+   ** Warning ** GetHTSurfaceData: Surfaces with interface to Ground found but no "Ground Temperatures" were input.
+   **   ~~~   ** Found first in surface=F1_LOGO_FLOOR
+   **   ~~~   ** Defaults, constant throughout the year of (18.0) will be used.
+   ** Warning ** GetVertices: Roof/Ceiling is upside down! Tilt angle=[180.0], should be near 0, Surface="F1_LOGO_ROOF", in Zone="F1_LOGO".
+   **   ~~~   ** Automatic fix is attempted.
+   ** Warning ** GetVertices: Roof/Ceiling is upside down! Tilt angle=[180.0], should be near 0, Surface="F1_10_ROOF", in Zone="F1_10".
+   **   ~~~   ** Automatic fix is attempted.
+   ** Warning ** GetVertices: Roof/Ceiling is upside down! Tilt angle=[180.0], should be near 0, Surface="F1_GPU_ROOF", in Zone="F1_GPU".
+   **   ~~~   ** Automatic fix is attempted.
+   ** Warning ** GetVertices: Roof/Ceiling is upside down! Tilt angle=[180.0], should be near 0, Surface="F1_MEETING_ROOF", in Zone="F1_MEETING".
+   **   ~~~   ** Automatic fix is attempted.
+   ** Warning ** GetVertices: Roof/Ceiling is upside down! Tilt angle=[180.0], should be near 0, Surface="F1_2_ROOF", in Zone="F1_2".
+   **   ~~~   ** Automatic fix is attempted.
+   ** Warning ** GetVertices: Roof/Ceiling is upside down! Tilt angle=[180.0], should be near 0, Surface="F1_ZONE_ROOF", in Zone="F1_ZONE".
+   **   ~~~   ** Automatic fix is attempted.
+   ** Warning ** GetVertices: Roof/Ceiling is upside down! Tilt angle=[180.0], should be near 0, Surface="F1_ZONE_2_ROOF", in Zone="F1_ZONE_2".
+   **   ~~~   ** Automatic fix is attempted.
+   ** Warning ** GetVertices: Roof/Ceiling is upside down! Tilt angle=[180.0], should be near 0, Surface="F1_BATHROOM_ROOF", in Zone="F1_BATHROOM".
+   **   ~~~   ** Automatic fix is attempted.
+   ** Warning ** GetVertices: Roof/Ceiling is upside down! Tilt angle=[180.0], should be near 0, Surface="F1_ZONE_3_ROOF", in Zone="F1_ZONE_3".
+   **   ~~~   ** Automatic fix is attempted.
+   ** Warning ** Indicated Zone Volume <= 0.0 for Zone=F1_LOGO
+   **   ~~~   ** The calculated Zone Volume was=-11.21
+   **   ~~~   ** The simulation will continue with the Zone Volume set to 10.0 m3. 
+   **   ~~~   ** ...use Output:Diagnostics,DisplayExtraWarnings; to show more details on individual zones.
+   ** Warning ** Indicated Zone Volume <= 0.0 for Zone=F1_10
+   **   ~~~   ** The calculated Zone Volume was=-50.43
+   **   ~~~   ** The simulation will continue with the Zone Volume set to 10.0 m3. 
+   **   ~~~   ** ...use Output:Diagnostics,DisplayExtraWarnings; to show more details on individual zones.
+   ** Warning ** Indicated Zone Volume <= 0.0 for Zone=F1_GPU
+   **   ~~~   ** The calculated Zone Volume was=-11.21
+   **   ~~~   ** The simulation will continue with the Zone Volume set to 10.0 m3. 
+   **   ~~~   ** ...use Output:Diagnostics,DisplayExtraWarnings; to show more details on individual zones.
+   ** Warning ** Indicated Zone Volume <= 0.0 for Zone=F1_MEETING
+   **   ~~~   ** The calculated Zone Volume was=-20.17
+   **   ~~~   ** The simulation will continue with the Zone Volume set to 10.0 m3. 
+   **   ~~~   ** ...use Output:Diagnostics,DisplayExtraWarnings; to show more details on individual zones.
+   ** Warning ** Indicated Zone Volume <= 0.0 for Zone=F1_2
+   **   ~~~   ** The calculated Zone Volume was=-3.36
+   **   ~~~   ** The simulation will continue with the Zone Volume set to 10.0 m3. 
+   **   ~~~   ** ...use Output:Diagnostics,DisplayExtraWarnings; to show more details on individual zones.
+   ** Warning ** Indicated Zone Volume <= 0.0 for Zone=F1_ZONE
+   **   ~~~   ** The calculated Zone Volume was=-8.97
+   **   ~~~   ** The simulation will continue with the Zone Volume set to 10.0 m3. 
+   **   ~~~   ** ...use Output:Diagnostics,DisplayExtraWarnings; to show more details on individual zones.
+   ** Warning ** Indicated Zone Volume <= 0.0 for Zone=F1_ZONE_2
+   **   ~~~   ** The calculated Zone Volume was=-13.45
+   **   ~~~   ** The simulation will continue with the Zone Volume set to 10.0 m3. 
+   **   ~~~   ** ...use Output:Diagnostics,DisplayExtraWarnings; to show more details on individual zones.
+   ** Warning ** Indicated Zone Volume <= 0.0 for Zone=F1_BATHROOM
+   **   ~~~   ** The calculated Zone Volume was=-6.72
+   **   ~~~   ** The simulation will continue with the Zone Volume set to 10.0 m3. 
+   **   ~~~   ** ...use Output:Diagnostics,DisplayExtraWarnings; to show more details on individual zones.
+   ** Warning ** Indicated Zone Volume <= 0.0 for Zone=F1_ZONE_3
+   **   ~~~   ** The calculated Zone Volume was=-4.48
+   **   ~~~   ** The simulation will continue with the Zone Volume set to 10.0 m3. 
+   **   ~~~   ** ...use Output:Diagnostics,DisplayExtraWarnings; to show more details on individual zones.
+   ** Warning ** Output:Meter: invalid Key Name="NATURALGAS:FACILITY" - not found.
+   ************* Testing Individual Branch Integrity
+   ************* All Branches passed integrity testing
+   ************* Testing Individual Supply Air Path Integrity
+   ************* All Supply Air Paths passed integrity testing
+   ************* Testing Individual Return Air Path Integrity
+   ************* All Return Air Paths passed integrity testing
+   ************* No node connection errors were found.
+   ************* Beginning Simulation
+   ************* Simulation Error Summary *************
+   ************* There are 2 unused schedules in input.
+   ************* Use Output:Diagnostics,DisplayUnusedSchedules; to see them.
+   ************* EnergyPlus Warmup Error Summary. During Warmup: 0 Warning; 0 Severe Errors.
+   ************* EnergyPlus Sizing Error Summary. During Sizing: 0 Warning; 0 Severe Errors.
+   ************* EnergyPlus Completed Successfully-- 23 Warning; 0 Severe Errors; Elapsed Time=00hr 00min  2.93sec

@@ -1,0 +1,4057 @@
+{
+  "cameras": [
+    {
+      "clip_end": 1000.0,
+      "clip_start": 0.1,
+      "dof_aperture": 2.8,
+      "dof_enabled": false,
+      "dof_focus_distance": 10.0,
+      "focal_length": 20.0,
+      "id": 0,
+      "is_active": true,
+      "location": [
+        -7.5,
+        -8.0,
+        4.2
+      ],
+      "name": "Camera",
+      "rotation": [
+        70.0,
+        0.0,
+        -35.0
+      ],
+      "sensor_width": 36.0,
+      "type": "PERSP"
+    }
+  ],
+  "collections": [
+    {
+      "id": 0,
+      "name": "Collection",
+      "objects": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73,
+        74,
+        75,
+        76,
+        77,
+        78,
+        79,
+        80,
+        81,
+        82,
+        83,
+        84,
+        85,
+        86,
+        87,
+        88,
+        89,
+        90,
+        91,
+        92,
+        93,
+        94,
+        95,
+        96,
+        97,
+        98,
+        99,
+        100,
+        101,
+        102,
+        103,
+        104,
+        105,
+        106,
+        107,
+        108,
+        109,
+        110,
+        111,
+        112,
+        113,
+        114,
+        115,
+        116,
+        117
+      ],
+      "visible": true
+    }
+  ],
+  "lights": [
+    {
+      "angle": 0.00918,
+      "color": [
+        1.0,
+        0.97,
+        0.9
+      ],
+      "id": 0,
+      "location": [
+        10.0,
+        -10.0,
+        8.0
+      ],
+      "name": "Sun",
+      "power": 4.0,
+      "rotation": [
+        60.0,
+        0.0,
+        -45.0
+      ],
+      "type": "SUN"
+    },
+    {
+      "color": [
+        1.0,
+        0.95,
+        0.85
+      ],
+      "id": 1,
+      "location": [
+        -3.0,
+        0.5,
+        2.9
+      ],
+      "name": "Area",
+      "power": 200.0,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "shape": "RECTANGLE",
+      "size": 1.0,
+      "size_y": 1.0,
+      "type": "AREA"
+    },
+    {
+      "color": [
+        1.0,
+        0.95,
+        0.85
+      ],
+      "id": 2,
+      "location": [
+        3.0,
+        0.5,
+        2.9
+      ],
+      "name": "Area.001",
+      "power": 200.0,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "shape": "RECTANGLE",
+      "size": 1.0,
+      "size_y": 1.0,
+      "type": "AREA"
+    },
+    {
+      "color": [
+        0.3,
+        0.6,
+        1.0
+      ],
+      "id": 3,
+      "location": [
+        4.8,
+        3.8,
+        2.0
+      ],
+      "name": "Point",
+      "power": 50.0,
+      "radius": 0.25,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "type": "POINT"
+    },
+    {
+      "color": [
+        0.8,
+        0.95,
+        0.4
+      ],
+      "id": 4,
+      "location": [
+        -4.5,
+        -4.5,
+        2.5
+      ],
+      "name": "Point.001",
+      "power": 40.0,
+      "radius": 0.25,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "type": "POINT"
+    }
+  ],
+  "materials": [
+    {
+      "alpha": 1.0,
+      "color": [
+        0.71,
+        0.69,
+        0.66,
+        1.0
+      ],
+      "emission_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "emission_strength": 0.0,
+      "id": 0,
+      "metallic": 0.05,
+      "name": "Concrete",
+      "roughness": 0.7,
+      "specular": 0.5,
+      "type": "principled",
+      "use_backface_culling": false
+    },
+    {
+      "alpha": 1.0,
+      "color": [
+        0.55,
+        0.42,
+        0.3,
+        1.0
+      ],
+      "emission_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "emission_strength": 0.0,
+      "id": 1,
+      "metallic": 0.0,
+      "name": "WarmWood",
+      "roughness": 0.5,
+      "specular": 0.5,
+      "type": "principled",
+      "use_backface_culling": false
+    },
+    {
+      "alpha": 1.0,
+      "color": [
+        0.18,
+        0.33,
+        0.33,
+        1.0
+      ],
+      "emission_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "emission_strength": 0.0,
+      "id": 2,
+      "metallic": 0.2,
+      "name": "DeepTeal",
+      "roughness": 0.5,
+      "specular": 0.5,
+      "type": "principled",
+      "use_backface_culling": false
+    },
+    {
+      "alpha": 1.0,
+      "color": [
+        0.94,
+        0.93,
+        0.89,
+        1.0
+      ],
+      "emission_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "emission_strength": 0.0,
+      "id": 3,
+      "metallic": 0.0,
+      "name": "SoftWhite",
+      "roughness": 0.85,
+      "specular": 0.5,
+      "type": "principled",
+      "use_backface_culling": false
+    },
+    {
+      "alpha": 1.0,
+      "color": [
+        0.66,
+        0.79,
+        0.28,
+        1.0
+      ],
+      "emission_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "emission_strength": 0.0,
+      "id": 4,
+      "metallic": 0.1,
+      "name": "LimeGreen",
+      "roughness": 0.6,
+      "specular": 0.5,
+      "type": "principled",
+      "use_backface_culling": false
+    },
+    {
+      "alpha": 1.0,
+      "color": [
+        0.16,
+        0.16,
+        0.17,
+        1.0
+      ],
+      "emission_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "emission_strength": 0.0,
+      "id": 5,
+      "metallic": 0.3,
+      "name": "Charcoal",
+      "roughness": 0.45,
+      "specular": 0.5,
+      "type": "principled",
+      "use_backface_culling": false
+    },
+    {
+      "alpha": 1.0,
+      "color": [
+        0.82,
+        0.9,
+        0.95,
+        1.0
+      ],
+      "emission_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "emission_strength": 0.0,
+      "id": 6,
+      "metallic": 0.2,
+      "name": "Glass",
+      "roughness": 0.05,
+      "specular": 0.5,
+      "type": "principled",
+      "use_backface_culling": false
+    },
+    {
+      "alpha": 1.0,
+      "color": [
+        0.05,
+        0.06,
+        0.1,
+        1.0
+      ],
+      "emission_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "emission_strength": 0.0,
+      "id": 7,
+      "metallic": 0.1,
+      "name": "ScreenDark",
+      "roughness": 0.2,
+      "specular": 0.5,
+      "type": "principled",
+      "use_backface_culling": false
+    },
+    {
+      "alpha": 1.0,
+      "color": [
+        0.15,
+        0.55,
+        0.95,
+        1.0
+      ],
+      "emission_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "emission_strength": 0.0,
+      "id": 8,
+      "metallic": 0.7,
+      "name": "LED_Blue",
+      "roughness": 0.15,
+      "specular": 0.5,
+      "type": "principled",
+      "use_backface_culling": false
+    },
+    {
+      "alpha": 1.0,
+      "color": [
+        0.22,
+        0.5,
+        0.26,
+        1.0
+      ],
+      "emission_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "emission_strength": 0.0,
+      "id": 9,
+      "metallic": 0.0,
+      "name": "Foliage",
+      "roughness": 0.85,
+      "specular": 0.5,
+      "type": "principled",
+      "use_backface_culling": false
+    },
+    {
+      "alpha": 1.0,
+      "color": [
+        0.6,
+        0.35,
+        0.25,
+        1.0
+      ],
+      "emission_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "emission_strength": 0.0,
+      "id": 10,
+      "metallic": 0.0,
+      "name": "Terracotta",
+      "roughness": 0.7,
+      "specular": 0.5,
+      "type": "principled",
+      "use_backface_culling": false
+    },
+    {
+      "alpha": 1.0,
+      "color": [
+        0.7,
+        0.72,
+        0.75,
+        1.0
+      ],
+      "emission_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "emission_strength": 0.0,
+      "id": 11,
+      "metallic": 0.92,
+      "name": "Steel",
+      "roughness": 0.3,
+      "specular": 0.5,
+      "type": "principled",
+      "use_backface_culling": false
+    },
+    {
+      "alpha": 1.0,
+      "color": [
+        0.66,
+        0.79,
+        0.28,
+        1.0
+      ],
+      "emission_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "emission_strength": 0.0,
+      "id": 12,
+      "metallic": 0.4,
+      "name": "LogoAccent",
+      "roughness": 0.3,
+      "specular": 0.5,
+      "type": "principled",
+      "use_backface_culling": false
+    },
+    {
+      "alpha": 1.0,
+      "color": [
+        0.97,
+        0.97,
+        0.95,
+        1.0
+      ],
+      "emission_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "emission_strength": 0.0,
+      "id": 13,
+      "metallic": 0.05,
+      "name": "Whiteboard",
+      "roughness": 0.2,
+      "specular": 0.5,
+      "type": "principled",
+      "use_backface_culling": false
+    }
+  ],
+  "metadata": {
+    "created": "2026-04-15T10:16:01.395904",
+    "modified": "2026-04-15T10:16:30.488117",
+    "software": "blender-cli 1.0"
+  },
+  "name": "StackLab",
+  "objects": [
+    {
+      "id": 0,
+      "keyframes": [],
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "material": 0,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "plane",
+      "modifiers": [],
+      "name": "Floor",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        6.5,
+        5.0,
+        1.0
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 1,
+      "keyframes": [],
+      "location": [
+        0.0,
+        5.0,
+        1.5
+      ],
+      "material": 3,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "WallN",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        6.5,
+        0.05,
+        1.5
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 2,
+      "keyframes": [],
+      "location": [
+        0.0,
+        -5.0,
+        1.5
+      ],
+      "material": 3,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "WallS",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        6.5,
+        0.05,
+        1.5
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 3,
+      "keyframes": [],
+      "location": [
+        -6.5,
+        0.0,
+        1.5
+      ],
+      "material": 3,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "WallW",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.05,
+        5.0,
+        1.5
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 4,
+      "keyframes": [],
+      "location": [
+        6.5,
+        0.0,
+        1.5
+      ],
+      "material": 3,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "WallE",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.05,
+        5.0,
+        1.5
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 5,
+      "keyframes": [],
+      "location": [
+        0.0,
+        0.0,
+        3.0
+      ],
+      "material": 3,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "plane",
+      "modifiers": [],
+      "name": "Ceiling",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        6.5,
+        5.0,
+        1.0
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 6,
+      "keyframes": [],
+      "location": [
+        -4.5,
+        -4.9,
+        1.8
+      ],
+      "material": 5,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "LogoPanel",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        1.5,
+        0.05,
+        0.8
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 7,
+      "keyframes": [],
+      "location": [
+        -4.5,
+        -4.85,
+        1.8
+      ],
+      "material": 4,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "LogoAccentBar",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        1.3,
+        0.04,
+        0.08
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 8,
+      "keyframes": [],
+      "location": [
+        -2.0,
+        -3.7,
+        0.55
+      ],
+      "material": 1,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "ReceptionDesk",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        1.0,
+        0.5,
+        0.55
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 9,
+      "keyframes": [],
+      "location": [
+        -5.5,
+        -3.5,
+        0.25
+      ],
+      "material": 1,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "WaitBench",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.8,
+        0.3,
+        0.25
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 10,
+      "keyframes": [],
+      "location": [
+        -4.5,
+        -4.3,
+        0.01
+      ],
+      "material": 2,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "EntryMat",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.7,
+        0.4,
+        0.01
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 11,
+      "keyframes": [],
+      "location": [
+        -5.0,
+        -1.5,
+        0.75
+      ],
+      "material": 1,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "Desk_r-1.5_0",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.6,
+        0.35,
+        0.02
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 12,
+      "keyframes": [],
+      "location": [
+        -5.0,
+        -2.1,
+        0.45
+      ],
+      "material": 5,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "Chair_r-1.5_0",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.25,
+        0.25,
+        0.03
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 13,
+      "keyframes": [],
+      "location": [
+        -5.2,
+        -1.5,
+        1.15
+      ],
+      "material": 7,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "ScrL_r-1.5_0",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.22,
+        0.02,
+        0.16
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 14,
+      "keyframes": [],
+      "location": [
+        -4.8,
+        -1.5,
+        1.15
+      ],
+      "material": 7,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "ScrR_r-1.5_0",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.22,
+        0.02,
+        0.16
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 15,
+      "keyframes": [],
+      "location": [
+        -3.6,
+        -1.5,
+        0.75
+      ],
+      "material": 1,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "Desk_r-1.5_1",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.6,
+        0.35,
+        0.02
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 16,
+      "keyframes": [],
+      "location": [
+        -3.6,
+        -2.1,
+        0.45
+      ],
+      "material": 5,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "Chair_r-1.5_1",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.25,
+        0.25,
+        0.03
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 17,
+      "keyframes": [],
+      "location": [
+        -3.8,
+        -1.5,
+        1.15
+      ],
+      "material": 7,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "ScrL_r-1.5_1",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.22,
+        0.02,
+        0.16
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 18,
+      "keyframes": [],
+      "location": [
+        -3.4,
+        -1.5,
+        1.15
+      ],
+      "material": 7,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "ScrR_r-1.5_1",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.22,
+        0.02,
+        0.16
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 19,
+      "keyframes": [],
+      "location": [
+        -2.2,
+        -1.5,
+        0.75
+      ],
+      "material": 1,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "Desk_r-1.5_2",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.6,
+        0.35,
+        0.02
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 20,
+      "keyframes": [],
+      "location": [
+        -2.2,
+        -2.1,
+        0.45
+      ],
+      "material": 5,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "Chair_r-1.5_2",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.25,
+        0.25,
+        0.03
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 21,
+      "keyframes": [],
+      "location": [
+        -2.4,
+        -1.5,
+        1.15
+      ],
+      "material": 7,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "ScrL_r-1.5_2",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.22,
+        0.02,
+        0.16
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 22,
+      "keyframes": [],
+      "location": [
+        -2.0,
+        -1.5,
+        1.15
+      ],
+      "material": 7,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "ScrR_r-1.5_2",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.22,
+        0.02,
+        0.16
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 23,
+      "keyframes": [],
+      "location": [
+        -0.8,
+        -1.5,
+        0.75
+      ],
+      "material": 1,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "Desk_r-1.5_3",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.6,
+        0.35,
+        0.02
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 24,
+      "keyframes": [],
+      "location": [
+        -0.8,
+        -2.1,
+        0.45
+      ],
+      "material": 5,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "Chair_r-1.5_3",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.25,
+        0.25,
+        0.03
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 25,
+      "keyframes": [],
+      "location": [
+        -1.0,
+        -1.5,
+        1.15
+      ],
+      "material": 7,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "ScrL_r-1.5_3",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.22,
+        0.02,
+        0.16
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 26,
+      "keyframes": [],
+      "location": [
+        -0.6,
+        -1.5,
+        1.15
+      ],
+      "material": 7,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "ScrR_r-1.5_3",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.22,
+        0.02,
+        0.16
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 27,
+      "keyframes": [],
+      "location": [
+        0.6,
+        -1.5,
+        0.75
+      ],
+      "material": 1,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "Desk_r-1.5_4",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.6,
+        0.35,
+        0.02
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 28,
+      "keyframes": [],
+      "location": [
+        0.6,
+        -2.1,
+        0.45
+      ],
+      "material": 5,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "Chair_r-1.5_4",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.25,
+        0.25,
+        0.03
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 29,
+      "keyframes": [],
+      "location": [
+        0.4,
+        -1.5,
+        1.15
+      ],
+      "material": 7,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "ScrL_r-1.5_4",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.22,
+        0.02,
+        0.16
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 30,
+      "keyframes": [],
+      "location": [
+        0.8,
+        -1.5,
+        1.15
+      ],
+      "material": 7,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "ScrR_r-1.5_4",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.22,
+        0.02,
+        0.16
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 31,
+      "keyframes": [],
+      "location": [
+        -5.0,
+        1.8,
+        0.75
+      ],
+      "material": 1,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "Desk_r1.8_0",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.6,
+        0.35,
+        0.02
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 32,
+      "keyframes": [],
+      "location": [
+        -5.0,
+        2.4,
+        0.45
+      ],
+      "material": 5,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "Chair_r1.8_0",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.25,
+        0.25,
+        0.03
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 33,
+      "keyframes": [],
+      "location": [
+        -5.2,
+        1.8,
+        1.15
+      ],
+      "material": 7,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "ScrL_r1.8_0",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.22,
+        0.02,
+        0.16
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 34,
+      "keyframes": [],
+      "location": [
+        -2.788,
+        3.2,
+        1.15
+      ],
+      "material": 7,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "ScrR_r1.8_0",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.22,
+        0.02,
+        0.16
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 35,
+      "keyframes": [],
+      "location": [
+        -3.6,
+        1.8,
+        0.75
+      ],
+      "material": 1,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "Desk_r1.8_1",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.6,
+        0.35,
+        0.02
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 36,
+      "keyframes": [],
+      "location": [
+        -3.6,
+        2.4,
+        0.45
+      ],
+      "material": 5,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "Chair_r1.8_1",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.25,
+        0.25,
+        0.03
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 37,
+      "keyframes": [],
+      "location": [
+        -3.8,
+        1.8,
+        1.15
+      ],
+      "material": 7,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "ScrL_r1.8_1",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.22,
+        0.02,
+        0.16
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 38,
+      "keyframes": [],
+      "location": [
+        -3.188,
+        1.712,
+        1.15
+      ],
+      "material": 7,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "ScrR_r1.8_1",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.22,
+        0.02,
+        0.16
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 39,
+      "keyframes": [],
+      "location": [
+        -2.2,
+        1.8,
+        0.75
+      ],
+      "material": 1,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "Desk_r1.8_2",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.6,
+        0.35,
+        0.02
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 40,
+      "keyframes": [],
+      "location": [
+        -2.2,
+        2.4,
+        0.45
+      ],
+      "material": 5,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "Chair_r1.8_2",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.25,
+        0.25,
+        0.03
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 41,
+      "keyframes": [],
+      "location": [
+        -2.4,
+        1.8,
+        1.15
+      ],
+      "material": 7,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "ScrL_r1.8_2",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.22,
+        0.02,
+        0.16
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 42,
+      "keyframes": [],
+      "location": [
+        -2.0,
+        1.8,
+        1.15
+      ],
+      "material": 7,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "ScrR_r1.8_2",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.22,
+        0.02,
+        0.16
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 43,
+      "keyframes": [],
+      "location": [
+        -0.8,
+        1.8,
+        0.75
+      ],
+      "material": 1,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "Desk_r1.8_3",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.6,
+        0.35,
+        0.02
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 44,
+      "keyframes": [],
+      "location": [
+        -0.8,
+        2.4,
+        0.45
+      ],
+      "material": 5,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "Chair_r1.8_3",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.25,
+        0.25,
+        0.03
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 45,
+      "keyframes": [],
+      "location": [
+        -1.0,
+        1.8,
+        1.15
+      ],
+      "material": 7,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "ScrL_r1.8_3",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.22,
+        0.02,
+        0.16
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 46,
+      "keyframes": [],
+      "location": [
+        -0.6,
+        1.8,
+        1.15
+      ],
+      "material": 7,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "ScrR_r1.8_3",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.22,
+        0.02,
+        0.16
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 47,
+      "keyframes": [],
+      "location": [
+        0.6,
+        1.8,
+        0.75
+      ],
+      "material": 1,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "Desk_r1.8_4",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.6,
+        0.35,
+        0.02
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 48,
+      "keyframes": [],
+      "location": [
+        0.6,
+        2.4,
+        0.45
+      ],
+      "material": 5,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "Chair_r1.8_4",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.25,
+        0.25,
+        0.03
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 49,
+      "keyframes": [],
+      "location": [
+        0.4,
+        1.8,
+        1.15
+      ],
+      "material": 7,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "ScrL_r1.8_4",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.22,
+        0.02,
+        0.16
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 50,
+      "keyframes": [],
+      "location": [
+        0.925,
+        1.825,
+        1.15
+      ],
+      "material": 7,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "ScrR_r1.8_4",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.22,
+        0.02,
+        0.16
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 51,
+      "keyframes": [],
+      "location": [
+        -2.0,
+        0.15,
+        1.1
+      ],
+      "material": 2,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "DeskDivider",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        4.3,
+        0.02,
+        0.35
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 52,
+      "keyframes": [],
+      "location": [
+        3.0,
+        3.5,
+        1.5
+      ],
+      "material": 6,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "GPU_GlassW",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.03,
+        1.5,
+        1.5
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 53,
+      "keyframes": [],
+      "location": [
+        4.75,
+        2.0,
+        1.5
+      ],
+      "material": 6,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "GPU_GlassS",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.75,
+        0.03,
+        1.5
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 54,
+      "keyframes": [],
+      "location": [
+        3.03,
+        2.0,
+        1.05
+      ],
+      "material": 6,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "GPU_Door",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.02,
+        0.35,
+        1.05
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 55,
+      "keyframes": [],
+      "location": [
+        3.525,
+        4.312,
+        1.0
+      ],
+      "material": 5,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "Rack1",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.3,
+        0.5,
+        1.0
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 56,
+      "keyframes": [],
+      "location": [
+        4.8,
+        3.8,
+        1.0
+      ],
+      "material": 5,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "Rack2",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.3,
+        0.5,
+        1.0
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 57,
+      "keyframes": [],
+      "location": [
+        5.8,
+        3.8,
+        1.0
+      ],
+      "material": 5,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "Rack3",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.3,
+        0.5,
+        1.0
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 58,
+      "keyframes": [],
+      "location": [
+        4.037,
+        3.05,
+        2.02
+      ],
+      "material": 8,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "LED1",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.28,
+        0.48,
+        0.02
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 59,
+      "keyframes": [],
+      "location": [
+        4.8,
+        3.8,
+        2.02
+      ],
+      "material": 8,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "LED2",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.28,
+        0.48,
+        0.02
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 60,
+      "keyframes": [],
+      "location": [
+        5.8,
+        3.8,
+        2.02
+      ],
+      "material": 8,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "LED3",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.28,
+        0.48,
+        0.02
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 61,
+      "keyframes": [],
+      "location": [
+        3.05,
+        2.5,
+        1.5
+      ],
+      "material": 8,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "LEDstrip",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.02,
+        0.02,
+        1.3
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 62,
+      "keyframes": [],
+      "location": [
+        2.0,
+        -3.0,
+        1.5
+      ],
+      "material": 6,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "MR_GlassW",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.03,
+        2.0,
+        1.5
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 63,
+      "keyframes": [],
+      "location": [
+        4.25,
+        -1.0,
+        1.5
+      ],
+      "material": 6,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "MR_GlassN",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        2.25,
+        0.03,
+        1.5
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 64,
+      "keyframes": [],
+      "location": [
+        6.47,
+        -3.0,
+        1.5
+      ],
+      "material": 5,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "MR_FrameE",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.02,
+        2.0,
+        1.5
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 65,
+      "keyframes": [],
+      "location": [
+        4.25,
+        -4.97,
+        1.5
+      ],
+      "material": 5,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "MR_FrameS",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        2.25,
+        0.02,
+        1.5
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 66,
+      "keyframes": [],
+      "location": [
+        2.03,
+        -1.5,
+        1.05
+      ],
+      "material": 6,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "MR_Door",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.02,
+        0.45,
+        1.05
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 67,
+      "keyframes": [],
+      "location": [
+        4.25,
+        -3.0,
+        0.73
+      ],
+      "material": 1,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "MR_Table",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        1.2,
+        0.5,
+        0.03
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 68,
+      "keyframes": [],
+      "location": [
+        3.2,
+        -4.2,
+        0.43
+      ],
+      "material": 5,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "MR_ChairN_0",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.22,
+        0.22,
+        0.03
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 69,
+      "keyframes": [],
+      "location": [
+        5.3,
+        -4.2,
+        0.43
+      ],
+      "material": 5,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "MR_ChairS_0",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.22,
+        0.22,
+        0.03
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 70,
+      "keyframes": [],
+      "location": [
+        3.2,
+        -3.6,
+        0.43
+      ],
+      "material": 5,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "MR_ChairN_1",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.22,
+        0.22,
+        0.03
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 71,
+      "keyframes": [],
+      "location": [
+        5.3,
+        -3.6,
+        0.43
+      ],
+      "material": 5,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "MR_ChairS_1",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.22,
+        0.22,
+        0.03
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 72,
+      "keyframes": [],
+      "location": [
+        3.2,
+        -3.0,
+        0.43
+      ],
+      "material": 5,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "MR_ChairN_2",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.22,
+        0.22,
+        0.03
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 73,
+      "keyframes": [],
+      "location": [
+        5.3,
+        -3.0,
+        0.43
+      ],
+      "material": 5,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "MR_ChairS_2",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.22,
+        0.22,
+        0.03
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 74,
+      "keyframes": [],
+      "location": [
+        3.2,
+        -2.4,
+        0.43
+      ],
+      "material": 5,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "MR_ChairN_3",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.22,
+        0.22,
+        0.03
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 75,
+      "keyframes": [],
+      "location": [
+        5.3,
+        -2.4,
+        0.43
+      ],
+      "material": 5,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "MR_ChairS_3",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.22,
+        0.22,
+        0.03
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 76,
+      "keyframes": [],
+      "location": [
+        3.2,
+        -1.8,
+        0.43
+      ],
+      "material": 5,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "MR_ChairN_4",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.22,
+        0.22,
+        0.03
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 77,
+      "keyframes": [],
+      "location": [
+        5.3,
+        -1.8,
+        0.43
+      ],
+      "material": 5,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "MR_ChairS_4",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.22,
+        0.22,
+        0.03
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 78,
+      "keyframes": [],
+      "location": [
+        6.4,
+        -3.0,
+        1.5
+      ],
+      "material": 7,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "MR_BigScreen",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.02,
+        0.7,
+        0.45
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 79,
+      "keyframes": [],
+      "location": [
+        4.25,
+        -4.93,
+        1.5
+      ],
+      "material": 13,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "MR_Whiteboard",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        1.9,
+        0.015,
+        0.8
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 80,
+      "keyframes": [],
+      "location": [
+        5.5,
+        0.0,
+        1.25
+      ],
+      "material": 2,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "PhoneBooth1",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.6,
+        0.6,
+        1.25
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 81,
+      "keyframes": [],
+      "location": [
+        4.89,
+        0.0,
+        1.1
+      ],
+      "material": 6,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "Booth1_Door",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.02,
+        0.35,
+        1.1
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 82,
+      "keyframes": [],
+      "location": [
+        5.5,
+        0.3,
+        0.75
+      ],
+      "material": 1,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "Booth1_Desk",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.5,
+        0.2,
+        0.02
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 83,
+      "keyframes": [],
+      "location": [
+        5.5,
+        1.5,
+        1.25
+      ],
+      "material": 2,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "PhoneBooth2",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.6,
+        0.6,
+        1.25
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 84,
+      "keyframes": [],
+      "location": [
+        4.89,
+        1.5,
+        1.1
+      ],
+      "material": 6,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "Booth2_Door",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.02,
+        0.35,
+        1.1
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 85,
+      "keyframes": [],
+      "location": [
+        5.5,
+        1.2,
+        0.75
+      ],
+      "material": 1,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "Booth2_Desk",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.5,
+        0.2,
+        0.02
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 86,
+      "keyframes": [],
+      "location": [
+        -5.5,
+        4.5,
+        0.45
+      ],
+      "material": 1,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "KitCounter",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        1.0,
+        0.35,
+        0.45
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 87,
+      "keyframes": [],
+      "location": [
+        -5.9,
+        4.5,
+        0.92
+      ],
+      "material": 11,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "KitSink",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.2,
+        0.15,
+        0.02
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 88,
+      "keyframes": [],
+      "location": [
+        -6.2,
+        4.5,
+        0.85
+      ],
+      "material": 11,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "KitFridge",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.3,
+        0.3,
+        0.85
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 89,
+      "keyframes": [],
+      "location": [
+        -5.3,
+        4.5,
+        1.05
+      ],
+      "material": 5,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "KitCoffee",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.15,
+        0.15,
+        0.15
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 90,
+      "keyframes": [],
+      "location": [
+        -4.8,
+        4.5,
+        1.0
+      ],
+      "material": 11,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "KitMicro",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.2,
+        0.18,
+        0.12
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 91,
+      "keyframes": [],
+      "location": [
+        -5.5,
+        4.9,
+        2.3
+      ],
+      "material": 1,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "KitUpCab",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        1.0,
+        0.12,
+        0.35
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 93,
+      "keyframes": [],
+      "location": [
+        2.3,
+        -2.0,
+        0.35
+      ],
+      "material": 2,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "Sofa2",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.8,
+        0.35,
+        0.35
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 94,
+      "keyframes": [],
+      "location": [
+        1.4,
+        -2.8,
+        0.25
+      ],
+      "material": 1,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "CoffeeTable",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.4,
+        0.25,
+        0.03
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 95,
+      "keyframes": [],
+      "location": [
+        1.4,
+        -0.8,
+        0.55
+      ],
+      "material": 5,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "Foosball",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.7,
+        0.35,
+        0.1
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 96,
+      "keyframes": [],
+      "location": [
+        0.8,
+        -0.8,
+        0.225
+      ],
+      "material": 11,
+      "mesh_params": {
+        "depth": 2.0,
+        "radius": 1.0,
+        "vertices": 32
+      },
+      "mesh_type": "cylinder",
+      "modifiers": [],
+      "name": "Foosball_leg1",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.04,
+        0.04,
+        0.225
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 97,
+      "keyframes": [],
+      "location": [
+        2.0,
+        -0.8,
+        0.225
+      ],
+      "material": 11,
+      "mesh_params": {
+        "depth": 2.0,
+        "radius": 1.0,
+        "vertices": 32
+      },
+      "mesh_type": "cylinder",
+      "modifiers": [],
+      "name": "Foosball_leg2",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.04,
+        0.04,
+        0.225
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 98,
+      "keyframes": [],
+      "location": [
+        -0.3,
+        -2.8,
+        0.3
+      ],
+      "material": 4,
+      "mesh_params": {
+        "radius": 1.0,
+        "rings": 16,
+        "segments": 32
+      },
+      "mesh_type": "sphere",
+      "modifiers": [],
+      "name": "BeanBag1",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.3,
+        0.3,
+        0.3
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 99,
+      "keyframes": [],
+      "location": [
+        2.9,
+        -2.5,
+        0.3
+      ],
+      "material": 4,
+      "mesh_params": {
+        "radius": 1.0,
+        "rings": 16,
+        "segments": 32
+      },
+      "mesh_type": "sphere",
+      "modifiers": [],
+      "name": "BeanBag2",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.3,
+        0.3,
+        0.3
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 100,
+      "keyframes": [],
+      "location": [
+        -5.0,
+        -0.5,
+        1.2
+      ],
+      "material": 3,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "BathWall1",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.02,
+        0.8,
+        1.2
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 101,
+      "keyframes": [],
+      "location": [
+        -5.75,
+        0.3,
+        1.2
+      ],
+      "material": 3,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "BathWall2",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.75,
+        0.02,
+        1.2
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 102,
+      "keyframes": [],
+      "location": [
+        -6.2,
+        -0.3,
+        0.25
+      ],
+      "material": 3,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "Toilet",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.2,
+        0.2,
+        0.25
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 103,
+      "keyframes": [],
+      "location": [
+        -6.2,
+        0.1,
+        0.5
+      ],
+      "material": 3,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "BathSink",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.2,
+        0.15,
+        0.05
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 104,
+      "keyframes": [],
+      "location": [
+        -6.0,
+        -2.5,
+        0.3
+      ],
+      "material": 10,
+      "mesh_params": {
+        "depth": 2.0,
+        "radius": 1.0,
+        "vertices": 32
+      },
+      "mesh_type": "cylinder",
+      "modifiers": [],
+      "name": "PlantPot_0",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.25,
+        0.25,
+        0.3
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 105,
+      "keyframes": [],
+      "location": [
+        -6.0,
+        -2.5,
+        1.0
+      ],
+      "material": 9,
+      "mesh_params": {
+        "radius": 1.0,
+        "rings": 16,
+        "segments": 32
+      },
+      "mesh_type": "sphere",
+      "modifiers": [],
+      "name": "PlantFoliage_0",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 106,
+      "keyframes": [],
+      "location": [
+        -6.0,
+        2.5,
+        0.3
+      ],
+      "material": 10,
+      "mesh_params": {
+        "depth": 2.0,
+        "radius": 1.0,
+        "vertices": 32
+      },
+      "mesh_type": "cylinder",
+      "modifiers": [],
+      "name": "PlantPot_1",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.25,
+        0.25,
+        0.3
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 107,
+      "keyframes": [],
+      "location": [
+        -4.675,
+        3.337,
+        1.0
+      ],
+      "material": 9,
+      "mesh_params": {
+        "radius": 1.0,
+        "rings": 16,
+        "segments": 32
+      },
+      "mesh_type": "sphere",
+      "modifiers": [],
+      "name": "PlantFoliage_1",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 108,
+      "keyframes": [],
+      "location": [
+        6.0,
+        -2.5,
+        0.3
+      ],
+      "material": 10,
+      "mesh_params": {
+        "depth": 2.0,
+        "radius": 1.0,
+        "vertices": 32
+      },
+      "mesh_type": "cylinder",
+      "modifiers": [],
+      "name": "PlantPot_2",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.25,
+        0.25,
+        0.3
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 109,
+      "keyframes": [],
+      "location": [
+        6.0,
+        -2.5,
+        1.0
+      ],
+      "material": 9,
+      "mesh_params": {
+        "radius": 1.0,
+        "rings": 16,
+        "segments": 32
+      },
+      "mesh_type": "sphere",
+      "modifiers": [],
+      "name": "PlantFoliage_2",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 110,
+      "keyframes": [],
+      "location": [
+        0.0,
+        4.5,
+        0.3
+      ],
+      "material": 10,
+      "mesh_params": {
+        "depth": 2.0,
+        "radius": 1.0,
+        "vertices": 32
+      },
+      "mesh_type": "cylinder",
+      "modifiers": [],
+      "name": "PlantPot_3",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.25,
+        0.25,
+        0.3
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 111,
+      "keyframes": [],
+      "location": [
+        0.0,
+        4.5,
+        1.0
+      ],
+      "material": 9,
+      "mesh_params": {
+        "radius": 1.0,
+        "rings": 16,
+        "segments": 32
+      },
+      "mesh_type": "sphere",
+      "modifiers": [],
+      "name": "PlantFoliage_3",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 112,
+      "keyframes": [],
+      "location": [
+        -0.5,
+        -4.0,
+        0.3
+      ],
+      "material": 10,
+      "mesh_params": {
+        "depth": 2.0,
+        "radius": 1.0,
+        "vertices": 32
+      },
+      "mesh_type": "cylinder",
+      "modifiers": [],
+      "name": "PlantPot_4",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.25,
+        0.25,
+        0.3
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 113,
+      "keyframes": [],
+      "location": [
+        -0.5,
+        -4.0,
+        1.0
+      ],
+      "material": 9,
+      "mesh_params": {
+        "radius": 1.0,
+        "rings": 16,
+        "segments": 32
+      },
+      "mesh_type": "sphere",
+      "modifiers": [],
+      "name": "PlantFoliage_4",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 114,
+      "keyframes": [],
+      "location": [
+        -3.0,
+        0.2,
+        2.95
+      ],
+      "material": 5,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "CeilTrack1",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        3.0,
+        0.05,
+        0.02
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 115,
+      "keyframes": [],
+      "location": [
+        3.0,
+        0.2,
+        2.95
+      ],
+      "material": 5,
+      "mesh_params": {
+        "size": 2.0
+      },
+      "mesh_type": "cube",
+      "modifiers": [],
+      "name": "CeilTrack2",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        3.0,
+        0.05,
+        0.02
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 116,
+      "keyframes": [],
+      "location": [
+        1.4,
+        -2.0,
+        2.5
+      ],
+      "material": 11,
+      "mesh_params": {
+        "depth": 2.0,
+        "radius": 1.0,
+        "vertices": 32
+      },
+      "mesh_type": "cylinder",
+      "modifiers": [],
+      "name": "Pendant1",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.08,
+        0.08,
+        0.15
+      ],
+      "type": "MESH",
+      "visible": true
+    },
+    {
+      "id": 117,
+      "keyframes": [],
+      "location": [
+        4.25,
+        -3.0,
+        2.4
+      ],
+      "material": 11,
+      "mesh_params": {
+        "depth": 2.0,
+        "radius": 1.0,
+        "vertices": 32
+      },
+      "mesh_type": "cylinder",
+      "modifiers": [],
+      "name": "Pendant2",
+      "parent": null,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.1,
+        0.1,
+        0.15
+      ],
+      "type": "MESH",
+      "visible": true
+    }
+  ],
+  "render": {
+    "engine": "EEVEE",
+    "film_transparent": false,
+    "output_format": "PNG",
+    "output_path": "./render/",
+    "resolution_percentage": 100,
+    "resolution_x": 1600,
+    "resolution_y": 1000,
+    "samples": 64,
+    "use_denoising": true
+  },
+  "scene": {
+    "fps": 24,
+    "frame_current": 1,
+    "frame_end": 250,
+    "frame_start": 1,
+    "unit_scale": 1.0,
+    "unit_system": "metric"
+  },
+  "version": "1.0",
+  "world": {
+    "background_color": [
+      0.05,
+      0.05,
+      0.05
+    ],
+    "hdri_path": null,
+    "hdri_strength": 1.0,
+    "use_hdri": false
+  }
+}

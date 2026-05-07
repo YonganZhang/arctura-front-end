@@ -60,16 +60,18 @@ def produce(ctx, *, on_event: Optional[Callable] = None) -> ArtifactResult:
             reason="brief 缺",
         )
 
-    # v3 · 100% 老师权威 · 命中 → 直接 copy 老师 5 真 deck.{md,pptx}
+    # v3 · 100% 老师权威 · 命中 → 整目录 copy 老师 9 真 stakeholder deck +
+    # 顶层 deck.{html,odp,lo-cli.json} + deck_v2 + boq.{html,ods,lo-cli.json}
     from ..teacher_authority.v3_reuse import try_reuse
     _v3 = try_reuse(
         project.brief, "deck_client", sb_dir,
-        ["decks/deck-client.md", "decks/deck-client.pptx",
-         "decks/deck-bim.md", "decks/deck-bim.pptx",
-         "decks/deck-contractor.md", "decks/deck-contractor.pptx",
-         "decks/deck-designer.md", "decks/deck-designer.pptx",
-         "decks/deck-investor.md", "decks/deck-investor.pptx"],
-        target_subdir="decks", on_event=on_event,
+        files=[
+            "deck.html", "deck.odp", "deck.lo-cli.json",
+            "deck_v2.odp", "deck_v2.lo-cli.json",
+            "boq.html", "boq.ods", "boq.lo-cli.json",
+        ],
+        dirs=["decks"],  # 9 stakeholder × md+pptx + 1 pdf = 整目录
+        on_event=on_event,
     )
     if _v3:
         return _v3

@@ -1,0 +1,128 @@
+{
+  "id": "13-ai-startup-office",
+  "tier": "interior",
+  "scenario_cn": "Stack Lab · AI Startup 办公室 · v1",
+  "client_type": "AI 创业团队 (致敬业主)",
+  "space": {
+    "type": "Loft 改造",
+    "area_sqm": 130,
+    "n_floors": 1,
+    "dimensions_m": {
+      "length": 13.0,
+      "width": 10.0,
+      "height": 3.0
+    }
+  },
+  "style": {
+    "keywords": [
+      "tech-loft",
+      "plant-rich",
+      "exposed-pipe",
+      "code-cave-lite"
+    ],
+    "palette_hex": [
+      "#B5B0A8",
+      "#8B6F4E",
+      "#2E5454",
+      "#F0EDE5"
+    ]
+  },
+  "brief": {
+    "budget_rmb": 750000,
+    "timeline_weeks": 8,
+    "functional_zones": [
+      "入口接待 + LOGO 墙",
+      "开放工位 (10 位 · 双屏)",
+      "GPU 机柜服务器室",
+      "玻璃会议室 (10 人)",
+      "电话亭 × 2",
+      "茶水间",
+      "休闲沙发吧 + 桌足球",
+      "卫生间",
+      "室内绿植区"
+    ],
+    "must_have": [
+      "10 工位 + 双屏 (显卡开发必备)",
+      "GPU 机柜室独立制冷 + 5 kW 专电 + 玻璃观察门",
+      "玻璃会议室 4 面通透 + 4m 白板墙",
+      "2 个 1.2m 电话亭 (远程会议 / 1v1)",
+      "LOGO 墙可拆换 (品牌迭代快)",
+      "茶水间靠近开放工位便于快速恢复",
+      "5 大型盆栽改善代码工作氛围",
+      "桌足球 = 程序员减压标配"
+    ]
+  },
+  "deliverables": {
+    "hero_render": "renders/01_hero_corner.png",
+    "renders": [
+      "renders/01_hero_corner.png",
+      "renders/02_reception.png",
+      "renders/03_main_zone.png",
+      "renders/04_feature_zone.png",
+      "renders/05_lounge_zone.png",
+      "renders/06_back_corner.png",
+      "renders/07_top_ortho.png",
+      "renders/08_birds_eye_3d.png",
+      "render.png",
+      "floorplan.png",
+      "moodboard.png"
+    ],
+    "plans_svg": [
+      "floorplan.svg"
+    ],
+    "elevations": [],
+    "sections": [],
+    "exports": [
+      "dxf",
+      "fbx",
+      "glb",
+      "ifc",
+      "obj"
+    ],
+    "n_stakeholder_decks": 8,
+    "blender_objects": 118,
+    "ifc_products": 122,
+    "card_sources": [
+      {
+        "card": "card-1",
+        "source": "renders/02_reception.png",
+        "label": "接待区"
+      },
+      {
+        "card": "card-2",
+        "source": "floorplan.png",
+        "label": "平面图"
+      },
+      {
+        "card": "card-3",
+        "source": "moodboard.png",
+        "label": "色彩参考"
+      },
+      {
+        "card": "card-4",
+        "source": "renders/03_main_zone.png",
+        "label": "主功能区"
+      }
+    ]
+  },
+  "metrics": {
+    "design_duration_min": 23,
+    "boq_total_hkd": 1140220.31,
+    "boq_total_cny": null,
+    "eui_kwh_m2_yr": 88.1,
+    "compliance_code": "HK",
+    "compliance_pass_rate": "7/8",
+    "co2_saved_t_yr": null
+  },
+  "_coverage": {
+    "brief": true,
+    "renders": true,
+    "plans": true,
+    "exports": true,
+    "decks": true,
+    "energy": true,
+    "boq": true,
+    "compliance": true
+  },
+  "_generated": "2026-04-17T11:37:01+08:00"
+}

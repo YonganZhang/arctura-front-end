@@ -78,13 +78,12 @@ def produce(ctx, *, on_event: Optional[Callable] = None) -> ArtifactResult:
             reason="brief 缺 · energy_report_formal 需要 brief.json",
         )
 
-    # v3 · 100% 老师权威 · 命中 → 直接 copy 老师真能耗产物(EUI 已算 · BOQ 已结)
+    # v3 · 100% 老师权威 · 整目录 copy 老师 energy/(boq+compliance+project.json+ep_output 14 EnergyPlus raw)
     from ..teacher_authority.v3_reuse import try_reuse
     _v3 = try_reuse(
         project.brief, "energy_report", sb_dir,
-        ["energy/project.json", "energy/boq-HK.csv",
-         "energy/boq-HK.md", "energy/compliance-HK.md"],
-        target_subdir="energy", on_event=on_event,
+        dirs=["energy"],
+        on_event=on_event,
     )
     if _v3:
         return _v3
