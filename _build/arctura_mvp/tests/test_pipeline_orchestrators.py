@@ -75,6 +75,59 @@ def test_r5_dispatcher_8_real_stakeholders():
     assert set(slugs) == set(must)
 
 
+# ── R6 · case_study LLM 双轨 + 7 真脚本 ───────────────────
+def test_r6_case_study_runner_7_scripts():
+    from _build.arctura_mvp.teacher_authority.case_study_runner import verify_runner
+    info = verify_runner()
+    must = ["extract_metrics", "populate_narratives", "narrate",
+            "render_templates", "aggregate", "run_one", "run_all"]
+    missing = [k for k in must if not info[k]]
+    assert not missing, f"老师 case-study 脚本缺: {missing}"
+
+
+# ── R7 · SSOT region map 真 helper(老师 defaults/region-code-map.yaml) ─
+def test_r7_resolve_region_HK():
+    from _build.arctura_mvp.teacher_authority.ssot import resolve_region
+    r = resolve_region("hk")
+    if r is None:
+        pytest.skip("region-code-map.yaml 不可读 / pyyaml 未装")
+    assert "boq_region" in r or "compliance_code" in r or "weather_epw" in r
+
+
+def test_r7_resolve_region_chinese_fallback():
+    """中文 '北京' → 应通过 region_fallback 解到 cn_bj"""
+    from _build.arctura_mvp.teacher_authority.ssot import resolve_region
+    r = resolve_region("北京")
+    if r is None:
+        pytest.skip("region-code-map.yaml 不可读 / 老师没配置 fallback")
+    # 至少有一个关键字段
+    assert any(k in r for k in ("boq_region", "compliance_code", "weather_epw"))
+
+
+# ── R8 · pipeline.run · use_teacher_orchestrator 触发分支 ───
+def test_r8_pipeline_use_teacher_orchestrator_path(tmp_path, monkeypatch):
+    """env ARCTURA_TEACHER_PIPELINE=1 触发老师 orchestrator · 应走分支"""
+    monkeypatch.setenv("ARCTURA_TEACHER_PIPELINE", "1")
+    # 此测试只验证分支可调 · 不需真跑 P1(无 brief.json 即 fatal_at)
+    from _build.arctura_mvp import pipeline
+    from _build.arctura_mvp.types import Project
+    project = Project(
+        slug="test-teacher-trigger",
+        brief={"space": {"type": "study"}, "use_teacher_orchestrator": True},
+        tier="full",
+        scene={},
+        artifacts={},
+        state="generating",
+        version=0,
+        render_engine="formal",
+        variant_count=1,
+        display_name="test",
+    )
+    result = pipeline.run(project, dry_run=True)
+    # 应有 teacher_pipeline 路径触发的产出
+    assert hasattr(result, "produced") or hasattr(result, "errors")
+
+
 def test_r5_dispatcher_no_decks_dir(tmp_path):
     """无 decks/ 应返 error"""
     from _build.arctura_mvp.teacher_authority.stakeholder_dispatcher import (

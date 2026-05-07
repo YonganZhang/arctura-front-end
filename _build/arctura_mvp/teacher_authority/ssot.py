@@ -73,6 +73,25 @@ def region_code_map() -> dict:
         return {"_error": "pyyaml 未装"}
 
 
+def resolve_region(region_input: str) -> Optional[dict]:
+    """老师 defaults/region-code-map.yaml 真用法(L18-31)
+    region_input(自由文本/locale key)→ {boq_region, compliance_code, weather_epw, currency}
+
+    Phase 1.C · 给 derive / brief / energy_report / boq 真 SSOT 路径 · 不再 hardcode
+    """
+    m = region_code_map()
+    if not m or "_error" in m:
+        return None
+    key = (region_input or "").strip()
+    locales = m.get("locales") or {}
+    if key in locales:
+        return locales[key]
+    fallback = (m.get("region_fallback") or {}).get(key) or (m.get("region_fallback") or {}).get(key.upper())
+    if fallback and fallback in locales:
+        return locales[fallback]
+    return None
+
+
 @functools.lru_cache(maxsize=1)
 def comparison_cameras() -> dict:
     """A/B/C 对比 cameras 统一配置 · variants_formal 应用"""

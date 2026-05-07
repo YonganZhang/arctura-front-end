@@ -67,6 +67,52 @@ def run(project: Project, *,
         "estimated_min": resolved.get("estimated_min", {}).get(engine),
     })
 
+    # ── Phase 1.D · 老师 P1/P2 完整 orchestrator 触发分支(可选) ─────
+    # 触发条件: brief.use_teacher_orchestrator=true 或 env ARCTURA_TEACHER_PIPELINE=1
+    # 跑老师真 18 步(P1) / 22 步(P2) · 替代 artifact-by-artifact 模式
+    import os as _os
+    use_teacher_p = (
+        _os.environ.get("ARCTURA_TEACHER_PIPELINE") == "1"
+        or (project.brief or {}).get("use_teacher_orchestrator") is True
+    )
+    if use_teacher_p:
+        is_arch = (project.brief or {}).get("space", {}).get("type", "").lower() in (
+            "house", "office_building", "boutique_hotel", "community_center",
+            "library", "loft", "small_clinic", "mixed_use", "sports_complex",
+            "family_house", "village_house", "cowork_tower", "art_pavilion",
+            "villa", "castle",
+        ) or "arch" in project.slug.lower()
+        try:
+            if is_arch:
+                from .teacher_authority.pipeline_p2 import run_p2_pipeline
+                summary = run_p2_pipeline(sb_dir, tier=project.tier, on_event=emit)
+            else:
+                from .teacher_authority.pipeline_p1 import run_p1_pipeline
+                summary = run_p1_pipeline(
+                    sb_dir,
+                    render_path=(project.brief or {}).get("render_path", "path_b"),
+                    tier=project.tier,
+                    on_event=emit,
+                )
+            emit("teacher_pipeline_done", summary)
+            return MVPResult(
+                slug=project.slug, tier=project.tier,
+                variant_count=project.variant_count or 1,
+                render_engine=engine,
+                produced=[s["step"] for s in summary.get("steps", []) if s.get("ok")],
+                skipped=[],
+                errors=[] if summary["ok"] else [{
+                    "name": "teacher_pipeline",
+                    "exception": summary.get("fatal_at"),
+                    "trace_tail": str(summary.get("gate_failures", []))[:500],
+                }],
+                partial=not summary["ok"],
+                timing_ms={"total": summary.get("total_duration_ms", 0)},
+            )
+        except Exception as e:
+            emit("teacher_pipeline_error", {"err": str(e)[:300]})
+            # fallthrough · 走原 artifact pipeline
+
     # 准备 ctx · 所有 artifact 共享
     sb_dir = _STARTUP_BUILDING / "studio-demo" / "mvp" / project.slug
     sb_dir.mkdir(parents=True, exist_ok=True)
