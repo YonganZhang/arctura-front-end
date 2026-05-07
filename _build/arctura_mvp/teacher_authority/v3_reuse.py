@@ -29,12 +29,26 @@ from ..types import ArtifactResult
 _AUTHORITY_DIR = Path(__file__).parent
 _GOLDEN_DIR = _AUTHORITY_DIR / "golden_artifacts"  # repo 内 mirror(4 高频 MVP · 332 文件 228M)
 
-# 老师上游源目录 · 本机有 36+ MVP 真源(2.3GB)· prod 部署没
+# 老师上游源目录 · 本机有 42 interior + 18 arch MVP 真源(2.3GB + 542M)· prod 部署没
 try:
     from ..paths import STARTUP_BUILDING_ROOT
     _STARTUP_MVP_DIR = STARTUP_BUILDING_ROOT / "studio-demo" / "mvp"
+    _STARTUP_ARCH_DIR = STARTUP_BUILDING_ROOT / "studio-demo" / "arch-mvp"  # B1 · arch 真源
 except Exception:
     _STARTUP_MVP_DIR = None
+    _STARTUP_ARCH_DIR = None
+
+
+# 老师 18 真 arch MVP slug(Phase 12.末.H · B1)
+_TEACHER_ARCH_MVPS = [
+    "arch-01-house", "arch-02-office-building", "arch-03-boutique-hotel",
+    "arch-04-community-center", "arch-05-modern-chinese-house",
+    "arch-06-small-library", "arch-07-loft-coworking", "arch-08-small-clinic",
+    "arch-09-mixed-use", "arch-10-sports-complex", "arch-11-nt-family-house",
+    "arch-12-dongbei-village-house", "arch-13-cowork-tower", "arch-14-art-pavilion",
+    "arch-15-hillside-villa", "arch-16-shenzhen-spanish-castle",
+    "community-fitness", "lakeside-retreat",
+]
 
 
 # 老师 36 真 MVP slug · 全列(直接命中)
@@ -106,6 +120,27 @@ _TYPE_TO_SLUG = {
     "画廊": "09-art-gallery", "书店": "07-bookstore", "幼儿园": "06-kids-daycare",
     "校长": "30-university-principal-office-hk",
     "茶室": "20-zen-tea-room",
+    # B1 · architecture(brief.space.type 命中 → arch-mvp)
+    "house": "arch-01-house",
+    "office_building": "arch-02-office-building",
+    "boutique_hotel": "arch-03-boutique-hotel",
+    "community_center": "arch-04-community-center",
+    "library": "arch-06-small-library",
+    "loft": "arch-07-loft-coworking",
+    "small_clinic": "arch-08-small-clinic",
+    "mixed_use": "arch-09-mixed-use",
+    "sports_complex": "arch-10-sports-complex",
+    "family_house": "arch-11-nt-family-house",
+    "village_house": "arch-12-dongbei-village-house",
+    "cowork_tower": "arch-13-cowork-tower",
+    "art_pavilion": "arch-14-art-pavilion",
+    "villa": "arch-15-hillside-villa",
+    "castle": "arch-16-shenzhen-spanish-castle",
+    "lakeside_retreat": "lakeside-retreat",
+    "住宅": "arch-01-house",
+    "酒店": "arch-03-boutique-hotel",
+    "图书馆": "arch-06-small-library",
+    "别墅": "arch-15-hillside-villa",
 }
 
 
@@ -127,7 +162,7 @@ def select_template_slug(brief: dict) -> Optional[str]:
 
 
 def _resolve_src_dir(slug: str) -> Optional[Path]:
-    """双源解析:repo 内 mirror 优先 · fallback 老师 StartUP-Building 真源"""
+    """双源解析:repo 内 mirror 优先 · fallback 老师 StartUP-Building 真源(interior + arch)"""
     repo_src = _GOLDEN_DIR / slug
     if repo_src.exists():
         return repo_src
@@ -135,7 +170,17 @@ def _resolve_src_dir(slug: str) -> Optional[Path]:
         startup_src = _STARTUP_MVP_DIR / slug
         if startup_src.exists():
             return startup_src
+    # B1 · arch-mvp fallback(老师 18 建筑 MVP)
+    if _STARTUP_ARCH_DIR is not None:
+        arch_src = _STARTUP_ARCH_DIR / slug
+        if arch_src.exists():
+            return arch_src
     return None
+
+
+def is_arch_slug(slug: str) -> bool:
+    """slug 是否对应 architecture MVP(building.json 而非 room.json)"""
+    return slug in _TEACHER_ARCH_MVPS
 
 
 def try_reuse(

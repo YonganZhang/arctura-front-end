@@ -86,7 +86,21 @@ def missing_must_fields(brief: dict) -> list[str]:
 
 # ───── LLM prompt ─────
 
-SYSTEM_PROMPT = _RULES["system_prompt"]
+def _resolve_system_prompt():
+    """C2 · brief-chat 用老师 turn-based prompt(playbooks/prompts/brief-intake/turn-based.md)
+    + 我们 brief-rules.json 的元规则 system_prompt 作 fallback / 兜底。
+    老师 prompt 已包含完整对话规则 + 多轮策略 · 我们不重写。"""
+    base = _RULES.get("system_prompt", "")
+    try:
+        from ..teacher_authority.ssot import prompt_brief_turn_based
+        teacher = prompt_brief_turn_based()
+        if teacher:
+            return f"{teacher}\n\n---\n\n## 项目元规则(本仓 brief-rules.json)\n\n{base}"
+    except Exception:
+        pass
+    return base
+
+SYSTEM_PROMPT = _resolve_system_prompt()
 
 
 def make_user_prompt(user_message: str, current_brief: dict, schema: dict) -> str:

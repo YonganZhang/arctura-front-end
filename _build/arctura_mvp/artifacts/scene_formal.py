@@ -281,6 +281,40 @@ def produce(ctx, *, on_event: Optional[Callable] = None) -> ArtifactResult:
             )
         # 命中表里 template_slug 但 golden_renders 子目录缺 → 落 v2 真跑 Blender
 
+    # ── v4 PATH-A · 老师 mesh-library 真实家具 pipeline ─────────────
+    # 触发条件:用户 brief.render_path == "path_a" 或 env ARCTURA_PATH_A=1
+    # 不命中 v3(老师 4 真 MVP)时 · 用 LIGHT scene 跑老师 5 步 Path A · 输出 asset 版 6 视角
+    path_a_requested = (
+        os.environ.get("ARCTURA_PATH_A") == "1"
+        or (project.brief or {}).get("render_path") == "path_a"
+    )
+    if path_a_requested:
+        from ..teacher_authority.mesh_library_runner import run_path_a
+        # 先确保 LIGHT scene 已写 room.json + _render_script.py(老师 mesh-library 入口需要)
+        from .scene import produce as light_produce
+        light_res = light_produce(ctx, on_event=on_event)
+        if light_res.status == "done":
+            summary = run_path_a(sb_dir,
+                                 use_clip=(project.brief or {}).get("use_clip", False),
+                                 with_qa_vision=(project.brief or {}).get("tier") in ("full", "selection"))
+            if on_event:
+                on_event("path_a_pipeline_done", summary)
+            renders = sorted((sb_dir / "renders").glob("*.png")) if (sb_dir / "renders").exists() else []
+            return ArtifactResult(
+                name="scene", status="done" if summary["ok"] else "error",
+                timing_ms=int((time.time() - t0) * 1000),
+                output_path=str(sb_dir / "room-v2.json") if (sb_dir / "room-v2.json").exists() else str(sb_dir / "room.json"),
+                meta={
+                    "engine": "formal",
+                    "mode": "v4_path_a",
+                    "renders_count": len(renders),
+                    "path_a_summary": summary,
+                    "policy": "v4 · 老师 mesh-library Path A 真实家具(room_to_room_v2 → layout_validate → render_multi_assets → validate_reports[+ qa_vision])",
+                },
+                error=None if summary["ok"] else {"name": "path_a_step_fail",
+                                                    "trace_tail": f"fatal_at={summary['fatal_at']}"},
+            )
+
     if _BLENDER is None or not _BLENDER.exists():
         if on_event:
             on_event("artifact_degrade", {

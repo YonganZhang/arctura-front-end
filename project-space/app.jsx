@@ -3303,9 +3303,11 @@ function TierPickerStep({ project, onPatch, onRefresh }) {
             </div>
             <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
               {[
-                {v: null, label: `↪ 跟随档位 (${tierEngine === "fast" ? "⚡ Fast" : "🎨 Formal"})`, hint: "推荐"},
-                {v: "fast", label: "⚡ Fast · Three.js", hint: "2 分钟 · 自定 brief"},
-                {v: "formal", label: "🎨 Formal · 老师真渲染", hint: "0.05 秒 · SSIM 1.0 · 4 真 MVP"},
+                {v: null,         label: `↪ 跟随档位 (${tierEngine === "fast" ? "⚡ Fast" : "🎨 Formal"})`, hint: "推荐"},
+                {v: "fast",       label: "⚡ Fast · Three.js",          hint: "~2 分钟 · 前端 demo"},
+                {v: "formal",     label: "🎨 Formal · 复用老师真 PNG", hint: "0.05s · SSIM 1.0 · 命中老师 36 真 MVP"},
+                {v: "path_a",     label: "🪑 Path A · 真实家具(老师权威)", hint: "Blender + GLB + CLIP 召回 · ~5 分钟 · 老师 mesh-library"},
+                {v: "path_b_sdxl",label: "🎨 Path B + SDXL · AI 写实化", hint: "Path B 8 张 + SDXL 后处理 · ~25 分钟 · GPU 必需"},
               ].map(opt => (
                 <button
                   key={String(opt.v)}
@@ -3328,7 +3330,7 @@ function TierPickerStep({ project, onPatch, onRefresh }) {
         <div style={{display:"flex",justifyContent:"space-between",marginTop:30}}>
           <button onClick={backToBriefing} style={wzBtnGhost}>← 回 Brief</button>
           <button onClick={submit} disabled={!picked || saving} style={{...wzBtnPrimary, opacity: picked ? 1 : .35}}>
-            {saving ? "生成中..." : `开始生成 (${picked ? TIERS_UI.find(t => t.id === picked).label_zh : "选一个"} · ${finalEngine === "formal" ? "🎨 老师真渲染" : "⚡ Fast"})`}
+            {saving ? "生成中..." : `开始生成 (${picked ? TIERS_UI.find(t => t.id === picked).label_zh : "选一个"} · ${ {fast:"⚡ Fast", formal:"🎨 Formal", path_a:"🪑 Path A 真实家具", path_b_sdxl:"🎨 Path B+SDXL"}[finalEngine] || finalEngine })`}
           </button>
         </div>
       </div>
