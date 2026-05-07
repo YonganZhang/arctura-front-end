@@ -138,6 +138,95 @@ COMPLIANCE_CODES = ["HK", "CN_HOT", "CN_COLD", "ASHRAE", "JP"]
 EUI_IS_ADVISORY = True  # 老师 P8 v2 · 禁止把 EUI 当 pass/fail 硬指标
 
 
+# ═══════════ codes.json v2 真权威路径(老师 task 21 · 1004 行) ═══════════
+
+CODES_JSON_PATH = "CLI-Anything/openstudio/agent-harness/cli_anything/openstudio/data/codes/codes.json"
+CODES_JSON_LINES = 1004  # 老师 task 21 重写 · 5 套规范完整分档(HK/CN_HOT/CN_COLD/ASHRAE/JP)
+CODES_V1_BACKUP = "codes.v1.backup.json"  # 老师保留 v1
+
+
+# ═══════════ task 16 · IFC Enrichment 3 项验证(老师 verify_ifc_enriched.py) ═══════════
+
+IFC_ENRICHMENT_REQUIRED_CHECKS = [
+    "IFCPROPERTYSET",           # Pset_BOQ_Custom 等
+    "IFCRELASSOCIATESMATERIAL", # 材料关联
+    "IFCTYPED_ELEMENTS",        # IfcWallType / IfcDoorType / IfcWindowType 等
+]
+
+
+# ═══════════ task 11 · P11 Case Study 6 脚本清单(老师 playbooks/scripts/case-study/) ═══════════
+
+CASE_STUDY_SCRIPTS = [
+    "extract_metrics.py",   # 单 MVP → metrics.json
+    "narrate.py",           # LLM 叙事(Claude Native + Gemini fallback)
+    "render_templates.py",  # 3 模板渲染(Portfolio/RAE/Sales)
+    "populate_narratives.py",  # 跨模板叙事填充
+    "aggregate.py",         # 全库 rollup
+    "run_one.py",           # 单 MVP 入口
+    "run_all.py",           # 全 MVP 入口
+]
+
+
+# ═══════════ task 23 · BIM Catalog 真规模(老师 mesh-library 起源 spec) ═══════════
+
+BIM_CATALOG_TRUE_SIZE = {
+    "manual_curated": 26,    # 26 手工 · 全部带 style_tags
+    "auto_inferred": 356,    # 356 auto from polyhaven
+    "total_v1": 382,
+    "total_v2_with_blenderkit": 1646,  # 加 blenderkit 后总数(我们 BIM_CATALOG ssot 真读)
+    "style_tags": ["scandi", "industrial", "classic", "rustic", "minimalist",
+                   "modern", "japandi", "luxury", "natural"],  # 真权威 style_tags
+}
+
+
+# ═══════════ task 11 · BOQ envelope tier(老师 boq.py · wall/window/roof 三处) ═══════════
+
+BOQ_ENVELOPE_TIER_FIELDS = ["wall", "window", "roof"]  # 老师 _pick_envelope_tier() 三处分档
+
+
+# ═══════════ STRATEGY-DESIGN 7 · 技术架构 4 层(老师整体观) ═══════════
+
+ARCHITECTURE_LAYERS = {
+    "user_layer": ["Web App (Next.js)", "Rhino Plugin", "Blender Addon"],
+    "llm_orchestration_core_ip": [
+        "Brief 解析(NL → 结构化项目参数)",
+        "工作流路由(决定调用哪些工具/什么顺序)",
+        "多 Agent(设计 / 图纸 / BOQ)",
+        "用户确认门(关键决策必须 human approval)",
+        "结果解读 + 文档生成",
+    ],
+    "knowledge_data_moat": [
+        "风格库(日式/北欧/工业/现代简约)",
+        "材料库(本地供应商 + 价格 + 规格)",
+        "家具库(IKEA + Muji + 本地品牌)",
+        "品牌模板",
+        "风格 fine-tune(客户过往项目学习)",
+        "BOQ 单价数据库",
+    ],
+    "tools_layer_cli_anything": [
+        "Blender", "FreeCAD", "GIMP", "Krita", "Inkscape",
+        "LibreOffice", "Draw.io", "Zotero",
+    ],
+    "tools_to_wrap": [
+        "Rhino(via RhinoMCP)", "ComfyUI(HTTP)",
+        "CloudCompare(CLI-Anything 已有)",
+        "ezdxf(本地图纸规范 dxf/dwg)",
+        "python-pptx(报告生成)",
+    ],
+}
+
+
+# ═══════════ studio-copilot 5 stakeholder 真受众(老师 L296-L322) ═══════════
+
+STAKEHOLDER_AUDIENCE = {
+    "客户/业主": "决策者 · 看视觉效果 + 分区 + 材质 + 预算",
+    "投资人/合伙人/老板": "看市场+产品+单位经济+回收期+风险",
+    "设计师同事": "精修方案 · 文件清单 + PBR 参数 + 尺寸",
+    "施工方/建筑技师": "实操精确 · 平面尺寸 + BOQ + 节点 + Gantt + 验收",
+    "BIM 工程师/结构机电": "Schema + IfcProduct + MEP 协同 + 碰撞检测",
+}
+
+
 # ═══════════ 验证 helpers(thin) ═══════════
 
 def get_stakeholder_hero(stakeholder: str) -> str:
