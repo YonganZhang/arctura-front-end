@@ -131,6 +131,7 @@ _PRODUCTS_LIST: list[ProductSpec] = [
         key="energy_report", id=8, name="能耗 + 合规 + 报价", lang_hint_en="Energy + Compliance + BOQ",
         tiers=["quote", "full", "select"],
         light_producer="energy_report",   # ✅ Phase 9 · 3/4 工件真产 · EUI 待 EnergyPlus
+        formal_producer="energy_report_formal",  # Phase 12.D.3 · 真 import cli_anything.openstudio.core
         full_pipeline="P7 Energy-Sim（需 EnergyPlus binary）+ P8 Compliance + P6 BOQ",
         spec_ref="L404",
         depends_on=["scene", "brief"],
