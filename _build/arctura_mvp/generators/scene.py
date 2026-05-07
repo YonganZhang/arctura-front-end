@@ -353,10 +353,10 @@ def _layout_assemblies(types: list[str], bounds: dict, lib: dict) -> list[tuple[
         elif pt in ("sofa_2seat", "sofa_3seat", "bed_queen"):
             n_decor = 2
             decor_pool = _DECOR_SOFT  # Phase 12.1 · 床/沙发不放立式 picture_frame
-        elif pt in ("chair_standard", "chair_lounge", "lamp_floor"):
-            n_decor = 1
-            decor_pool = _DECOR_TABLETOP
         else:
+            # Phase 12.3 · chair / lamp_floor 等不放装饰物
+            # 老 bug:chair_standard n_decor=1 → vase 站椅背顶 z=1.02!
+            # 椅子 / 落地灯 / lamp_pendant / 任何小型家具不该放装饰
             n_decor = 0
             decor_pool = _DECOR_TABLETOP
         if n_decor == 0:
