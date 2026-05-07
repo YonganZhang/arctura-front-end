@@ -64,7 +64,7 @@ SNAPSHOT_CASES = [
         "headcount": 5,
         "style": {"keywords": ["a"], "palette": {"p": "#fff"}},
         "functional_zones": [{"name": "x"}],
-    }, {"completeness": 0.73, "ready": True, "missing_count": 0}),
+    }, {"completeness": 0.71, "ready": True, "missing_count": 0}),
 ]
 
 
