@@ -32,7 +32,8 @@ class ProductSpec:
     id: Optional[int] = None            # 严老师编号 1-16 · None = aux（variants）
     tiers: list[str] = field(default_factory=list)   # 哪些 tier 含此产物
     light_producer: Optional[str] = None      # artifacts/<name>.py 模块 · None = LIGHT 无法产
-    full_pipeline: Optional[str] = None       # 严老师 spec 中的 pipeline 编号/路径
+    formal_producer: Optional[str] = None     # Phase 12.4 · artifacts/<name>_formal.py 真接老师代码 · None = formal 未实装(降级 fast)
+    full_pipeline: Optional[str] = None       # 严老师 spec 中的 pipeline 编号/路径(doc/spec ref)
     addon: bool = False                 # True = 按需追加项（#13-16）· 不默认加入任何 tier
     spec_ref: str = ""                  # "spec L###"
     depends_on: list[str] = field(default_factory=list)   # 上游产物 key（scene → renders）
