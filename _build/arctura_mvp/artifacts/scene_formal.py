@@ -297,17 +297,56 @@ def produce(ctx, *, on_event: Optional[Callable] = None) -> ArtifactResult:
         or getattr(project, "render_engine", None) == "path_a"
     )
     if path_a_requested:
+        # 真 path_a 需老师 Blender 产出的 room.json(我们 LIGHT 只写自己 scene.json 格式 · 不兼容)
+        # 服务器无 Blender · path_a 在 PolyU 必失败。检测前置 → 降级 v3 reuse + 标 degraded 让 UI 诚实说明
+        path_a_prereq_ok = (sb_dir / "room.json").exists()
+        if not path_a_prereq_ok:
+            # 降级:走 v3 真复用(用前面已计算的 template_path/template_slug)· meta 标 degraded
+            from ..teacher_authority.v3_reuse import _resolve_src_dir, _GOLDEN_DIR
+            src_dir = _resolve_src_dir(template_slug)
+            if src_dir is None:
+                legacy = _AUTHORITY_DIR / "golden_renders" / template_slug
+                if legacy.exists():
+                    src_dir = legacy
+            if src_dir is not None:
+                gold_room = src_dir / "room.json"
+                gold_pngs = sorted((src_dir / "renders").glob("*.png")) if (src_dir / "renders").exists() else sorted(src_dir.glob("*.png"))
+                if gold_room.exists() and gold_pngs:
+                    sb_dir.mkdir(parents=True, exist_ok=True)
+                    render_dir = sb_dir / "renders"
+                    render_dir.mkdir(parents=True, exist_ok=True)
+                    for p in gold_pngs:
+                        shutil.copy2(p, render_dir / p.name)
+                    shutil.copy2(gold_room, sb_dir / "room.json")
+                    origin = "repo_mirror" if str(src_dir).startswith(str(_GOLDEN_DIR)) or "golden_renders" in str(src_dir) else "startup_building"
+                    if on_event:
+                        on_event("path_a_degraded_to_v3", {
+                            "template": template_slug, "src_origin": origin,
+                            "renders_count": len(gold_pngs),
+                            "reason": "服务器无 Blender · path_a 不可跑"})
+                    return ArtifactResult(
+                        name="scene", status="done",
+                        timing_ms=int((time.time() - t0) * 1000),
+                        output_path=str(sb_dir / "room.json"),
+                        meta={
+                            "engine": "formal",
+                            "mode": "v4_path_a_degraded_to_v3",
+                            "template_slug": template_slug,
+                            "src_origin": origin,
+                            "renders_count": len(gold_pngs),
+                            "_degraded_reason": "服务器无 Blender · path_a 不可跑 · 已复用老师真 PNG 范例(SSIM=1.0)",
+                            "policy": "path_a 降级 v3 · 服务器无 Blender",
+                        },
+                    )
+            return ArtifactResult(
+                name="scene", status="error",
+                timing_ms=int((time.time() - t0) * 1000),
+                error={"name": "path_a_no_blender_no_v3_template",
+                       "message": f"path_a 需 Blender 真跑 · 服务器无 Blender · v3 也无匹配 template(template_slug={template_slug})"},
+            )
+        # path_a 前置满足 · 真跑老师 mesh-library
         try:
             from ..teacher_authority.mesh_library_runner import run_path_a
-            from .scene import produce as light_produce
-            light_res = light_produce(ctx, on_event=on_event)
-            if light_res.status != "done":
-                return ArtifactResult(
-                    name="scene", status="error",
-                    timing_ms=int((time.time() - t0) * 1000),
-                    error={"name": "path_a_light_prereq_fail",
-                           "message": f"path_a 前置 LIGHT scene 未 done · light_status={light_res.status} · light_reason={getattr(light_res, 'reason', None)}"},
-                )
             summary = run_path_a(sb_dir,
                                  use_clip=(project.brief or {}).get("use_clip", False),
                                  with_qa_vision=(project.brief or {}).get("tier") in ("full", "selection"))
@@ -318,15 +357,11 @@ def produce(ctx, *, on_event: Optional[Callable] = None) -> ArtifactResult:
                 name="scene", status="done" if summary["ok"] else "error",
                 timing_ms=int((time.time() - t0) * 1000),
                 output_path=str(sb_dir / "room-v2.json") if (sb_dir / "room-v2.json").exists() else str(sb_dir / "room.json"),
-                meta={
-                    "engine": "formal",
-                    "mode": "v4_path_a",
-                    "renders_count": len(renders),
-                    "path_a_summary": summary,
-                    "policy": "v4 · 老师 mesh-library Path A 真实家具",
-                },
+                meta={"engine": "formal", "mode": "v4_path_a",
+                      "renders_count": len(renders), "path_a_summary": summary,
+                      "policy": "v4 · 老师 mesh-library Path A 真实家具"},
                 error=None if summary["ok"] else {"name": "path_a_step_fail",
-                                                  "message": f"fatal_at={summary.get('fatal_at')} · steps_count={summary.get('steps_count')}",
+                                                  "message": f"fatal_at={summary.get('fatal_at')}",
                                                   "trace_tail": f"fatal_at={summary.get('fatal_at')}"},
             )
         except Exception as e:
