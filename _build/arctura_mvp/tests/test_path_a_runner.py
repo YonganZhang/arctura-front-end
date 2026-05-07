@@ -133,6 +133,29 @@ def test_p9_site_entourage_6_clis_exist():
 
 
 # ── P10 · B1 arch v3 双源(18 真 slug 可达) ──────────────────────
+def test_p11_verify_mvp_runner_callable():
+    """老师 verify_mvp_exports.py · gate · 全案 done 前必跑"""
+    from _build.arctura_mvp.teacher_authority.verify_mvp_runner import verify_runner, verify_mvp
+    from _build.arctura_mvp.paths import STUDIO_DEMO_MVP_DIR
+    info = verify_runner()
+    assert info["verify_mvp_exports.py"]
+    mvp = STUDIO_DEMO_MVP_DIR / "03-coffee-shop"
+    if not mvp.exists():
+        pytest.skip(f"老师 mvp 缺: {mvp}")
+    r = verify_mvp(mvp, tier="full")
+    # ok 可 False(老师自己 missing 4 项)· 但 returncode 必有
+    assert r.get("returncode") in (0, 1), f"非预期: {r.get('returncode')}"
+
+
+def test_p12_llm_intake_runner_callable():
+    """老师 llm_intake_cli · 5 子命令"""
+    from _build.arctura_mvp.teacher_authority.llm_intake_runner import verify_runner
+    info = verify_runner()
+    assert info["module_callable"], f"老师 llm_intake_cli 应可调 · {info}"
+    help_text = info.get("help_tail", "")
+    assert "turn-based" in help_text and "validate" in help_text
+
+
 def test_p10_arch_mvp_v3_dual_source():
     from _build.arctura_mvp.teacher_authority.v3_reuse import (
         _resolve_src_dir, _TEACHER_ARCH_MVPS, is_arch_slug,
