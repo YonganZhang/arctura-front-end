@@ -2,6 +2,18 @@
 
 > 本文件是 Claude Code 的 session 启动指引。Front-end 是 Arctura 生态的**展示层**，不是产物源头。
 
+## ⚡ 老师 vs 我们差距地图(必读)
+
+做任何 v3 / FORMAL / 对接老师代码相关任务前,**必读**:
+
+```
+Read /mnt/data/yongan/projects/自己-公司项目-b46280/wiki-methodology/code/teacher-pipelines-codemap.md
+```
+
+这一份顶 N 次扫描 · 8 章节覆盖老师 42 MVP / 8 playbooks 子模块 / 30+ CLI-Anything 工具 / 4-21~28 升级时间线 / 我们已接 vs 漏接矩阵 / 优先级建议。下次会话不要再从零扫。
+
+---
+
 ## 🔴 做 MVP / 新设计 / 新项目前 · 必读上游权威规则
 
 **第一动作必须是**（不可跳过）：
