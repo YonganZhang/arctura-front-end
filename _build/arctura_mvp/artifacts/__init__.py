@@ -25,8 +25,9 @@ def get_artifact(name: str, engine: str = "fast") -> Optional[Callable]:
     if spec is None:
         return None
 
-    # Phase 12.4 · engine = "formal" 优先用 formal_producer
-    if engine == "formal" and spec.formal_producer:
+    # Phase 12.4 · engine = "formal"/"path_a"/"path_b_sdxl" 优先用 formal_producer
+    # path_a / path_b_sdxl 都属"真 AI 设计"路径 · 走 formal_producer · scene_formal v4 内部按 render_engine 真分支
+    if engine in ("formal", "path_a", "path_b_sdxl") and spec.formal_producer:
         try:
             module = __import__(
                 f"_build.arctura_mvp.artifacts.{spec.formal_producer}",
@@ -59,8 +60,8 @@ def resolve_artifact_engine(name: str, requested_engine: str) -> Tuple[Optional[
     spec = PRODUCTS.get(name)
     if spec is None:
         return (None, "missing_spec")
-    if requested_engine == "formal" and spec.formal_producer:
-        return (spec.formal_producer, "formal")
+    if requested_engine in ("formal", "path_a", "path_b_sdxl") and spec.formal_producer:
+        return (spec.formal_producer, requested_engine)
     if spec.light_producer:
         degraded = " (degraded from formal)" if requested_engine == "formal" else ""
         return (spec.light_producer, f"fast{degraded}")
