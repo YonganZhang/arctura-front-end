@@ -156,6 +156,45 @@ def test_p12_llm_intake_runner_callable():
     assert "turn-based" in help_text and "validate" in help_text
 
 
+def test_p13_change_impact_matrix_parses():
+    """老师 change-impact-matrix.md 应解析出 P1 12+ 类 + P2 ≥6 类"""
+    from _build.arctura_mvp.teacher_authority.change_impact import (
+        verify, parse_matrix, pipelines_to_rerun, all_categories,
+    )
+    info = verify()
+    assert info["matrix_exists"]
+    assert info["P1_rows"] >= 12, f"P1 应 ≥12 行 · 实 {info['P1_rows']}"
+    assert info["P2_rows"] >= 6
+
+
+def test_p13_change_impact_smart_rerun():
+    """客户'材质/颜色'变更 → must_rerun render + boq · skip 9 个"""
+    from _build.arctura_mvp.teacher_authority.change_impact import pipelines_to_rerun
+    r = pipelines_to_rerun("材质/颜色")
+    assert "render" in r["must_rerun"]
+    assert "P6_boq" in r["must_rerun"]
+    assert "P3_brief" in r["skip"]
+    assert "P1_3d" in r["skip"]
+    assert r["duration"] == "~1 min"
+
+
+def test_p13_change_impact_room_size_full_rerun():
+    """客户'房间尺寸'变更 → must_rerun 几乎全部(P1_3d/render/floorplan/ifc/energy/compliance/boq)"""
+    from _build.arctura_mvp.teacher_authority.change_impact import pipelines_to_rerun
+    r = pipelines_to_rerun("房间尺寸")
+    must = r["must_rerun"]
+    for p in ["P1_3d", "render", "floorplan", "ifc_export", "P7_energy", "P8_compliance", "P6_boq"]:
+        assert p in must, f"房间尺寸应 must_rerun {p}"
+
+
+def test_p14_render_from_json_runner_exists():
+    """老师 render_from_json.py(动态重渲染)可达 + Blender 可用"""
+    from _build.arctura_mvp.teacher_authority.render_from_json_runner import verify_runner
+    info = verify_runner()
+    assert info["render_from_json.py"], "老师 render_from_json.py 应存在"
+    assert info["blender_available"]
+
+
 def test_p10_arch_mvp_v3_dual_source():
     from _build.arctura_mvp.teacher_authority.v3_reuse import (
         _resolve_src_dir, _TEACHER_ARCH_MVPS, is_arch_slug,
