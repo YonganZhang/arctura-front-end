@@ -128,6 +128,40 @@ def test_r8_pipeline_use_teacher_orchestrator_path(tmp_path, monkeypatch):
     assert hasattr(result, "produced") or hasattr(result, "errors")
 
 
+# ── R9 · 阶段 2 · portfolio_rollup 全库 rollup ────────────────
+def test_r9_portfolio_rollup_runner_callable():
+    from _build.arctura_mvp.teacher_authority.portfolio_rollup import verify_runner
+    info = verify_runner()
+    if not info["case_studies_dir_exists"]:
+        pytest.skip(f"老师 case-studies/ 不可达")
+    assert info["aggregate_script"]
+    # 老师真应有 4 顶层 + 26+ 软链
+    assert info["portfolio_index_md"]
+    assert info["impact_dashboard_md"]
+    assert info["metrics_json"]
+
+
+def test_r9_portfolio_index_readable():
+    """老师 case-studies/portfolio-index.md 应可读 + 含 26 项目"""
+    from _build.arctura_mvp.teacher_authority.portfolio_rollup import get_portfolio_index
+    idx = get_portfolio_index()
+    if not idx:
+        pytest.skip("portfolio-index.md 不可达")
+    assert "Portfolio" in idx or "portfolio" in idx
+    # 老师真 26 项目
+    md_links = idx.count("](portfolio/")
+    assert md_links >= 20, f"应 ≥20 portfolio 链接 · 实 {md_links}"
+
+
+def test_r9_global_metrics_readable():
+    """老师 case-studies/metrics.json 全库 rollup 应可读"""
+    from _build.arctura_mvp.teacher_authority.portfolio_rollup import get_global_metrics
+    m = get_global_metrics()
+    if m is None:
+        pytest.skip("global metrics.json 不可达")
+    assert isinstance(m, (dict, list))
+
+
 def test_r5_dispatcher_no_decks_dir(tmp_path):
     """无 decks/ 应返 error"""
     from _build.arctura_mvp.teacher_authority.stakeholder_dispatcher import (
